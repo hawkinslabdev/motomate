@@ -1,0 +1,8 @@
+.env
+data/*
+uploads/*
+.*/
+!/.github/
+*.md
+!README.md
+!CONTRIBUTING.md

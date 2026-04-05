@@ -1,0 +1,84 @@
+import { eq, and } from 'drizzle-orm';
+import { db } from '../index.js';
+import { service_logs, vehicles } from '../schema.js';
+import { CreateServiceLogSchema } from '../../validators/schemas.js';
+import { updateTrackerAfterService } from './maintenance.js';
+import { updateOdometer, getVehicleById } from './vehicles.js';
+import type { InsertServiceLog, ServiceLog } from '../schema.js';
+import { generateId } from '../../utils/id.js';
+
+export async function createServiceLog(userId: string, input: unknown): Promise<ServiceLog> {
+	const parsed = CreateServiceLogSchema.parse(input);
+	const id = generateId();
+	const row: InsertServiceLog = { ...parsed, id };
+
+	// Insert the log (sync — better-sqlite3)
+	db.insert(service_logs).values(row).run();
+
+	// Update tracker if linked
+	if (parsed.tracker_id) {
+		await updateTrackerAfterService(
+			parsed.tracker_id,
+			parsed.performed_at,
+			parsed.odometer_at_service
+		);
+	}
+
+	// Only advance the vehicle odometer — never move it backwards.
+	// Logging historical entries (e.g. "oil change 400 km ago") must not
+	// overwrite a higher current reading.
+	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
+	if (vehicle && parsed.odometer_at_service > vehicle.current_odometer) {
+		await updateOdometer(parsed.vehicle_id, userId, parsed.odometer_at_service);
+	}
+
+	return db.query.service_logs.findFirst({ where: eq(service_logs.id, id) }) as Promise<ServiceLog>;
+}
+
+export async function getServiceLogsByVehicle(
+	vehicleId: string,
+	userId: string
+): Promise<ServiceLog[]> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return [];
+	return db.query.service_logs.findMany({
+		where: eq(service_logs.vehicle_id, vehicleId),
+		orderBy: (s, { desc }) => [desc(s.performed_at)]
+	});
+}
+
+export async function getServiceLogById(id: string): Promise<ServiceLog | undefined> {
+	return db.query.service_logs.findFirst({ where: eq(service_logs.id, id) });
+}
+
+export async function updateServiceLog(
+	id: string,
+	vehicleId: string,
+	userId: string,
+	data: {
+		performed_at?: string;
+		odometer_at_service?: number;
+		cost_cents?: number | null;
+		notes?: string | null;
+		remark?: string | null;
+	}
+): Promise<void> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return;
+	db.update(service_logs)
+		.set(data)
+		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
+		.run();
+}
+
+export async function deleteServiceLog(
+	id: string,
+	vehicleId: string,
+	userId: string
+): Promise<void> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return;
+	db.delete(service_logs)
+		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
+		.run();
+}

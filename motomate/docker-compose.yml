@@ -1,0 +1,18 @@
+services:
+  motomate:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    environment:
+      - PUBLIC_APP_URL=http://localhost:3000
+      - PUBLIC_APP_ORIGINS=http://localhost
+      - AUTH_SECRET=change-me-in-production-min-32-chars
+      - DATABASE_URL=/app/data/motomate.db
+      - STORAGE_ADAPTER=local
+      - STORAGE_LOCAL_PATH=/app/uploads
+    restart: unless-stopped
