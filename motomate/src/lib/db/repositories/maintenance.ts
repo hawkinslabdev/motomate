@@ -183,6 +183,9 @@ export async function updateTrackerAfterService(
 		next_due_odometer = odometerAtService + tmpl.interval_km;
 	}
 
+	// Clear per-rule notification cooldown on service — the tracker is being reset,
+	// so any new overdue crossing should fire a fresh notification.
+	const currentState = (tracker.state as Record<string, unknown>) ?? {};
 	await db
 		.update(active_trackers)
 		.set({
@@ -191,6 +194,7 @@ export async function updateTrackerAfterService(
 			next_due_at,
 			next_due_odometer,
 			status: 'ok',
+			state: { ...currentState, notified_by: {} },
 			updated_at: new Date().toISOString()
 		})
 		.where(eq(active_trackers.id, trackerId));
