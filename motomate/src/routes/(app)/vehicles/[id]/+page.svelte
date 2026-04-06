@@ -35,7 +35,7 @@
 	// Handle ?quick= param from the mobile FAB quick-add flow
 	$effect(() => {
 		const quick = $page.url.searchParams.get('quick');
-		if (quick === 'service' || quick === 'odometer') {
+		if (quick === 'service' || quick === 'odometer' || quick === 'note') {
 			activeForm = quick;
 			const url = new URL($page.url);
 			url.searchParams.delete('quick');

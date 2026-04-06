@@ -229,6 +229,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-1);
+		min-width: 0;
 	}
 	.field-label {
 		font-size: var(--text-sm);
@@ -251,6 +252,8 @@
 		font-size: var(--text-md);
 		font-family: var(--font-sans);
 		min-height: 48px;
+		width: 100%;
+		box-sizing: border-box;
 	}
 	.input:hover {
 		border-color: var(--border-strong);
@@ -305,14 +308,18 @@
 		color: var(--text);
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 640px) {
 		.page {
 			padding: var(--space-4);
+			padding-bottom: calc(56px + env(safe-area-inset-bottom) + var(--space-4));
 		}
 		.form-grid {
 			grid-template-columns: 1fr;
 		}
 		.type-cards {
+			flex-direction: column;
+		}
+		.odo-row {
 			flex-direction: column;
 		}
 	}

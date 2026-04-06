@@ -69,3 +69,7 @@ export async function markOnboardingDone(userId: string): Promise<void> {
 		.set({ onboarding_done: true, updated_at: new Date().toISOString() })
 		.where(eq(users.id, userId));
 }
+
+export async function deleteUser(userId: string): Promise<void> {
+	await db.delete(users).where(eq(users.id, userId));
+}

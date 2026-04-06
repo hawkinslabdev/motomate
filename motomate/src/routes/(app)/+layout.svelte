@@ -94,10 +94,11 @@
 		selectedVehicle = null;
 	}
 
-	function quickAddNavigate(type: 'service' | 'odometer') {
-		if (!selectedVehicle) return;
+	function quickAddNavigate(type: 'service' | 'odometer' | 'note') {
+		if (!quickAddOpen || !selectedVehicle) return;
+		const vehicleId = selectedVehicle.id;
 		closeQuickAdd();
-		goto(`/vehicles/${selectedVehicle.id}?quick=${type}`);
+		goto(`/vehicles/${vehicleId}?quick=${type}`);
 	}
 
 	function vehicleEmoji(v: NavVehicle) {
@@ -397,7 +398,9 @@
 	<div
 		class="quickadd-overlay"
 		role="presentation"
-		onclick={closeQuickAdd}
+		onclick={(e) => {
+			if (!(e.target as Element).closest('.quickadd-sheet')) closeQuickAdd();
+		}}
 		in:fade={{ duration: 150 }}
 		out:fade={{ duration: 120 }}
 	>
@@ -405,7 +408,6 @@
 			class="quickadd-sheet"
 			role="dialog"
 			aria-modal="true"
-			onclick={(e) => e.stopPropagation()}
 			onkeydown={(e) => e.key === 'Escape' && closeQuickAdd()}
 			tabindex="-1"
 			in:fly={{ y: 240, duration: 260, opacity: 1 }}
@@ -530,6 +532,38 @@
 						<span class="type-text">
 							<span class="type-label">{$_('layout.addEntry.mileage')}</span>
 							<span class="type-desc">{$_('layout.addEntry.mileageDesc')}</span>
+						</span>
+						<svg
+							class="pick-arrow"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+						>
+					</button>
+					<button class="pick-item pick-item--type" onclick={() => quickAddNavigate('note')}>
+						<span class="type-icon">
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+								><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline
+									points="14 2 14 8 20 8"
+								/><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline
+									points="10 9 9 9 8 9"
+								/></svg
+							>
+						</span>
+						<span class="type-text">
+							<span class="type-label">{$_('vehicle.forms.writeNote')}</span>
+							<span class="type-desc">{$_('vehicle.forms.noteDesc')}</span>
 						</span>
 						<svg
 							class="pick-arrow"

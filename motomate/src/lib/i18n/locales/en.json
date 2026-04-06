@@ -36,7 +36,13 @@
 				"password": "Password",
 				"magicLink": "Magic link"
 			},
-			"magicSubmit": "Send magic link"
+			"magicSubmit": "Send magic link",
+			"errors": {
+				"rateLimited": "Too many attempts. Please try again later.",
+				"invalidFormat": "Invalid email or password format",
+				"invalidCredentials": "Invalid email or password",
+				"invalidEmail": "Please enter a valid email address"
+			}
 		},
 		"register": {
 			"title": "Create account",
@@ -562,7 +568,8 @@
 			"notifications": "Notifications",
 			"workflows": "Workflows",
 			"sourceCode": "Source Code",
-			"reportIssue": "Report an Issue"
+			"reportIssue": "Report an Issue",
+			"tapAgain": "Tap again to open"
 		},
 		"profile": {
 			"title": "Preferences",
@@ -610,6 +617,27 @@
 					"invalid": "Enter a valid email address",
 					"sameAsCurrent": "That is already your current email",
 					"alreadyInUse": "That email is already in use"
+				}
+			},
+			"export": {
+				"title": "Export data",
+				"desc": "Download a copy of your vehicles, maintenance records, documents, and settings.",
+				"btn": "Export data",
+				"json": "Export as JSON",
+				"jsonHint": "Structured data, no files",
+				"zip": "Export as ZIP",
+				"zipHint": "Includes attached documents"
+			},
+			"dangerZone": "Danger zone",
+			"delete": {
+				"title": "Delete this account",
+				"desc": "Permanently removes your account and all your vehicles, service history, and documents.",
+				"btn": "Delete account",
+				"dialog": {
+					"title": "Delete your account?",
+					"desc": "This will permanently remove your account, all your vehicles, and all associated data. This action cannot be undone.",
+					"confirm": "Delete account",
+					"cancel": "Keep account"
 				}
 			}
 		},

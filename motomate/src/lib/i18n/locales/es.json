@@ -35,7 +35,13 @@
 				"password": "Contraseña",
 				"magicLink": "Enlace mágico"
 			},
-			"magicSubmit": "Enviar enlace mágico"
+			"magicSubmit": "Enviar enlace mágico",
+			"errors": {
+				"rateLimited": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde.",
+				"invalidFormat": "Formato de correo electrónico o contraseña inválido",
+				"invalidCredentials": "Correo electrónico o contraseña inválidos",
+				"invalidEmail": "Por favor, introduce una dirección de correo electrónico válida"
+			}
 		},
 		"register": {
 			"title": "Crear cuenta",
@@ -601,6 +607,27 @@
 					"sameAsCurrent": "Ese ya es tu correo actual",
 					"alreadyInUse": "Ese correo ya está en uso"
 				}
+			},
+			"export": {
+				"title": "Exportar datos",
+				"desc": "Descarga una copia de tus vehículos, registros de mantenimiento, documentos y configuración.",
+				"btn": "Exportar datos",
+				"json": "Exportar como JSON",
+				"jsonHint": "Datos estructurados, sin archivos",
+				"zip": "Exportar como ZIP",
+				"zipHint": "Incluye documentos adjuntos"
+			},
+			"dangerZone": "Zona de peligro",
+			"delete": {
+				"title": "Eliminar esta cuenta",
+				"desc": "Elimina permanentemente tu cuenta y todos tus vehículos, historial de servicio y documentos.",
+				"btn": "Eliminar cuenta",
+				"dialog": {
+					"title": "¿Eliminar tu cuenta?",
+					"desc": "Esto eliminará permanentemente tu cuenta, todos tus vehículos y todos los datos asociados. Esta acción no se puede deshacer.",
+					"confirm": "Eliminar cuenta",
+					"cancel": "Mantener cuenta"
+				}
 			}
 		},
 		"workflows": {
@@ -717,7 +744,8 @@
 			"notifications": "Notificaciones",
 			"workflows": "Flujos de trabajo",
 			"sourceCode": "Codigo fuente",
-			"reportIssue": "Reportar un problema"
+			"reportIssue": "Reportar un problema",
+			"tapAgain": "Toca de nuevo para abrir"
 		}
 	},
 	"units": {

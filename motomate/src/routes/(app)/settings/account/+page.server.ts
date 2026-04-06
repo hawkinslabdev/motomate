@@ -1,12 +1,14 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { hash, verify } from '@node-rs/argon2';
 import type { Actions, PageServerLoad } from './$types';
 import {
 	updateUserEmail,
 	updateUserPassword,
 	getUserById,
-	getUserByEmail
+	getUserByEmail,
+	deleteUser
 } from '$lib/db/repositories/users.js';
+import { lucia } from '$lib/auth/index.js';
 import en from '$lib/i18n/locales/en.json';
 import de from '$lib/i18n/locales/de.json';
 import fr from '$lib/i18n/locales/fr.json';
@@ -105,5 +107,13 @@ export const actions: Actions = {
 		const passwordHash = await hash(newPassword, ARGON2_OPTS);
 		await updateUserPassword(userId, passwordHash);
 		return { savedPassword: true };
+	},
+
+	deleteAccount: async ({ locals }) => {
+		const userId = locals.user!.id;
+		const sessionId = locals.session!.id;
+		await deleteUser(userId);
+		await lucia.invalidateSession(sessionId);
+		throw redirect(302, '/');
 	}
 };

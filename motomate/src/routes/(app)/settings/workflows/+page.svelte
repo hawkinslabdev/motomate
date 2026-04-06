@@ -140,7 +140,7 @@
 				<div class="rule-info">
 					<div class="rule-name" class:rule-name--muted={!isEnabled(rule)}>{$_(rule.name)}</div>
 					<div class="rule-meta">
-						<span>⚡ {triggerSummary(rule)}</span>
+						<span>{triggerSummary(rule)}</span>
 						<span class="sep">·</span>
 						<span>{$_('settings.workflows.allChannels')}</span>
 					</div>
@@ -417,16 +417,16 @@
 	}
 	.btn-secondary {
 		padding: 0.5rem 0.875rem;
-		background: var(--bg-subtle);
+		background: none;
 		color: var(--text);
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-strong);
 		border-radius: 10px;
 		font-size: var(--text-sm);
 		font-weight: 500;
 		cursor: pointer;
 	}
 	.btn-secondary:hover:not(:disabled) {
-		border-color: var(--border-strong);
+		background: var(--bg-muted);
 	}
 	.btn-secondary:disabled {
 		opacity: 0.5;
@@ -601,7 +601,7 @@
 		padding: 0.25rem 0.5rem;
 		background: none;
 		border: 1px solid var(--border);
-		border-radius: 4px;
+		border-radius: 6px;
 		cursor: pointer;
 		color: var(--text-muted);
 		font-size: var(--text-xs);
@@ -614,7 +614,7 @@
 		padding: 0.25rem 0.5rem;
 		background: none;
 		border: 1px solid var(--border);
-		border-radius: 4px;
+		border-radius: 6px;
 		cursor: pointer;
 		color: var(--text-subtle);
 		font-size: var(--text-xs);

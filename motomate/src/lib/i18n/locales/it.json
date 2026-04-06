@@ -35,7 +35,13 @@
 				"password": "Password",
 				"magicLink": "Link magico"
 			},
-			"magicSubmit": "Invia link magico"
+			"magicSubmit": "Invia link magico",
+			"errors": {
+				"rateLimited": "Troppi tentativi. Riprova più tardi.",
+				"invalidFormat": "Formato email o password non valido",
+				"invalidCredentials": "Email o password non validi",
+				"invalidEmail": "Inserisci un indirizzo email valido"
+			}
 		},
 		"register": {
 			"title": "Crea account",
@@ -601,6 +607,27 @@
 					"sameAsCurrent": "Questo è già il tuo indirizzo email attuale",
 					"alreadyInUse": "Quell'email è già in uso"
 				}
+			},
+			"export": {
+				"title": "Esporta dati",
+				"desc": "Scarica una copia dei tuoi veicoli, storico manutenzioni, documenti e impostazioni.",
+				"btn": "Esporta dati",
+				"json": "Esporta come JSON",
+				"jsonHint": "Dati strutturati, senza file",
+				"zip": "Esporta come ZIP",
+				"zipHint": "Include i documenti allegati"
+			},
+			"dangerZone": "Zona di pericolo",
+			"delete": {
+				"title": "Elimina questo account",
+				"desc": "Rimuove definitivamente il tuo account e tutti i tuoi veicoli, cronologia di manutenzione e documenti.",
+				"btn": "Elimina account",
+				"dialog": {
+					"title": "Eliminare il tuo account?",
+					"desc": "Questo rimuoverà definitivamente il tuo account, tutti i tuoi veicoli e tutti i dati associati. Questa azione non può essere annullata.",
+					"confirm": "Elimina account",
+					"cancel": "Mantieni account"
+				}
 			}
 		},
 		"workflows": {
@@ -717,7 +744,8 @@
 			"notifications": "Notifiche",
 			"workflows": "Flussi di lavoro",
 			"sourceCode": "Codice sorgente",
-			"reportIssue": "Segnala un problema"
+			"reportIssue": "Segnala un problema",
+			"tapAgain": "Tocca di nuovo per aprire"
 		}
 	},
 	"units": {

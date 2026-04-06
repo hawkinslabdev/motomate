@@ -221,7 +221,7 @@
 		border-bottom-color: var(--accent);
 	}
 
-	/* Open entry list — Forgejo news feed pattern */
+	/* Open entry list */
 	.notif-list {
 		display: flex;
 		flex-direction: column;
@@ -274,6 +274,8 @@
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 		margin-top: 0.25rem;
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
 	}
 
 	/* Inline row actions — intentionally smaller than Button component */
@@ -289,7 +291,7 @@
 		color: var(--text-subtle);
 		background: none;
 		border: 1px solid var(--border);
-		border-radius: 4px;
+		border-radius: 6px;
 		padding: 0.25rem 0.5rem;
 		cursor: pointer;
 		white-space: nowrap;

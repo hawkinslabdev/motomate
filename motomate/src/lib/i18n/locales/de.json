@@ -35,7 +35,13 @@
 				"password": "Passwort",
 				"magicLink": "Magic Link"
 			},
-			"magicSubmit": "Magic Link senden"
+			"magicSubmit": "Magic Link senden",
+			"errors": {
+				"rateLimited": "Zu viele Versuche. Bitte versuche es später erneut.",
+				"invalidFormat": "Ungültiges E-Mail- oder Passwortformat",
+				"invalidCredentials": "Ungültige E-Mail oder Passwort",
+				"invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein"
+			}
 		},
 		"register": {
 			"title": "Konto erstellen",
@@ -601,6 +607,27 @@
 					"sameAsCurrent": "Das ist bereits deine aktuelle E-Mail",
 					"alreadyInUse": "Diese E-Mail wird bereits verwendet"
 				}
+			},
+			"export": {
+				"title": "Daten exportieren",
+				"desc": "Lade eine Kopie deiner Fahrzeuge, Wartungshistorie, Dokumente und Einstellungen herunter.",
+				"btn": "Daten exportieren",
+				"json": "Als JSON exportieren",
+				"jsonHint": "Strukturierte Daten, ohne Dateien",
+				"zip": "Als ZIP exportieren",
+				"zipHint": "Enthält angehängte Dokumente"
+			},
+			"dangerZone": "Gefahrenzone",
+			"delete": {
+				"title": "Dieses Konto löschen",
+				"desc": "Entfernt dauerhaft dein Konto und alle deine Fahrzeuge, Servicehistorie und Dokumente.",
+				"btn": "Konto löschen",
+				"dialog": {
+					"title": "Dein Konto löschen?",
+					"desc": "Dies entfernt dauerhaft dein Konto, alle deine Fahrzeuge und alle zugehörigen Daten. Diese Aktion kann nicht rückgängig gemacht werden.",
+					"confirm": "Konto löschen",
+					"cancel": "Konto behalten"
+				}
 			}
 		},
 		"workflows": {
@@ -717,7 +744,8 @@
 			"notifications": "Benachrichtigungen",
 			"workflows": "Workflows",
 			"sourceCode": "Quellcode",
-			"reportIssue": "Problem melden"
+			"reportIssue": "Problem melden",
+			"tapAgain": "Nochmal tippen zum Offnen"
 		}
 	},
 	"units": {

@@ -13,6 +13,23 @@
 		{ href: '/settings/notifications', labelKey: 'settings.nav.notifications' },
 		{ href: '/settings/workflows', labelKey: 'settings.nav.workflows' }
 	];
+
+	let primedLink = $state<string | null>(null);
+	let primedTimeout: ReturnType<typeof setTimeout> | null = null;
+
+	function handleExternalClick(e: MouseEvent, href: string) {
+		if (primedLink === href) {
+			primedLink = null;
+			if (primedTimeout) clearTimeout(primedTimeout);
+			return;
+		}
+		e.preventDefault();
+		primedLink = href;
+		if (primedTimeout) clearTimeout(primedTimeout);
+		primedTimeout = setTimeout(() => {
+			primedLink = null;
+		}, 2000);
+	}
 </script>
 
 <div class="settings-shell">
@@ -38,8 +55,11 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="settings-nav-link external-link"
+				class:external-link--primed={primedLink === 'https://github.com/hawkinslabdev/motomate'}
+				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate')}
 			>
-				<span>{$_('settings.nav.sourceCode')}</span>
+				<span>{primedLink === 'https://github.com/hawkinslabdev/motomate' ? $_('settings.nav.tapAgain') : $_('settings.nav.sourceCode')}</span>
+				&nbsp;
 				<svg
 					viewBox="0 0 24 24"
 					fill="none"
@@ -60,8 +80,11 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="settings-nav-link external-link"
+				class:external-link--primed={primedLink === 'https://github.com/hawkinslabdev/motomate/issues'}
+				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate/issues')}
 			>
-				<span>{$_('settings.nav.reportIssue')}</span>
+				<span>{primedLink === 'https://github.com/hawkinslabdev/motomate/issues' ? $_('settings.nav.tapAgain') : $_('settings.nav.reportIssue')}</span>
+				&nbsp;
 				<svg
 					viewBox="0 0 24 24"
 					fill="none"
@@ -134,10 +157,17 @@
 	.settings-nav-link--active {
 		border-left-color: var(--accent);
 		color: var(--accent);
-		background: transparent;
+		background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+	}
+	.settings-nav-link--active:hover {
+		background: color-mix(in srgb, var(--accent) 8%, var(--bg));
 	}
 	.external-link {
 		opacity: 0.8;
+	}
+	.external-link--primed {
+		color: var(--accent);
+		opacity: 1;
 	}
 	.external-icon {
 		width: 14px;
@@ -155,7 +185,7 @@
 	}
 	.settings-nav-divider {
 		height: 1px;
-		background-color: var(--border-muted, #e5e7eb);
+		background-color: var(--border);
 		margin: 0.75rem;
 		flex-shrink: 0;
 	}
@@ -195,9 +225,12 @@
 			color: var(--accent);
 			border-bottom-color: var(--accent);
 		}
-		.settings-nav-divider,
-		.external-link {
+		.settings-nav-divider {
 			display: none;
+		}
+		.external-link .external-icon {
+			opacity: 0.5;
+			transform: translateX(0);
 		}
 	}
 </style>

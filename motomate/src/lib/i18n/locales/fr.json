@@ -35,7 +35,13 @@
 				"password": "Mot de passe",
 				"magicLink": "Lien magique"
 			},
-			"magicSubmit": "Envoyer le lien magique"
+			"magicSubmit": "Envoyer le lien magique",
+			"errors": {
+				"rateLimited": "Trop de tentatives. Veuillez réessayer plus tard.",
+				"invalidFormat": "Format d'e-mail ou de mot de passe invalide",
+				"invalidCredentials": "E-mail ou mot de passe invalide",
+				"invalidEmail": "Veuillez entrer une adresse e-mail valide"
+			}
 		},
 		"register": {
 			"title": "Créer un compte",
@@ -601,6 +607,27 @@
 					"sameAsCurrent": "C'est déjà votre adresse e-mail actuelle",
 					"alreadyInUse": "Cette adresse e-mail est déjà utilisée"
 				}
+			},
+			"export": {
+				"title": "Exporter les données",
+				"desc": "Téléchargez une copie de vos véhicules, historique d'entretien, documents et paramètres.",
+				"btn": "Exporter les données",
+				"json": "Exporter en JSON",
+				"jsonHint": "Données structurées, sans fichiers",
+				"zip": "Exporter en ZIP",
+				"zipHint": "Inclut les documents joints"
+			},
+			"dangerZone": "Zone dangereuse",
+			"delete": {
+				"title": "Supprimer ce compte",
+				"desc": "Supprime définitivement votre compte et tous vos véhicules, historique d'entretien et documents.",
+				"btn": "Supprimer le compte",
+				"dialog": {
+					"title": "Supprimer votre compte ?",
+					"desc": "Cela supprimera définitivement votre compte, tous vos véhicules et toutes les données associées. Cette action est irréversible.",
+					"confirm": "Supprimer le compte",
+					"cancel": "Garder le compte"
+				}
 			}
 		},
 		"workflows": {
@@ -717,7 +744,8 @@
 			"notifications": "Notifications",
 			"workflows": "Flux de travail",
 			"sourceCode": "Code source",
-			"reportIssue": "Signaler un probleme"
+			"reportIssue": "Signaler un probleme",
+			"tapAgain": "Appuyez a nouveau pour ouvrir"
 		}
 	},
 	"units": {

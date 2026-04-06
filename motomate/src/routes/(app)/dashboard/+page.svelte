@@ -46,6 +46,12 @@
 <svelte:head><title>Dashboard &middot; MotoMate</title></svelte:head>
 
 <div class="dashboard">
+	<!-- Mobile brand -->
+	<div class="mobile-brand">
+		<img src="/favicon.svg" alt="" width="18" height="18" />
+		<span>MotoMate</span>
+	</div>
+
 	<!-- Greeting hero -->
 	<div class="dash-greeting">
 		<h1 class="greeting-text">{greeting}.</h1>
@@ -249,7 +255,7 @@
 		gap: var(--space-2);
 	}
 
-	/* ── Open entry list (Forgejo news rhythm) ── */
+	/* Open entry list */
 	/* No outer border/box — separation is whitespace + thin entry divider */
 	.entry-list {
 		display: flex;
@@ -376,6 +382,28 @@
 		}
 		.dash-greeting {
 			margin-bottom: var(--space-7);
+		}
+		.mobile-brand {
+			display: none;
+		}
+	}
+
+	/* Mobile brand - hidden on desktop */
+	.mobile-brand {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		margin-bottom: var(--space-4);
+		font-size: var(--text-xs);
+		font-weight: 500;
+		color: var(--text-muted);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	@media (min-width: 641px) {
+		.mobile-brand {
+			display: none;
 		}
 	}
 </style>

@@ -421,6 +421,7 @@ actions:
 </form>
 
 <!-- ── Section 2: Notification inbox ────────────────────────────────────── -->
+<div class="inbox-divider" role="separator"></div>
 <div class="inbox-header">
 	<h3 class="inbox-title">{$_('settings.notifications.inbox.title')}</h3>
 	{#if hasUnread}
@@ -500,8 +501,11 @@ actions:
 	.channel-card:hover {
 		border-color: var(--border-strong);
 	}
+	.channel-card {
+		border-left-width: 3px;
+	}
 	.channel-card--warn {
-		border-left: 3px solid var(--status-due);
+		border-left-color: var(--status-due);
 	}
 
 	.channel-top {
@@ -559,9 +563,10 @@ actions:
 		transition: border-color 0.15s;
 		box-sizing: border-box;
 	}
-	.field-input:focus {
-		outline: none;
-		border-color: var(--accent);
+	.field-input:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-color: transparent;
 	}
 	.channel-hint {
 		font-size: var(--text-xs);
@@ -661,14 +666,14 @@ actions:
 
 	/* ── Save row ─────────────────────────────────────────────────────────── */
 	.save-row {
-		margin-bottom: var(--space-8);
+		margin-bottom: 0;
 	}
 	.save-btn {
 		padding: 0.5rem 1rem;
 		background: var(--accent);
 		color: #fff;
 		border: none;
-		border-radius: 8px;
+		border-radius: 10px;
 		font-size: var(--text-sm);
 		font-weight: 500;
 		cursor: pointer;
@@ -713,6 +718,11 @@ actions:
 	}
 
 	/* ── Inbox section ────────────────────────────────────────────────────── */
+	.inbox-divider {
+		border: none;
+		border-top: 1px solid var(--border);
+		margin: var(--space-6) 0;
+	}
 	.inbox-header {
 		display: flex;
 		align-items: center;
@@ -799,6 +809,8 @@ actions:
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 		margin-top: 0.25rem;
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
 	}
 
 	.see-more-row {

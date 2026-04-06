@@ -53,6 +53,7 @@
 		"drizzle-kit": "^0.31.10",
 		"drizzle-orm": "^0.45.2",
 		"express": "^5.2.1",
+		"fflate": "^0.8.2",
 		"helmet": "^8.0.0",
 		"lucia": "^3.2.2",
 		"nodemailer": "^8.0.4",
