@@ -126,7 +126,7 @@ actions:
 	);
 
 	function formatNotifDate(dateStr: string) {
-		return formatDateTime(dateStr, data.user?.settings?.locale ?? 'en');
+		return formatDateTime(dateStr, data.user?.settings?.locale ?? 'en', data.user?.timezone);
 	}
 </script>
 

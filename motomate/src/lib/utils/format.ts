@@ -47,17 +47,21 @@ export function formatDateLong(dateStr: string, locale = 'en'): string {
 /**
  * Format a datetime string (SQLite `datetime('now')` returns "YYYY-MM-DD HH:MM:SS")
  * as a short date + time, e.g. "5 Jan 2026, 14:30".
+ * Pass a timezone IANA string (e.g. "Europe/Amsterdam") to display in that zone.
  */
-export function formatDateTime(dateStr: string, locale = 'en'): string {
+export function formatDateTime(dateStr: string, locale = 'en', timezone?: string): string {
 	// SQLite stores datetimes without 'T'; make ISO-compatible before parsing
 	const iso = dateStr.includes('T') ? dateStr : dateStr.replace(' ', 'T');
-	const d = new Date(iso);
+	// SQLite datetime('now') is UTC but omits the Z suffix; append it so Date parses correctly
+	const utcIso = iso.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(iso) ? iso : iso + 'Z';
+	const d = new Date(utcIso);
 	return d.toLocaleString(locale, {
 		day: 'numeric',
 		month: 'short',
 		year: 'numeric',
 		hour: '2-digit',
-		minute: '2-digit'
+		minute: '2-digit',
+		...(timezone ? { timeZone: timezone } : {})
 	});
 }
 

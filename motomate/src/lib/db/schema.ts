@@ -66,7 +66,7 @@ export const users = sqliteTable('users', {
 	id: text('id').primaryKey(),
 	email: text('email').notNull().unique(),
 	password_hash: text('password_hash'), // null for magic-link-only users
-	timezone: text('timezone').notNull().default('Europe/Paris'),
+	timezone: text('timezone').notNull().default('Europe/Amsterdam'),
 	locale: text('locale').notNull().default('en'),
 	onboarding_done: integer('onboarding_done', { mode: 'boolean' }).notNull().default(false),
 	settings: text('settings', { mode: 'json' })

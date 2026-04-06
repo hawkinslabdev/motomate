@@ -35,6 +35,7 @@ services:
       - ./data:/app/data
       - ./uploads:/app/uploads
     environment:
+      - TZ=Europe/Amsterdam
       - PUBLIC_APP_URL=http://localhost:3000
       - PUBLIC_APP_ORIGINS=http://localhost
       - AUTH_COOKIE_SECURE=false

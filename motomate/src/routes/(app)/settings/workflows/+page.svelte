@@ -148,7 +148,7 @@
 						{#if rule.last_triggered_at}
 							{$_('settings.workflows.lastFired', {
 								values: {
-									date: formatDateTime(rule.last_triggered_at, data.user?.settings?.locale ?? 'en')
+									date: formatDateTime(rule.last_triggered_at, data.user?.settings?.locale ?? 'en', data.user?.timezone)
 								}
 							})}
 						{:else}

@@ -22,7 +22,7 @@
 	);
 
 	function formatNotifDate(dateStr: string) {
-		return formatDateTime(dateStr, locale);
+		return formatDateTime(dateStr, locale, (data as any).user?.timezone);
 	}
 
 	function navTo(p: number, f?: string) {
