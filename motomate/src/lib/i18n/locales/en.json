@@ -362,6 +362,7 @@
 				"maintenance": "Maintenance",
 				"documents": "Documents",
 				"finance": "Finance",
+				"travels": "Travels",
 				"settings": "Settings"
 			}
 		}
@@ -553,7 +554,8 @@
 			"papers": "Papers",
 			"photo": "Photo",
 			"notes": "Notes",
-			"other": "Other"
+			"other": "Other",
+			"route": "Route"
 		},
 		"empty": {
 			"title": "No documents found",
@@ -792,6 +794,56 @@
 		"gbp": "£ Pound",
 		"chf": "CHF Franc",
 		"usd": "$ Dollar"
+	},
+	"travels": {
+		"title": "Travels",
+		"subtitle": "Your rides and routes",
+		"add": "+ Add travel",
+		"empty": {
+			"title": "No travels yet",
+			"description": "Log your first ride to start your travel history."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 day} other {# days}}",
+			"routes": "{n, plural, =1 {1 route} other {# routes}}"
+		},
+		"form": {
+			"createTitle": "Add travel",
+			"editTitle": "Edit travel",
+			"title": "Title",
+			"titlePlaceholder": "e.g. Alps crossing",
+			"startDate": "Start date",
+			"duration": "Duration (days)",
+			"expenses": "Total expenses",
+			"remark": "Remark",
+			"remarkPlaceholder": "Notes about the trip…",
+			"gpxFiles": "GPX routes",
+			"gpxSlot": "Day {n}",
+			"gpxChoose": "Choose GPX file",
+			"gpxHint": "One GPX file per day of the trip. Max 20 MB each.",
+			"submit": {
+				"create": "Save travel",
+				"edit": "Save changes"
+			}
+		},
+		"map": {
+			"title": "Map",
+			"loading": "Loading routes…",
+			"error": "Could not load map",
+			"noRoutes": "No routes attached",
+			"clickHint": "Click a route on the map to filter the list",
+			"filterActive": "{n, plural, =1 {1 route selected} other {# routes selected}}",
+			"clearFilter": "Show all"
+		},
+		"delete": {
+			"title": "Delete this travel?",
+			"description": "This travel and all attached GPX files will be permanently deleted. This action cannot be undone.",
+			"confirm": "Delete",
+			"cancel": "Keep"
+		},
+		"timeline": {
+			"label": "Travel"
+		}
 	},
 	"notifications": {
 		"maintenanceDueSoonKm": {

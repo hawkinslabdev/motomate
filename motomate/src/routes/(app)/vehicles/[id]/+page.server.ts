@@ -22,6 +22,7 @@ import {
 } from '$lib/db/repositories/maintenance.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
+import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
@@ -29,13 +30,14 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	// Ensure tracker statuses are fresh every time the timeline loads
 	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 
-	const [logs, odoLogs, trackers] = await Promise.all([
+	const [logs, odoLogs, trackers, travelEntries] = await Promise.all([
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
 		getOdometerLogs(vehicle.id, locals.user!.id),
-		getTrackersByVehicle(vehicle.id, locals.user!.id)
+		getTrackersByVehicle(vehicle.id, locals.user!.id),
+		getTravelsForTimeline(vehicle.id, locals.user!.id)
 	]);
 
-	return { logs, odoLogs, trackers, vehicle };
+	return { logs, odoLogs, trackers, vehicle, travelEntries };
 };
 
 export const actions: Actions = {

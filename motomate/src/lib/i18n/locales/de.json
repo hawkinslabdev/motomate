@@ -197,6 +197,7 @@
 				"maintenance": "Wartung",
 				"documents": "Dokumente",
 				"finance": "Finanzen",
+				"travels": "Fahrten",
 				"settings": "Einstellungen"
 			}
 		},
@@ -551,7 +552,8 @@
 			"papers": "Papiere",
 			"photo": "Foto",
 			"notes": "Notizen",
-			"other": "Sonstiges"
+			"other": "Sonstiges",
+			"route": "Route"
 		},
 		"empty": {
 			"title": "Keine Dokumente gefunden",
@@ -580,7 +582,12 @@
 				"current": "Aktuell: {email}",
 				"new": "Neue E-Mail-Adresse",
 				"submit": "E-Mail aktualisieren",
-				"saved": "E-Mail aktualisiert"
+				"saved": "E-Mail aktualisiert",
+				"errors": {
+					"invalid": "Gültige E-Mail-Adresse eingeben",
+					"sameAsCurrent": "Das ist bereits deine aktuelle E-Mail",
+					"alreadyInUse": "Diese E-Mail wird bereits verwendet"
+				}
 			},
 			"password": {
 				"title": "Passwort",
@@ -597,18 +604,6 @@
 					"noPasswordSet": "Kein Passwort für dieses Konto gesetzt — verwende den Magic-Link zum Anmelden",
 					"incorrect": "Aktuelles Passwort ist falsch",
 					"sameAsCurrent": "Neues Passwort muss sich vom aktuellen Passwort unterscheiden"
-				}
-			},
-			"email": {
-				"title": "E-Mail-Adresse",
-				"current": "Aktuell: {email}",
-				"new": "Neue E-Mail-Adresse",
-				"submit": "E-Mail aktualisieren",
-				"saved": "E-Mail aktualisiert",
-				"errors": {
-					"invalid": "Gültige E-Mail-Adresse eingeben",
-					"sameAsCurrent": "Das ist bereits deine aktuelle E-Mail",
-					"alreadyInUse": "Diese E-Mail wird bereits verwendet"
 				}
 			},
 			"export": {
@@ -811,6 +806,56 @@
 		"odometerNudge": {
 			"title": "Kilometerstand aktualisieren",
 			"body": "Bist du kürzlich mit {{vehicle_name}} gefahren? Aktualisiere den Kilometerstand, um deine Wartungs-Tracker aktuell zu halten."
+		}
+	},
+	"travels": {
+		"title": "Fahrten",
+		"subtitle": "Deine Touren und Routen",
+		"add": "+ Fahrt hinzufügen",
+		"empty": {
+			"title": "Noch keine Fahrten",
+			"description": "Erfasse deine erste Tour, um die Reisehistorie zu starten."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 Tag} other {# Tage}}",
+			"routes": "{n, plural, =1 {1 Route} other {# Routen}}"
+		},
+		"form": {
+			"createTitle": "Fahrt hinzufügen",
+			"editTitle": "Fahrt bearbeiten",
+			"title": "Titel",
+			"titlePlaceholder": "z.B. Alpenüberquerung",
+			"startDate": "Startdatum",
+			"duration": "Dauer (Tage)",
+			"expenses": "Gesamtausgaben",
+			"remark": "Anmerkung",
+			"remarkPlaceholder": "Notizen zur Tour…",
+			"gpxFiles": "GPX-Routen",
+			"gpxSlot": "Tag {n}",
+			"gpxHint": "Eine GPX-Datei pro Tag. Max. 20 MB.",
+			"submit": {
+				"create": "Fahrt speichern",
+				"edit": "Änderungen speichern"
+			},
+			"gpxChoose": "GPX-Datei wählen"
+		},
+		"map": {
+			"title": "Karte",
+			"loading": "Routen werden geladen…",
+			"error": "Karte konnte nicht geladen werden",
+			"noRoutes": "Keine Routen angehängt",
+			"clickHint": "Route auf der Karte anklicken, um Liste zu filtern",
+			"filterActive": "{n, plural, =1 {1 Route ausgewählt} other {# Routen ausgewählt}}",
+			"clearFilter": "Alle anzeigen"
+		},
+		"delete": {
+			"title": "Diese Fahrt löschen?",
+			"description": "Diese Fahrt und alle zugehörigen GPX-Dateien werden dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+			"confirm": "Löschen",
+			"cancel": "Behalten"
+		},
+		"timeline": {
+			"label": "Fahrt"
 		}
 	}
 }

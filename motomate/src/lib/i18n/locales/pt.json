@@ -197,7 +197,8 @@
 				"maintenance": "Manutencao",
 				"documents": "Documentos",
 				"finance": "Financas",
-				"settings": "Configuracoes"
+				"settings": "Configuracoes",
+				"travels": "Viagens"
 			}
 		},
 		"detail": {
@@ -551,7 +552,8 @@
 			"papers": "Papéis",
 			"photo": "Foto",
 			"notes": "Notas",
-			"other": "Outro"
+			"other": "Outro",
+			"route": "Percurso"
 		},
 		"empty": {
 			"title": "Nenhum documento encontrado",
@@ -580,7 +582,12 @@
 				"current": "Atual: {email}",
 				"new": "Novo endereço de e-mail",
 				"submit": "Atualizar e-mail",
-				"saved": "E-mail atualizado"
+				"saved": "E-mail atualizado",
+				"errors": {
+					"invalid": "Introduza um endereço de e-mail válido",
+					"sameAsCurrent": "Esse já é o seu e-mail atual",
+					"alreadyInUse": "Esse e-mail já está em uso"
+				}
 			},
 			"password": {
 				"title": "Palavra-passe",
@@ -597,18 +604,6 @@
 					"noPasswordSet": "Nenhuma palavra-passe definida nesta conta — use o link mágico para iniciar sessão",
 					"incorrect": "A palavra-passe atual está incorreta",
 					"sameAsCurrent": "A nova palavra-passe deve ser diferente da palavra-passe atual"
-				}
-			},
-			"email": {
-				"title": "Endereço de e-mail",
-				"current": "Atual: {email}",
-				"new": "Novo endereço de e-mail",
-				"submit": "Atualizar e-mail",
-				"saved": "E-mail atualizado",
-				"errors": {
-					"invalid": "Introduza um endereço de e-mail válido",
-					"sameAsCurrent": "Esse já é o seu e-mail atual",
-					"alreadyInUse": "Esse e-mail já está em uso"
 				}
 			},
 			"export": {
@@ -811,6 +806,56 @@
 		"odometerNudge": {
 			"title": "Atualize o seu odómetro",
 			"body": "Conduziu {{vehicle_name}} recentemente? Atualize o odómetro para manter os seus registos de manutenção precisos."
+		}
+	},
+	"travels": {
+		"title": "Viagens",
+		"subtitle": "As suas rotas e percursos",
+		"add": "+ Adicionar viagem",
+		"empty": {
+			"title": "Sem viagens",
+			"description": "Registe a sua primeira viagem para iniciar o historial."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 dia} other {# dias}}",
+			"routes": "{n, plural, =1 {1 percurso} other {# percursos}}"
+		},
+		"form": {
+			"createTitle": "Adicionar viagem",
+			"editTitle": "Editar viagem",
+			"title": "Título",
+			"titlePlaceholder": "ex. Travessia dos Alpes",
+			"startDate": "Data de início",
+			"duration": "Duração (dias)",
+			"expenses": "Despesas totais",
+			"remark": "Observação",
+			"remarkPlaceholder": "Notas sobre a viagem…",
+			"gpxFiles": "Rotas GPX",
+			"gpxSlot": "Dia {n}",
+			"gpxHint": "Um ficheiro GPX por dia. Máx. 20 MB.",
+			"submit": {
+				"create": "Guardar viagem",
+				"edit": "Guardar alterações"
+			},
+			"gpxChoose": "Escolher ficheiro GPX"
+		},
+		"map": {
+			"title": "Mapa",
+			"loading": "A carregar rotas…",
+			"error": "Não foi possível carregar o mapa",
+			"noRoutes": "Sem percursos",
+			"clickHint": "Clique numa rota no mapa para filtrar",
+			"filterActive": "{n, plural, =1 {1 percurso selecionado} other {# percursos selecionados}}",
+			"clearFilter": "Mostrar tudo"
+		},
+		"delete": {
+			"title": "Eliminar esta viagem?",
+			"description": "Esta viagem e todos os ficheiros GPX associados serão eliminados permanentemente.",
+			"confirm": "Eliminar",
+			"cancel": "Manter"
+		},
+		"timeline": {
+			"label": "Viagem"
 		}
 	}
 }

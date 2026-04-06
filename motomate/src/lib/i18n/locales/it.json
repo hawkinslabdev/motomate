@@ -197,7 +197,8 @@
 				"maintenance": "Manutenzione",
 				"documents": "Documenti",
 				"finance": "Finanza",
-				"settings": "Impostazioni"
+				"settings": "Impostazioni",
+				"travels": "Viaggi"
 			}
 		},
 		"detail": {
@@ -551,7 +552,8 @@
 			"papers": "Carta",
 			"photo": "Foto",
 			"notes": "Note",
-			"other": "Altro"
+			"other": "Altro",
+			"route": "Percorso"
 		},
 		"empty": {
 			"title": "Nessun documento trovato",
@@ -580,7 +582,12 @@
 				"current": "Attuale: {email}",
 				"new": "Nuovo indirizzo email",
 				"submit": "Aggiorna email",
-				"saved": "Email aggiornata"
+				"saved": "Email aggiornata",
+				"errors": {
+					"invalid": "Inserisci un indirizzo email valido",
+					"sameAsCurrent": "Questo è già il tuo indirizzo email attuale",
+					"alreadyInUse": "Quell'email è già in uso"
+				}
 			},
 			"password": {
 				"title": "Password",
@@ -597,18 +604,6 @@
 					"noPasswordSet": "Nessuna password impostata per questo account — usa il link magico per accedere",
 					"incorrect": "La password attuale non è corretta",
 					"sameAsCurrent": "La nuova password deve essere diversa dalla password attuale"
-				}
-			},
-			"email": {
-				"title": "Indirizzo email",
-				"current": "Attuale: {email}",
-				"new": "Nuovo indirizzo email",
-				"submit": "Aggiorna email",
-				"saved": "Email aggiornata",
-				"errors": {
-					"invalid": "Inserisci un indirizzo email valido",
-					"sameAsCurrent": "Questo è già il tuo indirizzo email attuale",
-					"alreadyInUse": "Quell'email è già in uso"
 				}
 			},
 			"export": {
@@ -811,6 +806,56 @@
 		"odometerNudge": {
 			"title": "Aggiorna il tuo contachilometri",
 			"body": "Hai guidato {{vehicle_name}} di recente? Aggiorna il contachilometri per mantenere accurati i tuoi tracker di manutenzione."
+		}
+	},
+	"travels": {
+		"title": "Viaggi",
+		"subtitle": "I tuoi tragitti e percorsi",
+		"add": "+ Aggiungi viaggio",
+		"empty": {
+			"title": "Nessun viaggio",
+			"description": "Registra il tuo primo viaggio per iniziare la cronologia."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 giorno} other {# giorni}}",
+			"routes": "{n, plural, =1 {1 percorso} other {# percorsi}}"
+		},
+		"form": {
+			"createTitle": "Aggiungi viaggio",
+			"editTitle": "Modifica viaggio",
+			"title": "Titolo",
+			"titlePlaceholder": "es. Attraversamento delle Alpi",
+			"startDate": "Data di inizio",
+			"duration": "Durata (giorni)",
+			"expenses": "Spese totali",
+			"remark": "Note",
+			"remarkPlaceholder": "Appunti sul viaggio…",
+			"gpxFiles": "Percorsi GPX",
+			"gpxSlot": "Giorno {n}",
+			"gpxHint": "Un file GPX per giorno. Max 20 MB.",
+			"submit": {
+				"create": "Salva viaggio",
+				"edit": "Salva modifiche"
+			},
+			"gpxChoose": "Scegli file GPX"
+		},
+		"map": {
+			"title": "Mappa",
+			"loading": "Caricamento percorsi…",
+			"error": "Impossibile caricare la mappa",
+			"noRoutes": "Nessun percorso allegato",
+			"clickHint": "Clicca un percorso sulla mappa per filtrare",
+			"filterActive": "{n, plural, =1 {1 percorso selezionato} other {# percorsi selezionati}}",
+			"clearFilter": "Mostra tutti"
+		},
+		"delete": {
+			"title": "Eliminare questo viaggio?",
+			"description": "Questo viaggio e tutti i file GPX allegati verranno eliminati definitivamente.",
+			"confirm": "Elimina",
+			"cancel": "Mantieni"
+		},
+		"timeline": {
+			"label": "Viaggio"
 		}
 	}
 }

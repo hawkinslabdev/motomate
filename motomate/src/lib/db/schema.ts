@@ -283,7 +283,7 @@ export const documents = sqliteTable(
 			.references(() => users.id, { onDelete: 'cascade' }),
 		name: text('name').notNull(),
 		doc_type: text('doc_type', {
-			enum: ['service', 'quotation', 'papers', 'photo', 'notes', 'other']
+			enum: ['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route']
 		})
 			.notNull()
 			.default('service'),
@@ -297,6 +297,40 @@ export const documents = sqliteTable(
 	},
 	(table) => ({
 		vehicleCreated: index('idx_documents_vehicle_created').on(table.vehicle_id, table.created_at)
+	})
+);
+
+export type TravelGpxFiles = string[]; // document.id values
+
+export const travels = sqliteTable(
+	'travels',
+	{
+		id: text('id').primaryKey(),
+		vehicle_id: text('vehicle_id')
+			.notNull()
+			.references(() => vehicles.id, { onDelete: 'cascade' }),
+		user_id: text('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		start_date: text('start_date').notNull(), // YYYY-MM-DD
+		duration_days: integer('duration_days').notNull().default(1),
+		title: text('title').notNull(), // max 200
+		remark: text('remark'),
+		total_expenses_cents: integer('total_expenses_cents'),
+		currency: text('currency').notNull().default('EUR'),
+		gpx_document_ids: text('gpx_document_ids', { mode: 'json' })
+			.$type<TravelGpxFiles>()
+			.notNull()
+			.default(sql`'[]'`),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`)
+	},
+	(t) => ({
+		vehicleStart: index('idx_travels_vehicle_start').on(t.vehicle_id, t.start_date)
 	})
 );
 
@@ -398,7 +432,13 @@ export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
 	active_trackers: many(active_trackers),
 	service_logs: many(service_logs),
 	odometer_logs: many(odometer_logs),
-	documents: many(documents)
+	documents: many(documents),
+	travels: many(travels)
+}));
+
+export const travelsRelations = relations(travels, ({ one }) => ({
+	vehicle: one(vehicles, { fields: [travels.vehicle_id], references: [vehicles.id] }),
+	user: one(users, { fields: [travels.user_id], references: [users.id] })
 }));
 
 export const taskTemplatesRelations = relations(task_templates, ({ one, many }) => ({
@@ -474,3 +514,5 @@ export type PushSubscription = typeof push_subscriptions.$inferSelect;
 export type InsertPushSubscription = typeof push_subscriptions.$inferInsert;
 export type FinanceTransaction = typeof finance_transactions.$inferSelect;
 export type InsertFinanceTransaction = typeof finance_transactions.$inferInsert;
+export type Travel = typeof travels.$inferSelect;
+export type InsertTravel = typeof travels.$inferInsert;

@@ -197,7 +197,8 @@
 				"maintenance": "Onderhoud",
 				"documents": "Documenten",
 				"finance": "Financieel",
-				"settings": "Instellingen"
+				"settings": "Instellingen",
+				"travels": "Routes"
 			}
 		},
 		"detail": {
@@ -514,7 +515,7 @@
 		"expiryOptional": "(optioneel)",
 		"expiryExpired": "Verlopen",
 		"expiryExpiringSoon": "Verloopt binnenkort",
-		"expiryValid": "Geldig",	
+		"expiryValid": "Geldig",
 		"actions": {
 			"view": "Bekijken",
 			"rename": "Hernoemen",
@@ -551,7 +552,8 @@
 			"papers": "Documenten",
 			"photo": "Foto",
 			"notes": "Notities",
-			"other": "Anders"
+			"other": "Anders",
+			"route": "Route"
 		},
 		"empty": {
 			"title": "Geen documenten gevonden",
@@ -580,7 +582,12 @@
 				"current": "Huidig: {email}",
 				"new": "Nieuw e-mailadres",
 				"submit": "E-mail bijwerken",
-				"saved": "E-mail bijgewerkt"
+				"saved": "E-mail bijgewerkt",
+				"errors": {
+					"invalid": "Voer een geldig e-mailadres in",
+					"sameAsCurrent": "Dat is al je huidige e-mailadres",
+					"alreadyInUse": "Dat e-mailadres is al in gebruik"
+				}
 			},
 			"password": {
 				"title": "Wachtwoord",
@@ -597,18 +604,6 @@
 					"noPasswordSet": "Geen wachtwoord ingesteld voor dit account — gebruik de magische link om in te loggen",
 					"incorrect": "Huidig wachtwoord is onjuist",
 					"sameAsCurrent": "Kies een nieuw wachtwoord dat anders is dan je huidige wachtwoord"
-				}
-			},
-			"email": {
-				"title": "E-mailadres",
-				"current": "Huidig: {email}",
-				"new": "Nieuw e-mailadres",
-				"submit": "E-mail bijwerken",
-				"saved": "E-mail bijgewerkt",
-				"errors": {
-					"invalid": "Voer een geldig e-mailadres in",
-					"sameAsCurrent": "Dat is al je huidige e-mailadres",
-					"alreadyInUse": "Dat e-mailadres is al in gebruik"
 				}
 			},
 			"export": {
@@ -811,6 +806,56 @@
 		"odometerNudge": {
 			"title": "Kilometerstand bijwerken",
 			"body": "Heb je onlangs gereden op {{vehicle_name}}? Werk de kilometerstand bij om je onderhoudstrackers nauwkeurig te houden."
+		}
+	},
+	"travels": {
+		"title": "Ritten",
+		"subtitle": "Jouw tochten en routes",
+		"add": "+ Rit toevoegen",
+		"empty": {
+			"title": "Nog geen ritten",
+			"description": "Voeg je eerste rit toe om de geschiedenis te starten."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 dag} other {# dagen}}",
+			"routes": "{n, plural, =1 {1 route} other {# routes}}"
+		},
+		"form": {
+			"createTitle": "Rit toevoegen",
+			"editTitle": "Rit bewerken",
+			"title": "Titel",
+			"titlePlaceholder": "bijv. Alpentocht",
+			"startDate": "Startdatum",
+			"duration": "Duur (dagen)",
+			"expenses": "Totale kosten",
+			"remark": "Opmerking",
+			"remarkPlaceholder": "Notities over de rit…",
+			"gpxFiles": "GPX-routes",
+			"gpxSlot": "Dag {n}",
+			"gpxHint": "Eén GPX-bestand per dag. Max. 20 MB.",
+			"submit": {
+				"create": "Rit opslaan",
+				"edit": "Wijzigingen opslaan"
+			},
+			"gpxChoose": "Kies GPX-bestand"
+		},
+		"map": {
+			"title": "Kaart",
+			"loading": "Routes laden…",
+			"error": "Kaart kon niet worden geladen",
+			"noRoutes": "Geen routes bijgevoegd",
+			"clickHint": "Klik op een route op de kaart om te filteren",
+			"filterActive": "{n, plural, =1 {1 route geselecteerd} other {# routes geselecteerd}}",
+			"clearFilter": "Alles tonen"
+		},
+		"delete": {
+			"title": "Deze rit verwijderen?",
+			"description": "Deze rit en alle bijgevoegde GPX-bestanden worden definitief verwijderd.",
+			"confirm": "Verwijderen",
+			"cancel": "Behouden"
+		},
+		"timeline": {
+			"label": "Rit"
 		}
 	}
 }
