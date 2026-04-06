@@ -849,7 +849,7 @@
 		flex: 1;
 	}
 
-	/* ── Bottom tabs ── */
+	/* Bottom tabs */
 	.bottom-tabs {
 		display: none;
 		position: fixed;

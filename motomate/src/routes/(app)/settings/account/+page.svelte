@@ -48,7 +48,7 @@
 
 <h2 class="section-title">{$_('settings.account.title')}</h2>
 
-<!-- ── Email ── -->
+<!-- Email -->
 <section class="setting-section">
 	<h3 class="sub-title">{$_('settings.account.email.title')}</h3>
 	<p class="section-desc">
@@ -93,7 +93,7 @@
 
 <div class="divider"></div>
 
-<!-- ── Password ── -->
+<!-- Password -->
 <section class="setting-section">
 	<h3 class="sub-title">{$_('settings.account.password.title')}</h3>
 
@@ -157,7 +157,7 @@
 
 <div class="divider"></div>
 
-<!-- ── Export data ── -->
+<!-- Export data -->
 <section class="setting-section">
 	<h3 class="sub-title">{$_('settings.account.export.title')}</h3>
 	<p class="section-desc">{$_('settings.account.export.desc')}</p>
@@ -200,7 +200,7 @@
 
 <div class="divider"></div>
 
-<!-- ── Danger zone ── -->
+<!-- Danger zone -->
 <section class="setting-section">
 	<h3 class="section-label section-label--danger">{$_('settings.account.dangerZone')}</h3>
 	<div class="danger-box">
@@ -368,7 +368,7 @@
 		background: color-mix(in srgb, var(--status-overdue) 8%, transparent);
 	}
 
-	/* ── Export dropdown ────────────────────────────────────────────────────── */
+	/* Export dropdown */
 	.export-wrap {
 		position: relative;
 		display: inline-block;

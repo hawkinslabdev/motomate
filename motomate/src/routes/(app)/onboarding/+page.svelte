@@ -80,7 +80,7 @@
 	{/if}
 
 	<div class="onboarding-card">
-		<!-- ── Step 1: Welcome ── -->
+		<!-- Step 1: Welcome -->
 		{#if step === 1}
 			<div class="step-content center">
 				<div class="step-icon step-icon--welcome" aria-hidden="true">🏍</div>
@@ -91,7 +91,7 @@
 				>
 			</div>
 
-			<!-- ── Step 2: Vehicle type ── -->
+			<!-- Step 2: Vehicle type -->
 		{:else if step === 2}
 			<h2 class="step-title">{$_('onboarding.type.title')}</h2>
 			<div class="type-grid">
@@ -110,7 +110,6 @@
 				{/each}
 			</div>
 
-			<!-- ── Step 3: Vehicle details ── -->
 		{:else if step === 3}
 			<h2 class="step-title">{$_('onboarding.details.title', { values: { vehicleType } })}</h2>
 			<div class="form-fields">

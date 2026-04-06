@@ -91,7 +91,7 @@
 		return diff > 0 ? diff : null;
 	}
 
-	// ── Combined timeline (newest first) ──────────────────────────────────────
+	// Combined timeline (newest first)
 	type Entry =
 		| { kind: 'service'; date: string; odometer: number; log: (typeof data.logs)[0] }
 		| { kind: 'odometer'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
@@ -178,7 +178,7 @@
 		return isExpanded ? 0 : odoEntries.length - COLLAPSE_THRESHOLD;
 	}
 
-	// ── Helpers for edit form initial values ──────────────────────────────────
+	// Helpers for edit form initial values
 	function serviceLogById(id: string) {
 		return data.logs.find((l: (typeof data.logs)[number]) => l.id === id);
 	}
@@ -454,7 +454,7 @@
 		</form>
 	{/if}
 
-	<!-- ── Upcoming section ── -->
+	<!-- Upcoming section -->
 	{#if upcoming.length > 0}
 		<section class="upcoming-section">
 			<div class="section-label-row">
@@ -524,7 +524,7 @@
 		</section>
 	{/if}
 
-	<!-- ── Timeline ── -->
+	<!-- Timeline -->
 	{#if !hasHistory}
 		<div class="empty">
 			<div class="empty-icon" aria-hidden="true">📋</div>
@@ -960,7 +960,7 @@
 		position: relative;
 	}
 
-	/* ── Log dropdown ── */
+	/* Log dropdown */
 	.log-trigger {
 		display: inline-flex;
 		align-items: center;
@@ -1024,7 +1024,7 @@
 		margin-top: 1px;
 	}
 
-	/* ── Inline forms ── */
+	/* Inline forms */
 	.inline-form {
 		border: 1px solid var(--border);
 		border-radius: 10px;
@@ -1111,7 +1111,7 @@
 		color: var(--status-due);
 	}
 
-	/* ── Tracker checkboxes ── */
+	/* Tracker checkboxes */
 	.tracker-select {
 		border: none;
 		padding: 0;
@@ -1206,7 +1206,7 @@
 		color: var(--text);
 	}
 
-	/* ── Upcoming ── */
+	/* Upcoming */
 	.upcoming-section {
 		margin-bottom: var(--space-7);
 	}
@@ -1295,7 +1295,7 @@
 		background: var(--bg-muted);
 	}
 
-	/* ── Timeline ── */
+	/* Timeline */
 	.entry-backdrop {
 		position: fixed;
 		inset: 0;
@@ -1430,7 +1430,7 @@
 		color: var(--text-muted);
 		font-weight: 400;
 	}
-	/* ── Entry ⋮ menu ── */
+	/* Entry ⋮ menu */
 	.entry-actions {
 		position: relative;
 		flex-shrink: 0;
@@ -1518,7 +1518,7 @@
 		background: color-mix(in srgb, var(--status-overdue) 8%, transparent);
 	}
 
-	/* ── Inline edit form (appears below entry) ── */
+	/* Inline edit form (appears below entry) */
 	.entry-edit-form {
 		border: 1px solid var(--border);
 		border-radius: 8px;
@@ -1555,7 +1555,7 @@
 		line-height: var(--leading-base);
 	}
 
-	/* ── Collapse toggle ── */
+	/* Collapse toggle */
 	.collapse-toggle {
 		display: inline-block;
 		padding: 0.375rem 0.75rem;

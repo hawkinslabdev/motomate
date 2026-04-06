@@ -10,7 +10,7 @@
 		waitLocale();
 	});
 
-	// ── Channel toggles (local reactive state for instant UI feedback) ──────────
+	// Channel toggles (local reactive state for instant UI feedback)
 	// Destructure once to avoid $state-referencing-data warnings (initial values only)
 	const { channels: initChannels, vapidPublicKey: initVapid, smtpConfigured: initSmtp } = data;
 	let pushEnabled = $state(initChannels.push?.enabled ?? false);
@@ -68,7 +68,7 @@ actions:
 
 	let saveStatus = $state<'idle' | 'saving' | 'saved'>('idle');
 
-	// ── Per-channel test state ────────────────────────────────────────────────
+	// Per-channel test state
 	type TestStatus = 'idle' | 'sending' | 'sent' | 'error';
 	let testStatus = $state<Record<string, TestStatus>>({
 		push: 'idle',
@@ -93,7 +93,7 @@ actions:
 		setTimeout(() => (testStatus[channel] = 'idle'), 3000);
 	}
 
-	// ── Browser push subscription ────────────────────────────────────────────
+	// Browser push subscription
 	let pushSubStatus = $state<'idle' | 'subscribing' | 'subscribed' | 'error'>('idle');
 
 	async function subscribePush() {
@@ -120,7 +120,7 @@ actions:
 		}
 	}
 
-	// ── Inbox ────────────────────────────────────────────────────────────────
+	// Inbox
 	const hasUnread = $derived(
 		data.notifications.some((n: { read_at: string | null }) => !n.read_at)
 	);
@@ -134,7 +134,7 @@ actions:
 	<title>{$_('settings.notifications.title')} · {$_('layout.nav.settings')}</title>
 </svelte:head>
 
-<!-- ── Section 1: Delivery channels ──────────────────────────────────────── -->
+
 <div class="section-header">
 	<h2 class="section-title">{$_('settings.notifications.channels.title')}</h2>
 </div>
@@ -420,7 +420,7 @@ actions:
 	</div>
 </form>
 
-<!-- ── Section 2: Notification inbox ────────────────────────────────────── -->
+
 <div class="inbox-divider" role="separator"></div>
 <div class="inbox-header">
 	<h3 class="inbox-title">{$_('settings.notifications.inbox.title')}</h3>
@@ -472,7 +472,7 @@ actions:
 {/if}
 
 <style>
-	/* ── Page sections ────────────────────────────────────────────────────── */
+	/* Page sections */
 	.section-header {
 		margin-bottom: var(--space-4);
 	}
@@ -484,7 +484,7 @@ actions:
 		letter-spacing: -0.02em;
 	}
 
-	/* ── Channel cards ────────────────────────────────────────────────────── */
+	/* Channel cards */
 	.channel-cards {
 		display: flex;
 		flex-direction: column;
@@ -531,7 +531,7 @@ actions:
 		line-height: var(--leading-snug);
 	}
 
-	/* ── Channel fields (expand below toggle) ─────────────────────────────── */
+	/* Channel fields (expand below toggle) */
 	.channel-fields {
 		display: flex;
 		flex-direction: column;
@@ -578,7 +578,7 @@ actions:
 		color: var(--status-due);
 	}
 
-	/* ── Home Assistant config preview ─────────────────────────────────────── */
+	/* Home Assistant config preview */
 	.ha-config {
 		margin-top: var(--space-2);
 		background: var(--bg-muted);
@@ -624,7 +624,7 @@ actions:
 		white-space: pre;
 	}
 
-	/* ── Subscribe / Test buttons ─────────────────────────────────────────── */
+	/* Subscribe / Test buttons */
 	.sub-btn,
 	.test-btn {
 		align-self: flex-start;
@@ -664,7 +664,7 @@ actions:
 		cursor: default;
 	}
 
-	/* ── Save row ─────────────────────────────────────────────────────────── */
+	/* Save row */
 	.save-row {
 		margin-bottom: 0;
 	}
@@ -687,7 +687,7 @@ actions:
 		cursor: default;
 	}
 
-	/* ── Toggle pill (reused from workflows page) ─────────────────────────── */
+	/* Toggle pill (reused from workflows page) */
 	.toggle-btn {
 		width: 2.25rem;
 		height: 1.25rem;
@@ -717,7 +717,7 @@ actions:
 		transform: translateX(1rem);
 	}
 
-	/* ── Inbox section ────────────────────────────────────────────────────── */
+	/* Inbox section */
 	.inbox-divider {
 		border: none;
 		border-top: 1px solid var(--border);

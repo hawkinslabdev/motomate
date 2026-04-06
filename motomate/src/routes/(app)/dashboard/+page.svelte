@@ -194,7 +194,7 @@
 		margin: 0 auto;
 	}
 
-	/* ── Greeting ── */
+	/* Greeting */
 	.dash-greeting {
 		margin-bottom: var(--space-10);
 	}
@@ -219,7 +219,7 @@
 		color: var(--status-due);
 	}
 
-	/* ── Sections ── */
+	/* Sections */
 	.dash-section {
 		margin-bottom: var(--space-8);
 	}
@@ -337,7 +337,7 @@
 		color: var(--text-subtle);
 	}
 
-	/* ── Empty state ── */
+	/* Empty state */
 	.empty {
 		display: flex;
 		flex-direction: column;
