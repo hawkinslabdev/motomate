@@ -1,861 +1,865 @@
 {
-	"common": {
-		"save": "Opslaan",
-		"cancel": "Annuleren",
-		"delete": "Verwijderen",
-		"edit": "Bewerken",
-		"add": "Toevoegen",
-		"back": "Terug",
-		"continue": "Doorgaan",
-		"done": "Klaar",
-		"loading": "Laden...",
-		"optional": "(optioneel)",
-		"required": "*",
-		"close": "Sluiten",
-		"saving": "Opslaan…"
-	},
-	"auth": {
-		"login": {
-			"title": "Inloggen",
-			"subtitle": "Voer je e-mailadres in om door te gaan",
-			"email": "E-mail",
-			"password": "Wachtwoord",
-			"rememberMe": "Aangemeld blijven",
-			"forgotPassword": "Wachtwoord vergeten?",
-			"submit": "Inloggen",
-			"noAccount": "Nog geen account?",
-			"signUp": "Registreer je hier!",
-			"magicLinkSent": "Check je e-mail, een inloglink is onderweg.",
-			"setupNotice": {
-				"title": "Eerste setup",
-				"body": "Welkom bij MotoMate. Omdat je hier nieuw bent, is een standaard admin-account aangemaakt. Log in om de installatie te voltooien en deze gegevens te wijzigen.",
-				"defaultCreds": "Gebruik de standaardgegevens hierboven bij de eerste login. Je kunt deze wijzigen in Instellingen → Account."
-			},
-			"tabs": {
-				"password": "Wachtwoord",
-				"magicLink": "Magische link"
-			},
-			"magicSubmit": "Magische link verzenden",
-			"errors": {
-				"rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
-				"invalidFormat": "Ongeldig e-mailadres of wachtwoordformaat",
-				"invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
-				"invalidEmail": "Voer een geldig e-mailadres in"
-			}
-		},
-		"register": {
-			"title": "Account maken",
-			"subtitle": "Registreer om het onderhoud van je voertuig te gaan bijhouden",
-			"email": "E-mail",
-			"password": "Wachtwoord",
-			"passwordHint": "Gebruik minimaal 8 tekens",
-			"confirmPassword": "Wachtwoord bevestigen",
-			"passwordMismatch": "Wachtwoorden komen niet overeen",
-			"submit": "Account maken",
-			"hasAccount": "Heb je al een account?",
-			"login": "Inloggen"
-		},
-		"magicLink": {
-			"verifying": "Je wordt ingelogd…",
-			"invalid": "Deze link is ongeldig of verlopen.",
-			"retry": "Nieuwe link aanvragen"
-		}
-	},
-	"onboarding": {
-		"security": {
-			"title": "Beveilig je account",
-			"description": "Je bent ingelogd als de standaard admin. Stel een echt e-mailadres en wachtwoord in voordat je doorgaat — je kunt deze altijd later bijwerken in Instellingen.",
-			"newEmail": "Nieuw e-mailadres",
-			"newPassword": "Nieuw wachtwoord",
-			"confirmPassword": "Wachtwoord bevestigen",
-			"submit": "Opslaan & doorgaan →",
-			"skip": "Voor nu overslaan"
-		},
-		"welcome": {
-			"title": "Welkom bij MotoMate",
-			"description": "Laten we je eerste voertuig toevoegen en een onderhoudsschema instellen. Duurt ongeveer een minuut.",
-			"submit": "Aan de slag →",
-			"skipWarning": "Vergeet niet om je e-mail en wachtwoord bij te werken in Instellingen → Account voordat je live gaat."
-		},
-		"type": {
-			"title": "Welk type voertuig?",
-			"motorcycle": "Motorfiets",
-			"scooter": "Bromfiets",
-			"bike": "Fiets",
-			"other": "Anders"
-		},
-		"details": {
-			"title": "Vertel ons over je {vehicleType}",
-			"name": "Bijnaam",
-			"make": "Merk",
-			"model": "Model",
-			"year": "Bouwjaar",
-			"vin": "VIN",
-			"licensePlate": "Kenteken",
-			"placeholders": {
-				"name": "bijv. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
-				"vin": "optioneel",
-				"licensePlate": "bijv. AB-123 CD"
-			}
-		},
-		"odometer": {
-			"title": "Huidige kilometerstand",
-			"description": "Stelt de basis in voor kilometer-gebaseerde onderhoudsintervallen.",
-			"placeholder": "0"
-		},
-		"presets": {
-			"title": "Welke onderhoudstaken?",
-			"description": "We maken trackers hiervoor. Je kunt ze altijd toevoegen of verwijderen.",
-			"tasks": {
-				"oil": "Olie & filtervervanging",
-				"tire": "Bandenspanning & slijtage",
-				"chain_lube": "Ketting reinigen & smeren",
-				"chain_tension": "Kettingspanning controleren",
-				"brake": "Remmen & remvloeistof"
-			},
-			"intervals": {
-				"oil": "elke 5.000 km / 12 maanden",
-				"tire": "maandelijkse controle",
-				"chain_lube": "elke 500 km",
-				"chain_tension": "elke 500 km",
-				"brake": "elke 10.000 km / 2 jaar"
-			},
-			"descriptions": {
-				"chain_lube": "Ketting reinigen en smeren",
-				"chain_tension": "Kettingspanning controleren en afstellen"
-			}
-		},
-		"lastService": {
-			"title": "Laatste olieverversing",
-			"description": "Optioneel: helpt berekenen wanneer de volgende service is.",
-			"date": "Datum",
-			"odometer": "Kilometerstand bij service",
-			"skip": "Deze stap overslaan",
-			"setupNote": "Laatste service (ingevoerd tijdens setup)"
-		},
-		"summary": {
-			"title": "Je bent klaar!",
-			"submit": "Mijn garage openen →"
-		},
-		"nav": {
-			"back": "← Terug",
-			"stepOf": "{step} van {total}",
-			"continueBtn": "Doorgaan →"
-		}
-	},
-	"dashboard": {
-		"greeting": {
-			"morning": "Goedemorgen",
-			"afternoon": "Goedemiddag",
-			"evening": "Goedenavond"
-		},
-		"status": {
-			"overdue": "{count, plural, =1 {1 item achterstallig.} other {# items achterstallig.}}",
-			"dueSoon": "{count, plural, =1 {1 item binnenkort verwacht.} other {# items binnenkort verwacht.}}",
-			"allGood": "Alles ziet er goed uit.",
-			"addFirst": "Voeg je eerste voertuig toe om te beginnen."
-		},
-		"sections": {
-			"needsAttention": "Aandacht nodig",
-			"garage": "Garage",
-			"recentActivity": "Recente activiteit"
-		},
-		"viewAll": "Alles bekijken →",
-		"empty": {
-			"title": "Je garage is leeg",
-			"descriptionOnboarding": "Voeg je eerste motor of bromfiets toe om te beginnen.",
-			"descriptionActive": "Voeg een nieuw voertuig toe aan je collectie.",
-			"submit": "+ Voertuig toevoegen"
-		}
-	},
-	"vehicles": {
-		"title": "Garage",
-		"vehicleCount": "{count, plural, =1 {1 voertuig} other {# voertuigen}}",
-		"archived": {
-			"show": "Gearchiveerde tonen",
-			"hide": "Gearchiveerde verbergen"
-		},
-		"add": "+ Voertuig toevoegen",
-		"empty": {
-			"title": "Je garage is leeg",
-			"description": "Voeg een nieuw voertuig toe aan je collectie."
-		}
-	},
-	"vehicle": {
-		"layout": {
-			"backToGarage": "← Garage",
-			"archived": "Gearchiveerd",
-			"avatar": {
-				"choose": "Kies avatar",
-				"upload": "Afbeelding uploaden",
-				"reset": "Avatar resetten"
-			},
-			"tabs": {
-				"timeline": "Tijdlijn",
-				"maintenance": "Onderhoud",
-				"documents": "Documenten",
-				"finance": "Financieel",
-				"settings": "Instellingen",
-				"travels": "Routes"
-			}
-		},
-		"detail": {
-			"menu": {
-				"maintenance": "Onderhoud",
-				"mileage": "Kilometerstand",
-				"note": "Notitie"
-			},
-			"timeline": {
-				"title": "Tijdlijn",
-				"subtitle": "Al je gegevens voor {name} op een plek.",
-				"empty": {
-					"title": "Nog geen geschiedenis",
-					"description": "Registreer je eerste onderhoud of kilometerstand om de tijdlijn te starten."
-				}
-			},
-			"upcoming": "Aankomende",
-			"nextDue": "Volgende: {date}",
-			"logLink": "Loggen",
-			"overdueByKm": "{km} {unit} achterstallig",
-			"overdueSince": "Achterstallig sinds {date}",
-			"overdue": "Achterstallig",
-			"neverServiced": "Nooit onderhouden",
-			"dueInKm": "Over {km} {unit}",
-			"dueDate": "Verwacht {date}",
-			"dueSoon": "Binnenkort verwacht",
-			"nextDueOdo": "Volgende: {reading} {unit}",
-			"serviceEntry": "Onderhoudsregistratie",
-			"hideOdoReadings": "Kilometerstanden verbergen",
-			"showMoreOdoReadings": "{n} meer kilometerstanden tonen",
-			"deleteDialog": {
-				"title": "Dit item verwijderen?",
-				"description": "Dit item wordt permanent verwijderd uit je tijdlijn. Dit kan niet ongedaan worden gemaakt.",
-				"confirm": "Verwijderen",
-				"cancel": "Behouden"
-			}
-		},
-		"forms": {
-			"logService": "Onderhoudsitem registreren",
-			"updateOdo": "Kilometerstand bijwerken",
-			"writeNote": "Notitie schrijven",
-			"noteDesc": "Schrijf een notitie of opmerking",
-			"editEntry": "Item bewerken",
-			"fields": {
-				"date": "Datum",
-				"odometer": "Kilometerstand ({unit})",
-				"description": "Beschrijving",
-				"remark": "Opmerking {optional}",
-				"cost": "Kosten {optional}",
-				"notes": "Notities",
-				"resetCycle": "Cyclus resetten voor {optional}",
-				"checkToReset": "(vink aan om te resetten)",
-				"currentReading": "Huidige stand ({unit})"
-			},
-			"placeholders": {
-				"partsUsed": "Gebruikte onderdelen, observaties…",
-				"cost": "0,00",
-				"description": "bijv. Olieverversing, kettingvet…",
-				"additionalDetails": "Aanvullende details…",
-				"beforeTrip": "bijv. Voor lange rit",
-				"note": "bijv. Ik heb een algemene inspectie uitgevoerd",
-				"writeNote": "Schrijf een notitie…"
-			},
-			"submit": {
-				"service": "Item opslaan",
-				"odometer": "Bijwerken",
-				"note": "Notitie opslaan"
-			}
-		},
-		"add": {
-			"title": "Voertuig toevoegen",
-			"back": "← Garage",
-			"sections": {
-				"type": "Type",
-				"details": "Details",
-				"odometer": "Kilometerstand"
-			},
-			"fields": {
-				"name": "Naam",
-				"make": "Merk",
-				"model": "Model",
-				"year": "Bouwjaar",
-				"vin": "VIN",
-				"licensePlate": "Kenteken",
-				"currentReading": "Huidige stand",
-				"unit": "Eenheid"
-			},
-			"placeholders": {
-				"name": "Mijn CB500F",
-				"make": "bijv. Honda",
-				"model": "bijv. CB500F",
-				"vin": "optioneel",
-				"licensePlate": "bijv. AB-123 CD"
-			},
-			"types": {
-				"motorcycle": "Motor",
-				"scooter": "Brommer",
-				"bike": "Fiets",
-				"other": "Anders"
-			},
-			"actions": {
-				"cancel": "Annuleren",
-				"submit": "Voertuig toevoegen →"
-			}
-		},
-		"edit": {
-			"title": "Instellingen",
-			"subtitle": "Beheer je {name}",
-			"odometer": {
-				"title": "Kilometerstand bijwerken",
-				"currentReading": "Huidige stand ({unit})",
-				"update": "Bijwerken"
-			},
-			"vehicleDetails": "Voertuigdetails",
-			"fields": {
-				"name": "Naam",
-				"year": "Jaar",
-				"make": "Merk",
-				"model": "Model",
-				"vin": "VIN",
-				"licensePlate": "Kenteken"
-			},
-			"purchaseSale": "Koop & Verkoop",
-			"purchasePrice": "Aankoopprijs",
-			"soldPrice": "Verkoopprijs",
-			"save": "Wijzigingen opslaan",
-			"saved": "Wijzigingen opgeslagen",
-			"odometerUpdated": "Kilometerstand bijgewerkt",
-			"vehicleRestored": "Voertuig hersteld",
-			"settings": {
-				"title": "Instellingen",
-				"archive": {
-					"title": "Voertuig archiveren",
-					"titleRestore": "Voertuig herstellen",
-					"descArchive": "Verplaats dit voertuig naar het archief. Het wordt verborgen in de garage.",
-					"descRestore": "Plaats dit voertuig terug in je actieve garage.",
-					"btnArchive": "Archiveren",
-					"btnRestore": "Herstellen"
-				},
-				"dangerZone": "Gevaarzone",
-				"delete": {
-					"title": "Dit voertuig verwijderen",
-					"desc": "Verwijdert permanent alle servicegeschiedenis, documenten en trackers.",
-					"btn": "Verwijderen",
-					"dialog": {
-						"title": "{name} verwijderen?",
-						"desc": "Dit verwijdert permanent alle servicegeschiedenis, documenten en trackers. Deze actie kan niet ongedaan worden gemaakt.",
-						"confirm": "Voertuig verwijderen",
-						"cancel": "Voertuig behouden"
-					}
-				},
-				"archiveDialog": {
-					"title": "{name} archiveren?",
-					"desc": "Dit voertuig wordt verborgen in je garage. Je kunt het altijd herstellen. Stel de verkoopprijs in het vorige scherm in, voordat je doorgaat als je het hebt verkocht.",
-					"confirm": "Archiveren",
-					"cancel": "Actief houden"
-				},
-				"unarchiveDialog": {
-					"title": "{name} herstellen?",
-					"desc": "Dit voertuig wordt teruggeplaatst in je actieve garage. De verkoopprijs wordt gewist zodat je de voertuigdetails opnieuw kunt bewerken.",
-					"confirm": "Herstellen",
-					"cancel": "Gearchiveerd houden"
-				}
-			}
-		}
-	},
-	"maintenance": {
-		"title": "Onderhoud",
-		"subtitle": "Houd je service-schema bij",
-		"addTask": {
-			"button": "+ Taak toevoegen",
-			"cancel": "Annuleren",
-			"title": "Taak toevoegen",
-			"fields": {
-				"name": "Omschrijving",
-				"intervalKm": "Interval ({unit})",
-				"intervalMonths": "Interval (maanden)"
-			},
-			"placeholders": {
-				"name": "bijv. Olieverversing",
-				"km": "bijv. 5000",
-				"months": "bijv. 12"
-			},
-			"submit": "Taak toevoegen"
-		},
-		"empty": {
-			"title": "Nog geen onderhoudstaken",
-			"description": "Voeg aangepaste taken toe of voer de onboarding-wizard uit om voorkeuren in te stellen."
-		},
-		"tracker": {
-			"every": "Elke {interval}",
-			"due": "Verwacht op {info}",
-			"last": "Laatste op {info}",
-			"notScheduled": "Niet gepland",
-			"status": {
-				"due": "verwacht",
-				"overdue": "achterstallig"
-			},
-			"logNow": "Nu loggen →",
-			"edit": "Bewerken",
-			"delete": "Verwijderen"
-		},
-		"editTracker": {
-			"sections": {
-				"interval": "Interval",
-				"lastServiced": "Laatste onderhoud",
-				"nextDue": "Volgende verwacht"
-			},
-			"fields": {
-				"everyKm": "Elke ({unit})",
-				"everyMonths": "Elke (maanden)",
-				"date": "Datum",
-				"odometer": "Kilometerstand ({unit})",
-				"autoCompute": "— leeglaten voor automatische berekening"
-			},
-			"submit": "Wijzigingen opslaan"
-		},
-		"saving": "Opslaan...",
-		"logService": {
-			"submit": "Item opslaan"
-		},
-		"toasts": {
-			"logged": "Service-invoer opgeslagen",
-			"trackerUpdated": "Tracker bijgewerkt",
-			"trackerDeleted": "Tracker verwijderd",
-			"taskAdded": "Taak toegevoegd"
-		},
-		"delete": {
-			"title": "{name} verwijderen?",
-			"description": "Deze onderhouds tracker wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
-			"confirm": "Verwijderen",
-			"cancel": "Behouden"
-		}
-	},
-	"finance": {
-		"title": "Financiën",
-		"subtitle": "Houd uitgaven bij",
-		"totalSpent": "Totaal besteed aan je {name}",
-		"addExpense": "Toevoegen",
-		"noCosts": "Nog geen kosten bijgehouden",
-		"groupBy": "Groeperen op:",
-		"groupCategory": "Categorie",
-		"groupYear": "Jaar",
-		"groupDescription": "Beschrijving",
-		"groupNone": "Geen",
-		"byCategory": "Per categorie",
-		"byYear": "Per jaar",
-		"byDescription": "Per beschrijving",
-		"allTransactions": "Alle transacties",
-		"recentTransactions": "Recente transacties",
-		"serviceEntry": "Service-item",
-		"expense": "Uitgave",
-		"gain": "Winst",
-		"loss": "Verlies",
-		"profitLoss": "Winst/Verlies",
-		"salePrice": "Verkoopprijs",
-		"transactionAdded": "Transactie toegevoegd",
-		"transactionDeleted": "Transactie verwijderd",
-		"transactionUpdated": "Transactie bijgewerkt",
-		"saving": "Opslaan...",
-		"save": "Opslaan",
-		"cancel": "Annuleren",
-		"investment": {
-			"purchasePrice": "Aankoopprijs",
-			"notSet": "Niet ingesteld",
-			"addHint": "Toevoegen in Instellingen → Koop & Verkoop",
-			"expenses": "Uitgaven",
-			"transactions": "{count} transactie",
-			"transactions_plural": "{count} transacties",
-			"totalInvested": "Totaal geïnvesteerd",
-			"soldFor": "Verkocht voor"
-		},
-		"form": {
-			"addTitle": "Toevoegen",
-			"editTitle": "Bewerken",
-			"category": "Categorie",
-			"amount": "Bedrag ({currency})",
-			"date": "Datum",
-			"odometer": "Kilometerstand ({unit})",
-			"odometerOptional": "Optioneel",
-			"notes": "Notities",
-			"notesPlaceholder": "Extra details"
-		},
-		"deleteDialog": {
-			"title": "Deze transactie verwijderen?",
-			"description": "Deze transactie wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
-			"confirm": "Verwijderen",
-			"cancel": "Behouden"
-		},
-		"categories": {
-			"maintenance": "Onderhoud",
-			"parts": "Onderdelen",
-			"accessories": "Accessoires",
-			"administrative": "Administratief",
-			"other": "Anders"
-		},
-		"empty": {
-			"title": "Geen uitgaven geregistreerd",
-			"description": "Voeg je eerste uitgave toe om te beginnen met bijhouden."
-		}
-	},
-	"documents": {
-		"title": "Documenten",
-		"subtitle": "Bewaar facturen, handleidingen, foto's en andere documenten",
-		"upload": "+ Uploaden",
-		"dropHintDesktop": "Sleep een bestand hier of browse",
-		"dropHintMobile": "Tik om te uploaden",
-		"uploadHint": "Afbeeldingen, PDF, Word, Excel - max 10 MB",
-		"selectedFile": "Geselecteerd bestand",
-		"summary": "Samenvatting",
-		"summaryPlaceholder": "bijv. Werkplaatsbon",
-		"category": "Categorie",
-		"expiry": "Vervaldatum",
-		"expiryOptional": "(optioneel)",
-		"expiryExpired": "Verlopen",
-		"expiryExpiringSoon": "Verloopt binnenkort",
-		"expiryValid": "Geldig",
-		"actions": {
-			"view": "Bekijken",
-			"rename": "Hernoemen",
-			"delete": "Verwijderen"
-		},
-		"searchPlaceholder": "Documenten zoeken...",
-		"allTypes": "Alle typen",
-		"cancel": "Annuleren",
-		"saving": "Opslaan...",
-		"saveDocument": "Document opslaan",
-		"toasts": {
-			"uploaded": "Document geüpload",
-			"renamed": "Document hernoemd",
-			"deleted": "Document verwijderd"
-		},
-		"deleteDialog": {
-			"title": "{name} verwijderen?",
-			"description": "Dit document wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
-			"confirm": "Verwijderen",
-			"cancel": "Behouden"
-		},
-		"sort": {
-			"newest": "Nieuwste eerst",
-			"oldest": "Oudste eerst",
-			"name": "Naam A-Z"
-		},
-		"view": {
-			"list": "Lijst",
-			"timeline": "Tijdlijn"
-		},
-		"types": {
-			"service": "Facturen",
-			"quotation": "Offerte",
-			"papers": "Documenten",
-			"photo": "Foto",
-			"notes": "Notities",
-			"other": "Anders",
-			"route": "Route"
-		},
-		"empty": {
-			"title": "Geen documenten gevonden",
-			"description": "Upload documenten of pas je filters aan."
-		},
-		"prevPage": "Vorige",
-		"nextPage": "Volgende",
-		"pageOf": "Pagina {page} van {total}"
-	},
-	"settings": {
-		"title": "Instellingen",
-		"profile": {
-			"title": "Voorkeuren",
-			"display": "Weergave",
-			"language": "Taal & regio",
-			"currency": "Valuta",
-			"odometerUnit": "Kilometerstand-eenheid",
-			"saved": "Voorkeuren opgeslagen",
-			"submit": "Voorkeuren opslaan",
-			"saving": "Opslaan…"
-		},
-		"account": {
-			"title": "Account",
-			"email": {
-				"title": "E-mailadres",
-				"current": "Huidig: {email}",
-				"new": "Nieuw e-mailadres",
-				"submit": "E-mail bijwerken",
-				"saved": "E-mail bijgewerkt",
-				"errors": {
-					"invalid": "Voer een geldig e-mailadres in",
-					"sameAsCurrent": "Dat is al je huidige e-mailadres",
-					"alreadyInUse": "Dat e-mailadres is al in gebruik"
-				}
-			},
-			"password": {
-				"title": "Wachtwoord",
-				"current": "Huidig wachtwoord",
-				"new": "Nieuw wachtwoord",
-				"confirm": "Nieuw wachtwoord bevestigen",
-				"hint": "Min. 8 tekens",
-				"submit": "Wachtwoord wijzigen",
-				"saved": "Wachtwoord gewijzigd",
-				"errors": {
-					"allRequired": "Alle wachtwoordvelden zijn vereist",
-					"tooShort": "Nieuw wachtwoord moet minimaal 8 tekens bevatten",
-					"noMatch": "Wachtwoorden komen niet overeen",
-					"noPasswordSet": "Geen wachtwoord ingesteld voor dit account — gebruik de magische link om in te loggen",
-					"incorrect": "Huidig wachtwoord is onjuist",
-					"sameAsCurrent": "Kies een nieuw wachtwoord dat anders is dan je huidige wachtwoord"
-				}
-			},
-			"export": {
-				"title": "Gegevens exporteren",
-				"desc": "Download een kopie van je voertuigen, onderhoudsrecords, documenten en instellingen.",
-				"btn": "Gegevens exporteren",
-				"json": "Exporteren als JSON",
-				"jsonHint": "Gestructureerde data, geen bestanden",
-				"zip": "Exporteren als ZIP",
-				"zipHint": "Inclusief bijgevoegde documenten"
-			},
-			"dangerZone": "Gevaarlijke zone",
-			"delete": {
-				"title": "Dit account verwijderen",
-				"desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten.",
-				"btn": "Account verwijderen",
-				"dialog": {
-					"title": "Je account verwijderen?",
-					"desc": "Dit verwijdert permanent je account, al je voertuigen en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt.",
-					"confirm": "Account verwijderen",
-					"cancel": "Account behouden"
-				}
-			}
-		},
-		"workflows": {
-			"title": "Notificatieregels",
-			"loadPresets": "Standaardregels herstellen",
-			"empty": "Nog geen regels. Herstel de standaardregels om te beginnen, of maak je eigen.",
-			"presets": {
-				"maintenanceDueSoonKm": "Onderhoud binnenkort (km)",
-				"maintenanceOverdueKm": "Onderhoud achterstallig (km)",
-				"maintenanceDueSoonDate": "Onderhoud binnenkort (datum)",
-				"maintenanceOverdueDate": "Onderhoud achterstallig (datum)",
-				"odometerNudge": "Kilometerstand herinnering"
-			},
-			"lastFired": "Laatst geactiveerd: {date}",
-			"neverFired": "Nooit geactiveerd",
-			"delete": "Verwijderen",
-			"confirmDelete": "Deze regel verwijderen?",
-			"editBtn": "Aanpassen",
-			"editSave": "Opslaan",
-			"editCancel": "Annuleren",
-			"allChannels": "Alle actieve kanalen",
-			"trigger": {
-				"beforeDue": "voor vervaldatum",
-				"pastDue": "over datum",
-				"whenOverdue": "Wanneer achterstallig (km)",
-				"daysBefore": "dagen voor vervaldatum",
-				"daysPast": "dagen na vervaldatum",
-				"every": "Elke",
-				"noOdo": "Geen km-stand update in",
-				"days": "dagen",
-				"docExpiring": "Document verloopt over",
-				"unknown": "Onbekende trigger"
-			},
-			"edit": {
-				"kmBefore": "Meld wanneer dichterbij dan (km)",
-				"kmPast": "Meld bij overschrijding met (km)",
-				"daysBefore": "Aantal dagen van tevoren melden",
-				"daysPast": "Aantal dagen na dato melden",
-				"days": "Na hoeveel dagen",
-				"month": "Maand",
-				"day": "Dag"
-			},
-			"deleted": "Regel verwijderd",
-			"confirmDeleteDesc": "De regel \"{name}\" verwijderen? Dit kan niet ongedaan worden gemaakt.",
-			"runCheck": "Nu controleren",
-			"runCheckDone": "Controle voltooid"
-		},
-		"notifications": {
-			"title": "Meldingen",
-			"markAllRead": "Markeer alles als gelezen",
-			"empty": "Nog geen meldingen.",
-			"markRead": "Markeer als gelezen",
-			"channels": {
-				"title": "Meldingskanalen",
-				"saveBtn": "Kanalen opslaan",
-				"saved": "Opgeslagen",
-				"testBtn": "Test sturen",
-				"testSent": "Verzonden",
-				"testError": "Mislukt",
-				"push": {
-					"label": "Browser push",
-					"description": "Krijg pushmeldingen in deze browser als een regel afgaat.",
-					"subscribe": "Aanzetten voor deze browser",
-					"subscribed": "Ingeschakeld",
-					"subError": "Inschakelen mislukt",
-					"noVapid": "VAPID keys zijn niet geconfigureerd op deze server."
-				},
-				"email": {
-					"label": "E-mail",
-					"description": "Stuur een e-mail naar het onderstaande adres.",
-					"addressLabel": "E-mailadres voor meldingen",
-					"addressPlaceholder": "mijn@emailadres.nl",
-					"hint": "Mag een ander adres zijn dan waar je mee inlogt.",
-					"noSmtp": "SMTP is niet geconfigureerd op deze server."
-				},
-				"webhook": {
-					"label": "Webhook",
-					"description": "Stuur een JSON POST payload naar een URL als een regel afgaat.",
-					"urlLabel": "Webhook URL",
-					"urlPlaceholder": "https://hooks.voorbeeld.nl/...",
-					"authLabel": "Autorisatie-header",
-					"authPlaceholder": "Bearer token123 (optioneel)",
-					"hint": "MotoMate stuurt een POST-request met de gebeurtenis, de titel, de tekst, de voertuignaam en de data."
-				},
-				"ha": {
-					"label": "Home Assistant",
-					"description": "Start een Home Assistant webhook-automatisering.",
-					"urlLabel": "Webhook URL",
-					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Plak hier je Home Assistant webhook URL voor nodig.",
-					"tip": "Tip: schakel bij een externe Home Assistant-URL 'Alleen toegankelijk vanaf het netwerk' uit.",
-					"configLabel": "Automatisering voorbeeld",
-					"copy": "Kopiëren",
-					"invalidUrl": "URL moet eindigen op /api/webhook/<webhook_id>"
-				}
-			},
-			"inbox": {
-				"title": "Recente meldingen"
-			},
-			"seeMore": "Alle {total} meldingen bekijken",
-			"viewAll": "Alle meldingen bekijken",
-			"allTitle": "Alle meldingen",
-			"delete": "Verwijderen",
-			"deleteRead": "Gelezen verwijderen",
-			"filterAll": "Alle",
-			"filterUnread": "Ongelezen",
-			"prevPage": "Vorige",
-			"nextPage": "Volgende",
-			"pageOf": "Pagina {page} van {total}"
-		},
-		"nav": {
-			"preferences": "Voorkeuren",
-			"account": "Account",
-			"notifications": "Notificaties",
-			"workflows": "Regels",
-			"sourceCode": "Broncode",
-			"reportIssue": "Probleem melden",
-			"tapAgain": "Tik nogmaals om te openen"
-		}
-	},
-	"units": {
-		"km": "km",
-		"mi": "mi"
-	},
-	"currency": {
-		"eur": "€ Euro",
-		"gbp": "£ Pond",
-		"chf": "CHF Franc",
-		"usd": "$ Dollar"
-	},
-	"layout": {
-		"brand": "MotoMate",
-		"nav": {
-			"dashboard": "Dashboard",
-			"garage": "Garage",
-			"settings": "Instellingen"
-		},
-		"theme": {
-			"title": "Thema",
-			"light": "Licht",
-			"dark": "Donker",
-			"system": "Systeem"
-		},
-		"signOut": "Uitloggen",
-		"logoutConfirm": {
-			"title": "Uitloggen",
-			"description": "Weet je zeker dat je wilt uitloggen?",
-			"confirm": "Uitloggen",
-			"cancel": "Ingelogd blijven"
-		},
-		"addEntry": {
-			"title": "Item toevoegen",
-			"chooseVehicle": "Kies voertuig",
-			"whatLogging": "Wat ga je registreren?",
-			"maintenance": "Onderhoud",
-			"maintenanceDesc": "Olie, banden of reparaties",
-			"mileage": "Kilometerstand",
-			"mileageDesc": "Nummer op je dashboard"
-		}
-	},
-	"notifications": {
-		"maintenanceDueSoonKm": {
-			"title": "Onderhoud binnenkort vereist",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is over {{km_remaining}} km vereist."
-		},
-		"maintenanceOverdueKm": {
-			"title": "Onderhoud achterstallig",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is {{km_over}} km achterstallig."
-		},
-		"maintenanceDueSoonDate": {
-			"title": "Onderhoud binnenkort vereist",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is over {{days_remaining}} dagen vereist ({{due_date}})."
-		},
-		"maintenanceOverdueDate": {
-			"title": "Onderhoud achterstallig",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is {{days_over}} dagen achterstallig (gepland op {{due_date}})."
-		},
-		"odometerNudge": {
-			"title": "Kilometerstand bijwerken",
-			"body": "Heb je onlangs gereden op {{vehicle_name}}? Werk de kilometerstand bij om je onderhoudstrackers nauwkeurig te houden."
-		}
-	},
-	"travels": {
-		"title": "Ritten",
-		"subtitle": "Jouw tochten en routes",
-		"add": "+ Rit toevoegen",
-		"empty": {
-			"title": "Nog geen ritten",
-			"description": "Voeg je eerste rit toe om de geschiedenis te starten."
-		},
-		"entry": {
-			"days": "{n, plural, =1 {1 dag} other {# dagen}}",
-			"routes": "{n, plural, =1 {1 route} other {# routes}}"
-		},
-		"form": {
-			"createTitle": "Rit toevoegen",
-			"editTitle": "Rit bewerken",
-			"title": "Titel",
-			"titlePlaceholder": "bijv. Alpentocht",
-			"startDate": "Startdatum",
-			"duration": "Duur (dagen)",
-			"expenses": "Totale kosten",
-			"remark": "Opmerking",
-			"remarkPlaceholder": "Notities over de rit…",
-			"gpxFiles": "GPX-routes",
-			"gpxSlot": "Dag {n}",
-			"gpxHint": "Eén GPX-bestand per dag. Max. 20 MB.",
-			"submit": {
-				"create": "Rit opslaan",
-				"edit": "Wijzigingen opslaan"
-			},
-			"gpxChoose": "Kies GPX-bestand"
-		},
-		"map": {
-			"title": "Kaart",
-			"loading": "Routes laden…",
-			"error": "Kaart kon niet worden geladen",
-			"noRoutes": "Geen routes bijgevoegd",
-			"clickHint": "Klik op een route op de kaart om te filteren",
-			"filterActive": "{n, plural, =1 {1 route geselecteerd} other {# routes geselecteerd}}",
-			"clearFilter": "Alles tonen"
-		},
-		"delete": {
-			"title": "Deze rit verwijderen?",
-			"description": "Deze rit en alle bijgevoegde GPX-bestanden worden definitief verwijderd.",
-			"confirm": "Verwijderen",
-			"cancel": "Behouden"
-		},
-		"timeline": {
-			"label": "Rit"
-		}
-	}
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "add": "Toevoegen",
+    "back": "Terug",
+    "continue": "Doorgaan",
+    "done": "Klaar",
+    "loading": "Laden...",
+    "optional": "(optioneel)",
+    "required": "*",
+    "close": "Sluiten",
+    "saving": "Opslaan…"
+  },
+  "auth": {
+    "login": {
+      "title": "Inloggen",
+      "subtitle": "Voer je e-mailadres in om door te gaan",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "rememberMe": "Aangemeld blijven",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "submit": "Inloggen",
+      "noAccount": "Nog geen account?",
+      "signUp": "Registreer je hier!",
+      "magicLinkSent": "Check je e-mail, een inloglink is onderweg.",
+      "setupNotice": {
+        "title": "Eerste setup",
+        "body": "Welkom bij MotoMate. Omdat je hier nieuw bent, is een standaard admin-account aangemaakt. Log in om de installatie te voltooien en deze gegevens te wijzigen.",
+        "defaultCreds": "Gebruik de standaardgegevens hierboven bij de eerste login. Je kunt deze wijzigen in Instellingen → Account."
+      },
+      "tabs": {
+        "password": "Wachtwoord",
+        "magicLink": "Magische link"
+      },
+      "magicSubmit": "Magische link verzenden",
+      "errors": {
+        "rateLimited": "Te veel pogingen. Probeer het later opnieuw.",
+        "invalidFormat": "Ongeldig e-mailadres of wachtwoordformaat",
+        "invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
+        "invalidEmail": "Voer een geldig e-mailadres in"
+      }
+    },
+    "register": {
+      "title": "Account maken",
+      "subtitle": "Registreer om het onderhoud van je voertuig te gaan bijhouden",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "passwordHint": "Gebruik minimaal 8 tekens",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "passwordMismatch": "Wachtwoorden komen niet overeen",
+      "submit": "Account maken",
+      "hasAccount": "Heb je al een account?",
+      "login": "Inloggen"
+    },
+    "magicLink": {
+      "verifying": "Je wordt ingelogd…",
+      "invalid": "Deze link is ongeldig of verlopen.",
+      "retry": "Nieuwe link aanvragen"
+    }
+  },
+  "onboarding": {
+    "security": {
+      "title": "Beveilig je account",
+      "description": "Je bent ingelogd als de standaard admin. Stel een echt e-mailadres en wachtwoord in voordat je doorgaat — je kunt deze altijd later bijwerken in Instellingen.",
+      "newEmail": "Nieuw e-mailadres",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "submit": "Opslaan & doorgaan →",
+      "skip": "Voor nu overslaan"
+    },
+    "welcome": {
+      "title": "Welkom bij MotoMate",
+      "description": "Laten we je eerste voertuig toevoegen en een onderhoudsschema instellen. Duurt ongeveer een minuut.",
+      "submit": "Aan de slag →",
+      "skipWarning": "Vergeet niet om je e-mail en wachtwoord bij te werken in Instellingen → Account voordat je live gaat."
+    },
+    "type": {
+      "title": "Welk type voertuig?",
+      "motorcycle": "Motorfiets",
+      "scooter": "Bromfiets",
+      "bike": "Fiets",
+      "other": "Anders"
+    },
+    "details": {
+      "title": "Vertel ons over je {vehicleType}",
+      "name": "Bijnaam",
+      "make": "Merk",
+      "model": "Model",
+      "year": "Bouwjaar",
+      "vin": "VIN",
+      "licensePlate": "Kenteken",
+      "placeholders": {
+        "name": "bijv. Honda Grom",
+        "make": "Honda",
+        "model": "CB500F",
+        "vin": "optioneel",
+        "licensePlate": "bijv. AB-123 CD"
+      }
+    },
+    "odometer": {
+      "title": "Huidige kilometerstand",
+      "description": "Stelt de basis in voor kilometer-gebaseerde onderhoudsintervallen.",
+      "placeholder": "0"
+    },
+    "presets": {
+      "title": "Welke onderhoudstaken?",
+      "description": "We maken trackers hiervoor. Je kunt ze altijd toevoegen of verwijderen.",
+      "tasks": {
+        "oil": "Olie & filtervervanging",
+        "tire": "Bandenspanning & slijtage",
+        "chain_lube": "Ketting reinigen & smeren",
+        "chain_tension": "Kettingspanning controleren",
+        "brake": "Remmen & remvloeistof"
+      },
+      "intervals": {
+        "oil": "elke 5.000 km / 12 maanden",
+        "tire": "maandelijkse controle",
+        "chain_lube": "elke 500 km",
+        "chain_tension": "elke 500 km",
+        "brake": "elke 10.000 km / 2 jaar"
+      },
+      "descriptions": {
+        "chain_lube": "Ketting reinigen en smeren",
+        "chain_tension": "Kettingspanning controleren en afstellen"
+      }
+    },
+    "lastService": {
+      "title": "Laatste olieverversing",
+      "description": "Optioneel: helpt berekenen wanneer de volgende service is.",
+      "date": "Datum",
+      "odometer": "Kilometerstand bij service",
+      "skip": "Deze stap overslaan",
+      "setupNote": "Laatste service (ingevoerd tijdens setup)"
+    },
+    "summary": {
+      "title": "Je bent klaar!",
+      "submit": "Mijn garage openen →"
+    },
+    "nav": {
+      "back": "← Terug",
+      "stepOf": "{step} van {total}",
+      "continueBtn": "Doorgaan →"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Goedemorgen",
+      "afternoon": "Goedemiddag",
+      "evening": "Goedenavond"
+    },
+    "status": {
+      "overdue": "{count, plural, =1 {1 item achterstallig.} other {# items achterstallig.}}",
+      "dueSoon": "{count, plural, =1 {1 item binnenkort verwacht.} other {# items binnenkort verwacht.}}",
+      "allGood": "Alles ziet er goed uit.",
+      "addFirst": "Voeg je eerste voertuig toe om te beginnen."
+    },
+    "sections": {
+      "needsAttention": "Aandacht nodig",
+      "garage": "Garage",
+      "recentActivity": "Recente activiteit"
+    },
+    "viewAll": "Alles bekijken →",
+    "empty": {
+      "title": "Je garage is leeg",
+      "descriptionOnboarding": "Voeg je eerste motor of bromfiets toe om te beginnen.",
+      "descriptionActive": "Voeg een nieuw voertuig toe aan je collectie.",
+      "submit": "+ Voertuig toevoegen"
+    }
+  },
+  "vehicles": {
+    "title": "Garage",
+    "vehicleCount": "{count, plural, =1 {1 voertuig} other {# voertuigen}}",
+    "archived": {
+      "show": "Gearchiveerde tonen",
+      "hide": "Gearchiveerde verbergen"
+    },
+    "add": "+ Voertuig toevoegen",
+    "empty": {
+      "title": "Je garage is leeg",
+      "description": "Voeg een nieuw voertuig toe aan je collectie."
+    }
+  },
+  "vehicle": {
+    "layout": {
+      "backToGarage": "← Garage",
+      "archived": "Gearchiveerd",
+      "avatar": {
+        "choose": "Kies avatar",
+        "upload": "Afbeelding uploaden",
+        "reset": "Avatar resetten"
+      },
+      "tabs": {
+        "timeline": "Tijdlijn",
+        "maintenance": "Onderhoud",
+        "documents": "Documenten",
+        "finance": "Financieel",
+        "settings": "Instellingen",
+        "travels": "Routes"
+      }
+    },
+    "detail": {
+      "menu": {
+        "maintenance": "Onderhoud",
+        "mileage": "Kilometerstand",
+        "note": "Notitie"
+      },
+      "timeline": {
+        "title": "Tijdlijn",
+        "subtitle": "Al je gegevens voor {name} op een plek.",
+        "empty": {
+          "title": "Nog geen geschiedenis",
+          "description": "Registreer je eerste onderhoud of kilometerstand om de tijdlijn te starten."
+        }
+      },
+      "upcoming": "Aankomende",
+      "nextDue": "Volgende: {date}",
+      "logLink": "Loggen",
+      "overdueByKm": "{km} {unit} achterstallig",
+      "overdueSince": "Achterstallig sinds {date}",
+      "overdue": "Achterstallig",
+      "neverServiced": "Nooit onderhouden",
+      "dueInKm": "Over {km} {unit}",
+      "dueDate": "Verwacht {date}",
+      "dueSoon": "Binnenkort verwacht",
+      "nextDueOdo": "Volgende: {reading} {unit}",
+      "serviceEntry": "Onderhoudsregistratie",
+      "hideOdoReadings": "Kilometerstanden verbergen",
+      "showMoreOdoReadings": "{n} meer kilometerstanden tonen",
+      "deleteDialog": {
+        "title": "Dit item verwijderen?",
+        "description": "Dit item wordt permanent verwijderd uit je tijdlijn. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Verwijderen",
+        "cancel": "Behouden"
+      }
+    },
+    "forms": {
+      "logService": "Onderhoudsitem registreren",
+      "updateOdo": "Kilometerstand bijwerken",
+      "writeNote": "Notitie schrijven",
+      "noteDesc": "Schrijf een notitie of opmerking",
+      "editEntry": "Item bewerken",
+      "fields": {
+        "date": "Datum",
+        "odometer": "Kilometerstand ({unit})",
+        "description": "Beschrijving",
+        "remark": "Opmerking {optional}",
+        "cost": "Kosten {optional}",
+        "notes": "Notities",
+        "resetCycle": "Cyclus resetten voor {optional}",
+        "checkToReset": "(vink aan om te resetten)",
+        "currentReading": "Huidige stand ({unit})"
+      },
+      "placeholders": {
+        "partsUsed": "Gebruikte onderdelen, observaties…",
+        "cost": "0,00",
+        "description": "bijv. Olieverversing, kettingvet…",
+        "additionalDetails": "Aanvullende details…",
+        "beforeTrip": "bijv. Voor lange rit",
+        "note": "bijv. Ik heb een algemene inspectie uitgevoerd",
+        "writeNote": "Schrijf een notitie…"
+      },
+      "submit": {
+        "service": "Item opslaan",
+        "odometer": "Bijwerken",
+        "note": "Notitie opslaan"
+      }
+    },
+    "add": {
+      "title": "Voertuig toevoegen",
+      "back": "← Garage",
+      "sections": {
+        "type": "Type",
+        "details": "Details",
+        "odometer": "Kilometerstand"
+      },
+      "fields": {
+        "name": "Naam",
+        "make": "Merk",
+        "model": "Model",
+        "year": "Bouwjaar",
+        "vin": "VIN",
+        "licensePlate": "Kenteken",
+        "currentReading": "Huidige stand",
+        "unit": "Eenheid"
+      },
+      "placeholders": {
+        "name": "Mijn CB500F",
+        "make": "bijv. Honda",
+        "model": "bijv. CB500F",
+        "vin": "optioneel",
+        "licensePlate": "bijv. AB-123 CD"
+      },
+      "types": {
+        "motorcycle": "Motor",
+        "scooter": "Brommer",
+        "bike": "Fiets",
+        "other": "Anders"
+      },
+      "actions": {
+        "cancel": "Annuleren",
+        "submit": "Voertuig toevoegen →"
+      }
+    },
+    "edit": {
+      "title": "Instellingen",
+      "subtitle": "Beheer je {name}",
+      "odometer": {
+        "title": "Kilometerstand bijwerken",
+        "currentReading": "Huidige stand ({unit})",
+        "update": "Bijwerken"
+      },
+      "vehicleDetails": "Voertuigdetails",
+      "fields": {
+        "name": "Naam",
+        "year": "Jaar",
+        "make": "Merk",
+        "model": "Model",
+        "vin": "VIN",
+        "licensePlate": "Kenteken"
+      },
+      "purchaseSale": "Koop & Verkoop",
+      "purchasePrice": "Aankoopprijs",
+      "soldPrice": "Verkoopprijs",
+      "save": "Wijzigingen opslaan",
+      "saved": "Wijzigingen opgeslagen",
+      "odometerUpdated": "Kilometerstand bijgewerkt",
+      "vehicleRestored": "Voertuig hersteld",
+      "settings": {
+        "title": "Instellingen",
+        "archive": {
+          "title": "Voertuig archiveren",
+          "titleRestore": "Voertuig herstellen",
+          "descArchive": "Verplaats dit voertuig naar het archief. Het wordt verborgen in de garage.",
+          "descRestore": "Plaats dit voertuig terug in je actieve garage.",
+          "btnArchive": "Archiveren",
+          "btnRestore": "Herstellen"
+        },
+        "dangerZone": "Gevaarzone",
+        "delete": {
+          "title": "Dit voertuig verwijderen",
+          "desc": "Verwijdert permanent alle servicegeschiedenis, documenten en trackers.",
+          "btn": "Verwijderen",
+          "dialog": {
+            "title": "{name} verwijderen?",
+            "desc": "Dit verwijdert permanent alle servicegeschiedenis, documenten en trackers. Deze actie kan niet ongedaan worden gemaakt.",
+            "confirm": "Voertuig verwijderen",
+            "cancel": "Voertuig behouden"
+          }
+        },
+        "archiveDialog": {
+          "title": "{name} archiveren?",
+          "desc": "Dit voertuig wordt verborgen in je garage. Je kunt het altijd herstellen. Stel de verkoopprijs in het vorige scherm in, voordat je doorgaat als je het hebt verkocht.",
+          "confirm": "Archiveren",
+          "cancel": "Actief houden"
+        },
+        "unarchiveDialog": {
+          "title": "{name} herstellen?",
+          "desc": "Dit voertuig wordt teruggeplaatst in je actieve garage. De verkoopprijs wordt gewist zodat je de voertuigdetails opnieuw kunt bewerken.",
+          "confirm": "Herstellen",
+          "cancel": "Gearchiveerd houden"
+        }
+      }
+    }
+  },
+  "maintenance": {
+    "title": "Onderhoud",
+    "subtitle": "Houd je service-schema bij",
+    "addTask": {
+      "button": "+ Taak toevoegen",
+      "cancel": "Annuleren",
+      "title": "Taak toevoegen",
+      "fields": {
+        "name": "Omschrijving",
+        "intervalKm": "Interval ({unit})",
+        "intervalMonths": "Interval (maanden)"
+      },
+      "placeholders": {
+        "name": "bijv. Olieverversing",
+        "km": "bijv. 5000",
+        "months": "bijv. 12"
+      },
+      "submit": "Taak toevoegen"
+    },
+    "empty": {
+      "title": "Nog geen onderhoudstaken",
+      "description": "Voeg aangepaste taken toe of voer de onboarding-wizard uit om voorkeuren in te stellen."
+    },
+    "tracker": {
+      "every": "Elke {interval}",
+      "due": "Verwacht op {info}",
+      "last": "Laatste op {info}",
+      "notScheduled": "Niet gepland",
+      "status": {
+        "due": "verwacht",
+        "overdue": "achterstallig"
+      },
+      "logNow": "Nu loggen →",
+      "edit": "Bewerken",
+      "delete": "Verwijderen"
+    },
+    "editTracker": {
+      "sections": {
+        "interval": "Interval",
+        "lastServiced": "Laatste onderhoud",
+        "nextDue": "Volgende verwacht"
+      },
+      "fields": {
+        "everyKm": "Elke ({unit})",
+        "everyMonths": "Elke (maanden)",
+        "date": "Datum",
+        "odometer": "Kilometerstand ({unit})",
+        "autoCompute": "— leeglaten voor automatische berekening"
+      },
+      "submit": "Wijzigingen opslaan"
+    },
+    "saving": "Opslaan...",
+    "logService": {
+      "submit": "Item opslaan"
+    },
+    "toasts": {
+      "logged": "Service-invoer opgeslagen",
+      "trackerUpdated": "Tracker bijgewerkt",
+      "trackerDeleted": "Tracker verwijderd",
+      "taskAdded": "Taak toegevoegd"
+    },
+    "delete": {
+      "title": "{name} verwijderen?",
+      "description": "Deze onderhouds tracker wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "cancel": "Behouden"
+    }
+  },
+  "finance": {
+    "title": "Financiën",
+    "subtitle": "Houd uitgaven bij",
+    "totalSpent": "Totaal besteed aan je {name}",
+    "addExpense": "Toevoegen",
+    "noCosts": "Nog geen kosten bijgehouden",
+    "groupBy": "Groeperen op:",
+    "groupCategory": "Categorie",
+    "groupYear": "Jaar",
+    "groupDescription": "Beschrijving",
+    "groupNone": "Geen",
+    "byCategory": "Per categorie",
+    "byYear": "Per jaar",
+    "byDescription": "Per beschrijving",
+    "allTransactions": "Alle transacties",
+    "recentTransactions": "Recente transacties",
+    "serviceEntry": "Service-item",
+    "expense": "Uitgave",
+    "gain": "Winst",
+    "loss": "Verlies",
+    "profitLoss": "Winst/Verlies",
+    "salePrice": "Verkoopprijs",
+    "transactionAdded": "Transactie toegevoegd",
+    "transactionDeleted": "Transactie verwijderd",
+    "transactionUpdated": "Transactie bijgewerkt",
+    "saving": "Opslaan...",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "investment": {
+      "purchasePrice": "Aankoopprijs",
+      "notSet": "Niet ingesteld",
+      "addHint": "Toevoegen in Instellingen → Koop & Verkoop",
+      "expenses": "Uitgaven",
+      "transactions": "{count} transactie",
+      "transactions_plural": "{count} transacties",
+      "totalInvested": "Totaal geïnvesteerd",
+      "soldFor": "Verkocht voor"
+    },
+    "form": {
+      "addTitle": "Toevoegen",
+      "editTitle": "Bewerken",
+      "category": "Categorie",
+      "amount": "Bedrag ({currency})",
+      "date": "Datum",
+      "odometer": "Kilometerstand ({unit})",
+      "odometerOptional": "Optioneel",
+      "notes": "Notities",
+      "notesPlaceholder": "Extra details"
+    },
+    "deleteDialog": {
+      "title": "Deze transactie verwijderen?",
+      "description": "Deze transactie wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "cancel": "Behouden"
+    },
+    "categories": {
+      "maintenance": "Onderhoud",
+      "parts": "Onderdelen",
+      "accessories": "Accessoires",
+      "administrative": "Administratief",
+      "other": "Anders"
+    },
+    "empty": {
+      "title": "Geen uitgaven geregistreerd",
+      "description": "Voeg je eerste uitgave toe om te beginnen met bijhouden."
+    }
+  },
+  "documents": {
+    "title": "Documenten",
+    "subtitle": "Bewaar facturen, handleidingen, foto's en andere documenten",
+    "upload": "+ Uploaden",
+    "dropHintDesktop": "Sleep een bestand hier of browse",
+    "dropHintMobile": "Tik om te uploaden",
+    "uploadHint": "Afbeeldingen, PDF, Word, Excel - max 10 MB",
+    "selectedFile": "Geselecteerd bestand",
+    "summary": "Samenvatting",
+    "summaryPlaceholder": "bijv. Werkplaatsbon",
+    "category": "Categorie",
+    "expiry": "Vervaldatum",
+    "expiryOptional": "(optioneel)",
+    "expiryExpired": "Verlopen",
+    "expiryExpiringSoon": "Verloopt binnenkort",
+    "expiryValid": "Geldig",
+    "actions": {
+      "view": "Bekijken",
+      "rename": "Hernoemen",
+      "delete": "Verwijderen"
+    },
+    "searchPlaceholder": "Documenten zoeken...",
+    "allTypes": "Alle typen",
+    "cancel": "Annuleren",
+    "saving": "Opslaan...",
+    "saveDocument": "Document opslaan",
+    "toasts": {
+      "uploaded": "Document geüpload",
+      "renamed": "Document hernoemd",
+      "deleted": "Document verwijderd"
+    },
+    "deleteDialog": {
+      "title": "{name} verwijderen?",
+      "description": "Dit document wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "cancel": "Behouden"
+    },
+    "sort": {
+      "newest": "Nieuwste eerst",
+      "oldest": "Oudste eerst",
+      "name": "Naam A-Z"
+    },
+    "view": {
+      "list": "Lijst",
+      "timeline": "Tijdlijn"
+    },
+    "types": {
+      "service": "Facturen",
+      "quotation": "Offerte",
+      "papers": "Documenten",
+      "photo": "Foto",
+      "notes": "Notities",
+      "other": "Anders",
+      "route": "Route"
+    },
+    "empty": {
+      "title": "Geen documenten gevonden",
+      "description": "Upload documenten of pas je filters aan."
+    },
+    "prevPage": "Vorige",
+    "nextPage": "Volgende",
+    "pageOf": "Pagina {page} van {total}"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "profile": {
+      "title": "Voorkeuren",
+      "display": "Weergave",
+      "language": "Taal & regio",
+      "currency": "Valuta",
+      "odometerUnit": "Kilometerstand-eenheid",
+      "saved": "Voorkeuren opgeslagen",
+      "submit": "Voorkeuren opslaan",
+      "saving": "Opslaan…"
+    },
+    "account": {
+      "title": "Account",
+      "email": {
+        "title": "E-mailadres",
+        "current": "Huidig: {email}",
+        "new": "Nieuw e-mailadres",
+        "submit": "E-mail bijwerken",
+        "saved": "E-mail bijgewerkt",
+        "errors": {
+          "invalid": "Voer een geldig e-mailadres in",
+          "sameAsCurrent": "Dat is al je huidige e-mailadres",
+          "alreadyInUse": "Dat e-mailadres is al in gebruik"
+        }
+      },
+      "password": {
+        "title": "Wachtwoord",
+        "current": "Huidig wachtwoord",
+        "new": "Nieuw wachtwoord",
+        "confirm": "Nieuw wachtwoord bevestigen",
+        "hint": "Min. 8 tekens",
+        "submit": "Wachtwoord wijzigen",
+        "saved": "Wachtwoord gewijzigd",
+        "errors": {
+          "allRequired": "Alle wachtwoordvelden zijn vereist",
+          "tooShort": "Nieuw wachtwoord moet minimaal 8 tekens bevatten",
+          "noMatch": "Wachtwoorden komen niet overeen",
+          "noPasswordSet": "Geen wachtwoord ingesteld voor dit account — gebruik de magische link om in te loggen",
+          "incorrect": "Huidig wachtwoord is onjuist",
+          "sameAsCurrent": "Kies een nieuw wachtwoord dat anders is dan je huidige wachtwoord"
+        }
+      },
+      "export": {
+        "title": "Gegevens exporteren",
+        "desc": "Download een kopie van je voertuigen, onderhoudsrecords, documenten en instellingen.",
+        "btn": "Gegevens exporteren",
+        "json": "Exporteren als JSON",
+        "jsonHint": "Gestructureerde data, geen bestanden",
+        "zip": "Exporteren als ZIP",
+        "zipHint": "Inclusief bijgevoegde documenten"
+      },
+      "dangerZone": "Gevaarlijke zone",
+      "delete": {
+        "title": "Dit account verwijderen",
+        "desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten.",
+        "btn": "Account verwijderen",
+        "dialog": {
+          "title": "Je account verwijderen?",
+          "desc": "Dit verwijdert permanent je account, al je voertuigen en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Account verwijderen",
+          "cancel": "Account behouden"
+        }
+      }
+    },
+    "workflows": {
+      "title": "Notificatieregels",
+      "loadPresets": "Standaardregels herstellen",
+      "empty": "Nog geen regels. Herstel de standaardregels om te beginnen, of maak je eigen.",
+      "presets": {
+        "maintenanceDueSoonKm": "Onderhoud binnenkort (km)",
+        "maintenanceOverdueKm": "Onderhoud achterstallig (km)",
+        "maintenanceDueSoonDate": "Onderhoud binnenkort (datum)",
+        "maintenanceOverdueDate": "Onderhoud achterstallig (datum)",
+        "odometerNudge": "Kilometerstand herinnering"
+      },
+      "lastFired": "Laatst geactiveerd: {date}",
+      "neverFired": "Nooit geactiveerd",
+      "delete": "Verwijderen",
+      "confirmDelete": "Deze regel verwijderen?",
+      "editBtn": "Aanpassen",
+      "editSave": "Opslaan",
+      "editCancel": "Annuleren",
+      "allChannels": "Alle actieve kanalen",
+      "trigger": {
+        "beforeDue": "voor vervaldatum",
+        "pastDue": "over datum",
+        "whenOverdue": "Wanneer achterstallig (km)",
+        "daysBefore": "dagen voor vervaldatum",
+        "daysPast": "dagen na vervaldatum",
+        "every": "Elke",
+        "noOdo": "Geen km-stand update in",
+        "days": "dagen",
+        "docExpiring": "Document verloopt over",
+        "unknown": "Onbekende trigger"
+      },
+      "edit": {
+        "kmBefore": "Meld wanneer dichterbij dan (km)",
+        "kmPast": "Meld bij overschrijding met (km)",
+        "daysBefore": "Aantal dagen van tevoren melden",
+        "daysPast": "Aantal dagen na dato melden",
+        "days": "Na hoeveel dagen",
+        "month": "Maand",
+        "day": "Dag"
+      },
+      "deleted": "Regel verwijderd",
+      "confirmDeleteDesc": "De regel \"{name}\" verwijderen? Dit kan niet ongedaan worden gemaakt.",
+      "runCheck": "Nu controleren",
+      "runCheckDone": "Controle voltooid"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "markAllRead": "Markeer alles als gelezen",
+      "empty": "Nog geen meldingen.",
+      "markRead": "Markeer als gelezen",
+      "channels": {
+        "title": "Meldingskanalen",
+        "saveBtn": "Kanalen opslaan",
+        "saved": "Opgeslagen",
+        "testBtn": "Test sturen",
+        "testSent": "Verzonden",
+        "testError": "Mislukt",
+        "push": {
+          "label": "Browser push",
+          "description": "Krijg pushmeldingen in deze browser als een regel afgaat.",
+          "subscribe": "Aanzetten voor deze browser",
+          "subscribed": "Ingeschakeld",
+          "subError": "Inschakelen mislukt",
+          "noVapid": "VAPID keys zijn niet geconfigureerd op deze server."
+        },
+        "email": {
+          "label": "E-mail",
+          "description": "Stuur een e-mail naar het onderstaande adres.",
+          "addressLabel": "E-mailadres voor meldingen",
+          "addressPlaceholder": "mijn@emailadres.nl",
+          "hint": "Mag een ander adres zijn dan waar je mee inlogt.",
+          "noSmtp": "SMTP is niet geconfigureerd op deze server."
+        },
+        "webhook": {
+          "label": "Webhook",
+          "description": "Stuur een JSON POST payload naar een URL als een regel afgaat.",
+          "urlLabel": "Webhook URL",
+          "urlPlaceholder": "https://hooks.voorbeeld.nl/...",
+          "authLabel": "Autorisatie-header",
+          "authPlaceholder": "Bearer token123 (optioneel)",
+          "hint": "MotoMate stuurt een POST-request met de gebeurtenis, de titel, de tekst, de voertuignaam en de data."
+        },
+        "ha": {
+          "label": "Home Assistant",
+          "description": "Start een Home Assistant webhook-automatisering.",
+          "urlLabel": "Webhook URL",
+          "urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
+          "hint": "Plak hier je Home Assistant webhook URL voor nodig.",
+          "tip": "Tip: schakel bij een externe Home Assistant-URL 'Alleen toegankelijk vanaf het netwerk' uit.",
+          "configLabel": "Automatisering voorbeeld",
+          "copy": "Kopiëren",
+          "invalidUrl": "URL moet eindigen op /api/webhook/<webhook_id>"
+        }
+      },
+      "inbox": {
+        "title": "Recente meldingen"
+      },
+      "seeMore": "Alle {total} meldingen bekijken",
+      "viewAll": "Alle meldingen bekijken",
+      "allTitle": "Alle meldingen",
+      "delete": "Verwijderen",
+      "deleteRead": "Gelezen verwijderen",
+      "filterAll": "Alle",
+      "filterUnread": "Ongelezen",
+      "prevPage": "Vorige",
+      "nextPage": "Volgende",
+      "pageOf": "Pagina {page} van {total}"
+    },
+    "nav": {
+      "preferences": "Voorkeuren",
+      "account": "Account",
+      "notifications": "Notificaties",
+      "workflows": "Regels",
+      "sourceCode": "Broncode",
+      "reportIssue": "Probleem melden",
+      "tapAgain": "Tik nogmaals om te openen"
+    }
+  },
+  "units": {
+    "km": "km",
+    "mi": "mi"
+  },
+  "currency": {
+    "eur": "€ Euro",
+    "gbp": "£ Pond",
+    "chf": "CHF Franc",
+    "usd": "$ Dollar"
+  },
+  "layout": {
+    "brand": "MotoMate",
+    "nav": {
+      "dashboard": "Dashboard",
+      "garage": "Garage",
+      "settings": "Instellingen"
+    },
+    "theme": {
+      "title": "Thema",
+      "light": "Licht",
+      "dark": "Donker",
+      "system": "Systeem"
+    },
+    "signOut": "Uitloggen",
+    "logoutConfirm": {
+      "title": "Uitloggen",
+      "description": "Weet je zeker dat je wilt uitloggen?",
+      "confirm": "Uitloggen",
+      "cancel": "Ingelogd blijven"
+    },
+    "addEntry": {
+      "title": "Item toevoegen",
+      "chooseVehicle": "Kies voertuig",
+      "whatLogging": "Wat ga je registreren?",
+      "maintenance": "Onderhoud",
+      "maintenanceDesc": "Olie, banden of reparaties",
+      "mileage": "Kilometerstand",
+      "mileageDesc": "Nummer op je dashboard"
+    }
+  },
+  "notifications": {
+    "maintenanceDueSoonKm": {
+      "title": "Onderhoud binnenkort vereist",
+      "body": "'{{tracker_name}}' op {{vehicle_name}} is over {{km_remaining}} km vereist."
+    },
+    "maintenanceOverdueKm": {
+      "title": "Onderhoud achterstallig",
+      "body": "'{{tracker_name}}' op {{vehicle_name}} is {{km_over}} km achterstallig."
+    },
+    "maintenanceDueSoonDate": {
+      "title": "Onderhoud binnenkort vereist",
+      "body": "'{{tracker_name}}' op {{vehicle_name}} is over {{days_remaining}} dagen vereist ({{due_date}})."
+    },
+    "maintenanceOverdueDate": {
+      "title": "Onderhoud achterstallig",
+      "body": "'{{tracker_name}}' op {{vehicle_name}} is {{days_over}} dagen achterstallig (gepland op {{due_date}})."
+    },
+    "odometerNudge": {
+      "title": "Kilometerstand bijwerken",
+      "body": "Heb je onlangs gereden op {{vehicle_name}}? Werk de kilometerstand bij om je onderhoudstrackers nauwkeurig te houden."
+    }
+  },
+  "travels": {
+    "title": "Ritten",
+    "subtitle": "Jouw tochten en routes",
+    "add": "Toevoegen",
+    "empty": {
+      "title": "Nog geen ritten",
+      "description": "Voeg je eerste rit toe om de geschiedenis te starten."
+    },
+    "entry": {
+      "days": "{n, plural, =1 {1 dag} other {# dagen}}",
+      "routes": "{n, plural, =1 {1 route} other {# routes}}"
+    },
+    "form": {
+      "createTitle": "Rit toevoegen",
+      "editTitle": "Rit bewerken",
+      "title": "Titel",
+      "titlePlaceholder": "bijv. Alpentocht",
+      "startDate": "Startdatum",
+      "duration": "Duur (dagen)",
+      "expenses": "Totale kosten",
+      "remark": "Opmerking",
+      "remarkPlaceholder": "Notities over de rit…",
+      "gpxFiles": "GPX-routes",
+      "gpxSlot": "Dag {n}",
+      "gpxHint": "Eén GPX-bestand per dag. Max. 20 MB.",
+      "submit": {
+        "create": "Rit opslaan",
+        "edit": "Wijzigingen opslaan"
+      },
+      "gpxChoose": "Kies GPX-bestand"
+    },
+    "map": {
+      "title": "Kaart",
+      "loading": "Routes laden…",
+      "error": "Kaart kon niet worden geladen",
+      "noRoutes": "Geen routes bijgevoegd",
+      "clickHint": "Klik op een route op de kaart om te filteren",
+      "filterActive": "{n, plural, =1 {1 route geselecteerd} other {# routes geselecteerd}}",
+      "clearFilter": "Alles tonen"
+    },
+    "delete": {
+      "title": "Deze rit verwijderen?",
+      "description": "Deze rit en alle bijgevoegde GPX-bestanden worden definitief verwijderd.",
+      "confirm": "Verwijderen",
+      "cancel": "Behouden"
+    },
+    "timeline": {
+      "label": "Rit"
+    },
+    "filter": {
+      "search": "Ritten zoeken...",
+      "noResults": "Geen ritten gevonden die overeenkomen met uw zoekopdracht."
+    }
+  }
 }

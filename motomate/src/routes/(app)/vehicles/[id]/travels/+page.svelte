@@ -6,7 +6,6 @@
 	import { _, waitLocale } from '$lib/i18n';
 	import { formatYearMonth } from '$lib/utils/format.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
 	import TravelEntry from '$lib/components/travels/TravelEntry.svelte';
 	import TravelFormModal from '$lib/components/travels/TravelFormModal.svelte';
 	import TravelMap from '$lib/components/travels/TravelMap.svelte';
@@ -73,7 +72,11 @@
 		}
 	});
 
-	// Map selection state
+	// Search + sort state
+	let searchQuery = $state('');
+	let sortBy = $state<'newest' | 'oldest' | 'name'>('newest');
+
+	// Map / row selection state
 	let selectedTravelIds = $state<string[]>([]);
 
 	function handleRouteClick(travelId: string) {
@@ -86,19 +89,36 @@
 
 	function clearFilter() {
 		selectedTravelIds = [];
+		searchQuery = '';
 	}
 
-	// Filtered + grouped travels for the list
-	const displayedTravels = $derived(
-		selectedTravelIds.length > 0
-			? data.travels.filter((t: Travel) => selectedTravelIds.includes(t.id))
-			: data.travels
-	);
+	// Filtered + sorted + grouped travels for the list
+	const displayedTravels = $derived((): Travel[] => {
+		let list = [...data.travels] as Travel[];
+
+		if (searchQuery.trim()) {
+			const q = searchQuery.trim().toLowerCase();
+			list = list.filter((t) =>
+				t.title.toLowerCase().includes(q) ||
+				(t.remark ?? '').toLowerCase().includes(q)
+			);
+		}
+
+		if (selectedTravelIds.length > 0) {
+			list = list.filter((t) => selectedTravelIds.includes(t.id));
+		}
+
+		if (sortBy === 'newest') list.sort((a, b) => b.start_date.localeCompare(a.start_date));
+		else if (sortBy === 'oldest') list.sort((a, b) => a.start_date.localeCompare(b.start_date));
+		else list.sort((a, b) => a.title.localeCompare(b.title));
+
+		return list;
+	});
 
 	// Group by year-month
 	const grouped = $derived((): [string, Travel[]][] => {
 		const map = new Map<string, Travel[]>();
-		for (const t of displayedTravels) {
+		for (const t of displayedTravels()) {
 			const key = t.start_date.slice(0, 7);
 			if (!map.has(key)) map.set(key, []);
 			map.get(key)!.push(t);
@@ -107,6 +127,7 @@
 	});
 
 	const hasHistory = $derived(data.travels.length > 0);
+	const hasActiveFilter = $derived(selectedTravelIds.length > 0 || searchQuery.trim() !== '');
 
 	// Build GPX file list for the map
 	const gpxFiles = $derived(
@@ -116,7 +137,8 @@
 				.map((docId: string, i: number) => ({
 					travelId: t.id,
 					label: `${t.title} — Day ${i + 1}`,
-					url: data.gpxUrls[docId]
+					url: data.gpxUrls[docId],
+					num: i + 1
 				}))
 		)
 	);
@@ -136,14 +158,14 @@
 
 <!-- Page Header -->
 <div class="page-header">
-	<div>
-		<h1 class="page-title">{$_('travels.title')}</h1>
-		<p class="page-sub">{$_('travels.subtitle')}</p>
+	<div class="page-header-text">
+		<h2 class="section-title">{$_('travels.title')}</h2>
+		<p class="section-sub">{$_('travels.subtitle')}</p>
 	</div>
 	<div class="page-actions">
-		<Button variant="primary" size="sm" onclick={openCreate}>
-			{$_('travels.add')}
-		</Button>
+		<button type="button" class="btn-primary" onclick={openCreate}>
+			+ {$_('travels.add')}
+		</button>
 	</div>
 </div>
 
@@ -151,45 +173,66 @@
 {#if hasGpx}
 	<div class="map-section">
 		<TravelMap {gpxFiles} {selectedTravelIds} onrouteclick={handleRouteClick} />
+	</div>
+{/if}
 
-		{#if selectedTravelIds.length > 0}
-			<div class="filter-bar">
-				<span class="filter-label">
-					{$_('travels.map.filterActive', { values: { n: selectedTravelIds.length } })}
-				</span>
-				<button class="filter-clear" onclick={clearFilter}>
+<!-- Filters (only when there are travels) -->
+{#if hasHistory}
+	<div class="filters">
+		<div class="search-box">
+			<input
+				type="text"
+				placeholder={$_('travels.filter.search')}
+				bind:value={searchQuery}
+				class="search-input"
+			/>
+		</div>
+		<div class="filter-controls">
+			<select bind:value={sortBy} class="filter-select">
+				<option value="newest">{$_('documents.sort.newest')}</option>
+				<option value="oldest">{$_('documents.sort.oldest')}</option>
+				<option value="name">{$_('documents.sort.name')}</option>
+			</select>
+			{#if hasActiveFilter}
+				<button class="filter-clear-btn" onclick={clearFilter}>
 					{$_('travels.map.clearFilter')}
 				</button>
-			</div>
-		{:else}
-			<p class="map-hint">{$_('travels.map.clickHint')}</p>
-		{/if}
+			{/if}
+		</div>
 	</div>
 {/if}
 
 <!-- Travel List -->
 {#if hasHistory}
-	<div class="travel-list">
-		{#each grouped() as [ym, group]}
-			<div class="month-group">
-				<div class="month-label">{formatYearMonth(ym, locale)}</div>
-				{#each group as travel}
-					<TravelEntry
-						{travel}
-						{locale}
-						onedit={openEdit}
-						ondelete={(t) => { deletingTravel = t; }}
-					/>
-				{/each}
-			</div>
-		{/each}
-	</div>
+	{#if grouped().length === 0}
+		<div class="empty-search">
+			<p>{$_('travels.filter.noResults')}</p>
+		</div>
+	{:else}
+		<div class="travel-list">
+			{#each grouped() as [ym, group]}
+				<div class="month-group">
+					<div class="month-label">{formatYearMonth(ym, locale)}</div>
+					{#each group as travel}
+						<TravelEntry
+							{travel}
+							{locale}
+							selected={selectedTravelIds.includes(travel.id)}
+							onselect={(t) => handleRouteClick(t.id)}
+							onedit={openEdit}
+							ondelete={(t) => { deletingTravel = t; }}
+						/>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	{/if}
 {:else}
 	<div class="empty-state">
 		<div class="empty-icon">🗺️</div>
 		<h2 class="empty-title">{$_('travels.empty.title')}</h2>
 		<p class="empty-desc">{$_('travels.empty.description')}</p>
-		<Button variant="primary" onclick={openCreate}>{$_('travels.add')}</Button>
+		<button type="button" class="btn-primary" onclick={openCreate}>+ {$_('travels.add')}</button>
 	</div>
 {/if}
 
@@ -241,59 +284,120 @@
 		align-items: flex-start;
 		justify-content: space-between;
 		gap: var(--space-4);
+		flex-wrap: wrap;
 		margin-bottom: var(--space-6);
 	}
-	.page-title {
-		font-size: var(--text-2xl);
+	.page-header-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+	.section-title {
+		font-size: var(--text-lg);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0;
-		line-height: var(--leading-tight);
 	}
-	.page-sub {
+	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
-		margin: 0.25rem 0 0;
+		margin: 0;
 	}
 	.page-actions {
+		display: flex;
+		gap: var(--space-2);
+		align-items: center;
 		flex-shrink: 0;
+	}
+	.btn-primary {
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: #fff;
+		border: none;
+		border-radius: 10px;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.btn-primary:hover:not(:disabled) {
+		background: var(--accent-hover);
 	}
 
 	/* Map */
 	.map-section {
-		margin-bottom: var(--space-6);
+		margin-bottom: var(--space-5);
 	}
-	.filter-bar {
+
+	/* Filters — matches documents page pattern */
+	.filters {
 		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		margin: 0 0 var(--space-5);
 		align-items: center;
-		justify-content: space-between;
-		margin-top: var(--space-3);
-		padding: 0.5rem var(--space-4);
-		background: var(--accent-subtle);
+	}
+	.search-box {
+		flex: 1;
+		min-width: 200px;
+	}
+	.search-input {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--border);
 		border-radius: 8px;
-		border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--border));
-	}
-	.filter-label {
+		background: var(--bg-subtle);
+		color: var(--text);
 		font-size: var(--text-sm);
-		color: var(--accent);
+		min-height: 40px;
+		box-sizing: border-box;
 	}
-	.filter-clear {
-		background: none;
-		border: none;
+	.search-input:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-color: transparent;
+	}
+	.filter-controls {
+		display: flex;
+		gap: var(--space-2);
+		flex-wrap: wrap;
+		align-items: center;
+	}
+	.filter-select {
+		padding: 0.375rem 0.625rem;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		color: var(--text);
+		font-size: var(--text-sm);
 		cursor: pointer;
+		min-height: 40px;
+	}
+	.filter-select:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: -1px;
+	}
+	.filter-clear-btn {
+		padding: 0.375rem 0.75rem;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		color: var(--text-muted);
 		font-size: var(--text-sm);
-		color: var(--accent);
-		font-weight: 500;
-		padding: 0;
+		cursor: pointer;
+		min-height: 40px;
+		white-space: nowrap;
 	}
-	.filter-clear:hover {
-		text-decoration: underline;
+	.filter-clear-btn:hover {
+		background: var(--bg-muted);
+		color: var(--text);
 	}
-	.map-hint {
-		margin: var(--space-2) 0 0;
-		font-size: var(--text-xs);
-		color: var(--text-subtle);
+
+	/* Empty search result */
+	.empty-search {
+		padding: var(--space-6) 0;
 		text-align: center;
+		font-size: var(--text-sm);
+		color: var(--text-subtle);
 	}
 
 	/* Travel list */

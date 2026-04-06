@@ -6,11 +6,13 @@
 	interface Props {
 		travel: Travel;
 		locale: string;
+		selected?: boolean;
+		onselect?: (travel: Travel) => void;
 		onedit: (travel: Travel) => void;
 		ondelete: (travel: Travel) => void;
 	}
 
-	let { travel, locale, onedit, ondelete }: Props = $props();
+	let { travel, locale, selected = false, onselect, onedit, ondelete }: Props = $props();
 
 	let menuOpen = $state(false);
 
@@ -33,7 +35,16 @@
 
 <svelte:window onclick={closeMenu} />
 
-<div class="travel-entry">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<div
+	class="travel-entry"
+	class:travel-entry--selected={selected}
+	class:travel-entry--clickable={!!onselect}
+	onclick={() => onselect?.(travel)}
+	onkeydown={(e) => { if (onselect && (e.key === 'Enter' || e.key === ' ')) onselect(travel); }}
+	tabindex={onselect ? 0 : undefined}
+>
 	<div class="entry-body">
 		<div class="entry-title">{travel.title}</div>
 		<div class="entry-meta">
@@ -97,21 +108,36 @@
 		align-items: flex-start;
 		justify-content: space-between;
 		gap: var(--space-4);
-		padding: 0.875rem 0;
+		padding: 0.875rem var(--space-2) 0.875rem var(--space-2);
 		border-bottom: 1px solid var(--border);
+		border-left: 3px solid transparent;
+		transition: background 0.15s;
 	}
 	.travel-entry:first-child {
 		border-top: 1px solid var(--border);
+	}
+	.travel-entry--clickable {
+		cursor: pointer;
+	}
+	.travel-entry--clickable:hover {
+		background: var(--bg-subtle);
+	}
+	.travel-entry--selected {
+		border-left-color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 4%, var(--bg));
+	}
+	.travel-entry--selected:hover {
+		background: color-mix(in srgb, var(--accent) 6%, var(--bg));
 	}
 	.entry-body {
 		flex: 1;
 		min-width: 0;
 	}
 	.entry-title {
-		font-size: var(--text-base);
-		font-weight: 500;
+		font-size: var(--text-lg);
+		font-weight: 600;
 		color: var(--text);
-		line-height: var(--leading-snug);
+		margin: 0;
 	}
 	.entry-meta {
 		display: flex;
