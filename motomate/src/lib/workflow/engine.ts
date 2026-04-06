@@ -12,6 +12,7 @@ type TriggerResult = {
 	vars: Record<string, string | number>;
 	trackerId?: string;
 	trackerState?: Record<string, unknown>;
+	trackerStatus?: string;
 };
 
 // Normalise old-format actions (array) or new-format (single object)
@@ -161,60 +162,69 @@ async function evalTrigger(
 				const tracker_name = tracker.template?.name ?? '';
 				const base = {
 					trackerId: tracker.id,
-					trackerState: tracker.state as Record<string, unknown>
+					trackerState: tracker.state as Record<string, unknown>,
+					trackerStatus: tracker.status
 				};
 
-				if (trigger.type === 'odometer_upcoming' && tracker.next_due_odometer !== null) {
-					const diff = tracker.next_due_odometer - vehicle.current_odometer;
-					// For never-serviced trackers, next_due_odometer = interval_km from zero.
-					// Use a tighter window (matching the UI's DUE_SOON_FACTOR = 0.2) so that
-					// a first odometer entry of 12 km doesn't immediately fire "due in 488 km",
-					// but 400 km legitimately fires "due in 100 km" for a 500 km interval.
-					const neverServiced = tracker.last_done_odometer === null && tracker.last_done_at === null;
-					const intervalKm = tracker.template?.interval_km ?? trigger.km_before;
-					const effectiveWindow = neverServiced
-						? Math.min(trigger.km_before, Math.min(500, Math.max(50, Math.round(intervalKm * 0.2))))
-						: trigger.km_before;
-					if (diff >= 0 && diff <= effectiveWindow) {
-						results.push({
-							...base,
-							vars: { vehicle_name: vehicle.name, km_remaining: diff, tracker_id: tracker.id, tracker_name }
-						});
-					}
-				}
+				// Use tracker.status as the single source of truth — the same field the UI
+				// renders. This prevents boundary collisions and keeps notification logic
+				// consistent with what the rider sees on the maintenance page.
 
-				if (trigger.type === 'odometer_overdue' && tracker.next_due_odometer !== null) {
-					const over = vehicle.current_odometer - tracker.next_due_odometer;
-					if (over >= trigger.km_past) {
-						results.push({
-							...base,
-							vars: { vehicle_name: vehicle.name, km_over: over, tracker_id: tracker.id, tracker_name }
-						});
-					}
-				}
-
-				if (trigger.type === 'date_upcoming' && tracker.next_due_at) {
-					const daysLeft = Math.ceil(
-						(new Date(tracker.next_due_at).getTime() - today.getTime()) / 86400000
+				if (
+					trigger.type === 'odometer_upcoming' &&
+					tracker.status === 'due' &&
+					tracker.next_due_odometer !== null
+				) {
+					const km_remaining = Math.max(
+						0,
+						tracker.next_due_odometer - vehicle.current_odometer
 					);
-					if (daysLeft >= 0 && daysLeft <= trigger.days_before) {
-						results.push({
-							...base,
-							vars: { vehicle_name: vehicle.name, days_remaining: daysLeft, due_date: tracker.next_due_at, tracker_name }
-						});
-					}
+					results.push({
+						...base,
+						vars: { vehicle_name: vehicle.name, km_remaining, tracker_id: tracker.id, tracker_name }
+					});
 				}
 
-				if (trigger.type === 'date_overdue' && tracker.next_due_at) {
-					const overDays = Math.ceil(
-						(today.getTime() - new Date(tracker.next_due_at).getTime()) / 86400000
+				if (
+					trigger.type === 'odometer_overdue' &&
+					tracker.status === 'overdue' &&
+					tracker.next_due_odometer !== null
+				) {
+					const km_over = Math.max(0, vehicle.current_odometer - tracker.next_due_odometer);
+					results.push({
+						...base,
+						vars: { vehicle_name: vehicle.name, km_over, tracker_id: tracker.id, tracker_name }
+					});
+				}
+
+				if (
+					trigger.type === 'date_upcoming' &&
+					tracker.status === 'due' &&
+					tracker.next_due_at !== null
+				) {
+					const daysLeft = Math.max(
+						0,
+						Math.ceil((new Date(tracker.next_due_at).getTime() - today.getTime()) / 86400000)
 					);
-					if (overDays >= trigger.days_past) {
-						results.push({
-							...base,
-							vars: { vehicle_name: vehicle.name, days_over: overDays, due_date: tracker.next_due_at, tracker_name }
-						});
-					}
+					results.push({
+						...base,
+						vars: { vehicle_name: vehicle.name, days_remaining: daysLeft, due_date: tracker.next_due_at, tracker_name }
+					});
+				}
+
+				if (
+					trigger.type === 'date_overdue' &&
+					tracker.status === 'overdue' &&
+					tracker.next_due_at !== null
+				) {
+					const days_over = Math.max(
+						0,
+						Math.ceil((today.getTime() - new Date(tracker.next_due_at).getTime()) / 86400000)
+					);
+					results.push({
+						...base,
+						vars: { vehicle_name: vehicle.name, days_over, due_date: tracker.next_due_at, tracker_name }
+					});
 				}
 			}
 
@@ -259,15 +269,16 @@ export async function runWorkflowChecks(
 			const results = await evalTrigger(rule.trigger, vehicle, rule.user_id);
 
 			for (const result of results) {
-				// Cooldown: per-tracker for tracker-based triggers, per-rule otherwise
 				if (result.trackerId) {
+					// Tracker-based triggers use cycle-based dedup: once any rule has fired
+					// for this tracker in the current service cycle, all rules are blocked
+					// until the user logs a service (which clears notified_by).
+					// This ensures exactly one notification per cycle regardless of how
+					// many matching rules are enabled (e.g. upcoming + overdue both on).
 					const notifiedBy = (result.trackerState?.notified_by ?? {}) as Record<string, string>;
-					const lastNotified = notifiedBy[rule.id];
-					if (lastNotified) {
-						const hoursSince = (Date.now() - new Date(lastNotified).getTime()) / 3_600_000;
-						if (hoursSince < 23) continue;
-					}
+					if (Object.keys(notifiedBy).length > 0) continue;
 				} else {
+					// Non-tracker triggers (calendar, no_odometer_update, etc.) use 23h cooldown
 					if (rule.last_triggered_at) {
 						const hoursSince =
 							(Date.now() - new Date(rule.last_triggered_at).getTime()) / 3_600_000;
@@ -288,7 +299,7 @@ export async function runWorkflowChecks(
 						.set({
 							state: {
 								...currentState,
-								notified_by: { ...currentNotifiedBy, [rule.id]: new Date().toISOString() }
+								notified_by: { ...currentNotifiedBy, [rule.id]: result.trackerStatus ?? 'fired' }
 							},
 							updated_at: new Date().toISOString()
 						})

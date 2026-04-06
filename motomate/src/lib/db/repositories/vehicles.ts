@@ -132,9 +132,9 @@ export async function deleteOdometerLog(
 
 /**
  * Recomputes `current_odometer` as the max reading across all odometer_logs
- * and service_logs for the vehicle. Safe to call after any log edit or delete —
- * if no logs exist the vehicle odometer is left unchanged.
- * Returns the new (or unchanged) odometer value.
+ * and service_logs for the vehicle. Safe to call after any log edit or delete.
+ * If no logs remain, resets to 0 so the vehicle can accept any new reading.
+ * Returns the new odometer value.
  */
 export async function recomputeCurrentOdometer(vehicleId: string, userId: string): Promise<number> {
 	const [odoLogs, svcLogs] = await Promise.all([
@@ -147,13 +147,7 @@ export async function recomputeCurrentOdometer(vehicleId: string, userId: string
 		...svcLogs.map((l) => l.odometer_at_service)
 	];
 
-	if (readings.length === 0) {
-		// No logs remain — preserve whatever the vehicle odometer currently is.
-		const vehicle = await getVehicleById(vehicleId, userId);
-		return vehicle?.current_odometer ?? 0;
-	}
-
-	const newOdo = Math.max(...readings);
+	const newOdo = readings.length === 0 ? 0 : Math.max(...readings);
 	await db
 		.update(vehicles)
 		.set({ current_odometer: newOdo, updated_at: new Date().toISOString() })

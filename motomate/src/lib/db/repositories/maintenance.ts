@@ -344,9 +344,9 @@ export async function recomputeTrackerStatuses(
 
 		if (status !== t.status) {
 			fields.status = status;
-			// When a tracker transitions out of 'overdue' (e.g. odometer entry corrected/deleted),
-			// clear the per-rule cooldown map so the next overdue crossing fires a fresh notification.
-			if (t.status === 'overdue' && status !== 'overdue') {
+			// When the tracker returns to ok (entry corrected/deleted), reset the
+			// per-cycle notification record so the next due/overdue crossing notifies fresh.
+			if (status === 'ok') {
 				fields.state = { ...((t.state as object) ?? {}), notified_by: {} };
 			}
 		}
