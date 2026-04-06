@@ -6,16 +6,24 @@ export async function dispatchEmail(
 	body: string
 ): Promise<void> {
 	if (!env.SMTP_HOST) {
-		console.warn('[workflow] email channel: SMTP_HOST not configured, skipping');
-		return;
+		throw new Error('SMTP_HOST is not configured');
 	}
 
 	const nodemailer = await import('nodemailer');
+	const port = parseInt(env.SMTP_PORT ?? '587');
+	// SMTP_SECURE: 'true' = implicit TLS (port 465), 'false' = plaintext/STARTTLS, default auto-detects from port
+	const secure = env.SMTP_SECURE !== undefined ? env.SMTP_SECURE === 'true' : port === 465;
 	const transporter = nodemailer.default.createTransport({
 		host: env.SMTP_HOST,
-		port: parseInt(env.SMTP_PORT ?? '587'),
-		secure: env.SMTP_PORT === '465',
-		auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined
+		port,
+		secure,
+		auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined,
+		tls: {
+			// SMTP_REJECT_UNAUTHORIZED: set to 'false' to allow self-signed certs (e.g. local mail servers)
+			rejectUnauthorized: env.SMTP_REJECT_UNAUTHORIZED !== 'false'
+		},
+		connectionTimeout: 10_000,
+		socketTimeout: 10_000
 	});
 
 	await transporter.sendMail({

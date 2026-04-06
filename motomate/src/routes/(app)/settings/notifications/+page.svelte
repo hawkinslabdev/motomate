@@ -76,19 +76,37 @@ actions:
 		webhook: 'idle',
 		home_assistant: 'idle'
 	});
+	let testError = $state<Record<string, string>>({});
 
 	async function sendTest(channel: string) {
 		testStatus[channel] = 'sending';
+		testError[channel] = '';
 		try {
+			const payload: Record<string, string> = { channel };
+			if (channel === 'email') payload.address = emailAddress;
+			if (channel === 'webhook') {
+				payload.webhookUrl = webhookUrl;
+				payload.webhookAuthHeader = webhookAuth;
+			}
+			if (channel === 'home_assistant') payload.haWebhookUrl = haUrl;
 			const res = await fetch('/api/notifications/test', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ channel })
+				body: JSON.stringify(payload)
 			});
 			const json = await res.json();
-			testStatus[channel] = json.ok ? 'sent' : 'error';
-		} catch {
+			if (json.ok) {
+				testStatus[channel] = 'sent';
+			} else {
+				testStatus[channel] = 'error';
+				testError[channel] = json.error ?? '';
+				console.error(`[notifications] ${channel} test failed:`, json.error);
+			}
+		} catch (e) {
 			testStatus[channel] = 'error';
+			const msg = e instanceof Error ? e.message : String(e);
+			testError[channel] = msg;
+			console.error(`[notifications] ${channel} test failed:`, msg);
 		}
 		setTimeout(() => (testStatus[channel] = 'idle'), 3000);
 	}
@@ -271,6 +289,9 @@ actions:
 									? $_('settings.notifications.channels.testError')
 									: $_('settings.notifications.channels.testBtn')}
 					</button>
+					{#if testStatus.email === 'error' && testError.email}
+						<p class="channel-hint channel-hint--warn">{testError.email}</p>
+					{/if}
 				</div>
 			{/if}
 		</div>
