@@ -558,7 +558,10 @@
 		"empty": {
 			"title": "No documents found",
 			"description": "Upload documents or adjust your filters."
-		}
+		},
+		"prevPage": "Previous",
+		"nextPage": "Next",
+		"pageOf": "Page {page} of {total}"
 	},
 	"settings": {
 		"title": "Settings",

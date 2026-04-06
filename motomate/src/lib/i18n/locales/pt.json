@@ -556,7 +556,10 @@
 		"empty": {
 			"title": "Nenhum documento encontrado",
 			"description": "Carregue documentos ou ajuste os seus filtros."
-		}
+		},
+		"prevPage": "Anterior",
+		"nextPage": "Proximo",
+		"pageOf": "Pagina {page} de {total}"
 	},
 	"settings": {
 		"title": "Definições",

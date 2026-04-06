@@ -556,7 +556,10 @@
 		"empty": {
 			"title": "Geen documenten gevonden",
 			"description": "Upload documenten of pas je filters aan."
-		}
+		},
+		"prevPage": "Vorige",
+		"nextPage": "Volgende",
+		"pageOf": "Pagina {page} van {total}"
 	},
 	"settings": {
 		"title": "Instellingen",

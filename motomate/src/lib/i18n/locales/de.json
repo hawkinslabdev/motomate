@@ -556,7 +556,10 @@
 		"empty": {
 			"title": "Keine Dokumente gefunden",
 			"description": "Lade Dokumente hoch oder passe deine Filter an."
-		}
+		},
+		"prevPage": "Zurück",
+		"nextPage": "Weiter",
+		"pageOf": "Seite {page} von {total}"
 	},
 	"settings": {
 		"title": "Einstellungen",

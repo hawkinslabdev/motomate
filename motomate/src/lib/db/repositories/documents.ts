@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { documents } from '../schema.js';
 import { CreateDocumentSchema } from '../../validators/schemas.js';
@@ -16,14 +16,31 @@ export async function createDocument(userId: string, input: unknown): Promise<Do
 
 export async function getDocumentsByVehicle(
 	vehicleId: string,
-	userId: string
+	userId: string,
+	limit?: number,
+	offset?: number
 ): Promise<Document[]> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return [];
 	return db.query.documents.findMany({
 		where: eq(documents.vehicle_id, vehicleId),
-		orderBy: (d, { desc }) => [desc(d.created_at)]
+		orderBy: (d, { desc }) => [desc(d.created_at)],
+		limit,
+		offset
 	});
+}
+
+export async function getDocumentsByVehicleTotal(
+	vehicleId: string,
+	userId: string
+): Promise<number> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return 0;
+	const [{ count }] = await db
+		.select({ count: sql<number>`count(*)` })
+		.from(documents)
+		.where(eq(documents.vehicle_id, vehicleId));
+	return count;
 }
 
 export async function getDocumentByStorageKey(storageKey: string): Promise<Document | undefined> {

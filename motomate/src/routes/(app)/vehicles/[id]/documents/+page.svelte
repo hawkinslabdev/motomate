@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 	import { _, waitLocale } from '$lib/i18n';
 
@@ -17,7 +20,9 @@
 		waitLocale();
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+		const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const totalPages = $derived(Math.max(1, Math.ceil((data.total ?? 0) / data.perPage)));
+
 
 	let isDragging = $state(false);
 	let selectedFile = $state<File | null>(null);
@@ -111,6 +116,12 @@
 	function cancelEditName() {
 		editingDocId = null;
 		editingName = '';
+	}
+
+	function navTo(p: number) {
+		const u = new URL($page.url);
+		u.searchParams.set('page', String(p));
+		goto(u.toString(), { replaceState: false });
 	}
 
 	const filteredDocs = $derived(() => {
@@ -456,6 +467,32 @@
 				{/each}
 			</div>
 		{/each}
+	</div>
+{/if}
+
+{#if totalPages > 1}
+	<div class="pagination">
+		<Button
+			variant="secondary"
+			size="sm"
+			disabled={data.page <= 1}
+			onclick={() => navTo(data.page - 1)}
+		>
+			{$_('documents.prevPage')}
+		</Button>
+		<span class="page-label">
+			{$_('documents.pageOf', {
+				values: { page: data.page, total: totalPages }
+			})}
+		</span>
+		<Button
+			variant="secondary"
+			size="sm"
+			disabled={data.page >= totalPages}
+			onclick={() => navTo(data.page + 1)}
+		>
+			{$_('documents.nextPage')}
+		</Button>
 	</div>
 {/if}
 
@@ -1086,6 +1123,21 @@
 
 	.doc-name {
 		cursor: text;
+	}
+
+	/* Pagination */
+	.pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-4);
+		padding: var(--space-6) 0 var(--space-2);
+	}
+	.page-label {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
 	}
 
 	@media (max-width: 640px) {

@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import {
 	getDocumentsByVehicle,
+	getDocumentsByVehicleTotal,
 	createDocument,
 	deleteDocument,
 	updateDocumentName
@@ -10,6 +11,7 @@ import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+const PER_PAGE = 10;
 
 function storageKey(userId: string, filename: string): string {
 	const ext =
@@ -21,10 +23,17 @@ function storageKey(userId: string, filename: string): string {
 	return `files/${userId}/${id}.${ext}`;
 }
 
-export const load: PageServerLoad = async ({ parent, locals }) => {
+export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	const { vehicle } = await parent();
-	const docs = await getDocumentsByVehicle(vehicle.id, locals.user!.id);
-	return { docs };
+	const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
+	const offset = (page - 1) * PER_PAGE;
+
+	const [docs, total] = await Promise.all([
+		getDocumentsByVehicle(vehicle.id, locals.user!.id, PER_PAGE, offset),
+		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id)
+	]);
+
+	return { docs, total, page, perPage: PER_PAGE };
 };
 
 export const actions: Actions = {
