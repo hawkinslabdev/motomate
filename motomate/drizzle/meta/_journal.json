@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1775203518253,
-      "tag": "0000_greedy_silverclaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1775463140555,
-      "tag": "0001_special_baron_zemo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1775488872686,
-      "tag": "0002_silent_chamber",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1775548745576,
-      "tag": "0003_slippery_lady_deathstrike",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1775550987239,
-      "tag": "0004_melodic_mac_gargan",
+      "when": 1775559558217,
+      "tag": "0000_messy_pixie",
       "breakpoints": true
     }
   ]

@@ -14,11 +14,13 @@ CREATE TABLE `active_trackers` (
 	FOREIGN KEY (`template_id`) REFERENCES `task_templates`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE INDEX `idx_active_trackers_vehicle_status` ON `active_trackers` (`vehicle_id`,`status`);--> statement-breakpoint
 CREATE TABLE `documents` (
 	`id` text PRIMARY KEY NOT NULL,
 	`vehicle_id` text NOT NULL,
 	`user_id` text NOT NULL,
 	`name` text NOT NULL,
+	`title` text,
 	`doc_type` text DEFAULT 'service' NOT NULL,
 	`storage_key` text NOT NULL,
 	`mime_type` text NOT NULL,
@@ -29,6 +31,7 @@ CREATE TABLE `documents` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE INDEX `idx_documents_vehicle_created` ON `documents` (`vehicle_id`,`created_at`);--> statement-breakpoint
 CREATE TABLE `finance_transactions` (
 	`id` text PRIMARY KEY NOT NULL,
 	`vehicle_id` text NOT NULL,
@@ -45,6 +48,7 @@ CREATE TABLE `finance_transactions` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE INDEX `idx_finance_transactions_vehicle_performed` ON `finance_transactions` (`vehicle_id`,`performed_at`);--> statement-breakpoint
 CREATE TABLE `magic_link_tokens` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
@@ -70,6 +74,7 @@ CREATE TABLE `notifications` (
 	FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles`(`id`) ON UPDATE no action ON DELETE set null
 );
 --> statement-breakpoint
+CREATE INDEX `idx_notifications_user_read` ON `notifications` (`user_id`,`read_at`);--> statement-breakpoint
 CREATE TABLE `odometer_logs` (
 	`id` text PRIMARY KEY NOT NULL,
 	`vehicle_id` text NOT NULL,
@@ -83,6 +88,7 @@ CREATE TABLE `odometer_logs` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE INDEX `idx_odometer_logs_vehicle_recorded` ON `odometer_logs` (`vehicle_id`,`recorded_at`);--> statement-breakpoint
 CREATE TABLE `push_subscriptions` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
@@ -110,6 +116,7 @@ CREATE TABLE `service_logs` (
 	FOREIGN KEY (`tracker_id`) REFERENCES `active_trackers`(`id`) ON UPDATE no action ON DELETE set null
 );
 --> statement-breakpoint
+CREATE INDEX `idx_service_logs_vehicle_performed` ON `service_logs` (`vehicle_id`,`performed_at`);--> statement-breakpoint
 CREATE TABLE `sessions` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
@@ -134,11 +141,30 @@ CREATE TABLE `task_templates` (
 	FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `travels` (
+	`id` text PRIMARY KEY NOT NULL,
+	`vehicle_id` text NOT NULL,
+	`user_id` text NOT NULL,
+	`start_date` text NOT NULL,
+	`duration_days` integer DEFAULT 1 NOT NULL,
+	`title` text NOT NULL,
+	`remark` text,
+	`total_expenses_cents` integer,
+	`currency` text DEFAULT 'EUR' NOT NULL,
+	`gpx_document_ids` text DEFAULT '[]' NOT NULL,
+	`excluded_gpx_days` text DEFAULT '[]' NOT NULL,
+	`created_at` text DEFAULT (datetime('now')) NOT NULL,
+	`updated_at` text DEFAULT (datetime('now')) NOT NULL,
+	FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE INDEX `idx_travels_vehicle_start` ON `travels` (`vehicle_id`,`start_date`);--> statement-breakpoint
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`email` text NOT NULL,
 	`password_hash` text,
-	`timezone` text DEFAULT 'Europe/Paris' NOT NULL,
+	`timezone` text DEFAULT 'Europe/Amsterdam' NOT NULL,
 	`locale` text DEFAULT 'en' NOT NULL,
 	`onboarding_done` integer DEFAULT false NOT NULL,
 	`settings` text DEFAULT '{"theme":"system","currency":"EUR","odometer_unit":"km","locale":"en"}' NOT NULL,
@@ -170,6 +196,7 @@ CREATE TABLE `vehicles` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE INDEX `idx_vehicles_user_archived` ON `vehicles` (`user_id`,`archived_at`);--> statement-breakpoint
 CREATE TABLE `workflow_rules` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
