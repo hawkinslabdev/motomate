@@ -962,8 +962,7 @@
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
-		min-width: 80px;
-		text-align: right;
+		padding-right: 48px; /* Match entry-menu-btn width for alignment */
 	}
 
 	/* Sections */
@@ -1049,8 +1048,6 @@
 		font-weight: 500;
 		color: var(--text);
 		flex-shrink: 0;
-		min-width: 80px;
-		text-align: right;
 	}
 
 	/* Empty state */
@@ -1081,9 +1078,6 @@
 	}
 
 	/* Entry action menu */
-	.stub-actions {
-		margin-right: 48px;	
-	}
 	.entry-actions {
 		position: relative;
 		flex-shrink: 0;
@@ -1168,6 +1162,9 @@
 			opacity: 1;
 			width: 44px;
 			height: 44px;
+		}
+		.grouped-amount {
+			padding-right: 56px;
 		}
 	}
 	.btn-ghost {
