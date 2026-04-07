@@ -22,15 +22,15 @@
 	let map: any = null;
 	let L: any = null;
 
-	// url → the GPX layer object (for cleanup / deduplication)
+	// url the GPX layer object (for cleanup / deduplication)
 	let gpxLayersByUrl = new Map<string, any>();
-	// travelId → polyline sub-layers (for color + click handling)
+	// travelId polyline sub-layers (for color + click handling)
 	let gpxPolylines = new Map<string, any[]>();
-	// travelId → marker sub-layers (start/end pins)
+	// travelId marker sub-layers (start/end pins)
 	let gpxMarkers = new Map<string, any[]>();
-	// url → number label marker (shown when track is selected + travel has >1 track)
+	// url number label marker (shown when track is selected + travel has >1 track)
 	let gpxLabels = new Map<string, any>();
-	// url → { travelId, num } for label visibility logic
+	// url { travelId, num } for label visibility logic
 	let gpxFileMeta = new Map<string, { travelId: string; num: number }>();
 	// guard so the gpxFiles $effect doesn't run before onMount finishes
 	let mapReady = false;
@@ -153,7 +153,7 @@
 					const bounds = layer.getBounds();
 					if (bounds.isValid()) newBounds.push(bounds);
 
-					// leaflet-gpx nests layers: GPX → FeatureGroup(s) → Polyline/Marker
+					// leaflet-gpx nests layers: GPX > FeatureGroup(s) > Polyline/Marker
 					// We need two levels of iteration to reach the actual primitives.
 					const polys: any[] = [];
 					const markers: any[] = [];
@@ -163,7 +163,7 @@
 							else if (typeof l.getLatLng === 'function') markers.push(l); // Marker
 						};
 						if (typeof child.eachLayer === 'function') {
-							child.eachLayer(collect); // FeatureGroup — go one level deeper
+							child.eachLayer(collect); // FeatureGroup > go one level deeper
 						} else {
 							collect(child);
 						}
@@ -197,7 +197,7 @@
 								}),
 								interactive: false
 							}).addTo(map);
-							// Hidden by default — updateColors will show when needed
+							// Hidden by default, updateColors will show when needed
 							if (label._icon) label._icon.style.display = 'none';
 							gpxLabels.set(file.url, label);
 						}
@@ -327,5 +327,22 @@
 
 	:global(.leaflet-interactive) {
 		cursor: pointer;
+	}
+
+	:global(.gpx-num-label) {
+		background: #2563eb;
+		color: #fff;
+		font-size: 11px;
+		font-weight: 600;
+		font-family: var(--font-mono, monospace);
+		border-radius: 50%;
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 2px solid #fff;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+		pointer-events: none;
 	}
 </style>

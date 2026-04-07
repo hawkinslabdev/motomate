@@ -98,10 +98,22 @@
 
 		if (searchQuery.trim()) {
 			const q = searchQuery.trim().toLowerCase();
-			list = list.filter((t) =>
-				t.title.toLowerCase().includes(q) ||
-				(t.remark ?? '').toLowerCase().includes(q)
-			);
+			list = list.filter((t) => {
+				if (t.title.toLowerCase().includes(q)) return true;
+				if ((t.remark ?? '').toLowerCase().includes(q)) return true;
+
+				// Date: match year, full month name, short month name, and "month year" combos
+				try {
+					const d = new Date(t.start_date + 'T00:00:00');
+					const year  = String(d.getFullYear());
+					const monthLong  = d.toLocaleDateString(locale, { month: 'long' }).toLowerCase();
+					const monthShort = d.toLocaleDateString(locale, { month: 'short' }).toLowerCase();
+					const full = `${monthLong} ${year}`;
+					if (year.includes(q) || monthLong.includes(q) || monthShort.includes(q) || full.includes(q)) return true;
+				} catch { /* ignore */ }
+
+				return false;
+			});
 		}
 
 		if (selectedTravelIds.length > 0) {
