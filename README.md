@@ -5,25 +5,15 @@
 [![Last commit](https://img.shields.io/github/last-commit/hawkinslabdev/motomate)](https://github.com/hawkinslabdev/motomate/commits/main)
 [![Support](https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-fdd734?logo=buy-me-a-coffee)](https://coff.ee/hawkinslabdev)
 
-This is **MotoMate**. It is a self-hosted vehicle maintenance tracker, built with a focus on two-wheeled riders and garage-ready simplicity. All your service history stays local. MotoMate offers full transparency of the source code so you can run it yourself, own your data, and completely trust the system keeping your records.
+MotoMate is a self-hosted maintenance tracker for vehicles. Manage your own maintenance journals easily, in a web interface available from your (mobile) device. You can log custom maintenance tasks directly from the garage. All service history and data remain strictly on your own hardware.
 
 <img width="100%" alt="MotoMate screenshot" src="https://github.com/hawkinslabdev/motomate/blob/main/.github/images/example.webp" />
 
 We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
 
-Whether you are logging routine oil changes, monitoring tire wear, recording valve clearances, or preparing for your next regional inspection, the process remains clean, easy to understand, and effortless to maintain.
-
-### Key Highlights
-
-* **Lightweight Tracking:** <br> Focuses on the maintenance essentials, built to handle regional inspection intervals.
-* **Mobile-First Interface:** <br> Designed for use on a phone or tablet while you are actually in the garage.
-* **Privacy by Design:** <br> Self-hosted and local-first. Your service history never leaves your hardware.
-
-In short: A modern, minimal maintenance tracking application for you, but built to ensure you spend less time logging and more time riding.
-
 ## Getting Started
 
-The easiest way to get MotoMate running locally is with Docker Compose:
+You can run MotoMate locally using Docker Compose:
 
 ```yaml
 services:
@@ -45,19 +35,19 @@ services:
     restart: unless-stopped
 ```
 
-Download the image and start the container, and you're ready to start. From there, you can see if it fits with how you want to keep your records in the garage.
+After downloading the image and starting the container, the application will be available after a few seconds.
 
 ## Donate
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy_me_a_coffee-fdd734?\&logo=buy-me-a-coffee\&logoColor=black\&style=for-the-badge)](https://coff.ee/hawkinslabdev)
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-30363d?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sponsors/hawkinslabdev)
 
-If this saves you time, stress, or a spreadsheet, feel free to buy me a coffee or sponsor the project. It helps keep the coffee fresh.
+If MotoMate replaces your existing spreadsheet or saves you time, you can support the project through GitHub Sponsors or Buy Me A Coffee.
 
 ## License
 
-This project is licensed under the **AGPL 3.0** license. See [LICENSE](LICENSE) for details.
+This project is licensed under the **AGPL 3.0** license. See [LICENSE](https://www.google.com/search?q=LICENSE) for details.
 
 ## Contributing
 
-This is meant to be a community-driven project. Ideas, bug reports, and pull requests are all welcome. If something feels off or could be better, open an issue and let's talk about it.
+Contributions including ideas, bug reports, and pull requests are welcome. Please open an issue to discuss any proposed changes or identified issues.
