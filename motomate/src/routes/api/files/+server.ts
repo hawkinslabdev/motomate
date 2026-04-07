@@ -20,7 +20,7 @@ function isSafePath(key: string): boolean {
 	return true;
 }
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ url, locals, request }) => {
 	// Must be authenticated
 	const user = locals.user;
 	if (!user) error(401, 'Unauthorized');
@@ -80,13 +80,30 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		};
 		const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
+		const origin = request.headers.get('origin');
+		const corsOrigin = origin ?? '*';
+
 		return new Response(stream as unknown as ReadableStream, {
 			headers: {
 				'Content-Type': contentType,
-				'Cache-Control': 'private, max-age=3600'
+				'Cache-Control': 'private, max-age=3600',
+				'Access-Control-Allow-Origin': corsOrigin,
+				'Access-Control-Allow-Credentials': 'true'
 			}
 		});
 	} catch {
 		error(404, 'File not found');
 	}
+};
+
+export const OPTIONS: RequestHandler = async ({ request }) => {
+	const origin = request.headers.get('origin') ?? '*';
+	return new Response(null, {
+		status: 204,
+		headers: {
+			'Access-Control-Allow-Origin': origin,
+			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+			'Access-Control-Allow-Credentials': 'true'
+		}
+	});
 };
