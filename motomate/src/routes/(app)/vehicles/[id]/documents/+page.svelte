@@ -21,9 +21,8 @@
 		waitLocale();
 	});
 
-		const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.user?.settings?.locale ?? 'en');
 	const totalPages = $derived(Math.max(1, Math.ceil((data.total ?? 0) / data.perPage)));
-
 
 	let isDragging = $state(false);
 	let selectedFile = $state<File | null>(null);
@@ -128,10 +127,15 @@
 
 	const highlightId = $derived($page.url.searchParams.get('highlight') ?? null);
 
+	// Display name: user-facing title if set, otherwise original filename
+	function displayName(doc: PageData['docs'][number]): string {
+		return doc.title || doc.name;
+	}
+
 	$effect(() => {
 		if (highlightId) {
 			const doc = data.docs.find((d) => d.id === highlightId);
-			if (doc) searchQuery = doc.name;
+			if (doc) searchQuery = displayName(doc);
 			tick().then(() => {
 				const el = document.getElementById(`doc-${highlightId}`);
 				if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -402,8 +406,8 @@
 						</form>
 					{:else}
 						<!-- svelte-ignore a11y_no_static_element_interactions -->
-						<div class="doc-name" ondblclick={() => startEditName(doc.id, doc.name)}>
-							{doc.name}
+						<div class="doc-name" ondblclick={() => startEditName(doc.id, displayName(doc))}>
+							{displayName(doc)}
 						</div>
 					{/if}
 					<div class="doc-meta">
@@ -414,11 +418,19 @@
 						<span class="doc-meta-fixed">{formatDate(doc.created_at)}</span>
 						{#if data.serviceLogMap?.[doc.id]}
 							<span class="sep">·</span>
-							<span class="doc-linked-badge">{$_('documents.linkedBadge', { values: { date: formatDate(data.serviceLogMap[doc.id].performed_at) } })}</span>
+							<span class="doc-linked-badge"
+								>{$_('documents.linkedBadge', {
+									values: { date: formatDate(data.serviceLogMap[doc.id].performed_at) }
+								})}</span
+							>
 						{/if}
 						{#if data.travelMap?.[doc.id]}
 							<span class="sep">·</span>
-							<span class="doc-linked-badge">{$_('documents.linkedTravelBadge', { values: { title: data.travelMap[doc.id].title } })}</span>
+							<span class="doc-linked-badge"
+								>{$_('documents.linkedTravelBadge', {
+									values: { title: data.travelMap[doc.id].title }
+								})}</span
+							>
 						{/if}
 					</div>
 					{#if doc.expires_at}
@@ -438,7 +450,7 @@
 						rel="noopener"
 						class="action-btn">{$_('documents.actions.view')}</a
 					>
-					<button type="button" class="action-btn" onclick={() => startEditName(doc.id, doc.name)}
+					<button type="button" class="action-btn" onclick={() => startEditName(doc.id, displayName(doc))}
 						>{$_('documents.actions.rename')}</button
 					>
 					<button
@@ -466,7 +478,7 @@
 					>
 						<span class="entry-dot"></span>
 						<div class="entry-content">
-							<div class="entry-title">{doc.name}</div>
+							<div class="entry-title">{displayName(doc)}</div>
 							<div class="entry-meta">
 								{docTypeLabels[doc.doc_type] ?? doc.doc_type} · {formatSize(doc.size_bytes)} · {formatDate(
 									doc.created_at
@@ -885,8 +897,12 @@
 		animation: highlight-fade 2.5s ease forwards;
 	}
 	@keyframes highlight-fade {
-		0% { background: var(--accent-subtle); }
-		100% { background: var(--bg); }
+		0% {
+			background: var(--accent-subtle);
+		}
+		100% {
+			background: var(--bg);
+		}
 	}
 
 	.doc-icon {

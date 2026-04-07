@@ -175,10 +175,7 @@ async function evalTrigger(
 					tracker.status === 'due' &&
 					tracker.next_due_odometer !== null
 				) {
-					const km_remaining = Math.max(
-						0,
-						tracker.next_due_odometer - vehicle.current_odometer
-					);
+					const km_remaining = Math.max(0, tracker.next_due_odometer - vehicle.current_odometer);
 					results.push({
 						...base,
 						vars: { vehicle_name: vehicle.name, km_remaining, tracker_id: tracker.id, tracker_name }
@@ -208,7 +205,12 @@ async function evalTrigger(
 					);
 					results.push({
 						...base,
-						vars: { vehicle_name: vehicle.name, days_remaining: daysLeft, due_date: tracker.next_due_at, tracker_name }
+						vars: {
+							vehicle_name: vehicle.name,
+							days_remaining: daysLeft,
+							due_date: tracker.next_due_at,
+							tracker_name
+						}
 					});
 				}
 
@@ -223,7 +225,12 @@ async function evalTrigger(
 					);
 					results.push({
 						...base,
-						vars: { vehicle_name: vehicle.name, days_over, due_date: tracker.next_due_at, tracker_name }
+						vars: {
+							vehicle_name: vehicle.name,
+							days_over,
+							due_date: tracker.next_due_at,
+							tracker_name
+						}
 					});
 				}
 			}

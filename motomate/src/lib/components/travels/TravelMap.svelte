@@ -42,7 +42,7 @@
 	let error = $state(false);
 
 	const COLOR_SELECTED = '#2563eb'; // --accent
-	const COLOR_DEFAULT  = '#9ca3af'; // --text-subtle
+	const COLOR_DEFAULT = '#9ca3af'; // --text-subtle
 
 	function getColor(travelId: string) {
 		if (selectedTravelIds.length === 0) return COLOR_SELECTED;
@@ -64,7 +64,7 @@
 
 	function updateColors() {
 		for (const [travelId, polys] of gpxPolylines) {
-			const color   = getColor(travelId);
+			const color = getColor(travelId);
 			const opacity = getOpacity(travelId);
 			for (const poly of polys) {
 				poly.setStyle?.({ color });
@@ -123,7 +123,9 @@
 				try {
 					const b = poly.getBounds?.();
 					if (b?.isValid()) bounds.push(b);
-				} catch { /* ignore */ }
+				} catch {
+					/* ignore */
+				}
 			}
 		}
 		if (bounds.length > 0) {
@@ -144,7 +146,10 @@
 				map.removeLayer(gpxLayer);
 				gpxLayersByUrl.delete(url);
 				const label = gpxLabels.get(url);
-				if (label) { map.removeLayer(label); gpxLabels.delete(url); }
+				if (label) {
+					map.removeLayer(label);
+					gpxLabels.delete(url);
+				}
 				gpxFileMeta.delete(url);
 			}
 		}
@@ -194,7 +199,8 @@
 					const markers: any[] = [];
 					layer.eachLayer((child: any) => {
 						const collect = (l: any) => {
-							if (typeof l.getLatLngs === 'function') polys.push(l);    // Polyline
+							if (typeof l.getLatLngs === 'function')
+								polys.push(l); // Polyline
 							else if (typeof l.getLatLng === 'function') markers.push(l); // Marker
 						};
 						if (typeof child.eachLayer === 'function') {
@@ -212,8 +218,13 @@
 
 					for (const poly of polys) {
 						poly.on('click', () => onrouteclick(file.travelId));
-						poly.on('mouseover', () => { poly.setStyle?.({ weight: 5 }); poly.bringToFront?.(); });
-						poly.on('mouseout',  () => { poly.setStyle?.({ weight: 3 }); });
+						poly.on('mouseover', () => {
+							poly.setStyle?.({ weight: 5 });
+							poly.bringToFront?.();
+						});
+						poly.on('mouseout', () => {
+							poly.setStyle?.({ weight: 3 });
+						});
 					}
 
 					// Create a #N label at the midpoint of the first polyline
@@ -223,15 +234,17 @@
 						const flat = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
 						const mid = flat[Math.floor(flat.length / 2)];
 						if (mid) {
-							const label = (L as any).marker(mid, {
-								icon: (L as any).divIcon({
-									className: 'gpx-num-label',
-									html: `#${file.num}`,
-									iconSize: [24, 24],
-									iconAnchor: [12, 12]
-								}),
-								interactive: false
-							}).addTo(map);
+							const label = (L as any)
+								.marker(mid, {
+									icon: (L as any).divIcon({
+										className: 'gpx-num-label',
+										html: `#${file.num}`,
+										iconSize: [24, 24],
+										iconAnchor: [12, 12]
+									}),
+									interactive: false
+								})
+								.addTo(map);
 							// Hidden by default, updateColors will show when needed
 							if (label._icon) label._icon.style.display = 'none';
 							gpxLabels.set(file.url, label);
@@ -253,7 +266,9 @@
 				try {
 					const b = gpxLayer.getBounds?.();
 					if (b?.isValid()) allBounds.push(b);
-				} catch { /* ignore */ }
+				} catch {
+					/* ignore */
+				}
 			}
 			if (allBounds.length > 0) {
 				const combined = allBounds.reduce((acc: any, b: any) => acc.extend(b));
@@ -273,7 +288,8 @@
 			map = L.map(mapEl, { zoomControl: true, attributionControl: true });
 
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+				attribution:
+					'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 				maxZoom: 18,
 				referrerPolicy: 'origin-when-cross-origin'
 			}).addTo(map);
@@ -293,7 +309,9 @@
 		}
 	}
 
-	onMount(() => { initMap(); });
+	onMount(() => {
+		initMap();
+	});
 
 	onDestroy(() => {
 		mapReady = false;

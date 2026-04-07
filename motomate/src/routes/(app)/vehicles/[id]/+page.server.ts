@@ -22,10 +22,7 @@ import {
 	recomputeTrackerStatuses,
 	updateTrackerAfterService
 } from '$lib/db/repositories/maintenance.js';
-import {
-	getDocumentsByVehicle,
-	createDocument
-} from '$lib/db/repositories/documents.js';
+import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
@@ -108,7 +105,9 @@ export const actions: Actions = {
 				console.error('Attachment upload failed:', e);
 				return fail(500, { error: 'Attachment upload failed' });
 			}
-			const docName = String(raw.attachment_name || attachmentFile.name).trim().slice(0, 200);
+			const docName = String(raw.attachment_name || attachmentFile.name)
+				.trim()
+				.slice(0, 200);
 			const docType = String(raw.attachment_type || 'service');
 			const doc = await createDocument(locals.user!.id, {
 				vehicle_id: params.id,
@@ -360,7 +359,8 @@ export const actions: Actions = {
 
 		if (!serviceLogId) return fail(400, { uploadError: 'Missing service log ID' });
 		if (!file || file.size === 0) return fail(400, { uploadError: 'No file selected' });
-		if (file.size > MAX_ATTACHMENT_SIZE) return fail(400, { uploadError: 'File too large (max 10 MB)' });
+		if (file.size > MAX_ATTACHMENT_SIZE)
+			return fail(400, { uploadError: 'File too large (max 10 MB)' });
 
 		const log = await getServiceLogById(serviceLogId);
 		if (!log || log.vehicle_id !== params.id) return fail(404, { uploadError: 'Not found' });
@@ -378,7 +378,9 @@ export const actions: Actions = {
 			return fail(500, { uploadError: 'Upload failed' });
 		}
 
-		const docName = String(formData.get('doc_name') || file.name).trim().slice(0, 200);
+		const docName = String(formData.get('doc_name') || file.name)
+			.trim()
+			.slice(0, 200);
 		const docType = String(formData.get('doc_type') || 'service');
 		const doc = await createDocument(locals.user!.id, {
 			vehicle_id: params.id,

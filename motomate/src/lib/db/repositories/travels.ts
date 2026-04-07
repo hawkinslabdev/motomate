@@ -21,7 +21,13 @@ export type UpdateTravelInput = Partial<Omit<CreateTravelInput, 'vehicle_id'>>;
 
 export type TravelTimelineEntry = Pick<
 	Travel,
-	'id' | 'start_date' | 'duration_days' | 'title' | 'total_expenses_cents' | 'currency' | 'created_at'
+	| 'id'
+	| 'start_date'
+	| 'duration_days'
+	| 'title'
+	| 'total_expenses_cents'
+	| 'currency'
+	| 'created_at'
 >;
 
 export async function createTravel(userId: string, input: CreateTravelInput): Promise<Travel> {
@@ -74,16 +80,10 @@ export async function updateTravel(
 		.where(and(eq(travels.id, id), eq(travels.vehicle_id, vehicleId)));
 }
 
-export async function deleteTravel(
-	id: string,
-	vehicleId: string,
-	userId: string
-): Promise<void> {
+export async function deleteTravel(id: string, vehicleId: string, userId: string): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
-	await db
-		.delete(travels)
-		.where(and(eq(travels.id, id), eq(travels.vehicle_id, vehicleId)));
+	await db.delete(travels).where(and(eq(travels.id, id), eq(travels.vehicle_id, vehicleId)));
 }
 
 export async function getTravelsForTimeline(

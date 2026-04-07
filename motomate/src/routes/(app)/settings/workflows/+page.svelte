@@ -46,7 +46,7 @@
 
 	// Inline trigger editing
 	let editingRuleId = $state<string | null>(null);
-		
+
 	// Local copy of the trigger being edited
 	let editTrigger = $state<RuleTrigger | null>(null);
 
@@ -148,7 +148,11 @@
 						{#if rule.last_triggered_at}
 							{$_('settings.workflows.lastFired', {
 								values: {
-									date: formatDateTime(rule.last_triggered_at, data.user?.settings?.locale ?? 'en', data.user?.timezone)
+									date: formatDateTime(
+										rule.last_triggered_at,
+										data.user?.settings?.locale ?? 'en',
+										data.user?.timezone
+									)
 								}
 							})}
 						{:else}

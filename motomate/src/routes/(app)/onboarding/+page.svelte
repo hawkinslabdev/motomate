@@ -109,7 +109,6 @@
 					</button>
 				{/each}
 			</div>
-
 		{:else if step === 3}
 			<h2 class="step-title">{$_('onboarding.details.title', { values: { vehicleType } })}</h2>
 			<div class="form-fields">

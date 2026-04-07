@@ -45,7 +45,9 @@
 	class:travel-entry--planned={isPlanned}
 	class:travel-entry--clickable={!!onselect}
 	onclick={() => onselect?.(travel)}
-	onkeydown={(e) => { if (onselect && (e.key === 'Enter' || e.key === ' ')) onselect(travel); }}
+	onkeydown={(e) => {
+		if (onselect && (e.key === 'Enter' || e.key === ' ')) onselect(travel);
+	}}
 	tabindex={onselect ? 0 : undefined}
 >
 	<div class="entry-body">
@@ -93,13 +95,21 @@
 				<div class="menu-dropdown">
 					<button
 						class="menu-item"
-						onclick={(e) => { e.stopPropagation(); onedit(travel); menuOpen = false; }}
+						onclick={(e) => {
+							e.stopPropagation();
+							onedit(travel);
+							menuOpen = false;
+						}}
 					>
 						{$_('common.edit')}
 					</button>
 					<button
 						class="menu-item menu-item--danger"
-						onclick={(e) => { e.stopPropagation(); ondelete(travel); menuOpen = false; }}
+						onclick={(e) => {
+							e.stopPropagation();
+							ondelete(travel);
+							menuOpen = false;
+						}}
 					>
 						{$_('common.delete')}
 					</button>
@@ -204,7 +214,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: color 0.1s, background 0.1s;
+		transition:
+			color 0.1s,
+			background 0.1s;
 	}
 	.menu-btn:hover {
 		color: var(--text);

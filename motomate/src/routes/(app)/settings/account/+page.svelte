@@ -178,18 +178,34 @@
 		>
 			{exportLoading !== null ? $_('common.loading') : $_('settings.account.export.btn')}
 			{#if exportLoading === null}
-				<svg class="caret" class:caret--open={exportOpen} viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+				<svg
+					class="caret"
+					class:caret--open={exportOpen}
+					viewBox="0 0 12 12"
+					fill="currentColor"
+					aria-hidden="true"
+				>
 					<path d="M6 8L1 3h10z" />
 				</svg>
 			{/if}
 		</button>
 		{#if exportOpen}
 			<div class="export-menu" role="menu">
-				<button type="button" class="export-option" role="menuitem" onclick={() => triggerExport('json')}>
+				<button
+					type="button"
+					class="export-option"
+					role="menuitem"
+					onclick={() => triggerExport('json')}
+				>
 					<span class="export-option-label">{$_('settings.account.export.json')}</span>
 					<span class="export-option-hint">{$_('settings.account.export.jsonHint')}</span>
 				</button>
-				<button type="button" class="export-option" role="menuitem" onclick={() => triggerExport('zip')}>
+				<button
+					type="button"
+					class="export-option"
+					role="menuitem"
+					onclick={() => triggerExport('zip')}
+				>
 					<span class="export-option-label">{$_('settings.account.export.zip')}</span>
 					<span class="export-option-hint">{$_('settings.account.export.zipHint')}</span>
 				</button>

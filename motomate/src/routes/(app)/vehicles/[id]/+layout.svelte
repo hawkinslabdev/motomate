@@ -176,7 +176,9 @@
 					</div>
 					<div class="vehicle-subtitle">
 						{vehicle.make}
-						{vehicle.model} · {vehicle.year} {#if vehicle.license_plate} · {vehicle.license_plate}{/if} 
+						{vehicle.model} · {vehicle.year}
+						{#if vehicle.license_plate}
+							· {vehicle.license_plate}{/if}
 					</div>
 					<div class="odo-display">
 						<span class="odo-num">{formatNumber(displayOdo, locale)}</span>

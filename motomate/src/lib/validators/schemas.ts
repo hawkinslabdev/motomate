@@ -159,7 +159,8 @@ export const CreateServiceLogSchema = z.object({
 
 export const CreateDocumentSchema = z.object({
 	vehicle_id: z.string().min(1),
-	name: z.string().min(1).max(200).trim(),
+	name: z.string().min(1).max(200).trim(), // original filename
+	title: z.string().max(200).trim().optional().nullable(), // user-facing description
 	doc_type: z
 		.enum(['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route'])
 		.default('service'),

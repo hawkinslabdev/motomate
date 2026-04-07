@@ -1,11 +1,13 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { and, eq } from 'drizzle-orm';
+import { db } from '$lib/db/index.js';
+import { documents } from '$lib/db/schema.js';
 import {
 	getDocumentsByVehicle,
 	getDocumentsByVehicleTotal,
 	createDocument,
-	deleteDocument,
-	updateDocumentName
+	deleteDocument
 } from '$lib/db/repositories/documents.js';
 import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import { getTravelsByVehicle } from '$lib/db/repositories/travels.js';
@@ -71,9 +73,8 @@ export const actions: Actions = {
 		if (!file || file.size === 0) return fail(400, { error: 'No file selected' });
 		if (file.size > MAX_SIZE) return fail(400, { error: 'File too large (max 10 MB)' });
 
-		const name = String(formData.get('name') || file.name)
-			.trim()
-			.slice(0, 200);
+		const titleRaw = String(formData.get('name') ?? '').trim();
+		const title = titleRaw || null; // user-facing description
 		const doc_type = String(formData.get('doc_type') || 'other');
 		const expires_at = String(formData.get('expires_at') || '').trim() || undefined;
 
@@ -90,7 +91,8 @@ export const actions: Actions = {
 
 		await createDocument(user.id, {
 			vehicle_id: vehicleId,
-			name,
+			name: file.name, // original filename preserved
+			title,
 			doc_type,
 			storage_key: key,
 			mime_type: file.type || 'application/octet-stream',
@@ -121,7 +123,11 @@ export const actions: Actions = {
 		const id = String(data.get('id') ?? '');
 		const name = String(data.get('name') ?? '').trim();
 		if (!id || !name) return fail(400, { error: 'Missing id or name' });
-		await updateDocumentName(id, locals.user!.id, name);
+		// rename updates the user-facing description (title), not the original filename (name)
+		await db
+			.update(documents)
+			.set({ title: name.slice(0, 200) })
+			.where(and(eq(documents.id, id), eq(documents.user_id, locals.user!.id)));
 		return { renamed: true };
 	}
 };

@@ -32,7 +32,9 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	const travelList = await getTravelsByVehicle(vehicle.id, userId);
 
 	// Resolve all GPX documents so the map has storage keys + presigned URLs
-	const allDocIds = [...new Set(travelList.flatMap((t) => t.gpx_document_ids).filter(Boolean))] as string[];
+	const allDocIds = [
+		...new Set(travelList.flatMap((t) => t.gpx_document_ids).filter(Boolean))
+	] as string[];
 	const gpxDocs = await getDocumentsByIds(allDocIds, userId);
 
 	// Generate presigned URLs for GPX files (valid 1 hour)
@@ -60,8 +62,7 @@ export const actions: Actions = {
 			expensesRaw && String(expensesRaw).trim() !== ''
 				? Math.round(Number(expensesRaw) * 100)
 				: null;
-		const currency =
-			(locals.user as any)?.settings?.currency ?? 'EUR';
+		const currency = (locals.user as any)?.settings?.currency ?? 'EUR';
 
 		const excludedGpxRaw = data.get('excluded_gpx_days');
 		const excludedGpxDays: number[] = excludedGpxRaw

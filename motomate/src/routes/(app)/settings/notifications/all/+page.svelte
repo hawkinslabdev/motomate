@@ -47,7 +47,8 @@
 	{#snippet children()}
 		{#if hasUnread}
 			<form method="POST" action="?/markAllRead" use:enhance>
-				<button type="submit" class="text-action">{$_('settings.notifications.markAllRead')}</button>
+				<button type="submit" class="text-action">{$_('settings.notifications.markAllRead')}</button
+				>
 			</form>
 		{/if}
 		{#if data.filter === 'all'}
@@ -295,7 +296,10 @@
 		padding: 0.25rem 0.5rem;
 		cursor: pointer;
 		white-space: nowrap;
-		transition: color 0.1s, border-color 0.1s, background 0.1s;
+		transition:
+			color 0.1s,
+			border-color 0.1s,
+			background 0.1s;
 	}
 	.row-btn:hover {
 		color: var(--text-muted);

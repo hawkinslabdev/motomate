@@ -23,8 +23,20 @@
 
 	let primedLink = $state<string | null>(null);
 	let primedTimeout: ReturnType<typeof setTimeout> | null = null;
+	let isMobile = $state(false);
+
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		const checkMobile = () => {
+			isMobile = window.innerWidth <= 640;
+		};
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	});
 
 	function handleExternalClick(e: MouseEvent, href: string) {
+		if (!isMobile) return;
 		if (primedLink === href) {
 			primedLink = null;
 			if (primedTimeout) clearTimeout(primedTimeout);
@@ -65,7 +77,11 @@
 				class:external-link--primed={primedLink === 'https://github.com/hawkinslabdev/motomate'}
 				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate')}
 			>
-				<span>{primedLink === 'https://github.com/hawkinslabdev/motomate' ? $_('settings.nav.tapAgain') : $_('settings.nav.sourceCode')}</span>
+				<span
+					>{primedLink === 'https://github.com/hawkinslabdev/motomate'
+						? $_('settings.nav.tapAgain')
+						: $_('settings.nav.sourceCode')}</span
+				>
 				&nbsp;
 				<svg
 					viewBox="0 0 24 24"
@@ -87,10 +103,15 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="settings-nav-link external-link"
-				class:external-link--primed={primedLink === 'https://github.com/hawkinslabdev/motomate/issues'}
+				class:external-link--primed={primedLink ===
+					'https://github.com/hawkinslabdev/motomate/issues'}
 				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate/issues')}
 			>
-				<span>{primedLink === 'https://github.com/hawkinslabdev/motomate/issues' ? $_('settings.nav.tapAgain') : $_('settings.nav.reportIssue')}</span>
+				<span
+					>{primedLink === 'https://github.com/hawkinslabdev/motomate/issues'
+						? $_('settings.nav.tapAgain')
+						: $_('settings.nav.reportIssue')}</span
+				>
 				&nbsp;
 				<svg
 					viewBox="0 0 24 24"
@@ -196,7 +217,7 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
-		padding: 0.5rem 1.0rem;
+		padding: 0.5rem 1rem;
 		opacity: 0.7;
 	}
 	.settings-nav-divider {

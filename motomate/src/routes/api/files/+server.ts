@@ -83,20 +83,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		};
 		const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
-		// Resolve original filename for Content-Disposition
-		let filename: string | null = null;
-		if (isDoc) {
-			const doc = await getDocumentByStorageKey(key);
-			if (doc?.name) filename = doc.name;
-		}
+		// Use the original filename (doc.name) for download — always has correct extension
+		const doc = await getDocumentByStorageKey(key);
+		const filename = doc?.name ?? key.split('/').pop() ?? null;
 
 		const headers: Record<string, string> = {
 			'Content-Type': contentType,
 			'Cache-Control': 'private, max-age=3600'
 		};
 		if (filename) {
-			// RFC 5987: encode non-ASCII filenames
-			headers['Content-Disposition'] = `attachment; filename="${filename.replace(/"/g, '\\"')}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+			headers['Content-Disposition'] =
+				`attachment; filename="${filename.replace(/"/g, '\\"')}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
 		}
 
 		return new Response(stream as unknown as ReadableStream, { headers });

@@ -1,883 +1,883 @@
 {
-  "common": {
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "add": "Añadir",
-    "back": "Volver",
-    "continue": "Continuar",
-    "done": "Hecho",
-    "loading": "Cargando...",
-    "optional": "(opcional)",
-    "required": "*",
-    "close": "Cerrar",
-    "saving": "Guardando…"
-  },
-  "auth": {
-    "login": {
-      "title": "Iniciar sesión",
-      "subtitle": "Introduce tu correo electrónico para continuar",
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "rememberMe": "Recordarme",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
-      "submit": "Iniciar sesión",
-      "noAccount": "¿No tienes cuenta?",
-      "signUp": "¡Regístrate!",
-      "magicLinkSent": "Revisa tu correo, un enlace de inicio de sesión está en camino.",
-      "setupNotice": {
-        "title": "Configuración inicial",
-        "body": "Bienvenido a MotoMate. Como eres nuevo aquí, se ha creado una cuenta de administrador predeterminada. Inicia sesión para completar la configuración y cambiar estas credenciales.",
-        "defaultCreds": "Usa las credenciales predeterminadas anteriores en el primer inicio de sesión. Puedes cambiarlas en Configuración → Cuenta."
-      },
-      "tabs": {
-        "password": "Contraseña",
-        "magicLink": "Enlace mágico"
-      },
-      "magicSubmit": "Enviar enlace mágico",
-      "errors": {
-        "rateLimited": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde.",
-        "invalidFormat": "Formato de correo electrónico o contraseña inválido",
-        "invalidCredentials": "Correo electrónico o contraseña inválidos",
-        "invalidEmail": "Por favor, introduce una dirección de correo electrónico válida"
-      }
-    },
-    "register": {
-      "title": "Crear cuenta",
-      "subtitle": "Regístrate para empezar a rastrear el mantenimiento de tu vehículo",
-      "email": "Correo electrónico",
-      "password": "Contraseña",
-      "passwordHint": "Usa al menos 8 caracteres",
-      "confirmPassword": "Confirmar contraseña",
-      "passwordMismatch": "Las contraseñas no coinciden",
-      "submit": "Crear cuenta",
-      "hasAccount": "¿Ya tienes cuenta?",
-      "login": "Iniciar sesión"
-    },
-    "magicLink": {
-      "verifying": "Iniciando sesión…",
-      "invalid": "Este enlace no es válido o ha expirado.",
-      "retry": "Solicitar un nuevo enlace"
-    }
-  },
-  "onboarding": {
-    "security": {
-      "title": "Protege tu cuenta",
-      "description": "Has iniciado sesión como administrador predeterminado. Establece un correo electrónico y contraseña reales antes de continuar — siempre puedes actualizarlos en Configuración más tarde.",
-      "newEmail": "Nueva dirección de correo electrónico",
-      "newPassword": "Nueva contraseña",
-      "confirmPassword": "Confirmar contraseña",
-      "submit": "Guardar y continuar →",
-      "skip": "Omitir por ahora"
-    },
-    "welcome": {
-      "title": "Bienvenido a MotoMate",
-      "description": "Añadamos tu primer vehículo y configuremos un programa de mantenimiento. Toma aproximadamente un minuto.",
-      "submit": "Comenzar →",
-      "skipWarning": "Recuerda actualizar tu correo electrónico y contraseña en Configuración → Cuenta antes de ponerte en marcha."
-    },
-    "type": {
-      "title": "¿Qué tipo de vehículo?",
-      "motorcycle": "Motocicleta",
-      "scooter": "Ciclomotor",
-      "bike": "Bicicleta",
-      "other": "Otro"
-    },
-    "details": {
-      "title": "Cuéntanos sobre tu {vehicleType}",
-      "name": "Apodo",
-      "make": "Marca",
-      "model": "Modelo",
-      "year": "Año",
-      "vin": "VIN",
-      "licensePlate": "Matrícula",
-      "placeholders": {
-        "name": "ej. Honda Grom",
-        "make": "Honda",
-        "model": "CB500F",
-        "vin": "opcional",
-        "licensePlate": "ej. AB-123 CD"
-      }
-    },
-    "odometer": {
-      "title": "Lectura actual del odómetro",
-      "description": "Establece la base para los intervalos de mantenimiento basados en kilómetros.",
-      "placeholder": "0"
-    },
-    "presets": {
-      "title": "¿Qué tareas de mantenimiento?",
-      "description": "Crearemos rastreadores para estos. Puedes añadirlos o eliminarlos en cualquier momento.",
-      "tasks": {
-        "oil": "Cambio de aceite y filtro",
-        "tire": "Presión y desgaste de neumáticos",
-        "chain_lube": "Limpieza & lubricación de cadena",
-        "chain_tension": "Tensión de la cadena",
-        "brake": "Pastillas y líquido de frenos"
-      },
-      "intervals": {
-        "oil": "cada 5.000 km / 12 meses",
-        "tire": "control mensual",
-        "chain_lube": "cada 500 km",
-        "chain_tension": "cada 500 km",
-        "brake": "cada 10.000 km / 2 años"
-      },
-      "descriptions": {
-        "chain_lube": "Limpiar y lubricar la cadena",
-        "chain_tension": "Comprobar y ajustar la tensión de la cadena"
-      }
-    },
-    "lastService": {
-      "title": "Último cambio de aceite",
-      "description": "Opcional: ayuda a calcular cuándo vence el próximo servicio.",
-      "date": "Fecha",
-      "odometer": "Odómetro en servicio",
-      "skip": "Omitir este paso",
-      "setupNote": "Último servicio (ingresado durante la configuración)"
-    },
-    "summary": {
-      "title": "¡Ya estás listo!",
-      "submit": "Abrir mi garage →"
-    },
-    "nav": {
-      "back": "← Volver",
-      "stepOf": "{step} de {total}",
-      "continueBtn": "Continuar →"
-    }
-  },
-  "dashboard": {
-    "greeting": {
-      "morning": "Buenos días",
-      "afternoon": "Buenas tardes",
-      "evening": "Buenas noches"
-    },
-    "status": {
-      "overdue": "{count, plural, =1 {1 elemento vencido.} other {# elementos vencidos.}}",
-      "dueSoon": "{count, plural, =1 {1 elemento pronto vencido.} other {# elementos pronto vencidos.}}",
-      "allGood": "Todo parece estar bien.",
-      "addFirst": "Añade tu primer vehículo para comenzar."
-    },
-    "sections": {
-      "needsAttention": "Requiere atención",
-      "garage": "Garage",
-      "recentActivity": "Actividad reciente"
-    },
-    "viewAll": "Ver todo →",
-    "empty": {
-      "title": "Tu garage está vacío",
-      "descriptionOnboarding": "Añade tu primera moto o ciclomotor para comenzar.",
-      "descriptionActive": "Añade un nuevo vehículo a tu colección.",
-      "submit": "+ Añadir vehículo"
-    }
-  },
-  "vehicles": {
-    "title": "Garage",
-    "vehicleCount": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
-    "archived": {
-      "show": "Mostrar archivados",
-      "hide": "Ocultar archivados"
-    },
-    "add": "+ Añadir vehículo",
-    "empty": {
-      "title": "Tu garage está vacío",
-      "description": "Añade un nuevo vehículo a tu colección."
-    }
-  },
-  "vehicle": {
-    "layout": {
-      "backToGarage": "← Garage",
-      "archived": "Archivado",
-      "avatar": {
-        "choose": "Elegir avatar",
-        "upload": "Subir imagen",
-        "reset": "Restablecer avatar"
-      },
-      "tabs": {
-        "timeline": "Linea de tiempo",
-        "maintenance": "Mantenimiento",
-        "documents": "Documentos",
-        "finance": "Finanzas",
-        "settings": "Configuracion",
-        "travels": "Viajes"
-      }
-    },
-    "detail": {
-      "menu": {
-        "maintenance": "Mantenimiento",
-        "mileage": "Kilometraje",
-        "note": "Nota"
-      },
-      "timeline": {
-        "title": "Línea de tiempo",
-        "subtitle": "Todos tus registros para {name} en un solo lugar.",
-        "empty": {
-          "title": "Sin historial todavía",
-          "description": "Registra tu primer servicio o control de kilometraje para iniciar la línea de tiempo."
-        }
-      },
-      "upcoming": "Próximo",
-      "nextDue": "Próximo: {date}",
-      "logLink": "Registrar",
-      "overdueByKm": "Atrasado por {km} {unit}",
-      "overdueSince": "Atrasado desde {date}",
-      "overdue": "Atrasado",
-      "neverServiced": "Nunca revisado",
-      "dueInKm": "Previsto en {km} {unit}",
-      "dueDate": "Previsto el {date}",
-      "dueSoon": "Próximamente",
-      "nextDueOdo": "Próximo: {reading} {unit}",
-      "serviceEntry": "Entrada de servicio",
-      "hideOdoReadings": "Ocultar lecturas del odómetro",
-      "showMoreOdoReadings": "Mostrar {n} lecturas más del odómetro",
-      "deleteDialog": {
-        "title": "¿Eliminar esta entrada?",
-        "description": "Esta entrada se eliminará permanentemente de tu línea de tiempo. Esta acción no se puede deshacer.",
-        "confirm": "Eliminar",
-        "cancel": "Conservar"
-      }
-    },
-    "forms": {
-      "logService": "Registrar servicio",
-      "updateOdo": "Actualizar kilometraje",
-      "writeNote": "Escribir nota",
-      "noteDesc": "Escribe una nota o observación",
-      "editEntry": "Editar entrada",
-      "fields": {
-        "date": "Fecha",
-        "odometer": "Kilometraje ({unit})",
-        "description": "Descripción",
-        "remark": "Observación {optional}",
-        "cost": "Coste {optional}",
-        "notes": "Notas",
-        "resetCycle": "Reiniciar ciclo para {optional}",
-        "checkToReset": "(marcar para reiniciar)",
-        "currentReading": "Lectura actual ({unit})",
-        "attachments": "Adjuntos {optional}"
-      },
-      "placeholders": {
-        "partsUsed": "Piezas usadas, observaciones…",
-        "cost": "0,00",
-        "description": "ej. Cambio de aceite, lubricación cadena…",
-        "additionalDetails": "Detalles adicionales…",
-        "beforeTrip": "ej. Antes de un viaje largo",
-        "note": "ej. He realizado una inspección general",
-        "writeNote": "Escribe una nota…"
-      },
-      "submit": {
-        "service": "Guardar entrada",
-        "odometer": "Actualizar",
-        "note": "Guardar nota"
-      },
-      "attachFile": "Adjuntar archivo",
-      "chooseFile": "Elegir archivo",
-      "linkDocument": "Vincular documento",
-      "viewDocument": "Ver documento",
-      "attachments": {
-        "pickerTitle": "Vincular un documento",
-        "noDocuments": "No hay documentos disponibles.",
-        "uploading": "Subiendo..."
-      }
-    },
-    "add": {
-      "title": "Añadir vehículo",
-      "back": "← Garage",
-      "sections": {
-        "type": "Tipo",
-        "details": "Detalles",
-        "odometer": "Kilometraje"
-      },
-      "fields": {
-        "name": "Nombre",
-        "make": "Marca",
-        "model": "Modelo",
-        "year": "Año",
-        "vin": "Bastidor",
-        "licensePlate": "Matrícula",
-        "currentReading": "Lectura actual",
-        "unit": "Unidad"
-      },
-      "placeholders": {
-        "name": "Mi CB500F",
-        "make": "ej. Honda",
-        "model": "ej. CB500F",
-        "vin": "opcional",
-        "licensePlate": "ej. AB-123 CD"
-      },
-      "types": {
-        "motorcycle": "Motocicleta",
-        "scooter": "Ciclomotor",
-        "bike": "Bicicleta",
-        "other": "Otro"
-      },
-      "actions": {
-        "cancel": "Cancelar",
-        "submit": "Añadir vehículo →"
-      }
-    },
-    "edit": {
-      "title": "Configuración",
-      "subtitle": "Administra tu {name}",
-      "odometer": {
-        "title": "Actualizar kilometraje",
-        "currentReading": "Lectura actual ({unit})",
-        "update": "Actualizar"
-      },
-      "vehicleDetails": "Detalles del vehículo",
-      "fields": {
-        "name": "Nombre",
-        "year": "Año",
-        "make": "Marca",
-        "model": "Modelo",
-        "vin": "Bastidor",
-        "licensePlate": "Matrícula"
-      },
-      "purchaseSale": "Compra & Venta",
-      "purchasePrice": "Precio de compra",
-      "soldPrice": "Precio de venta",
-      "save": "Guardar cambios",
-      "saved": "Cambios guardados",
-      "odometerUpdated": "Kilometraje actualizado",
-      "vehicleRestored": "Vehículo restaurado",
-      "settings": {
-        "title": "Configuración",
-        "archive": {
-          "title": "Archivar vehículo",
-          "titleRestore": "Restaurar vehículo",
-          "descArchive": "Mueve este vehículo al archivo. Se ocultará del garage.",
-          "descRestore": "Pon este vehículo de nuevo en tu garage activo.",
-          "btnArchive": "Archivar",
-          "btnRestore": "Restaurar"
-        },
-        "dangerZone": "Zona de peligro",
-        "delete": {
-          "title": "Eliminar este vehículo",
-          "desc": "Elimina permanentemente todo el historial de servicio, documentos y trackers.",
-          "btn": "Eliminar",
-          "dialog": {
-            "title": "¿Eliminar {name}?",
-            "desc": "Esto eliminará permanentemente todo el historial de servicio, documentos y trackers. Esta acción no se puede deshacer.",
-            "confirm": "Eliminar vehículo",
-            "cancel": "Mantener vehículo"
-          }
-        },
-        "archiveDialog": {
-          "title": "¿Archivar {name}?",
-          "desc": "Este vehículo se ocultará de tu garage. Puedes restaurarlo en cualquier momento. Establece el precio de venta arriba antes de continuar si lo has vendido.",
-          "confirm": "Archivar",
-          "cancel": "Mantener activo"
-        },
-        "unarchiveDialog": {
-          "title": "¿Restaurar {name}?",
-          "desc": "Este vehículo se devolverá a tu garage activo. El precio de venta se borrará para que puedas editar los detalles del vehículo nuevamente.",
-          "confirm": "Restaurar",
-          "cancel": "Mantener archivado"
-        }
-      }
-    }
-  },
-  "maintenance": {
-    "title": "Mantenimiento",
-    "subtitle": "Rastrea tu programa de servicio",
-    "addTask": {
-      "button": "+ Añadir tarea",
-      "cancel": "Cancelar",
-      "title": "Añadir tarea",
-      "fields": {
-        "name": "Nombre de tarea",
-        "intervalKm": "Intervalo ({unit})",
-        "intervalMonths": "Intervalo (meses)"
-      },
-      "placeholders": {
-        "name": "ej. Cambio de aceite",
-        "km": "ej. 5000",
-        "months": "ej. 12"
-      },
-      "submit": "Añadir tarea"
-    },
-    "empty": {
-      "title": "Sin tareas de mantenimiento todavía",
-      "description": "Añade tareas personalizadas o ejecuta el asistente de configuración para configurar valores predeterminados."
-    },
-    "tracker": {
-      "status": {
-        "due": "vencido",
-        "overdue": "atrasado"
-      },
-      "logNow": "Registrar ahora →",
-      "edit": "Editar",
-      "delete": "Eliminar",
-      "every": "Cada {interval}",
-      "due": "Previsto {info}",
-      "last": "Último {info}",
-      "notScheduled": "Sin programar"
-    },
-    "editTracker": {
-      "sections": {
-        "interval": "Intervalo",
-        "lastServiced": "Último servicio",
-        "nextDue": "Próximo vencimiento"
-      },
-      "fields": {
-        "everyKm": "Cada ({unit})",
-        "everyMonths": "Cada (meses)",
-        "date": "Fecha",
-        "odometer": "Odómetro ({unit})",
-        "autoCompute": "— dejar vacío para cálculo automático"
-      },
-      "submit": "Guardar cambios"
-    },
-    "saving": "Guardando...",
-    "logService": {
-      "submit": "Guardar entrada"
-    },
-    "toasts": {
-      "logged": "Entrada de servicio guardada",
-      "trackerUpdated": "Rastreador actualizado",
-      "trackerDeleted": "Rastreador eliminado",
-      "taskAdded": "Tarea agregada"
-    },
-    "delete": {
-      "title": "¿Eliminar {name}?",
-      "description": "Este rastreador de mantenimiento se eliminará permanentemente. Esta acción no se puede deshacer.",
-      "confirm": "Eliminar",
-      "cancel": "Mantener"
-    }
-  },
-  "finance": {
-    "title": "Finanzas",
-    "subtitle": "Rastrea gastos",
-    "totalSpent": "Total gastado en tu {name}",
-    "addExpense": "Añadir",
-    "noCosts": "Sin costos registrados",
-    "groupBy": "Agrupar por:",
-    "groupCategory": "Categoría",
-    "groupYear": "Año",
-    "groupDescription": "Descripción",
-    "groupNone": "Ninguna",
-    "byCategory": "Por categoría",
-    "byYear": "Por año",
-    "byDescription": "Por descripción",
-    "allTransactions": "Todas las transacciones",
-    "recentTransactions": "Transacciones recientes",
-    "serviceEntry": "Entrada de servicio",
-    "expense": "Gasto",
-    "gain": "Ganancia",
-    "loss": "Pérdida",
-    "profitLoss": "Ganancia/Pérdida",
-    "salePrice": "Precio de venta",
-    "transactionAdded": "Transacción añadida",
-    "transactionDeleted": "Transacción eliminada",
-    "transactionUpdated": "Transacción actualizada",
-    "saving": "Guardando...",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "investment": {
-      "purchasePrice": "Precio de compra",
-      "notSet": "No establecido",
-      "addHint": "Añadir en Configuración → Compra & Venta",
-      "expenses": "Gastos",
-      "transactions": "{count} transacción",
-      "transactions_plural": "{count} transacciones",
-      "totalInvested": "Total invertido",
-      "soldFor": "Vendido por"
-    },
-    "form": {
-      "addTitle": "Añadir",
-      "editTitle": "Editar",
-      "category": "Categoría",
-      "amount": "Importe ({currency})",
-      "date": "Fecha",
-      "odometer": "Kilometraje ({unit})",
-      "odometerOptional": "Opcional",
-      "notes": "Notas",
-      "notesPlaceholder": "Detalles adicionales"
-    },
-    "deleteDialog": {
-      "title": "¿Eliminar esta transacción?",
-      "description": "Esta transacción se eliminará permanentemente. Esta acción no se puede deshacer.",
-      "confirm": "Eliminar",
-      "cancel": "Mantener"
-    },
-    "categories": {
-      "maintenance": "Mantenimiento",
-      "parts": "Piezas",
-      "accessories": "Accesorios",
-      "administrative": "Administrativo",
-      "other": "Otro"
-    },
-    "empty": {
-      "title": "Sin gastos registrados",
-      "description": "Añade tu primer gasto para empezar a rastrear."
-    }
-  },
-  "documents": {
-    "title": "Documentos",
-    "subtitle": "Almacena registros de servicio, fotos y papeles",
-    "upload": "+ Subir",
-    "dropHintDesktop": "Suelta un archivo aquí o navega",
-    "dropHintMobile": "Toca para subir",
-    "uploadHint": "Imágenes, PDF, Word, Excel - max 10 MB",
-    "selectedFile": "Archivo seleccionado",
-    "summary": "Resumen",
-    "summaryPlaceholder": "ej: Recibo cambio de aceite",
-    "category": "Categoría",
-    "expiry": "Vencimiento",
-    "expiryOptional": "(opcional)",
-    "expiryExpired": "Vencido",
-    "expiryExpiringSoon": "Vence pronto",
-    "expiryValid": "Válido",
-    "actions": {
-      "view": "Ver",
-      "rename": "Renombrar",
-      "delete": "Eliminar"
-    },
-    "searchPlaceholder": "Buscar documentos...",
-    "allTypes": "Todos los tipos",
-    "cancel": "Cancelar",
-    "saving": "Guardando...",
-    "saveDocument": "Guardar documento",
-    "toasts": {
-      "uploaded": "Documento subido",
-      "renamed": "Documento renombrado",
-      "deleted": "Documento eliminado"
-    },
-    "deleteDialog": {
-      "title": "¿Eliminar {name}?",
-      "description": "Este documento se eliminará permanentemente. Esta acción no se puede deshacer.",
-      "confirm": "Eliminar",
-      "cancel": "Mantener"
-    },
-    "sort": {
-      "newest": "Más reciente primero",
-      "oldest": "Más antiguo primero",
-      "name": "Nombre A-Z"
-    },
-    "view": {
-      "list": "Lista",
-      "timeline": "Línea de tiempo"
-    },
-    "types": {
-      "service": "Servicio",
-      "quotation": "Presupuesto",
-      "papers": "Papeles",
-      "photo": "Foto",
-      "notes": "Notas",
-      "other": "Otro",
-      "route": "Ruta"
-    },
-    "empty": {
-      "title": "No se encontraron documentos",
-      "description": "Sube documentos o ajusta tus filtros."
-    },
-    "prevPage": "Anterior",
-    "nextPage": "Siguiente",
-    "pageOf": "Pagina {page} de {total}",
-    "linkedBadge": "Vinculado · Servicio {date}",
-    "linkedTravelBadge": "Vinculado · Viaje {title}"
-  },
-  "settings": {
-    "title": "Configuracion",
-    "profile": {
-      "title": "Preferencias",
-      "display": "Pantalla",
-      "language": "Idioma y región",
-      "currency": "Moneda",
-      "odometerUnit": "Unidad del odómetro",
-      "saved": "Preferencias guardadas",
-      "submit": "Guardar preferencias",
-      "saving": "Guardando…"
-    },
-    "account": {
-      "title": "Cuenta",
-      "email": {
-        "title": "Correo electrónico",
-        "current": "Actual: {email}",
-        "new": "Nueva dirección de correo electrónico",
-        "submit": "Actualizar correo",
-        "saved": "Correo actualizado",
-        "errors": {
-          "invalid": "Introduce una dirección de correo válida",
-          "sameAsCurrent": "Ese ya es tu correo actual",
-          "alreadyInUse": "Ese correo ya está en uso"
-        }
-      },
-      "password": {
-        "title": "Contraseña",
-        "current": "Contraseña actual",
-        "new": "Nueva contraseña",
-        "confirm": "Confirmar nueva contraseña",
-        "hint": "Mín. 8 caracteres",
-        "submit": "Cambiar contraseña",
-        "saved": "Contraseña cambiada",
-        "errors": {
-          "allRequired": "Todos los campos de contraseña son obligatorios",
-          "tooShort": "La nueva contraseña debe tener al menos 8 caracteres",
-          "noMatch": "Las contraseñas no coinciden",
-          "noPasswordSet": "No hay contraseña configurada en esta cuenta — usa el enlace mágico para iniciar sesión",
-          "incorrect": "La contraseña actual es incorrecta",
-          "sameAsCurrent": "La nueva contraseña debe ser diferente de la actual"
-        }
-      },
-      "export": {
-        "title": "Exportar datos",
-        "desc": "Descarga una copia de tus vehículos, registros de mantenimiento, documentos y configuración.",
-        "btn": "Exportar datos",
-        "json": "Exportar como JSON",
-        "jsonHint": "Datos estructurados, sin archivos",
-        "zip": "Exportar como ZIP",
-        "zipHint": "Incluye documentos adjuntos"
-      },
-      "dangerZone": "Zona de peligro",
-      "delete": {
-        "title": "Eliminar esta cuenta",
-        "desc": "Elimina permanentemente tu cuenta y todos tus vehículos, historial de servicio y documentos.",
-        "btn": "Eliminar cuenta",
-        "dialog": {
-          "title": "¿Eliminar tu cuenta?",
-          "desc": "Esto eliminará permanentemente tu cuenta, todos tus vehículos y todos los datos asociados. Esta acción no se puede deshacer.",
-          "confirm": "Eliminar cuenta",
-          "cancel": "Mantener cuenta"
-        }
-      }
-    },
-    "workflows": {
-      "title": "Reglas de notificación",
-      "loadPresets": "Restaurar reglas predeterminadas",
-      "empty": "Sin reglas todavía. Restaura las reglas predeterminadas para empezar, o crea las tuyas.",
-      "presets": {
-        "maintenanceDueSoonKm": "Mantenimiento próximo (km)",
-        "maintenanceOverdueKm": "Mantenimiento vencido (km)",
-        "maintenanceDueSoonDate": "Mantenimiento próximo (fecha)",
-        "maintenanceOverdueDate": "Mantenimiento vencido (fecha)",
-        "odometerNudge": "Recordatorio de odómetro"
-      },
-      "lastFired": "Último activado: {date}",
-      "neverFired": "Nunca activado",
-      "delete": "Eliminar",
-      "confirmDelete": "¿Eliminar esta regla?",
-      "editBtn": "Editar",
-      "editSave": "Guardar",
-      "editCancel": "Cancelar",
-      "allChannels": "Todos los canales activos",
-      "trigger": {
-        "beforeDue": "antes del vencimiento",
-        "pastDue": "vencido",
-        "whenOverdue": "Cuando vencido (km)",
-        "daysBefore": "días antes del vencimiento",
-        "daysPast": "días después del vencimiento",
-        "every": "Cada",
-        "noOdo": "Sin actualización de odómetro en",
-        "days": "días",
-        "docExpiring": "Documento expira en",
-        "unknown": "Disparador desconocido"
-      },
-      "edit": {
-        "kmBefore": "Notificar cuando falten (km)",
-        "kmPast": "Notificar cuando se exceda en (km)",
-        "daysBefore": "Días antes para notificar",
-        "daysPast": "Días después para notificar",
-        "days": "Después de cuántos días",
-        "month": "Mes",
-        "day": "Día"
-      },
-      "deleted": "Regla eliminada",
-      "confirmDeleteDesc": "¿Eliminar la regla \"{name}\"? Esta acción no se puede deshacer.",
-      "runCheck": "Verificar ahora",
-      "runCheckDone": "Verificación completada"
-    },
-    "notifications": {
-      "title": "Notificaciones",
-      "markAllRead": "Marcar todo como leido",
-      "empty": "No notifications yet.",
-      "markRead": "Marcar como leido",
-      "channels": {
-        "title": "Notification channels",
-        "saveBtn": "Save channels",
-        "saved": "Saved",
-        "testBtn": "Send test",
-        "testSent": "Sent",
-        "testError": "Failed",
-        "push": {
-          "label": "Browser push",
-          "description": "Push notifications to this browser when a rule fires.",
-          "subscribe": "Subscribe this browser",
-          "subscribed": "Subscribed",
-          "subError": "Subscription failed",
-          "noVapid": "VAPID keys are not configured on this server."
-        },
-        "email": {
-          "label": "Email",
-          "description": "Send an email notification to the address below.",
-          "addressLabel": "Notification address",
-          "addressPlaceholder": "you@example.com",
-          "hint": "Separate from your account login email.",
-          "noSmtp": "SMTP is not configured on this server."
-        },
-        "webhook": {
-          "label": "Webhook",
-          "description": "POST a JSON payload to any URL when a rule fires.",
-          "urlLabel": "Webhook URL",
-          "urlPlaceholder": "https://hooks.example.com/...",
-          "authLabel": "Authorization header",
-          "authPlaceholder": "Bearer token123 (optional)",
-          "hint": "MotoMate sends a POST request with event, title, body, vehicle name, and data."
-        },
-        "ha": {
-          "label": "Home Assistant",
-          "description": "Trigger a Home Assistant webhook automation.",
-          "urlLabel": "Webhook URL",
-          "urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-          "hint": "Paste your HA webhook URL. No token required.",
-          "tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
-          "configLabel": "Automation config",
-          "copy": "Copy",
-          "invalidUrl": "URL must end with /api/webhook/<webhook_id>"
-        }
-      },
-      "inbox": {
-        "title": "Recent notifications"
-      },
-      "seeMore": "Ver las {total} notificaciones",
-      "viewAll": "Ver todas las notificaciones",
-      "allTitle": "Todas las notificaciones",
-      "delete": "Eliminar",
-      "deleteRead": "Eliminar leídas",
-      "filterAll": "Todas",
-      "filterUnread": "No leídas",
-      "prevPage": "Anterior",
-      "nextPage": "Siguiente",
-      "pageOf": "Página {page} de {total}"
-    },
-    "nav": {
-      "preferences": "Preferencias",
-      "account": "Cuenta",
-      "notifications": "Notificaciones",
-      "workflows": "Flujos de trabajo",
-      "sourceCode": "Codigo fuente",
-      "reportIssue": "Reportar un problema",
-      "tapAgain": "Toca de nuevo para abrir"
-    }
-  },
-  "units": {
-    "km": "km",
-    "mi": "mi"
-  },
-  "currency": {
-    "eur": "€ Euro",
-    "gbp": "£ Libra",
-    "chf": "CHF Franco",
-    "usd": "$ Dólar"
-  },
-  "layout": {
-    "brand": "MotoMate",
-    "nav": {
-      "dashboard": "Panel",
-      "garage": "Garage",
-      "settings": "Configuración"
-    },
-    "theme": {
-      "title": "Tema",
-      "light": "Claro",
-      "dark": "Oscuro",
-      "system": "Sistema"
-    },
-    "signOut": "Cerrar sesión",
-    "logoutConfirm": {
-      "title": "Cerrar sesión",
-      "description": "¿Seguro que quieres cerrar sesión?",
-      "confirm": "Cerrar sesión",
-      "cancel": "Permanecer conectado"
-    },
-    "addEntry": {
-      "title": "Añadir entrada",
-      "chooseVehicle": "Elegir vehículo",
-      "whatLogging": "¿Qué vas a registrar?",
-      "maintenance": "Mantenimiento",
-      "maintenanceDesc": "Aceite, neumáticos o reparaciones",
-      "mileage": "Kilometraje",
-      "mileageDesc": "Número en tu salpicadero"
-    }
-  },
-  "notifications": {
-    "maintenanceDueSoonKm": {
-      "title": "Mantenimiento próximo",
-      "body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{km_remaining}} km."
-    },
-    "maintenanceOverdueKm": {
-      "title": "Mantenimiento vencido",
-      "body": "'{{tracker_name}}' en {{vehicle_name}} está {{km_over}} km vencido."
-    },
-    "maintenanceDueSoonDate": {
-      "title": "Mantenimiento próximo",
-      "body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{days_remaining}} días ({{due_date}})."
-    },
-    "maintenanceOverdueDate": {
-      "title": "Mantenimiento vencido",
-      "body": "'{{tracker_name}}' en {{vehicle_name}} lleva {{days_over}} días vencido (previsto el {{due_date}})."
-    },
-    "odometerNudge": {
-      "title": "Actualiza tu odómetro",
-      "body": "¿Has conducido {{vehicle_name}} recientemente? Actualiza el odómetro para mantener precisos tus registros de mantenimiento."
-    }
-  },
-  "travels": {
-    "title": "Viajes",
-    "subtitle": "Tus rutas y recorridos",
-    "add": "+ Añadir viaje",
-    "empty": {
-      "title": "Sin viajes",
-      "description": "Registra tu primer recorrido para comenzar el historial."
-    },
-    "entry": {
-      "days": "{n, plural, =1 {1 día} other {# días}}",
-      "routes": "{n, plural, =1 {1 ruta} other {# rutas}}",
-      "planned": "Planificado"
-    },
-    "form": {
-      "createTitle": "Añadir viaje",
-      "editTitle": "Editar viaje",
-      "title": "Título",
-      "titlePlaceholder": "ej. Cruce de los Alpes",
-      "startDate": "Fecha de inicio",
-      "duration": "Duración (días)",
-      "expenses": "Gastos totales",
-      "remark": "Observación",
-      "remarkPlaceholder": "Notas sobre el viaje…",
-      "gpxFiles": "Rutas GPX",
-      "gpxSlot": "Día {n}",
-      "gpxHint": "Un archivo GPX por día. Máx. 20 MB.",
-      "submit": {
-        "create": "Guardar viaje",
-        "edit": "Guardar cambios"
-      },
-      "gpxChoose": "Elegir archivo GPX"
-    },
-    "map": {
-      "title": "Mapa",
-      "loading": "Cargando rutas…",
-      "error": "No se pudo cargar el mapa",
-      "noRoutes": "Sin rutas adjuntas",
-      "clickHint": "Haz clic en una ruta del mapa para filtrar",
-      "filterActive": "{n, plural, =1 {1 ruta seleccionada} other {# rutas seleccionadas}}",
-      "clearFilter": "Mostrar todo",
-      "hideDay": "Ocultar este día del mapa",
-      "showDay": "Mostrar este día en el mapa"
-    },
-    "delete": {
-      "title": "¿Eliminar este viaje?",
-      "description": "Este viaje y todos los archivos GPX adjuntos se eliminarán permanentemente.",
-      "confirm": "Eliminar",
-      "cancel": "Conservar"
-    },
-    "timeline": {
-      "label": "Viaje"
-    },
-    "filter": {
-      "search": "Buscar viajes...",
-      "noResults": "Ningún viaje coincide con tu búsqueda.",
-      "all": "Todos",
-      "past": "Pasados",
-      "upcoming": "Planificados"
-    }
-  }
+	"common": {
+		"save": "Guardar",
+		"cancel": "Cancelar",
+		"delete": "Eliminar",
+		"edit": "Editar",
+		"add": "Añadir",
+		"back": "Volver",
+		"continue": "Continuar",
+		"done": "Hecho",
+		"loading": "Cargando...",
+		"optional": "(opcional)",
+		"required": "*",
+		"close": "Cerrar",
+		"saving": "Guardando…"
+	},
+	"auth": {
+		"login": {
+			"title": "Iniciar sesión",
+			"subtitle": "Introduce tu correo electrónico para continuar",
+			"email": "Correo electrónico",
+			"password": "Contraseña",
+			"rememberMe": "Recordarme",
+			"forgotPassword": "¿Olvidaste tu contraseña?",
+			"submit": "Iniciar sesión",
+			"noAccount": "¿No tienes cuenta?",
+			"signUp": "¡Regístrate!",
+			"magicLinkSent": "Revisa tu correo, un enlace de inicio de sesión está en camino.",
+			"setupNotice": {
+				"title": "Configuración inicial",
+				"body": "Bienvenido a MotoMate. Como eres nuevo aquí, se ha creado una cuenta de administrador predeterminada. Inicia sesión para completar la configuración y cambiar estas credenciales.",
+				"defaultCreds": "Usa las credenciales predeterminadas anteriores en el primer inicio de sesión. Puedes cambiarlas en Configuración → Cuenta."
+			},
+			"tabs": {
+				"password": "Contraseña",
+				"magicLink": "Enlace mágico"
+			},
+			"magicSubmit": "Enviar enlace mágico",
+			"errors": {
+				"rateLimited": "Demasiados intentos. Por favor, inténtalo de nuevo más tarde.",
+				"invalidFormat": "Formato de correo electrónico o contraseña inválido",
+				"invalidCredentials": "Correo electrónico o contraseña inválidos",
+				"invalidEmail": "Por favor, introduce una dirección de correo electrónico válida"
+			}
+		},
+		"register": {
+			"title": "Crear cuenta",
+			"subtitle": "Regístrate para empezar a rastrear el mantenimiento de tu vehículo",
+			"email": "Correo electrónico",
+			"password": "Contraseña",
+			"passwordHint": "Usa al menos 8 caracteres",
+			"confirmPassword": "Confirmar contraseña",
+			"passwordMismatch": "Las contraseñas no coinciden",
+			"submit": "Crear cuenta",
+			"hasAccount": "¿Ya tienes cuenta?",
+			"login": "Iniciar sesión"
+		},
+		"magicLink": {
+			"verifying": "Iniciando sesión…",
+			"invalid": "Este enlace no es válido o ha expirado.",
+			"retry": "Solicitar un nuevo enlace"
+		}
+	},
+	"onboarding": {
+		"security": {
+			"title": "Protege tu cuenta",
+			"description": "Has iniciado sesión como administrador predeterminado. Establece un correo electrónico y contraseña reales antes de continuar — siempre puedes actualizarlos en Configuración más tarde.",
+			"newEmail": "Nueva dirección de correo electrónico",
+			"newPassword": "Nueva contraseña",
+			"confirmPassword": "Confirmar contraseña",
+			"submit": "Guardar y continuar →",
+			"skip": "Omitir por ahora"
+		},
+		"welcome": {
+			"title": "Bienvenido a MotoMate",
+			"description": "Añadamos tu primer vehículo y configuremos un programa de mantenimiento. Toma aproximadamente un minuto.",
+			"submit": "Comenzar →",
+			"skipWarning": "Recuerda actualizar tu correo electrónico y contraseña en Configuración → Cuenta antes de ponerte en marcha."
+		},
+		"type": {
+			"title": "¿Qué tipo de vehículo?",
+			"motorcycle": "Motocicleta",
+			"scooter": "Ciclomotor",
+			"bike": "Bicicleta",
+			"other": "Otro"
+		},
+		"details": {
+			"title": "Cuéntanos sobre tu {vehicleType}",
+			"name": "Apodo",
+			"make": "Marca",
+			"model": "Modelo",
+			"year": "Año",
+			"vin": "VIN",
+			"licensePlate": "Matrícula",
+			"placeholders": {
+				"name": "ej. Honda Grom",
+				"make": "Honda",
+				"model": "CB500F",
+				"vin": "opcional",
+				"licensePlate": "ej. AB-123 CD"
+			}
+		},
+		"odometer": {
+			"title": "Lectura actual del odómetro",
+			"description": "Establece la base para los intervalos de mantenimiento basados en kilómetros.",
+			"placeholder": "0"
+		},
+		"presets": {
+			"title": "¿Qué tareas de mantenimiento?",
+			"description": "Crearemos rastreadores para estos. Puedes añadirlos o eliminarlos en cualquier momento.",
+			"tasks": {
+				"oil": "Cambio de aceite y filtro",
+				"tire": "Presión y desgaste de neumáticos",
+				"chain_lube": "Limpieza & lubricación de cadena",
+				"chain_tension": "Tensión de la cadena",
+				"brake": "Pastillas y líquido de frenos"
+			},
+			"intervals": {
+				"oil": "cada 5.000 km / 12 meses",
+				"tire": "control mensual",
+				"chain_lube": "cada 500 km",
+				"chain_tension": "cada 500 km",
+				"brake": "cada 10.000 km / 2 años"
+			},
+			"descriptions": {
+				"chain_lube": "Limpiar y lubricar la cadena",
+				"chain_tension": "Comprobar y ajustar la tensión de la cadena"
+			}
+		},
+		"lastService": {
+			"title": "Último cambio de aceite",
+			"description": "Opcional: ayuda a calcular cuándo vence el próximo servicio.",
+			"date": "Fecha",
+			"odometer": "Odómetro en servicio",
+			"skip": "Omitir este paso",
+			"setupNote": "Último servicio (ingresado durante la configuración)"
+		},
+		"summary": {
+			"title": "¡Ya estás listo!",
+			"submit": "Abrir mi garage →"
+		},
+		"nav": {
+			"back": "← Volver",
+			"stepOf": "{step} de {total}",
+			"continueBtn": "Continuar →"
+		}
+	},
+	"dashboard": {
+		"greeting": {
+			"morning": "Buenos días",
+			"afternoon": "Buenas tardes",
+			"evening": "Buenas noches"
+		},
+		"status": {
+			"overdue": "{count, plural, =1 {1 elemento vencido.} other {# elementos vencidos.}}",
+			"dueSoon": "{count, plural, =1 {1 elemento pronto vencido.} other {# elementos pronto vencidos.}}",
+			"allGood": "Todo parece estar bien.",
+			"addFirst": "Añade tu primer vehículo para comenzar."
+		},
+		"sections": {
+			"needsAttention": "Requiere atención",
+			"garage": "Garage",
+			"recentActivity": "Actividad reciente"
+		},
+		"viewAll": "Ver todo →",
+		"empty": {
+			"title": "Tu garage está vacío",
+			"descriptionOnboarding": "Añade tu primera moto o ciclomotor para comenzar.",
+			"descriptionActive": "Añade un nuevo vehículo a tu colección.",
+			"submit": "+ Añadir vehículo"
+		}
+	},
+	"vehicles": {
+		"title": "Garage",
+		"vehicleCount": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
+		"archived": {
+			"show": "Mostrar archivados",
+			"hide": "Ocultar archivados"
+		},
+		"add": "+ Añadir vehículo",
+		"empty": {
+			"title": "Tu garage está vacío",
+			"description": "Añade un nuevo vehículo a tu colección."
+		}
+	},
+	"vehicle": {
+		"layout": {
+			"backToGarage": "← Garage",
+			"archived": "Archivado",
+			"avatar": {
+				"choose": "Elegir avatar",
+				"upload": "Subir imagen",
+				"reset": "Restablecer avatar"
+			},
+			"tabs": {
+				"timeline": "Linea de tiempo",
+				"maintenance": "Mantenimiento",
+				"documents": "Documentos",
+				"finance": "Finanzas",
+				"settings": "Configuracion",
+				"travels": "Viajes"
+			}
+		},
+		"detail": {
+			"menu": {
+				"maintenance": "Mantenimiento",
+				"mileage": "Kilometraje",
+				"note": "Nota"
+			},
+			"timeline": {
+				"title": "Línea de tiempo",
+				"subtitle": "Todos tus registros para {name} en un solo lugar.",
+				"empty": {
+					"title": "Sin historial todavía",
+					"description": "Registra tu primer servicio o control de kilometraje para iniciar la línea de tiempo."
+				}
+			},
+			"upcoming": "Próximo",
+			"nextDue": "Próximo: {date}",
+			"logLink": "Registrar",
+			"overdueByKm": "Atrasado por {km} {unit}",
+			"overdueSince": "Atrasado desde {date}",
+			"overdue": "Atrasado",
+			"neverServiced": "Nunca revisado",
+			"dueInKm": "Previsto en {km} {unit}",
+			"dueDate": "Previsto el {date}",
+			"dueSoon": "Próximamente",
+			"nextDueOdo": "Próximo: {reading} {unit}",
+			"serviceEntry": "Entrada de servicio",
+			"hideOdoReadings": "Ocultar lecturas del odómetro",
+			"showMoreOdoReadings": "Mostrar {n} lecturas más del odómetro",
+			"deleteDialog": {
+				"title": "¿Eliminar esta entrada?",
+				"description": "Esta entrada se eliminará permanentemente de tu línea de tiempo. Esta acción no se puede deshacer.",
+				"confirm": "Eliminar",
+				"cancel": "Conservar"
+			}
+		},
+		"forms": {
+			"logService": "Registrar servicio",
+			"updateOdo": "Actualizar kilometraje",
+			"writeNote": "Escribir nota",
+			"noteDesc": "Escribe una nota o observación",
+			"editEntry": "Editar entrada",
+			"fields": {
+				"date": "Fecha",
+				"odometer": "Kilometraje ({unit})",
+				"description": "Descripción",
+				"remark": "Observación {optional}",
+				"cost": "Coste {optional}",
+				"notes": "Notas",
+				"resetCycle": "Reiniciar ciclo para {optional}",
+				"checkToReset": "(marcar para reiniciar)",
+				"currentReading": "Lectura actual ({unit})",
+				"attachments": "Adjuntos {optional}"
+			},
+			"placeholders": {
+				"partsUsed": "Piezas usadas, observaciones…",
+				"cost": "0,00",
+				"description": "ej. Cambio de aceite, lubricación cadena…",
+				"additionalDetails": "Detalles adicionales…",
+				"beforeTrip": "ej. Antes de un viaje largo",
+				"note": "ej. He realizado una inspección general",
+				"writeNote": "Escribe una nota…"
+			},
+			"submit": {
+				"service": "Guardar entrada",
+				"odometer": "Actualizar",
+				"note": "Guardar nota"
+			},
+			"attachFile": "Adjuntar archivo",
+			"chooseFile": "Elegir archivo",
+			"linkDocument": "Vincular documento",
+			"viewDocument": "Ver documento",
+			"attachments": {
+				"pickerTitle": "Vincular un documento",
+				"noDocuments": "No hay documentos disponibles.",
+				"uploading": "Subiendo..."
+			}
+		},
+		"add": {
+			"title": "Añadir vehículo",
+			"back": "← Garage",
+			"sections": {
+				"type": "Tipo",
+				"details": "Detalles",
+				"odometer": "Kilometraje"
+			},
+			"fields": {
+				"name": "Nombre",
+				"make": "Marca",
+				"model": "Modelo",
+				"year": "Año",
+				"vin": "Bastidor",
+				"licensePlate": "Matrícula",
+				"currentReading": "Lectura actual",
+				"unit": "Unidad"
+			},
+			"placeholders": {
+				"name": "Mi CB500F",
+				"make": "ej. Honda",
+				"model": "ej. CB500F",
+				"vin": "opcional",
+				"licensePlate": "ej. AB-123 CD"
+			},
+			"types": {
+				"motorcycle": "Motocicleta",
+				"scooter": "Ciclomotor",
+				"bike": "Bicicleta",
+				"other": "Otro"
+			},
+			"actions": {
+				"cancel": "Cancelar",
+				"submit": "Añadir vehículo →"
+			}
+		},
+		"edit": {
+			"title": "Configuración",
+			"subtitle": "Administra tu {name}",
+			"odometer": {
+				"title": "Actualizar kilometraje",
+				"currentReading": "Lectura actual ({unit})",
+				"update": "Actualizar"
+			},
+			"vehicleDetails": "Detalles del vehículo",
+			"fields": {
+				"name": "Nombre",
+				"year": "Año",
+				"make": "Marca",
+				"model": "Modelo",
+				"vin": "Bastidor",
+				"licensePlate": "Matrícula"
+			},
+			"purchaseSale": "Compra & Venta",
+			"purchasePrice": "Precio de compra",
+			"soldPrice": "Precio de venta",
+			"save": "Guardar cambios",
+			"saved": "Cambios guardados",
+			"odometerUpdated": "Kilometraje actualizado",
+			"vehicleRestored": "Vehículo restaurado",
+			"settings": {
+				"title": "Configuración",
+				"archive": {
+					"title": "Archivar vehículo",
+					"titleRestore": "Restaurar vehículo",
+					"descArchive": "Mueve este vehículo al archivo. Se ocultará del garage.",
+					"descRestore": "Pon este vehículo de nuevo en tu garage activo.",
+					"btnArchive": "Archivar",
+					"btnRestore": "Restaurar"
+				},
+				"dangerZone": "Zona de peligro",
+				"delete": {
+					"title": "Eliminar este vehículo",
+					"desc": "Elimina permanentemente todo el historial de servicio, documentos y trackers.",
+					"btn": "Eliminar",
+					"dialog": {
+						"title": "¿Eliminar {name}?",
+						"desc": "Esto eliminará permanentemente todo el historial de servicio, documentos y trackers. Esta acción no se puede deshacer.",
+						"confirm": "Eliminar vehículo",
+						"cancel": "Mantener vehículo"
+					}
+				},
+				"archiveDialog": {
+					"title": "¿Archivar {name}?",
+					"desc": "Este vehículo se ocultará de tu garage. Puedes restaurarlo en cualquier momento. Establece el precio de venta arriba antes de continuar si lo has vendido.",
+					"confirm": "Archivar",
+					"cancel": "Mantener activo"
+				},
+				"unarchiveDialog": {
+					"title": "¿Restaurar {name}?",
+					"desc": "Este vehículo se devolverá a tu garage activo. El precio de venta se borrará para que puedas editar los detalles del vehículo nuevamente.",
+					"confirm": "Restaurar",
+					"cancel": "Mantener archivado"
+				}
+			}
+		}
+	},
+	"maintenance": {
+		"title": "Mantenimiento",
+		"subtitle": "Rastrea tu programa de servicio",
+		"addTask": {
+			"button": "+ Añadir tarea",
+			"cancel": "Cancelar",
+			"title": "Añadir tarea",
+			"fields": {
+				"name": "Nombre de tarea",
+				"intervalKm": "Intervalo ({unit})",
+				"intervalMonths": "Intervalo (meses)"
+			},
+			"placeholders": {
+				"name": "ej. Cambio de aceite",
+				"km": "ej. 5000",
+				"months": "ej. 12"
+			},
+			"submit": "Añadir tarea"
+		},
+		"empty": {
+			"title": "Sin tareas de mantenimiento todavía",
+			"description": "Añade tareas personalizadas o ejecuta el asistente de configuración para configurar valores predeterminados."
+		},
+		"tracker": {
+			"status": {
+				"due": "vencido",
+				"overdue": "atrasado"
+			},
+			"logNow": "Registrar ahora →",
+			"edit": "Editar",
+			"delete": "Eliminar",
+			"every": "Cada {interval}",
+			"due": "Previsto {info}",
+			"last": "Último {info}",
+			"notScheduled": "Sin programar"
+		},
+		"editTracker": {
+			"sections": {
+				"interval": "Intervalo",
+				"lastServiced": "Último servicio",
+				"nextDue": "Próximo vencimiento"
+			},
+			"fields": {
+				"everyKm": "Cada ({unit})",
+				"everyMonths": "Cada (meses)",
+				"date": "Fecha",
+				"odometer": "Odómetro ({unit})",
+				"autoCompute": "— dejar vacío para cálculo automático"
+			},
+			"submit": "Guardar cambios"
+		},
+		"saving": "Guardando...",
+		"logService": {
+			"submit": "Guardar entrada"
+		},
+		"toasts": {
+			"logged": "Entrada de servicio guardada",
+			"trackerUpdated": "Rastreador actualizado",
+			"trackerDeleted": "Rastreador eliminado",
+			"taskAdded": "Tarea agregada"
+		},
+		"delete": {
+			"title": "¿Eliminar {name}?",
+			"description": "Este rastreador de mantenimiento se eliminará permanentemente. Esta acción no se puede deshacer.",
+			"confirm": "Eliminar",
+			"cancel": "Mantener"
+		}
+	},
+	"finance": {
+		"title": "Finanzas",
+		"subtitle": "Rastrea gastos",
+		"totalSpent": "Total gastado en tu {name}",
+		"addExpense": "Añadir",
+		"noCosts": "Sin costos registrados",
+		"groupBy": "Agrupar por:",
+		"groupCategory": "Categoría",
+		"groupYear": "Año",
+		"groupDescription": "Descripción",
+		"groupNone": "Ninguna",
+		"byCategory": "Por categoría",
+		"byYear": "Por año",
+		"byDescription": "Por descripción",
+		"allTransactions": "Todas las transacciones",
+		"recentTransactions": "Transacciones recientes",
+		"serviceEntry": "Entrada de servicio",
+		"expense": "Gasto",
+		"gain": "Ganancia",
+		"loss": "Pérdida",
+		"profitLoss": "Ganancia/Pérdida",
+		"salePrice": "Precio de venta",
+		"transactionAdded": "Transacción añadida",
+		"transactionDeleted": "Transacción eliminada",
+		"transactionUpdated": "Transacción actualizada",
+		"saving": "Guardando...",
+		"save": "Guardar",
+		"cancel": "Cancelar",
+		"investment": {
+			"purchasePrice": "Precio de compra",
+			"notSet": "No establecido",
+			"addHint": "Añadir en Configuración → Compra & Venta",
+			"expenses": "Gastos",
+			"transactions": "{count} transacción",
+			"transactions_plural": "{count} transacciones",
+			"totalInvested": "Total invertido",
+			"soldFor": "Vendido por"
+		},
+		"form": {
+			"addTitle": "Añadir",
+			"editTitle": "Editar",
+			"category": "Categoría",
+			"amount": "Importe ({currency})",
+			"date": "Fecha",
+			"odometer": "Kilometraje ({unit})",
+			"odometerOptional": "Opcional",
+			"notes": "Notas",
+			"notesPlaceholder": "Detalles adicionales"
+		},
+		"deleteDialog": {
+			"title": "¿Eliminar esta transacción?",
+			"description": "Esta transacción se eliminará permanentemente. Esta acción no se puede deshacer.",
+			"confirm": "Eliminar",
+			"cancel": "Mantener"
+		},
+		"categories": {
+			"maintenance": "Mantenimiento",
+			"parts": "Piezas",
+			"accessories": "Accesorios",
+			"administrative": "Administrativo",
+			"other": "Otro"
+		},
+		"empty": {
+			"title": "Sin gastos registrados",
+			"description": "Añade tu primer gasto para empezar a rastrear."
+		}
+	},
+	"documents": {
+		"title": "Documentos",
+		"subtitle": "Almacena registros de servicio, fotos y papeles",
+		"upload": "+ Subir",
+		"dropHintDesktop": "Suelta un archivo aquí o navega",
+		"dropHintMobile": "Toca para subir",
+		"uploadHint": "Imágenes, PDF, Word, Excel - max 10 MB",
+		"selectedFile": "Archivo seleccionado",
+		"summary": "Resumen",
+		"summaryPlaceholder": "ej: Recibo cambio de aceite",
+		"category": "Categoría",
+		"expiry": "Vencimiento",
+		"expiryOptional": "(opcional)",
+		"expiryExpired": "Vencido",
+		"expiryExpiringSoon": "Vence pronto",
+		"expiryValid": "Válido",
+		"actions": {
+			"view": "Ver",
+			"rename": "Renombrar",
+			"delete": "Eliminar"
+		},
+		"searchPlaceholder": "Buscar documentos...",
+		"allTypes": "Todos los tipos",
+		"cancel": "Cancelar",
+		"saving": "Guardando...",
+		"saveDocument": "Guardar documento",
+		"toasts": {
+			"uploaded": "Documento subido",
+			"renamed": "Documento renombrado",
+			"deleted": "Documento eliminado"
+		},
+		"deleteDialog": {
+			"title": "¿Eliminar {name}?",
+			"description": "Este documento se eliminará permanentemente. Esta acción no se puede deshacer.",
+			"confirm": "Eliminar",
+			"cancel": "Mantener"
+		},
+		"sort": {
+			"newest": "Más reciente primero",
+			"oldest": "Más antiguo primero",
+			"name": "Nombre A-Z"
+		},
+		"view": {
+			"list": "Lista",
+			"timeline": "Línea de tiempo"
+		},
+		"types": {
+			"service": "Servicio",
+			"quotation": "Presupuesto",
+			"papers": "Papeles",
+			"photo": "Foto",
+			"notes": "Notas",
+			"other": "Otro",
+			"route": "Ruta"
+		},
+		"empty": {
+			"title": "No se encontraron documentos",
+			"description": "Sube documentos o ajusta tus filtros."
+		},
+		"prevPage": "Anterior",
+		"nextPage": "Siguiente",
+		"pageOf": "Pagina {page} de {total}",
+		"linkedBadge": "Vinculado · Servicio {date}",
+		"linkedTravelBadge": "Vinculado · Viaje {title}"
+	},
+	"settings": {
+		"title": "Configuracion",
+		"profile": {
+			"title": "Preferencias",
+			"display": "Pantalla",
+			"language": "Idioma y región",
+			"currency": "Moneda",
+			"odometerUnit": "Unidad del odómetro",
+			"saved": "Preferencias guardadas",
+			"submit": "Guardar preferencias",
+			"saving": "Guardando…"
+		},
+		"account": {
+			"title": "Cuenta",
+			"email": {
+				"title": "Correo electrónico",
+				"current": "Actual: {email}",
+				"new": "Nueva dirección de correo electrónico",
+				"submit": "Actualizar correo",
+				"saved": "Correo actualizado",
+				"errors": {
+					"invalid": "Introduce una dirección de correo válida",
+					"sameAsCurrent": "Ese ya es tu correo actual",
+					"alreadyInUse": "Ese correo ya está en uso"
+				}
+			},
+			"password": {
+				"title": "Contraseña",
+				"current": "Contraseña actual",
+				"new": "Nueva contraseña",
+				"confirm": "Confirmar nueva contraseña",
+				"hint": "Mín. 8 caracteres",
+				"submit": "Cambiar contraseña",
+				"saved": "Contraseña cambiada",
+				"errors": {
+					"allRequired": "Todos los campos de contraseña son obligatorios",
+					"tooShort": "La nueva contraseña debe tener al menos 8 caracteres",
+					"noMatch": "Las contraseñas no coinciden",
+					"noPasswordSet": "No hay contraseña configurada en esta cuenta — usa el enlace mágico para iniciar sesión",
+					"incorrect": "La contraseña actual es incorrecta",
+					"sameAsCurrent": "La nueva contraseña debe ser diferente de la actual"
+				}
+			},
+			"export": {
+				"title": "Exportar datos",
+				"desc": "Descarga una copia de tus vehículos, registros de mantenimiento, documentos y configuración.",
+				"btn": "Exportar datos",
+				"json": "Exportar como JSON",
+				"jsonHint": "Datos estructurados, sin archivos",
+				"zip": "Exportar como ZIP",
+				"zipHint": "Incluye documentos adjuntos"
+			},
+			"dangerZone": "Zona de peligro",
+			"delete": {
+				"title": "Eliminar esta cuenta",
+				"desc": "Elimina permanentemente tu cuenta y todos tus vehículos, historial de servicio y documentos.",
+				"btn": "Eliminar cuenta",
+				"dialog": {
+					"title": "¿Eliminar tu cuenta?",
+					"desc": "Esto eliminará permanentemente tu cuenta, todos tus vehículos y todos los datos asociados. Esta acción no se puede deshacer.",
+					"confirm": "Eliminar cuenta",
+					"cancel": "Mantener cuenta"
+				}
+			}
+		},
+		"workflows": {
+			"title": "Reglas de notificación",
+			"loadPresets": "Restaurar reglas predeterminadas",
+			"empty": "Sin reglas todavía. Restaura las reglas predeterminadas para empezar, o crea las tuyas.",
+			"presets": {
+				"maintenanceDueSoonKm": "Mantenimiento próximo (km)",
+				"maintenanceOverdueKm": "Mantenimiento vencido (km)",
+				"maintenanceDueSoonDate": "Mantenimiento próximo (fecha)",
+				"maintenanceOverdueDate": "Mantenimiento vencido (fecha)",
+				"odometerNudge": "Recordatorio de odómetro"
+			},
+			"lastFired": "Último activado: {date}",
+			"neverFired": "Nunca activado",
+			"delete": "Eliminar",
+			"confirmDelete": "¿Eliminar esta regla?",
+			"editBtn": "Editar",
+			"editSave": "Guardar",
+			"editCancel": "Cancelar",
+			"allChannels": "Todos los canales activos",
+			"trigger": {
+				"beforeDue": "antes del vencimiento",
+				"pastDue": "vencido",
+				"whenOverdue": "Cuando vencido (km)",
+				"daysBefore": "días antes del vencimiento",
+				"daysPast": "días después del vencimiento",
+				"every": "Cada",
+				"noOdo": "Sin actualización de odómetro en",
+				"days": "días",
+				"docExpiring": "Documento expira en",
+				"unknown": "Disparador desconocido"
+			},
+			"edit": {
+				"kmBefore": "Notificar cuando falten (km)",
+				"kmPast": "Notificar cuando se exceda en (km)",
+				"daysBefore": "Días antes para notificar",
+				"daysPast": "Días después para notificar",
+				"days": "Después de cuántos días",
+				"month": "Mes",
+				"day": "Día"
+			},
+			"deleted": "Regla eliminada",
+			"confirmDeleteDesc": "¿Eliminar la regla \"{name}\"? Esta acción no se puede deshacer.",
+			"runCheck": "Verificar ahora",
+			"runCheckDone": "Verificación completada"
+		},
+		"notifications": {
+			"title": "Notificaciones",
+			"markAllRead": "Marcar todo como leido",
+			"empty": "No notifications yet.",
+			"markRead": "Marcar como leido",
+			"channels": {
+				"title": "Notification channels",
+				"saveBtn": "Save channels",
+				"saved": "Saved",
+				"testBtn": "Send test",
+				"testSent": "Sent",
+				"testError": "Failed",
+				"push": {
+					"label": "Browser push",
+					"description": "Push notifications to this browser when a rule fires.",
+					"subscribe": "Subscribe this browser",
+					"subscribed": "Subscribed",
+					"subError": "Subscription failed",
+					"noVapid": "VAPID keys are not configured on this server."
+				},
+				"email": {
+					"label": "Email",
+					"description": "Send an email notification to the address below.",
+					"addressLabel": "Notification address",
+					"addressPlaceholder": "you@example.com",
+					"hint": "Separate from your account login email.",
+					"noSmtp": "SMTP is not configured on this server."
+				},
+				"webhook": {
+					"label": "Webhook",
+					"description": "POST a JSON payload to any URL when a rule fires.",
+					"urlLabel": "Webhook URL",
+					"urlPlaceholder": "https://hooks.example.com/...",
+					"authLabel": "Authorization header",
+					"authPlaceholder": "Bearer token123 (optional)",
+					"hint": "MotoMate sends a POST request with event, title, body, vehicle name, and data."
+				},
+				"ha": {
+					"label": "Home Assistant",
+					"description": "Trigger a Home Assistant webhook automation.",
+					"urlLabel": "Webhook URL",
+					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
+					"hint": "Paste your HA webhook URL. No token required.",
+					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
+					"configLabel": "Automation config",
+					"copy": "Copy",
+					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+				}
+			},
+			"inbox": {
+				"title": "Recent notifications"
+			},
+			"seeMore": "Ver las {total} notificaciones",
+			"viewAll": "Ver todas las notificaciones",
+			"allTitle": "Todas las notificaciones",
+			"delete": "Eliminar",
+			"deleteRead": "Eliminar leídas",
+			"filterAll": "Todas",
+			"filterUnread": "No leídas",
+			"prevPage": "Anterior",
+			"nextPage": "Siguiente",
+			"pageOf": "Página {page} de {total}"
+		},
+		"nav": {
+			"preferences": "Preferencias",
+			"account": "Cuenta",
+			"notifications": "Notificaciones",
+			"workflows": "Flujos de trabajo",
+			"sourceCode": "Codigo fuente",
+			"reportIssue": "Reportar un problema",
+			"tapAgain": "Toca de nuevo para abrir"
+		}
+	},
+	"units": {
+		"km": "km",
+		"mi": "mi"
+	},
+	"currency": {
+		"eur": "€ Euro",
+		"gbp": "£ Libra",
+		"chf": "CHF Franco",
+		"usd": "$ Dólar"
+	},
+	"layout": {
+		"brand": "MotoMate",
+		"nav": {
+			"dashboard": "Panel",
+			"garage": "Garage",
+			"settings": "Configuración"
+		},
+		"theme": {
+			"title": "Tema",
+			"light": "Claro",
+			"dark": "Oscuro",
+			"system": "Sistema"
+		},
+		"signOut": "Cerrar sesión",
+		"logoutConfirm": {
+			"title": "Cerrar sesión",
+			"description": "¿Seguro que quieres cerrar sesión?",
+			"confirm": "Cerrar sesión",
+			"cancel": "Permanecer conectado"
+		},
+		"addEntry": {
+			"title": "Añadir entrada",
+			"chooseVehicle": "Elegir vehículo",
+			"whatLogging": "¿Qué vas a registrar?",
+			"maintenance": "Mantenimiento",
+			"maintenanceDesc": "Aceite, neumáticos o reparaciones",
+			"mileage": "Kilometraje",
+			"mileageDesc": "Número en tu salpicadero"
+		}
+	},
+	"notifications": {
+		"maintenanceDueSoonKm": {
+			"title": "Mantenimiento próximo",
+			"body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{km_remaining}} km."
+		},
+		"maintenanceOverdueKm": {
+			"title": "Mantenimiento vencido",
+			"body": "'{{tracker_name}}' en {{vehicle_name}} está {{km_over}} km vencido."
+		},
+		"maintenanceDueSoonDate": {
+			"title": "Mantenimiento próximo",
+			"body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{days_remaining}} días ({{due_date}})."
+		},
+		"maintenanceOverdueDate": {
+			"title": "Mantenimiento vencido",
+			"body": "'{{tracker_name}}' en {{vehicle_name}} lleva {{days_over}} días vencido (previsto el {{due_date}})."
+		},
+		"odometerNudge": {
+			"title": "Actualiza tu odómetro",
+			"body": "¿Has conducido {{vehicle_name}} recientemente? Actualiza el odómetro para mantener precisos tus registros de mantenimiento."
+		}
+	},
+	"travels": {
+		"title": "Viajes",
+		"subtitle": "Tus rutas y recorridos",
+		"add": "+ Añadir viaje",
+		"empty": {
+			"title": "Sin viajes",
+			"description": "Registra tu primer recorrido para comenzar el historial."
+		},
+		"entry": {
+			"days": "{n, plural, =1 {1 día} other {# días}}",
+			"routes": "{n, plural, =1 {1 ruta} other {# rutas}}",
+			"planned": "Planificado"
+		},
+		"form": {
+			"createTitle": "Añadir viaje",
+			"editTitle": "Editar viaje",
+			"title": "Título",
+			"titlePlaceholder": "ej. Cruce de los Alpes",
+			"startDate": "Fecha de inicio",
+			"duration": "Duración (días)",
+			"expenses": "Gastos totales",
+			"remark": "Observación",
+			"remarkPlaceholder": "Notas sobre el viaje…",
+			"gpxFiles": "Rutas GPX",
+			"gpxSlot": "Día {n}",
+			"gpxHint": "Un archivo GPX por día. Máx. 20 MB.",
+			"submit": {
+				"create": "Guardar viaje",
+				"edit": "Guardar cambios"
+			},
+			"gpxChoose": "Elegir archivo GPX"
+		},
+		"map": {
+			"title": "Mapa",
+			"loading": "Cargando rutas…",
+			"error": "No se pudo cargar el mapa",
+			"noRoutes": "Sin rutas adjuntas",
+			"clickHint": "Haz clic en una ruta del mapa para filtrar",
+			"filterActive": "{n, plural, =1 {1 ruta seleccionada} other {# rutas seleccionadas}}",
+			"clearFilter": "Mostrar todo",
+			"hideDay": "Ocultar este día del mapa",
+			"showDay": "Mostrar este día en el mapa"
+		},
+		"delete": {
+			"title": "¿Eliminar este viaje?",
+			"description": "Este viaje y todos los archivos GPX adjuntos se eliminarán permanentemente.",
+			"confirm": "Eliminar",
+			"cancel": "Conservar"
+		},
+		"timeline": {
+			"label": "Viaje"
+		},
+		"filter": {
+			"search": "Buscar viajes...",
+			"noResults": "Ningún viaje coincide con tu búsqueda.",
+			"all": "Todos",
+			"past": "Pasados",
+			"upcoming": "Planificados"
+		}
+	}
 }

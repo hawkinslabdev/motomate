@@ -175,7 +175,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 		response.headers.set('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
 	}
 	if (corsHeaders['Access-Control-Allow-Credentials']) {
-		response.headers.set('Access-Control-Allow-Credentials', corsHeaders['Access-Control-Allow-Credentials']);
+		response.headers.set(
+			'Access-Control-Allow-Credentials',
+			corsHeaders['Access-Control-Allow-Credentials']
+		);
 	}
 
 	return response;

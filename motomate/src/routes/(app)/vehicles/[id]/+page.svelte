@@ -43,8 +43,10 @@
 	function getOdoWarning(inputVal: string, currentVal: number): string | undefined {
 		const num = Number(inputVal);
 		if (!Number.isInteger(num) || num < 0) return undefined;
-		if (num === currentVal) return `Je hebt al een stand van ${num} km. Opgeslagen voor je administratie.`;
-		if (num < currentVal) return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
+		if (num === currentVal)
+			return `Je hebt al een stand van ${num} km. Opgeslagen voor je administratie.`;
+		if (num < currentVal)
+			return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
 		return undefined;
 	}
 
@@ -249,7 +251,8 @@
 	}
 	function toggleNewLink(id: string) {
 		const next = new Set(newLinkedDocIds);
-		if (next.has(id)) next.delete(id); else next.add(id);
+		if (next.has(id)) next.delete(id);
+		else next.add(id);
 		newLinkedDocIds = next;
 	}
 
@@ -435,12 +438,21 @@
 			</label>
 
 			<div class="form-attachments">
-				<span class="field-label">{$_('vehicle.forms.fields.attachments', { values: { optional: $_('common.optional') } })}</span>
+				<span class="field-label"
+					>{$_('vehicle.forms.fields.attachments', {
+						values: { optional: $_('common.optional') }
+					})}</span
+				>
 				<div class="attach-actions">
 					{#if attachFile}
 						<span class="doc-chip">
 							<span class="doc-chip-name">{attachFile.name}</span>
-							<button type="button" class="doc-chip-remove" onclick={clearAttach} aria-label="Remove">×</button>
+							<button
+								type="button"
+								class="doc-chip-remove"
+								onclick={clearAttach}
+								aria-label="Remove">×</button
+							>
 						</span>
 						<select name="attachment_type" class="input attach-type" bind:value={attachType}>
 							{#each docTypeEntries as [val, key]}
@@ -449,13 +461,48 @@
 						</select>
 					{:else}
 						<label class="attach-action-btn">
-							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+							<svg
+								width="13"
+								height="13"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+								><path
+									d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"
+								/></svg
+							>
 							{$_('vehicle.forms.attachFile')}
-							<input type="file" class="attach-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onchange={handleAttachPick} />
+							<input
+								type="file"
+								class="attach-file-input"
+								accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+								onchange={handleAttachPick}
+							/>
 						</label>
 					{/if}
-					<button type="button" class="attach-action-btn" onclick={() => (showLinkNew = !showLinkNew)}>
-						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+					<button
+						type="button"
+						class="attach-action-btn"
+						onclick={() => (showLinkNew = !showLinkNew)}
+					>
+						<svg
+							width="13"
+							height="13"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+							><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path
+								d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+							/></svg
+						>
 						{$_('vehicle.forms.linkDocument')}
 					</button>
 				</div>
@@ -463,7 +510,9 @@
 					<div class="link-picker">
 						<div class="link-picker-header">
 							<span class="link-picker-title">{$_('vehicle.forms.attachments.pickerTitle')}</span>
-							<button type="button" class="link-picker-close" onclick={() => (showLinkNew = false)}>×</button>
+							<button type="button" class="link-picker-close" onclick={() => (showLinkNew = false)}
+								>×</button
+							>
 						</div>
 						{#if (data.allDocs ?? []).length === 0}
 							<p class="link-picker-empty">{$_('vehicle.forms.attachments.noDocuments')}</p>
@@ -472,7 +521,11 @@
 								{#each data.allDocs as doc}
 									<li>
 										<label class="link-picker-item link-picker-item--check">
-											<input type="checkbox" checked={newLinkedDocIds.has(doc.id)} onchange={() => toggleNewLink(doc.id)} />
+											<input
+												type="checkbox"
+												checked={newLinkedDocIds.has(doc.id)}
+												onchange={() => toggleNewLink(doc.id)}
+											/>
 											<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
 											<span class="link-picker-item-name">{doc.name}</span>
 										</label>
@@ -489,8 +542,15 @@
 							{#if doc}
 								<span class="doc-chip">
 									<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-									<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
-									<button type="button" class="doc-chip-remove" onclick={() => toggleNewLink(id)} aria-label="Remove">×</button>
+									<span class="doc-chip-name"
+										>{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span
+									>
+									<button
+										type="button"
+										class="doc-chip-remove"
+										onclick={() => toggleNewLink(id)}
+										aria-label="Remove">×</button
+									>
 								</span>
 							{/if}
 						{/each}
@@ -747,7 +807,9 @@
 													title={$_('vehicle.forms.viewDocument')}
 												>
 													<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-													<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
+													<span class="doc-chip-name"
+														>{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span
+													>
 												</a>
 											{/each}
 										</div>
@@ -786,179 +848,253 @@
 								{@const editLog = serviceLogById(log.id)}
 								{@const currentAttached = resolvedAttachments(log)}
 								<div class="entry-edit-card">
-								<form
-									method="POST"
-									action="?/editServiceLog"
-									class="entry-edit-form"
-									use:enhance={() => {
-										editSubmitting = true;
-										return async ({ update }) => {
-											await update();
-											editSubmitting = false;
-										};
-									}}
-								>
-									{#if (form as any)?.editError}
-										<div class="form-err">{(form as any).editError}</div>
-									{/if}
-									<input type="hidden" name="id" value={log.id} />
-									<div class="form-row">
+									<form
+										method="POST"
+										action="?/editServiceLog"
+										class="entry-edit-form"
+										use:enhance={() => {
+											editSubmitting = true;
+											return async ({ update }) => {
+												await update();
+												editSubmitting = false;
+											};
+										}}
+									>
+										{#if (form as any)?.editError}
+											<div class="form-err">{(form as any).editError}</div>
+										{/if}
+										<input type="hidden" name="id" value={log.id} />
+										<div class="form-row">
+											<label class="field">
+												<span class="field-label">{$_('vehicle.forms.fields.date')}</span>
+												<input
+													type="date"
+													name="performed_at"
+													value={editLog?.performed_at ?? today}
+													class="input"
+													required
+												/>
+											</label>
+											<label class="field">
+												<span class="field-label"
+													>{$_('vehicle.forms.fields.odometer', { values: { unit } })}</span
+												>
+												<input
+													type="number"
+													name="odometer_at_service"
+													value={editLog?.odometer_at_service}
+													min="0"
+													class="input mono"
+													required
+												/>
+											</label>
+										</div>
 										<label class="field">
-											<span class="field-label">{$_('vehicle.forms.fields.date')}</span>
+											<span class="field-label">{$_('vehicle.forms.fields.description')}</span>
 											<input
-												type="date"
-												name="performed_at"
-												value={editLog?.performed_at ?? today}
+												type="text"
+												name="notes"
+												value={editLog?.notes ?? ''}
+												maxlength="200"
 												class="input"
-												required
 											/>
 										</label>
 										<label class="field">
 											<span class="field-label"
-												>{$_('vehicle.forms.fields.odometer', { values: { unit } })}</span
+												>{$_('vehicle.forms.fields.remark', {
+													values: { optional: $_('common.optional') }
+												})}</span
+											>
+											<input
+												type="text"
+												name="remark"
+												value={editLog?.remark ?? ''}
+												placeholder={$_('vehicle.forms.placeholders.additionalDetails')}
+												maxlength="200"
+												class="input"
+											/>
+										</label>
+										<label class="field">
+											<span class="field-label"
+												>{$_('vehicle.forms.fields.cost', {
+													values: { optional: $_('common.optional') }
+												})}</span
 											>
 											<input
 												type="number"
-												name="odometer_at_service"
-												value={editLog?.odometer_at_service}
+												name="cost"
+												value={editLog?.cost_cents ? editLog.cost_cents / 100 : ''}
 												min="0"
+												step="0.01"
 												class="input mono"
-												required
 											/>
 										</label>
-									</div>
-									<label class="field">
-										<span class="field-label">{$_('vehicle.forms.fields.description')}</span>
-										<input
-											type="text"
-											name="notes"
-											value={editLog?.notes ?? ''}
-											maxlength="200"
-											class="input"
-										/>
-									</label>
-									<label class="field">
-										<span class="field-label"
-											>{$_('vehicle.forms.fields.remark', {
-												values: { optional: $_('common.optional') }
-											})}</span
-										>
-										<input
-											type="text"
-											name="remark"
-											value={editLog?.remark ?? ''}
-											placeholder={$_('vehicle.forms.placeholders.additionalDetails')}
-											maxlength="200"
-											class="input"
-										/>
-									</label>
-									<label class="field">
-										<span class="field-label"
-											>{$_('vehicle.forms.fields.cost', {
-												values: { optional: $_('common.optional') }
-											})}</span
-										>
-										<input
-											type="number"
-											name="cost"
-											value={editLog?.cost_cents ? editLog.cost_cents / 100 : ''}
-											min="0"
-											step="0.01"
-											class="input mono"
-										/>
-									</label>
-									<div class="form-actions">
-										<button type="submit" class="btn-primary" disabled={editSubmitting}
-											>{editSubmitting ? $_('common.saving') : $_('common.save')}</button
-										>
-										<button type="button" class="btn-ghost" onclick={() => (editingEntry = null)}
-											>{$_('common.cancel')}</button
-										>
-									</div>
-								</form>
+										<div class="form-actions">
+											<button type="submit" class="btn-primary" disabled={editSubmitting}
+												>{editSubmitting ? $_('common.saving') : $_('common.save')}</button
+											>
+											<button type="button" class="btn-ghost" onclick={() => (editingEntry = null)}
+												>{$_('common.cancel')}</button
+											>
+										</div>
+									</form>
 
-								<!-- Attachment management inside same card, using separate form actions -->
-								<div class="edit-attachments">
-									<span class="field-label">{$_('vehicle.forms.fields.attachments', { values: { optional: $_('common.optional') } })}</span>
-									{#if currentAttached.length > 0}
-										<div class="attach-chips">
-											{#each currentAttached as doc}
-												<span class="doc-chip">
-													<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-													<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
-													<form method="POST" action="?/unlinkDocument" use:enhance>
-														<input type="hidden" name="service_log_id" value={log.id} />
-														<input type="hidden" name="document_id" value={doc.id} />
-														<button type="submit" class="doc-chip-remove" aria-label="Remove">×</button>
-													</form>
-												</span>
-											{/each}
-										</div>
-									{/if}
-									<div class="attach-actions">
-										<form method="POST" action="?/uploadToLog" enctype="multipart/form-data"
-											use:enhance={({ formData }) => {
-												if (editAttachFile) formData.set('file', editAttachFile);
-												editUploading = true;
-												return async ({ update }) => { await update(); editUploading = false; };
-											}}
+									<!-- Attachment management inside same card, using separate form actions -->
+									<div class="edit-attachments">
+										<span class="field-label"
+											>{$_('vehicle.forms.fields.attachments', {
+												values: { optional: $_('common.optional') }
+											})}</span
 										>
-											<input type="hidden" name="service_log_id" value={log.id} />
-											{#if editAttachFile}
-												<span class="doc-chip">
-													<span class="doc-chip-name">{editAttachFile.name}</span>
-													<button type="button" class="doc-chip-remove" onclick={clearEditAttach} aria-label="Remove">×</button>
-												</span>
-												<select name="doc_type" class="input attach-type" bind:value={editAttachType}>
-													{#each docTypeEntries as [val, key]}
-														<option value={val}>{$_(key)}</option>
-													{/each}
-												</select>
-												<button type="submit" class="attach-save" disabled={editUploading}>
-													{editUploading ? $_('vehicle.forms.attachments.uploading') : $_('common.save')}
-												</button>
-											{:else}
-												<label class="attach-action-btn">
-													<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-													{$_('vehicle.forms.attachFile')}
-													<input type="file" class="attach-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onchange={handleEditAttachPick} />
-												</label>
-											{/if}
-										</form>
-										<button type="button" class="attach-action-btn" onclick={() => (editShowLink = !editShowLink)}>
-											<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-											{$_('vehicle.forms.linkDocument')}
-										</button>
-									</div>
-									{#if editShowLink}
-										{@const available = unlinkedDocs(log)}
-										<div class="link-picker">
-											<div class="link-picker-header">
-												<span class="link-picker-title">{$_('vehicle.forms.attachments.pickerTitle')}</span>
-												<button type="button" class="link-picker-close" onclick={() => (editShowLink = false)}>×</button>
+										{#if currentAttached.length > 0}
+											<div class="attach-chips">
+												{#each currentAttached as doc}
+													<span class="doc-chip">
+														<span class="doc-chip-type"
+															>{$_('documents.types.' + doc.doc_type)}</span
+														>
+														<span class="doc-chip-name"
+															>{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span
+														>
+														<form method="POST" action="?/unlinkDocument" use:enhance>
+															<input type="hidden" name="service_log_id" value={log.id} />
+															<input type="hidden" name="document_id" value={doc.id} />
+															<button type="submit" class="doc-chip-remove" aria-label="Remove"
+																>×</button
+															>
+														</form>
+													</span>
+												{/each}
 											</div>
-											{#if available.length === 0}
-												<p class="link-picker-empty">{$_('vehicle.forms.attachments.noDocuments')}</p>
-											{:else}
-												<ul class="link-picker-list">
-													{#each available as doc}
-														<li>
-															<form method="POST" action="?/linkDocument" use:enhance>
-																<input type="hidden" name="service_log_id" value={log.id} />
-																<input type="hidden" name="document_id" value={doc.id} />
-																<button type="submit" class="link-picker-item">
-																	<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-																	<span class="link-picker-item-name">{doc.name}</span>
-																</button>
-															</form>
-														</li>
-													{/each}
-												</ul>
-											{/if}
+										{/if}
+										<div class="attach-actions">
+											<form
+												method="POST"
+												action="?/uploadToLog"
+												enctype="multipart/form-data"
+												use:enhance={({ formData }) => {
+													if (editAttachFile) formData.set('file', editAttachFile);
+													editUploading = true;
+													return async ({ update }) => {
+														await update();
+														editUploading = false;
+													};
+												}}
+											>
+												<input type="hidden" name="service_log_id" value={log.id} />
+												{#if editAttachFile}
+													<span class="doc-chip">
+														<span class="doc-chip-name">{editAttachFile.name}</span>
+														<button
+															type="button"
+															class="doc-chip-remove"
+															onclick={clearEditAttach}
+															aria-label="Remove">×</button
+														>
+													</span>
+													<select
+														name="doc_type"
+														class="input attach-type"
+														bind:value={editAttachType}
+													>
+														{#each docTypeEntries as [val, key]}
+															<option value={val}>{$_(key)}</option>
+														{/each}
+													</select>
+													<button type="submit" class="attach-save" disabled={editUploading}>
+														{editUploading
+															? $_('vehicle.forms.attachments.uploading')
+															: $_('common.save')}
+													</button>
+												{:else}
+													<label class="attach-action-btn">
+														<svg
+															width="13"
+															height="13"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															stroke-width="2"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															aria-hidden="true"
+															><path
+																d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"
+															/></svg
+														>
+														{$_('vehicle.forms.attachFile')}
+														<input
+															type="file"
+															class="attach-file-input"
+															accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+															onchange={handleEditAttachPick}
+														/>
+													</label>
+												{/if}
+											</form>
+											<button
+												type="button"
+												class="attach-action-btn"
+												onclick={() => (editShowLink = !editShowLink)}
+											>
+												<svg
+													width="13"
+													height="13"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													stroke-width="2"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													aria-hidden="true"
+													><path
+														d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+													/><path
+														d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+													/></svg
+												>
+												{$_('vehicle.forms.linkDocument')}
+											</button>
 										</div>
-									{/if}
+										{#if editShowLink}
+											{@const available = unlinkedDocs(log)}
+											<div class="link-picker">
+												<div class="link-picker-header">
+													<span class="link-picker-title"
+														>{$_('vehicle.forms.attachments.pickerTitle')}</span
+													>
+													<button
+														type="button"
+														class="link-picker-close"
+														onclick={() => (editShowLink = false)}>×</button
+													>
+												</div>
+												{#if available.length === 0}
+													<p class="link-picker-empty">
+														{$_('vehicle.forms.attachments.noDocuments')}
+													</p>
+												{:else}
+													<ul class="link-picker-list">
+														{#each available as doc}
+															<li>
+																<form method="POST" action="?/linkDocument" use:enhance>
+																	<input type="hidden" name="service_log_id" value={log.id} />
+																	<input type="hidden" name="document_id" value={doc.id} />
+																	<button type="submit" class="link-picker-item">
+																		<span class="doc-chip-type"
+																			>{$_('documents.types.' + doc.doc_type)}</span
+																		>
+																		<span class="link-picker-item-name">{doc.name}</span>
+																	</button>
+																</form>
+															</li>
+														{/each}
+													</ul>
+												{/if}
+											</div>
+										{/if}
+									</div>
 								</div>
-							</div>
 							{/if}
 						{:else if entry.kind === 'note'}
 							{@const log = entry.log}
@@ -1054,10 +1190,14 @@
 								<div class="entry-body">
 									<div class="entry-title">{t.title}</div>
 									<div class="entry-meta">
-										<span class="entry-meta-item">{$_('travels.entry.days', { values: { n: t.duration_days } })}</span>
+										<span class="entry-meta-item"
+											>{$_('travels.entry.days', { values: { n: t.duration_days } })}</span
+										>
 										{#if t.total_expenses_cents != null}
 											<span class="entry-meta-sep">·</span>
-											<span class="entry-meta-item mono">{formatCurrency(t.total_expenses_cents, t.currency, locale)}</span>
+											<span class="entry-meta-item mono"
+												>{formatCurrency(t.total_expenses_cents, t.currency, locale)}</span
+											>
 										{/if}
 									</div>
 								</div>
@@ -1068,19 +1208,22 @@
 										class:active={entryMenu === t.id}
 										onclick={() => toggleEntryMenu(t.id)}
 										aria-label="Entry options"
-										aria-haspopup="true">⋮</button>
+										aria-haspopup="true">⋮</button
+									>
 									{#if entryMenu === t.id}
 										<div class="entry-menu-dropdown" role="menu">
 											<a
 												role="menuitem"
 												class="entry-menu-item"
 												href="/vehicles/{data.vehicle.id}/travels?edit={t.id}"
-											>{$_('common.edit')}</a>
+												>{$_('common.edit')}</a
+											>
 											<a
 												role="menuitem"
 												class="entry-menu-item entry-menu-item--danger"
 												href="/vehicles/{data.vehicle.id}/travels?delete={t.id}"
-											>{$_('common.delete')}</a>
+												>{$_('common.delete')}</a
+											>
 										</div>
 									{/if}
 								</div>
@@ -1921,7 +2064,9 @@
 		color: var(--text-muted);
 		padding: 0.25rem 0.5rem;
 		line-height: 1;
-		transition: border-color 0.1s, color 0.1s;
+		transition:
+			border-color 0.1s,
+			color 0.1s;
 	}
 	.attach-action-btn:hover {
 		border-color: var(--border-strong);
@@ -2026,7 +2171,9 @@
 	}
 	.doc-chip--link {
 		text-decoration: none;
-		transition: border-color 0.1s, background 0.1s;
+		transition:
+			border-color 0.1s,
+			background 0.1s;
 	}
 	.doc-chip--link:hover {
 		border-color: var(--accent);

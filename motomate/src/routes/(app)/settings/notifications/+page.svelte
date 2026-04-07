@@ -152,7 +152,6 @@ actions:
 	<title>{$_('settings.notifications.title')} · {$_('layout.nav.settings')}</title>
 </svelte:head>
 
-
 <div class="section-header">
 	<h2 class="section-title">{$_('settings.notifications.channels.title')}</h2>
 </div>
@@ -440,7 +439,6 @@ actions:
 		</button>
 	</div>
 </form>
-
 
 <div class="inbox-divider" role="separator"></div>
 <div class="inbox-header">

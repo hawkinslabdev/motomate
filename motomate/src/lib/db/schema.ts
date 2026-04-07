@@ -281,7 +281,8 @@ export const documents = sqliteTable(
 		user_id: text('user_id')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		name: text('name').notNull(),
+		name: text('name').notNull(), // original filename (used for download Content-Disposition)
+		title: text('title'), // user-facing description/summary
 		doc_type: text('doc_type', {
 			enum: ['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route']
 		})

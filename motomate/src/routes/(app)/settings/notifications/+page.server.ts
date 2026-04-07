@@ -1,6 +1,11 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getNotifications, getNotificationsTotal, markAllRead, markRead } from '$lib/workflow/channels/inapp.js';
+import {
+	getNotifications,
+	getNotificationsTotal,
+	markAllRead,
+	markRead
+} from '$lib/workflow/channels/inapp.js';
 import { updateUserSettings } from '$lib/db/repositories/users.js';
 import { NotificationChannelsSchema } from '$lib/validators/schemas.js';
 import type { NotificationChannels } from '$lib/db/schema.js';

@@ -13,7 +13,8 @@
 
 	interface GpxDoc {
 		id: string;
-		name: string;
+		name: string; // original filename
+		title?: string | null; // user-facing description
 		url?: string | null;
 		index: number;
 	}
@@ -132,12 +133,20 @@
 				// Date: match year, full month name, short month name, and "month year" combos
 				try {
 					const d = new Date(t.start_date + 'T00:00:00');
-					const year  = String(d.getFullYear());
-					const monthLong  = d.toLocaleDateString(locale, { month: 'long' }).toLowerCase();
+					const year = String(d.getFullYear());
+					const monthLong = d.toLocaleDateString(locale, { month: 'long' }).toLowerCase();
 					const monthShort = d.toLocaleDateString(locale, { month: 'short' }).toLowerCase();
 					const full = `${monthLong} ${year}`;
-					if (year.includes(q) || monthLong.includes(q) || monthShort.includes(q) || full.includes(q)) return true;
-				} catch { /* ignore */ }
+					if (
+						year.includes(q) ||
+						monthLong.includes(q) ||
+						monthShort.includes(q) ||
+						full.includes(q)
+					)
+						return true;
+				} catch {
+					/* ignore */
+				}
 
 				return false;
 			});
@@ -169,15 +178,17 @@
 	});
 
 	const hasHistory = $derived(data.travels.length > 0);
-	const hasActiveFilter = $derived(selectedTravelIds.length > 0 || searchQuery.trim() !== '' || filterBy !== 'all');
+	const hasActiveFilter = $derived(
+		selectedTravelIds.length > 0 || searchQuery.trim() !== '' || filterBy !== 'all'
+	);
 
 	// Build GPX file list for the map, filtering out excluded days
 	const gpxFiles = $derived(
 		data.travels.flatMap((t: Travel) => {
 			const excluded = (t.excluded_gpx_days as number[]) ?? [];
 			return (t.gpx_document_ids as (string | null)[])
-				.filter((docId, i): docId is string =>
-					!!docId && !!data.gpxUrls[docId] && !excluded.includes(i)
+				.filter(
+					(docId, i): docId is string => !!docId && !!data.gpxUrls[docId] && !excluded.includes(i)
 				)
 				.map((docId, i) => ({
 					travelId: t.id,
@@ -191,11 +202,14 @@
 
 	// Group GPX files by travelId for the day toggle UI
 	const gpxFilesByTravel = $derived(
-		gpxFiles.reduce((acc, f) => {
-			if (!acc[f.travelId]) acc[f.travelId] = [];
-			acc[f.travelId].push(f);
-			return acc;
-		}, {} as Record<string, typeof gpxFiles>)
+		gpxFiles.reduce(
+			(acc, f) => {
+				if (!acc[f.travelId]) acc[f.travelId] = [];
+				acc[f.travelId].push(f);
+				return acc;
+			},
+			{} as Record<string, typeof gpxFiles>
+		)
 	);
 
 	// Get all travels that have GPX (with their excluded days info for toggle UI)
@@ -221,7 +235,7 @@
 						if (!id) return null;
 						const d = data.gpxDocs.find((doc: any) => doc.id === id);
 						if (!d) return null;
-						return { id: d.id, name: d.name, url: data.gpxUrls[d.id] ?? null, index: i };
+						return { id: d.id, name: d.name, title: d.title ?? null, url: data.gpxUrls[d.id] ?? null, index: i };
 					})
 					.filter((d: GpxDoc | null): d is GpxDoc => d !== null)
 			: []
@@ -229,7 +243,7 @@
 
 	// Get excluded days for editing travel
 	const editingExcludedDays = $derived(
-		editingTravel ? (editingTravel.excluded_gpx_days as number[]) ?? [] : []
+		editingTravel ? ((editingTravel.excluded_gpx_days as number[]) ?? []) : []
 	);
 </script>
 
@@ -302,7 +316,9 @@
 							selected={selectedTravelIds.includes(travel.id)}
 							onselect={(t) => handleRouteClick(t.id)}
 							onedit={openEdit}
-							ondelete={(t) => { deletingTravel = t; }}
+							ondelete={(t) => {
+								deletingTravel = t;
+							}}
 						/>
 					{/each}
 				</div>
@@ -328,7 +344,10 @@
 	vehicleId={data.vehicle.id}
 	{currency}
 	{locale}
-	onclose={() => { formOpen = false; editingTravel = null; }}
+	onclose={() => {
+		formOpen = false;
+		editingTravel = null;
+	}}
 />
 
 <!-- Delete Confirm Dialog -->
@@ -341,7 +360,9 @@
 		cancelLabel={$_('travels.delete.cancel')}
 		danger
 		loading={deleteSubmitting}
-		onclose={() => { deletingTravel = null; }}
+		onclose={() => {
+			deletingTravel = null;
+		}}
 		onconfirm={() => deleteFormEl?.requestSubmit()}
 	/>
 	<form
