@@ -5,6 +5,7 @@
 	import { toasts } from '$lib/stores/toasts.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { _, waitLocale } from '$lib/i18n';
+	import { quickAdd } from '$lib/stores/quickAdd.js';
 
 	let {
 		data,
@@ -173,9 +174,20 @@
 		<p class="section-sub">{$_('finance.totalSpent', { values: { name: data.vehicle.name } })}</p>
 	</div>
 	<div class="page-actions">
-		<button type="button" class="btn-primary" onclick={() => (showForm = true)}>
-			+ {$_('finance.addExpense')}
-		</button>
+		{#if showForm && window.innerWidth > 768}
+			<button type="button" class="btn-ghost" onclick={() => (showForm = false)}>
+				{$_('common.cancel')}
+			</button>
+		{:else}
+			<button
+				type="button"
+				class="btn-primary"
+				onclick={() =>
+					window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : (showForm = true)}
+			>
+				+ {$_('finance.addExpense')}
+			</button>
+		{/if}
 	</div>
 </div>
 
@@ -950,6 +962,7 @@
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+		padding-right: 48px; /* Match entry-menu-btn width for alignment */
 	}
 
 	/* Sections */
@@ -1068,24 +1081,31 @@
 	.entry-actions {
 		position: relative;
 		flex-shrink: 0;
-		margin-right: -0.375rem;
+		align-self: center;
 	}
 	.entry-menu-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
+		width: 36px;
+		height: 36px;
 		background: none;
-		border: none;
-		border-radius: 8px;
+		border: 1px solid transparent;
+		border-radius: 6px;
 		color: var(--text-subtle);
-		font-size: 1.25rem;
+		font-size: 1rem;
 		line-height: 1;
 		cursor: pointer;
+		opacity: 0;
 		transition:
-			background 0.1s,
-			color 0.1s;
+			opacity 0.15s,
+			background 0.15s,
+			border-color 0.15s;
+	}
+	.transaction-row:hover .entry-menu-btn,
+	.entry-menu-btn:focus,
+	.entry-menu-btn.active {
+		opacity: 1;
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
@@ -1138,5 +1158,30 @@
 		.form-row {
 			grid-template-columns: 1fr;
 		}
+		.entry-menu-btn {
+			opacity: 1;
+			width: 44px;
+			height: 44px;
+		}
+		.grouped-amount {
+			padding-right: 56px;
+		}
+	}
+	.btn-ghost {
+		background: transparent;
+		color: var(--text-muted);
+		padding: 0.625rem 1rem;
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		transition:
+			background 0.1s,
+			color 0.1s;
+	}
+	.btn-ghost:hover {
+		background: var(--bg-subtle);
+		color: var(--text);
 	}
 </style>

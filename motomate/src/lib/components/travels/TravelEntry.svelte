@@ -122,7 +122,7 @@
 <style>
 	.travel-entry {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-4);
 		padding: 0.875rem var(--space-2) 0.875rem var(--space-2);
@@ -203,24 +203,39 @@
 	}
 	.menu-wrap {
 		position: relative;
+		align-self: center;
 	}
 	.menu-btn {
-		background: none;
-		border: none;
-		cursor: pointer;
-		color: var(--text-subtle);
-		padding: var(--space-1);
-		border-radius: 6px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: none;
+		border: 1px solid transparent;
+		border-radius: 6px;
+		color: var(--text-subtle);
+		cursor: pointer;
+		opacity: 0;
 		transition:
-			color 0.1s,
-			background 0.1s;
+			opacity 0.15s,
+			background 0.15s,
+			border-color 0.15s;
+	}
+	.travel-entry:hover .menu-btn {
+		opacity: 1;
 	}
 	.menu-btn:hover {
 		color: var(--text);
 		background: var(--bg-muted);
+	}
+
+	@media (max-width: 480px) {
+		.menu-btn {
+			opacity: 1;
+			width: 44px;
+			height: 44px;
+		}
 	}
 	.menu-dropdown {
 		position: absolute;

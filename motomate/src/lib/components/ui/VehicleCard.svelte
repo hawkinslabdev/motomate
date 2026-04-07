@@ -4,7 +4,9 @@
 
 	let {
 		vehicle,
-		locale = 'en'
+		locale = 'en',
+		isFavorite = false,
+		onFavorite
 	}: {
 		vehicle: {
 			id: string;
@@ -21,6 +23,8 @@
 			license_plate?: string | null;
 		};
 		locale?: string;
+		isFavorite?: boolean;
+		onFavorite?: (vehicleId: string) => void;
 	} = $props();
 
 	const defaultEmoji = $derived(
@@ -28,46 +32,78 @@
 	);
 	const avatarEmoji = $derived(vehicle.meta?.avatar_emoji ?? defaultEmoji);
 	const hasAvatarImage = $derived(!!vehicle.cover_image_key);
+
+	function handleFavoriteClick(e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+		onFavorite?.(vehicle.id);
+	}
 </script>
 
-<a
-	href="/vehicles/{vehicle.id}"
-	class="vehicle-card"
-	class:vehicle-card--archived={!!vehicle.archived_at}
->
-	<div class="vehicle-avatar" aria-hidden="true">
-		{#if hasAvatarImage}
-			<img
-				src="/api/files?key={vehicle.cover_image_key}"
-				alt={vehicle.name}
-				class="avatar-img"
-				loading="lazy"
-			/>
-		{:else}
-			<span class="avatar-emoji">{avatarEmoji}</span>
-		{/if}
-	</div>
-	<div class="vehicle-info">
-		<div class="vehicle-name-row">
-			<span class="vehicle-name">{vehicle.name}</span>
-			{#if vehicle.archived_at}
-				<span class="archived-tag">{$_('vehicle.layout.archived')}</span>
+<div class="vehicle-card-wrapper">
+	<a
+		href="/vehicles/{vehicle.id}"
+		class="vehicle-card"
+		class:vehicle-card--archived={!!vehicle.archived_at}
+	>
+		<div class="vehicle-avatar" aria-hidden="true">
+			{#if hasAvatarImage}
+				<img
+					src="/api/files?key={vehicle.cover_image_key}"
+					alt={vehicle.name}
+					class="avatar-img"
+					loading="lazy"
+				/>
+			{:else}
+				<span class="avatar-emoji">{avatarEmoji}</span>
 			{/if}
 		</div>
-		<div class="vehicle-meta">
-			{vehicle.make}
-			{vehicle.model} · {vehicle.year}
-			{#if vehicle.license_plate}
-				· {vehicle.license_plate}{/if}
+		<div class="vehicle-info">
+			<div class="vehicle-name-row">
+				<span class="vehicle-name">{vehicle.name}</span>
+				{#if vehicle.archived_at}
+					<span class="archived-tag">{$_('vehicle.layout.archived')}</span>
+				{/if}
+			</div>
+			<div class="vehicle-meta">
+				{vehicle.make}
+				{vehicle.model} · {vehicle.year}
+				{#if vehicle.license_plate}
+					· {vehicle.license_plate}{/if}
+			</div>
+			<div class="vehicle-odo">
+				<span class="odo-value">{formatNumber(vehicle.current_odometer, locale)}</span>
+				<span class="odo-unit">{vehicle.odometer_unit}</span>
+			</div>
 		</div>
-		<div class="vehicle-odo">
-			<span class="odo-value">{formatNumber(vehicle.current_odometer, locale)}</span>
-			<span class="odo-unit">{vehicle.odometer_unit}</span>
-		</div>
-	</div>
-</a>
+	</a>
+	{#if !vehicle.archived_at && onFavorite}
+		<button
+			class="favorite-btn"
+			class:favorite-btn--active={isFavorite}
+			onclick={handleFavoriteClick}
+			title={isFavorite ? $_('vehicles.unfavorite') : $_('vehicles.favorite')}
+			aria-label={isFavorite ? $_('vehicles.unfavorite') : $_('vehicles.favorite')}
+			type="button"
+		>
+			<svg
+				viewBox="0 0 24 24"
+				fill={isFavorite ? 'currentColor' : 'none'}
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path
+					d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+				/>
+			</svg>
+		</button>
+	{/if}
+</div>
 
 <style>
+	.vehicle-card-wrapper {
+		position: relative;
+	}
 	.vehicle-card {
 		display: flex;
 		align-items: center;
@@ -88,7 +124,7 @@
 		transform: translateY(-1px);
 	}
 	.vehicle-card--archived {
-		opacity: 0.55;
+		opacity: 0.7;
 	}
 
 	.vehicle-avatar {
@@ -167,5 +203,43 @@
 	.odo-unit {
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
+	}
+
+	/* Favorite button */
+	.favorite-btn {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		color: var(--text-subtle);
+		cursor: pointer;
+		opacity: 0.5;
+		transition:
+			opacity 0.15s,
+			color 0.15s,
+			transform 0.15s;
+		z-index: 5;
+	}
+	.favorite-btn svg {
+		width: 18px;
+		height: 18px;
+	}
+	.favorite-btn:hover {
+		opacity: 1;
+		color: var(--accent);
+		transform: scale(1.1);
+	}
+	.favorite-btn--active {
+		opacity: 1;
+		color: var(--accent);
+	}
+	.favorite-btn--active:hover {
+		color: var(--accent-hover);
 	}
 </style>

@@ -178,6 +178,8 @@
 			"hide": "Archivierte ausblenden"
 		},
 		"add": "+ Fahrzeug hinzufügen",
+		"favorite": "Als Favorit markieren",
+		"unfavorite": "Aus Favoriten entfernen",
 		"empty": {
 			"title": "Ihre Garage ist leer",
 			"description": "Fügen Sie ein neues Fahrzeug zu Ihrer Sammlung hinzu."

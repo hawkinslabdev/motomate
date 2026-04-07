@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { _, waitLocale } from '$lib/i18n';
+	import { quickAdd } from '$lib/stores/quickAdd.js';
 	import {
 		formatDateShort,
 		formatYearMonth,
@@ -26,6 +27,18 @@
 	let menuOpen = $state(false);
 	let activeForm = $state<'service' | 'odometer' | 'note' | null>(null);
 	let submitting = $state(false);
+	let isMobile = $state(false);
+
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			isMobile = window.innerWidth <= 768;
+			const handleResize = () => {
+				isMobile = window.innerWidth <= 768;
+			};
+			window.addEventListener('resize', handleResize, { passive: true });
+			return () => window.removeEventListener('resize', handleResize);
+		}
+	});
 
 	// Track odometer form input for reactive warning
 	let odoValue = $state('');
@@ -298,34 +311,34 @@
 		</p>
 	</div>
 	<div class="page-actions">
-		<button
-			class="btn-primary log-trigger"
-			onclick={() => (menuOpen = !menuOpen)}
-			aria-haspopup="true"
-			aria-expanded={menuOpen}
-		>
-			+ {$_('common.add')}
-		</button>
-
-		{#if menuOpen}
-			<div class="log-backdrop" role="presentation" onclick={() => (menuOpen = false)}></div>
-
-			<div class="log-menu-items" role="menu">
-				<button role="menuitem" class="menu-item" onclick={() => openForm('service')}>
-					<span class="menu-item-label">{$_('layout.addEntry.maintenance')}</span>
-					<span class="menu-item-desc">{$_('layout.addEntry.maintenanceDesc')}</span>
-				</button>
-
-				<button role="menuitem" class="menu-item" onclick={() => openForm('odometer')}>
-					<span class="menu-item-label">{$_('layout.addEntry.mileage')}</span>
-					<span class="menu-item-desc">{$_('layout.addEntry.mileageDesc')}</span>
-				</button>
-
-				<button role="menuitem" class="menu-item" onclick={() => openForm('note')}>
-					<span class="menu-item-label">{$_('vehicle.forms.writeNote')}</span>
-					<span class="menu-item-desc">{$_('vehicle.forms.noteDesc')}</span>
-				</button>
-			</div>
+		{#if activeForm && !isMobile}
+			<button class="btn-ghost" onclick={() => (activeForm = null)}>
+				{$_('common.cancel')}
+			</button>
+		{:else}
+			<button
+				class="btn-primary"
+				onclick={() => (isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen))}
+			>
+				+ {$_('common.add')}
+			</button>
+			{#if !isMobile && menuOpen}
+				<div class="add-menu-backdrop" role="presentation" onclick={() => (menuOpen = false)}></div>
+				<div class="add-menu-dropdown">
+					<button class="add-menu-item" onclick={() => openForm('service')}>
+						<span>{$_('layout.addEntry.maintenance')}</span>
+						<span class="add-menu-desc">{$_('layout.addEntry.maintenanceDesc')}</span>
+					</button>
+					<button class="add-menu-item" onclick={() => openForm('odometer')}>
+						<span>{$_('layout.addEntry.mileage')}</span>
+						<span class="add-menu-desc">{$_('layout.addEntry.mileageDesc')}</span>
+					</button>
+					<button class="add-menu-item" onclick={() => openForm('note')}>
+						<span>{$_('vehicle.forms.writeNote')}</span>
+						<span class="add-menu-desc">{$_('vehicle.forms.noteDesc')}</span>
+					</button>
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>
@@ -1311,7 +1324,11 @@
 										</label>
 									</div>
 									<label class="field">
-										<span class="field-label">Remark <span class="muted">(optional)</span></span>
+										<span class="field-label"
+											>{$_('vehicle.forms.fields.remark', {
+												values: { optional: $_('common.optional') }
+											})}
+										</span>
 										<input
 											type="text"
 											name="remark"
@@ -1381,6 +1398,13 @@
 		flex-wrap: wrap;
 		margin-bottom: var(--space-6);
 	}
+	@media (min-width: 768px) {
+		.page-header {
+			max-width: 860px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
 	.page-header-text {
 		display: flex;
 		flex-direction: column;
@@ -1403,70 +1427,6 @@
 		align-items: center;
 		flex-shrink: 0;
 		position: relative;
-	}
-
-	/* Log dropdown */
-	.log-trigger {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		padding: 0.5rem 0.875rem;
-		background: var(--accent);
-		color: #fff;
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-	.log-trigger:hover {
-		background: var(--accent-hover);
-	}
-
-	.log-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 10;
-	}
-	.log-menu-items {
-		position: absolute;
-		right: 0;
-		top: calc(100% + 0.375rem);
-		background: var(--bg);
-		border: 1px solid var(--border-strong);
-		border-radius: 8px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-		z-index: 20;
-		min-width: 200px;
-		padding: 0.375rem;
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-	.menu-item {
-		display: flex;
-		flex-direction: column;
-		padding: 0.625rem 0.75rem;
-		border-radius: 10px;
-		background: none;
-		border: none;
-		cursor: pointer;
-		text-align: left;
-		width: 100%;
-		transition: background 0.1s;
-	}
-	.menu-item:hover {
-		background: var(--bg-muted);
-	}
-	.menu-item-label {
-		font-size: var(--text-sm);
-		font-weight: 500;
-		color: var(--text);
-	}
-	.menu-item-desc {
-		font-size: var(--text-xs);
-		color: var(--text-muted);
-		margin-top: 1px;
 	}
 
 	/* Inline forms */
@@ -1500,6 +1460,7 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 0.75rem;
+		padding-top: 0.5rem;
 	}
 	.field {
 		display: flex;
@@ -1651,6 +1612,56 @@
 		color: var(--text);
 	}
 
+	/* Add menu dropdown */
+	.page-actions {
+		position: relative;
+	}
+	.add-menu-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 10;
+	}
+	.add-menu-dropdown {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 0.375rem);
+		background: var(--bg);
+		border: 1px solid var(--border-strong);
+		border-radius: 8px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		z-index: 20;
+		min-width: 200px;
+		padding: 0.375rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.add-menu-item {
+		display: flex;
+		flex-direction: column;
+		padding: 0.625rem 0.75rem;
+		border-radius: 10px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		width: 100%;
+		transition: background 0.1s;
+	}
+	.add-menu-item:hover {
+		background: var(--bg-muted);
+	}
+	.add-menu-item span:first-child {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.add-menu-desc {
+		font-size: var(--text-xs);
+		color: var(--text-muted);
+		margin-top: 1px;
+	}
+
 	/* Upcoming */
 	.upcoming-section {
 		margin-bottom: var(--space-7);
@@ -1779,11 +1790,19 @@
 
 	.timeline-entry {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		gap: 0.75rem;
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		position: relative;
+	}
+
+	.entry-icon {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		flex-shrink: 0;
+		transition: transform 0.15s ease-out-quart;
 	}
 	.timeline-entry:first-of-type {
 		border-top: 1px solid var(--border);
@@ -1822,6 +1841,9 @@
 	.timeline-entry:hover .entry-icon {
 		transform: scale(1.35);
 	}
+	.timeline-entry:hover {
+		background: var(--bg-subtle);
+	}
 
 	.entry-body {
 		flex: 1;
@@ -1844,7 +1866,6 @@
 		color: var(--text-subtle);
 		white-space: nowrap;
 		flex-shrink: 0;
-		align-self: flex-start;
 	}
 	.entry-meta {
 		display: flex;
@@ -1890,11 +1911,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
+		width: 36px;
+		height: 36px;
 		background: none;
 		border: 1px solid transparent;
-		border-radius: 4px;
+		border-radius: 6px;
 		color: var(--text-subtle);
 		font-size: 1rem;
 		cursor: pointer;
@@ -2037,6 +2058,13 @@
 		}
 		.entry-menu-btn {
 			opacity: 1;
+			width: 44px;
+			height: 44px;
+		}
+	}
+	@media (max-width: 380px) {
+		.form-row {
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -2192,7 +2220,7 @@
 		background: var(--bg);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 		overflow: hidden;
-		max-width: 320px;
+		max-width: min(320px, 90vw);
 	}
 	.link-picker-header {
 		display: flex;
