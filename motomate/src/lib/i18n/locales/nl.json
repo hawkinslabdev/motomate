@@ -620,7 +620,7 @@
       },
       "export": {
         "title": "Gegevens exporteren",
-        "desc": "Download een kopie van je voertuigen, onderhoudsrecords, documenten en instellingen.",
+        "desc": "Download een kopie van je voertuigen, onderhoudshistorie, documenten en instellingen.",
         "btn": "Gegevens exporteren",
         "json": "Exporteren als JSON",
         "jsonHint": "Gestructureerde data, geen bestanden",
