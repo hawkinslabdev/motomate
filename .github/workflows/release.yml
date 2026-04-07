@@ -23,8 +23,8 @@ jobs:
       - name: Determine version
         id: get_tag
         run: |
-          if [ -n "${{ github.inputs.version }}" ]; then
-            VERSION="${{ github.inputs.version }}"
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
             if [[ ! $VERSION =~ ^v ]]; then
               VERSION="v${VERSION}"
             fi
