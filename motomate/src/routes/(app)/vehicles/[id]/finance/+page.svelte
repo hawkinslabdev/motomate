@@ -962,6 +962,8 @@
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+		min-width: 80px;
+		text-align: right;
 	}
 
 	/* Sections */
@@ -1047,6 +1049,8 @@
 		font-weight: 500;
 		color: var(--text);
 		flex-shrink: 0;
+		min-width: 80px;
+		text-align: right;
 	}
 
 	/* Empty state */
@@ -1077,27 +1081,37 @@
 	}
 
 	/* Entry action menu */
+	.stub-actions {
+		margin-right: 48px;	
+	}
 	.entry-actions {
 		position: relative;
 		flex-shrink: 0;
-		margin-right: -0.375rem;
+		align-self: center;
 	}
 	.entry-menu-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
+		width: 36px;
+		height: 36px;
 		background: none;
-		border: none;
-		border-radius: 8px;
+		border: 1px solid transparent;
+		border-radius: 6px;
 		color: var(--text-subtle);
-		font-size: 1.25rem;
+		font-size: 1rem;
 		line-height: 1;
 		cursor: pointer;
+		opacity: 0;
 		transition:
-			background 0.1s,
-			color 0.1s;
+			opacity 0.15s,
+			background 0.15s,
+			border-color 0.15s;
+	}
+	.transaction-row:hover .entry-menu-btn,
+	.entry-menu-btn:focus,
+	.entry-menu-btn.active {
+		opacity: 1;
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
@@ -1149,6 +1163,11 @@
 	@media (max-width: 640px) {
 		.form-row {
 			grid-template-columns: 1fr;
+		}
+		.entry-menu-btn {
+			opacity: 1;
+			width: 44px;
+			height: 44px;
 		}
 	}
 	.btn-ghost {

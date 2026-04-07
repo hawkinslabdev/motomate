@@ -230,6 +230,7 @@
 	.tracker-actions {
 		display: flex;
 		align-items: center;
+		align-self: center;
 		gap: 0.5rem;
 		flex-shrink: 0;
 	}
@@ -277,29 +278,31 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
+		width: 36px;
+		height: 36px;
 		flex-shrink: 0;
 		background: none;
 		border: 1px solid transparent;
-		border-radius: 8px;
-		color: var(--text-muted);
+		border-radius: 6px;
+		color: var(--text-subtle);
 		font-size: 1rem;
 		cursor: pointer;
 		line-height: 1;
-		opacity: 0.7;
+		opacity: 0;
 		transition:
-			opacity 0.1s,
-			background 0.1s,
-			border-color 0.1s;
+			opacity 0.15s,
+			background 0.15s,
+			border-color 0.15s;
 	}
 	.tracker-card:hover .options-btn,
 	.options-btn:focus {
 		opacity: 1;
 	}
-	@media (max-width: 768px) {
+	@media (max-width: 480px) {
 		.options-btn {
 			opacity: 1;
+			width: 44px;
+			height: 44px;
 		}
 	}
 	.options-btn:hover {

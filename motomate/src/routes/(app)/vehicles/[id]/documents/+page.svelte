@@ -875,7 +875,7 @@
 	}
 	.doc-row {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		gap: 1rem;
 		padding: 1rem 0 1rem var(--space-2);
 		border-bottom: 1px solid var(--border);
