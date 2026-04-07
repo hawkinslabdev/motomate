@@ -6,20 +6,10 @@ import { env } from '$env/dynamic/private';
  * Runtime CSRF origin validation.
  * Reads PUBLIC_APP_ORIGINS at runtime so self-hosted users can configure their own origins.
  */
-function isOriginTrusted(origin: string | null, referer: string | null, url: string, appUrl: string): boolean {
+function isOriginTrusted(origin: string | null, referer: string | null, url: string): boolean {
 	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
 		? process.env.PUBLIC_APP_ORIGINS.split(',')
 		: [];
-
-	// Derive allowed origins from PUBLIC_APP_URL if configured
-	const appOrigins: string[] = [];
-	if (appUrl) {
-		try {
-			appOrigins.push(new URL(appUrl).origin);
-		} catch (e) {
-			// ignore invalid URL
-		}
-	}
 
 	// Normalize: convert string 'null'/'undefined' to actual null
 	const normalizedOrigin =
@@ -46,12 +36,9 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 		}
 	}
 
-	// Include app-derived origins in the check
-	const allOrigins = [...configuredOrigins, ...appOrigins];
-
-	// If we have a request origin, check against all allowed origins
+	// If we have a request origin, check against configured origins
 	if (requestOrigin) {
-		for (const trusted of allOrigins) {
+		for (const trusted of configuredOrigins) {
 			try {
 				const trustedOrigin = trusted.includes('://')
 					? new URL(trusted).origin
@@ -68,18 +55,8 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 			}
 		}
 
-		// If origins are configured but none matched, allow if request URL matches a configured host
-		if (allOrigins.length > 0) {
-			// Try host-based matching: allow if request origin's host matches any trusted origin's host
-			try {
-				const originHost = new URL(requestOrigin!).hostname;
-				for (const trusted of allOrigins) {
-					const trustedHost = new URL(trusted).hostname;
-					if (originHost === trustedHost) return true;
-				}
-			} catch (e) {
-				// skip
-			}
+		// If origins are configured but none matched, reject
+		if (configuredOrigins.length > 0) {
 			return false;
 		}
 	}
@@ -90,23 +67,6 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Handle CORS preflight
-	if (event.request.method === 'OPTIONS') {
-		const origin = event.request.headers.get('origin');
-		if (origin) {
-			return new Response(null, {
-				status: 204,
-				headers: {
-					'Access-Control-Allow-Origin': origin,
-					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-					'Access-Control-Allow-Credentials': 'true',
-					'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-				}
-			});
-		}
-		return new Response(null, { status: 204 });
-	}
-
 	// CSRF check for non-safe methods
 	if (
 		event.request.method !== 'GET' &&
@@ -116,10 +76,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const origin = event.request.headers.get('origin');
 		const referer = event.request.headers.get('referer');
 
-		const appUrl = env.PUBLIC_APP_URL ?? '';
-		if (!isOriginTrusted(origin, referer, event.request.url, appUrl)) {
-				return new Response('Forbidden, origin not trusted', { status: 403 });
-			}
+		if (!isOriginTrusted(origin, referer, event.request.url)) {
+			return new Response('Forbidden, origin not trusted', { status: 403 });
+		}
 	}
 
 	const sessionId = event.cookies.get(lucia.sessionCookieName);
@@ -127,13 +86,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
-		const response = await resolve(event);
-		const origin = event.request.headers.get('origin');
-		if (origin) {
-			response.headers.set('Access-Control-Allow-Origin', origin);
-			response.headers.set('Access-Control-Allow-Credentials', 'true');
-		}
-		return response;
+		return resolve(event);
 	}
 
 	const { session, user } = await lucia.validateSession(sessionId);
@@ -167,10 +120,56 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	});
 
-	// Add CORS headers to all responses
-	const origin = event.request.headers.get('origin');
-	if (origin) {
-		response.headers.set('Access-Control-Allow-Origin', origin);
+	// Add CORS headers using configured origins
+	const requestOrigin = event.request.headers.get('origin');
+	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
+		? process.env.PUBLIC_APP_ORIGINS.split(',')
+		: [];
+	const appUrl = env.PUBLIC_APP_URL ?? '';
+
+	// Derive origin from PUBLIC_APP_URL
+	const appOrigins: string[] = [];
+	if (appUrl) {
+		try {
+			appOrigins.push(new URL(appUrl).origin);
+		} catch (e) {
+			// ignore
+		}
+	}
+
+	const allOrigins = [...configuredOrigins, ...appOrigins];
+
+	// Check if request origin is allowed
+	let allowedOrigin: string | null = null;
+	if (requestOrigin) {
+		for (const trusted of allOrigins) {
+			try {
+				const trustedUrl = new URL(trusted.includes('://') ? trusted : `http://${trusted}`);
+				const requestUrl = new URL(requestOrigin);
+				if (requestUrl.hostname === trustedUrl.hostname) {
+					allowedOrigin = requestOrigin;
+					break;
+				}
+			} catch (e) {
+				// skip
+			}
+		}
+	}
+
+	// If not from configured origins, allow all (dev mode) or none
+	if (!allowedOrigin) {
+		if (allOrigins.length === 0) {
+			allowedOrigin = '*';
+		} else if (configuredOrigins.length > 0 && !requestOrigin) {
+			// No origin header but origins configured - allow based on request URL
+			allowedOrigin = '*';
+		} else {
+			allowedOrigin = null;
+		}
+	}
+
+	if (allowedOrigin) {
+		response.headers.set('Access-Control-Allow-Origin', allowedOrigin);
 		response.headers.set('Access-Control-Allow-Credentials', 'true');
 	}
 
