@@ -53,8 +53,9 @@ export class LocalStorageAdapter implements StorageAdapter {
 		const expires = Math.floor(Date.now() / 1000) + expiresInSeconds;
 		const secret = env.AUTH_SECRET ?? 'dev-secret';
 		const sig = crypto.createHmac('sha256', secret).update(`${key}:${expires}`).digest('hex');
-		const base = env.PUBLIC_APP_URL ?? 'http://localhost:5173';
+		// Use a relative URL so the request always goes to the same origin the app
+		// is served from, regardless of how PUBLIC_APP_URL is configured.
 		const params = new URLSearchParams({ key, expires: String(expires), sig });
-		return `${base}/api/files?${params}`;
+		return `/api/files?${params}`;
 	}
 }
