@@ -90,6 +90,23 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
+	// Handle CORS preflight
+	if (event.request.method === 'OPTIONS') {
+		const origin = event.request.headers.get('origin');
+		if (origin) {
+			return new Response(null, {
+				status: 204,
+				headers: {
+					'Access-Control-Allow-Origin': origin,
+					'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+					'Access-Control-Allow-Credentials': 'true',
+					'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+				}
+			});
+		}
+		return new Response(null, { status: 204 });
+	}
+
 	// CSRF check for non-safe methods
 	if (
 		event.request.method !== 'GET' &&
@@ -110,7 +127,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
-		return resolve(event);
+		const response = await resolve(event);
+		const origin = event.request.headers.get('origin');
+		if (origin) {
+			response.headers.set('Access-Control-Allow-Origin', origin);
+			response.headers.set('Access-Control-Allow-Credentials', 'true');
+		}
+		return response;
 	}
 
 	const { session, user } = await lucia.validateSession(sessionId);
@@ -134,7 +157,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = user;
 	event.locals.session = session;
 
-	return resolve(event, {
+	const response = await resolve(event, {
 		transformPageChunk({ html }) {
 			const theme = (event.locals.user as any)?.settings?.theme;
 			if (theme === 'light' || theme === 'dark') {
@@ -143,4 +166,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 			return html;
 		}
 	});
+
+	// Add CORS headers to all responses
+	const origin = event.request.headers.get('origin');
+	if (origin) {
+		response.headers.set('Access-Control-Allow-Origin', origin);
+		response.headers.set('Access-Control-Allow-Credentials', 'true');
+	}
+
+	return response;
 };
