@@ -161,7 +161,7 @@ export const CreateDocumentSchema = z.object({
 	vehicle_id: z.string().min(1),
 	name: z.string().min(1).max(200).trim(),
 	doc_type: z
-		.enum(['service', 'quotation', 'papers', 'photo', 'notes', 'other'])
+		.enum(['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route'])
 		.default('service'),
 	storage_key: z.string().min(1),
 	mime_type: z.string().min(1),
@@ -208,3 +208,16 @@ export const UpdateWorkflowTriggerSchema = z.object({
 export const OdometerUpdateSchema = z.object({
 	current_odometer: reqInt(0)
 });
+
+export const CreateTravelSchema = z.object({
+	vehicle_id: z.string().min(1),
+	start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
+	duration_days: reqInt(1),
+	title: z.string().min(1).max(200).trim(),
+	remark: optStr(2000),
+	total_expenses_cents: optInt(0),
+	currency: z.string().length(3).default('EUR'),
+	gpx_document_ids: z.array(z.string()).default([])
+});
+
+export const UpdateTravelSchema = CreateTravelSchema.partial().omit({ vehicle_id: true });

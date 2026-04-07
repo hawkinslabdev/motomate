@@ -84,6 +84,11 @@
 			href: `/vehicles/${vehicle.id}/finance`
 		},
 		{
+			id: 'travels',
+			labelKey: 'vehicle.layout.tabs.travels',
+			href: `/vehicles/${vehicle.id}/travels`
+		},
+		{
 			id: 'settings',
 			labelKey: 'vehicle.layout.tabs.settings',
 			href: `/vehicles/${vehicle.id}/edit`

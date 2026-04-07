@@ -44,7 +44,8 @@
 		papers: $_('documents.types.papers'),
 		photo: $_('documents.types.photo'),
 		notes: $_('documents.types.notes'),
-		other: $_('documents.types.other')
+		other: $_('documents.types.other'),
+		route: $_('documents.types.route')
 	});
 
 	function formatSize(bytes: number) {

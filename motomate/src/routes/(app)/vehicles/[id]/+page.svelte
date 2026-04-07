@@ -27,9 +27,25 @@
 	let activeForm = $state<'service' | 'odometer' | 'note' | null>(null);
 	let submitting = $state(false);
 
+	// Track odometer form input for reactive warning
+	let odoValue = $state('');
+	let odoDirty = $state(false);
+
 	function openForm(kind: 'service' | 'odometer' | 'note') {
 		menuOpen = false;
 		activeForm = kind;
+		if (kind === 'odometer') {
+			odoValue = String(data.vehicle.current_odometer);
+			odoDirty = false;
+		}
+	}
+
+	function getOdoWarning(inputVal: string, currentVal: number): string | undefined {
+		const num = Number(inputVal);
+		if (!Number.isInteger(num) || num < 0) return undefined;
+		if (num === currentVal) return `Je hebt al een stand van ${num} km. Opgeslagen voor je administratie.`;
+		if (num < currentVal) return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
+		return undefined;
 	}
 
 	// Handle ?quick= param from the mobile FAB quick-add flow
@@ -95,7 +111,8 @@
 	type Entry =
 		| { kind: 'service'; date: string; odometer: number; log: (typeof data.logs)[0] }
 		| { kind: 'odometer'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
-		| { kind: 'note'; date: string; odometer: number; log: (typeof data.odoLogs)[0] };
+		| { kind: 'note'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
+		| { kind: 'travel'; date: string; travel: (typeof data.travelEntries)[0] };
 
 	const allEntries = $derived((): Entry[] => {
 		const entries: Entry[] = [
@@ -110,12 +127,19 @@
 					return { kind: 'note' as const, date: log.recorded_at, odometer: log.odometer, log };
 				}
 				return { kind: 'odometer' as const, date: log.recorded_at, odometer: log.odometer, log };
-			})
+			}),
+			...data.travelEntries.map((t: (typeof data.travelEntries)[number]) => ({
+				kind: 'travel' as const,
+				date: t.start_date,
+				travel: t
+			}))
 		];
 		return entries.sort((a, b) => {
 			const dateCmp = b.date.localeCompare(a.date);
 			if (dateCmp !== 0) return dateCmp;
-			return b.log.created_at.localeCompare(a.log.created_at);
+			const aCreated = 'log' in a ? a.log.created_at : 'travel' in a ? a.travel.created_at : '';
+			const bCreated = 'log' in b ? b.log.created_at : 'travel' in b ? b.travel.created_at : '';
+			return bCreated.localeCompare(aCreated);
 		});
 	});
 
@@ -132,7 +156,9 @@
 		return [...map.entries()];
 	});
 
-	const hasHistory = $derived(data.logs.length > 0 || data.odoLogs.length > 0);
+	const hasHistory = $derived(
+		data.logs.length > 0 || data.odoLogs.length > 0 || data.travelEntries.length > 0
+	);
 
 	// Odometer collapse state - per month
 	const COLLAPSE_THRESHOLD = 3;
@@ -363,8 +389,8 @@
 			{#if (form as any)?.odoError}
 				<div class="form-err">{(form as any).odoError}</div>
 			{/if}
-			{#if (form as any)?.warning}
-				<div class="form-warning">{(form as any).warning}</div>
+			{#if activeForm === 'odometer' && odoDirty && getOdoWarning(odoValue, data.vehicle.current_odometer)}
+				<div class="form-warning">{getOdoWarning(odoValue, data.vehicle.current_odometer)}</div>
 			{/if}
 			<div class="form-row">
 				<label class="field">
@@ -374,7 +400,8 @@
 					<input
 						type="number"
 						name="odometer"
-						value={data.vehicle.current_odometer}
+						bind:value={odoValue}
+						oninput={() => (odoDirty = true)}
 						min="0"
 						class="input mono"
 						required
@@ -783,6 +810,44 @@
 									</div>
 								</form>
 							{/if}
+						{:else if entry.kind === 'travel'}
+							{@const t = entry.travel}
+							<div class="timeline-entry travel-entry">
+								<div class="entry-icon travel-dot" title="Travel" aria-hidden="true"></div>
+								<div class="entry-body">
+									<div class="entry-title">{t.title}</div>
+									<div class="entry-meta">
+										<span class="entry-meta-item">{$_('travels.entry.days', { values: { n: t.duration_days } })}</span>
+										{#if t.total_expenses_cents != null}
+											<span class="entry-meta-sep">·</span>
+											<span class="entry-meta-item mono">{formatCurrency(t.total_expenses_cents, t.currency, locale)}</span>
+										{/if}
+									</div>
+								</div>
+								<span class="entry-date">{formatDateShort(t.start_date, locale)}</span>
+								<div class="entry-actions" class:entry-actions--open={entryMenu === t.id}>
+									<button
+										class="entry-menu-btn"
+										class:active={entryMenu === t.id}
+										onclick={() => toggleEntryMenu(t.id)}
+										aria-label="Entry options"
+										aria-haspopup="true">⋮</button>
+									{#if entryMenu === t.id}
+										<div class="entry-menu-dropdown" role="menu">
+											<a
+												role="menuitem"
+												class="entry-menu-item"
+												href="/vehicles/{data.vehicle.id}/travels?edit={t.id}"
+											>{$_('common.edit')}</a>
+											<a
+												role="menuitem"
+												class="entry-menu-item entry-menu-item--danger"
+												href="/vehicles/{data.vehicle.id}/travels?delete={t.id}"
+											>{$_('common.delete')}</a>
+										</div>
+									{/if}
+								</div>
+							</div>
 						{:else}
 							{@const log = entry.log}
 							<div class="timeline-entry odo-entry">
@@ -1362,6 +1427,10 @@
 	.note-dot {
 		background: transparent;
 		border: 2px solid var(--text-subtle);
+	}
+	.travel-dot {
+		background: var(--accent-subtle);
+		border: 2px solid var(--accent);
 	}
 	.timeline-entry:first-of-type .service-dot {
 		background: var(--accent);

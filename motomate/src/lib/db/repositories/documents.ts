@@ -1,4 +1,4 @@
-import { eq, and, sql } from 'drizzle-orm';
+import { eq, and, sql, inArray } from 'drizzle-orm';
 import { db } from '../index.js';
 import { documents } from '../schema.js';
 import { CreateDocumentSchema } from '../../validators/schemas.js';
@@ -58,4 +58,11 @@ export async function updateDocumentName(id: string, userId: string, name: strin
 		.update(documents)
 		.set({ name: name.slice(0, 200) })
 		.where(and(eq(documents.id, id), eq(documents.user_id, userId)));
+}
+
+export async function getDocumentsByIds(ids: string[], userId: string): Promise<Document[]> {
+	if (ids.length === 0) return [];
+	return db.query.documents.findMany({
+		where: and(inArray(documents.id, ids), eq(documents.user_id, userId))
+	}) as Promise<Document[]>;
 }
