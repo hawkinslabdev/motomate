@@ -180,95 +180,6 @@
 </div>
 
 <div class="page-content">
-	<!-- Add form (shown when button clicked, even on empty state) -->
-	{#if showForm}
-		<form
-			method="POST"
-			action="?/addTransaction"
-			use:enhance={() => {
-				submitting = true;
-				return async ({ update }) => {
-					await update();
-					submitting = false;
-				};
-			}}
-			use:scrollOnMount
-			class="add-form"
-		>
-			<div class="form-header">
-				<span class="form-title">{$_('finance.form.addTitle')}</span>
-				<button type="button" class="form-close" onclick={() => (showForm = false)}>✕</button>
-			</div>
-
-			<div class="form-row">
-				<label class="field">
-					<span class="field-label">{$_('finance.form.category')}</span>
-					<select name="category" bind:value={category} class="input">
-						{#each categoryOptions as opt}
-							<option value={opt.value}>{opt.label}</option>
-						{/each}
-					</select>
-				</label>
-
-				<label class="field">
-					<span class="field-label">{$_('finance.form.amount', { values: { currency } })}</span>
-					<input
-						type="number"
-						name="amount"
-						bind:value={amount}
-						min="0"
-						step="0.01"
-						placeholder="0.00"
-						class="input mono"
-						required
-					/>
-				</label>
-			</div>
-
-			<div class="form-row">
-				<label class="field">
-					<span class="field-label">{$_('finance.form.date')}</span>
-					<input type="date" name="date" bind:value={date} class="input" required />
-				</label>
-
-				<label class="field">
-					<span class="field-label"
-						>{$_('finance.form.odometer', { values: { unit: data.vehicle.odometer_unit } })}</span
-					>
-					<input
-						type="number"
-						name="odometer"
-						bind:value={odometer}
-						min="0"
-						placeholder={$_('finance.form.odometerOptional')}
-						class="input mono"
-					/>
-				</label>
-			</div>
-
-			<label class="field">
-				<span class="field-label">{$_('finance.form.notes')}</span>
-				<input
-					type="text"
-					name="notes"
-					bind:value={notes}
-					placeholder="e.g., Shell V-Power, 45 liters"
-					maxlength="200"
-					class="input"
-				/>
-			</label>
-
-			<div class="form-actions">
-				<button type="submit" class="btn-primary" disabled={submitting}>
-					{submitting ? $_('finance.saving') : $_('finance.save')}
-				</button>
-				<button type="button" class="btn-cancel" onclick={() => (showForm = false)}>
-					{$_('finance.cancel')}
-				</button>
-			</div>
-		</form>
-	{/if}
-
 	{#if !hasTransactions && !hasPurchasePrice}
 		{#if showForm}
 			<form
@@ -341,7 +252,7 @@
 						type="text"
 						name="notes"
 						bind:value={notes}
-						placeholder="e.g., Shell V-Power, 45 liters"
+						placeholder="e.g., Motor oil, 4 liters"
 						maxlength="200"
 						class="input"
 					/>
@@ -364,7 +275,6 @@
 			</div>
 		{/if}
 	{:else}
-		<!-- Inline add form -->
 		{#if showForm}
 			<form
 				method="POST"
@@ -436,7 +346,7 @@
 						type="text"
 						name="notes"
 						bind:value={notes}
-						placeholder="e.g., Shell V-Power, 45 liters"
+						placeholder="e.g., Motor oil, 4 liters"
 						maxlength="200"
 						class="input"
 					/>
