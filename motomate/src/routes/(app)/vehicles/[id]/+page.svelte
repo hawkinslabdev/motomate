@@ -27,6 +27,18 @@
 	let menuOpen = $state(false);
 	let activeForm = $state<'service' | 'odometer' | 'note' | null>(null);
 	let submitting = $state(false);
+	let isMobile = $state(false);
+
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			isMobile = window.innerWidth <= 768;
+			const handleResize = () => {
+				isMobile = window.innerWidth <= 768;
+			};
+			window.addEventListener('resize', handleResize, { passive: true });
+			return () => window.removeEventListener('resize', handleResize);
+		}
+	});
 
 	// Track odometer form input for reactive warning
 	let odoValue = $state('');
@@ -299,14 +311,31 @@
 		</p>
 	</div>
 	<div class="page-actions">
-		{#if activeForm && window.innerWidth > 768}
+		{#if activeForm && !isMobile}
 			<button class="btn-ghost" onclick={() => (activeForm = null)}>
 				{$_('common.cancel')}
 			</button>
 		{:else}
-			<button class="btn-primary" onclick={() => window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : openForm('service')}>
+			<button class="btn-primary" onclick={() => isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen)}>
 				+ {$_('common.add')}
 			</button>
+			{#if !isMobile && menuOpen}
+				<div class="add-menu-backdrop" role="presentation" onclick={() => (menuOpen = false)}></div>
+				<div class="add-menu-dropdown">
+					<button class="add-menu-item" onclick={() => openForm('service')}>
+						<span>{$_('layout.addEntry.maintenance')}</span>
+						<span class="add-menu-desc">{$_('layout.addEntry.maintenanceDesc')}</span>
+					</button>
+					<button class="add-menu-item" onclick={() => openForm('odometer')}>
+						<span>{$_('layout.addEntry.mileage')}</span>
+						<span class="add-menu-desc">{$_('layout.addEntry.mileageDesc')}</span>
+					</button>
+					<button class="add-menu-item" onclick={() => openForm('note')}>
+						<span>{$_('vehicle.forms.writeNote')}</span>
+						<span class="add-menu-desc">{$_('vehicle.forms.noteDesc')}</span>
+					</button>
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>
@@ -1578,6 +1607,56 @@
 	.btn-ghost:hover {
 		background: var(--bg-muted);
 		color: var(--text);
+	}
+
+	/* Add menu dropdown */
+	.page-actions {
+		position: relative;
+	}
+	.add-menu-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 10;
+	}
+	.add-menu-dropdown {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 0.375rem);
+		background: var(--bg);
+		border: 1px solid var(--border-strong);
+		border-radius: 8px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		z-index: 20;
+		min-width: 200px;
+		padding: 0.375rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.add-menu-item {
+		display: flex;
+		flex-direction: column;
+		padding: 0.625rem 0.75rem;
+		border-radius: 10px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		width: 100%;
+		transition: background 0.1s;
+	}
+	.add-menu-item:hover {
+		background: var(--bg-muted);
+	}
+	.add-menu-item span:first-child {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.add-menu-desc {
+		font-size: var(--text-xs);
+		color: var(--text-muted);
+		margin-top: 1px;
 	}
 
 	/* Upcoming */
