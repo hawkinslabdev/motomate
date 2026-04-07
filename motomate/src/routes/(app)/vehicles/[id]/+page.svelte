@@ -1787,11 +1787,19 @@
 
 	.timeline-entry {
 		display: flex;
-		align-items: flex-start;
+		align-items: center;
 		gap: 0.75rem;
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		position: relative;
+	}
+
+	.entry-icon {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		flex-shrink: 0;
+		transition: transform 0.15s ease-out-quart;
 	}
 	.timeline-entry:first-of-type {
 		border-top: 1px solid var(--border);
@@ -1830,6 +1838,9 @@
 	.timeline-entry:hover .entry-icon {
 		transform: scale(1.35);
 	}
+	.timeline-entry:hover {
+		background: var(--bg-subtle);
+	}
 
 	.entry-body {
 		flex: 1;
@@ -1852,7 +1863,6 @@
 		color: var(--text-subtle);
 		white-space: nowrap;
 		flex-shrink: 0;
-		align-self: flex-start;
 	}
 	.entry-meta {
 		display: flex;
@@ -1898,11 +1908,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
+		width: 36px;
+		height: 36px;
 		background: none;
 		border: 1px solid transparent;
-		border-radius: 8px;
+		border-radius: 6px;
 		color: var(--text-subtle);
 		font-size: 1rem;
 		cursor: pointer;
@@ -2045,6 +2055,8 @@
 		}
 		.entry-menu-btn {
 			opacity: 1;
+			width: 44px;
+			height: 44px;
 		}
 	}
 	@media (max-width: 380px) {
