@@ -13,7 +13,7 @@ export type CreateTravelInput = {
 	remark?: string | null;
 	total_expenses_cents?: number | null;
 	currency: string;
-	gpx_document_ids: string[];
+	gpx_document_ids: (string | null)[]; // null = empty slot, preserves day positions
 };
 
 export type UpdateTravelInput = Partial<Omit<CreateTravelInput, 'vehicle_id'>>;

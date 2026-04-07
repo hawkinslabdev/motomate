@@ -300,7 +300,7 @@ export const documents = sqliteTable(
 	})
 );
 
-export type TravelGpxFiles = string[]; // document.id values
+export type TravelGpxFiles = (string | null)[]; // document.id per day slot; null = no GPX for that day
 
 export const travels = sqliteTable(
 	'travels',

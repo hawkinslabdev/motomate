@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	const travelList = await getTravelsByVehicle(vehicle.id, userId);
 
 	// Resolve all GPX documents so the map has storage keys + presigned URLs
-	const allDocIds = [...new Set(travelList.flatMap((t) => t.gpx_document_ids))];
+	const allDocIds = [...new Set(travelList.flatMap((t) => t.gpx_document_ids).filter(Boolean))] as string[];
 	const gpxDocs = await getDocumentsByIds(allDocIds, userId);
 
 	// Generate presigned URLs for GPX files (valid 1 hour)
@@ -68,10 +68,11 @@ export const actions: Actions = {
 		if (!Number.isInteger(durationDays) || durationDays < 1)
 			return fail(400, { createError: 'Duration must be at least 1 day' });
 
-		// Upload GPX files
-		const gpxDocIds: string[] = [];
-		const storage = getStorage();
 		const maxSlots = Math.min(durationDays, 14);
+
+		// Upload GPX files - use null placeholders to preserve day slot positions
+		const gpxDocIds: (string | null)[] = Array(maxSlots).fill(null);
+		const storage = getStorage();
 
 		for (let i = 0; i < maxSlots; i++) {
 			const file = data.get(`gpx_file_${i}`) as File | null;
@@ -92,7 +93,7 @@ export const actions: Actions = {
 				mime_type: 'application/gpx+xml',
 				size_bytes: file.size
 			});
-			gpxDocIds.push(doc.id);
+			gpxDocIds[i] = doc.id;
 		}
 
 		await createTravel(userId, {
@@ -136,7 +137,13 @@ export const actions: Actions = {
 		const removeIds = data.getAll('remove_gpx_doc_id').map(String);
 		const storage = getStorage();
 
-		const updatedDocIds = [...travel.gpx_document_ids];
+		const updatedDocIds = [...travel.gpx_document_ids] as (string | null)[];
+
+		// Expand array if new duration is longer
+		const maxSlots = Math.min(durationDays, 14);
+		while (updatedDocIds.length < maxSlots) {
+			updatedDocIds.push(null);
+		}
 
 		for (const docId of removeIds) {
 			const docs = await getDocumentsByIds([docId], userId);
@@ -144,12 +151,12 @@ export const actions: Actions = {
 				await storage.delete(docs[0].storage_key).catch(() => {});
 				await deleteDocument(docId, userId);
 			}
+			// Set to null instead of splicing to preserve slot position
 			const idx = updatedDocIds.indexOf(docId);
-			if (idx !== -1) updatedDocIds.splice(idx, 1);
+			if (idx !== -1) updatedDocIds[idx] = null;
 		}
 
-		// Upload new GPX files
-		const maxSlots = Math.min(durationDays, 14);
+		// Upload new GPX files - assign to specific slot index, preserve null placeholders
 		for (let i = 0; i < maxSlots; i++) {
 			const file = data.get(`gpx_file_${i}`) as File | null;
 			if (!file || file.size === 0) continue;
@@ -169,7 +176,7 @@ export const actions: Actions = {
 				mime_type: 'application/gpx+xml',
 				size_bytes: file.size
 			});
-			updatedDocIds.push(doc.id);
+			updatedDocIds[i] = doc.id;
 		}
 
 		await updateTravel(id, vehicleId, userId, {
@@ -197,8 +204,9 @@ export const actions: Actions = {
 
 		// Delete linked GPX documents from storage + DB
 		const storage = getStorage();
-		if (travel.gpx_document_ids.length > 0) {
-			const docs = await getDocumentsByIds(travel.gpx_document_ids, userId);
+		const docIds = travel.gpx_document_ids.filter(Boolean) as string[];
+		if (docIds.length > 0) {
+			const docs = await getDocumentsByIds(docIds, userId);
 			for (const doc of docs) {
 				await storage.delete(doc.storage_key).catch(() => {});
 				await deleteDocument(doc.id, userId);

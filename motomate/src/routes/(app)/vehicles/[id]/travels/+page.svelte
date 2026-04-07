@@ -11,6 +11,13 @@
 	import TravelMap from '$lib/components/travels/TravelMap.svelte';
 	import type { Travel } from '$lib/db/schema.js';
 
+	interface GpxDoc {
+		id: string;
+		name: string;
+		url?: string | null;
+		index: number;
+	}
+
 	let { data, form }: { data: PageData; form: Record<string, unknown> | null } = $props();
 
 	$effect(() => {
@@ -151,9 +158,9 @@
 	// Build GPX file list for the map
 	const gpxFiles = $derived(
 		data.travels.flatMap((t: Travel) =>
-			t.gpx_document_ids
-				.filter((docId: string) => data.gpxUrls[docId])
-				.map((docId: string, i: number) => ({
+			(t.gpx_document_ids as (string | null)[])
+				.filter((docId): docId is string => !!docId && !!data.gpxUrls[docId])
+				.map((docId, i) => ({
 					travelId: t.id,
 					label: `${t.title} — Day ${i + 1}`,
 					url: data.gpxUrls[docId],
@@ -168,9 +175,13 @@
 	const editingGpxDocs = $derived(
 		editingTravel
 			? editingTravel.gpx_document_ids
-					.map((id: string) => data.gpxDocs.find((d: any) => d.id === id))
-					.filter(Boolean)
-					.map((d: any) => ({ id: d.id, name: d.name, url: data.gpxUrls[d.id] ?? null }))
+					.map((id: string | null, i: number): GpxDoc | null => {
+						if (!id) return null;
+						const d = data.gpxDocs.find((doc: any) => doc.id === id);
+						if (!d) return null;
+						return { id: d.id, name: d.name, url: data.gpxUrls[d.id] ?? null, index: i };
+					})
+					.filter((d: GpxDoc | null): d is GpxDoc => d !== null)
 			: []
 	);
 </script>

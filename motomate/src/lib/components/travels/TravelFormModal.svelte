@@ -9,6 +9,7 @@
 		id: string;
 		name: string;
 		url?: string | null;
+		index: number; // which day slot this GPX belongs to
 	}
 
 	interface Props {
@@ -63,8 +64,10 @@
 	}
 
 	const MAX_SLOTS = 14;
+	// Determine max slot index from existing docs to preserve position when duration is reduced
+	const maxExistingIndex = $derived(existingGpxDocs.reduce((max, doc) => Math.max(max, doc.index), 0));
 	// Ensure enough slots to show all existing docs even if duration was reduced
-	const slots = $derived(Math.min(Math.max(durationDays, existingGpxDocs.length, 1), MAX_SLOTS));
+	const slots = $derived(Math.min(Math.max(durationDays, maxExistingIndex + 1, 1), MAX_SLOTS));
 
 	function removeExistingGpx(docId: string) {
 		removedDocIds = [...removedDocIds, docId];
@@ -208,7 +211,7 @@
 				<!-- Per-day slots: show saved file or upload zone -->
 				<div class="gpx-slots">
 					{#each Array.from({ length: slots }, (_, i) => i) as i}
-						{@const existingDoc = existingGpxDocs[i]}
+						{@const existingDoc = existingGpxDocs.find((d) => d.index === i)}
 						{@const isRemoved = existingDoc ? removedDocIds.includes(existingDoc.id) : false}
 						{@const newFile = selectedFiles[i]}
 						<div class="gpx-slot">
