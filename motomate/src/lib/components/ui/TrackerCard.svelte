@@ -277,17 +277,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
+		width: 44px;
+		height: 44px;
 		flex-shrink: 0;
 		background: none;
 		border: 1px solid transparent;
-		border-radius: 4px;
-		color: var(--text-subtle);
+		border-radius: 8px;
+		color: var(--text-muted);
 		font-size: 1rem;
 		cursor: pointer;
 		line-height: 1;
-		opacity: 0.35;
+		opacity: 0.7;
 		transition:
 			opacity 0.1s,
 			background 0.1s,
@@ -296,6 +296,11 @@
 	.tracker-card:hover .options-btn,
 	.options-btn:focus {
 		opacity: 1;
+	}
+	@media (max-width: 768px) {
+		.options-btn {
+			opacity: 1;
+		}
 	}
 	.options-btn:hover {
 		background: var(--bg-muted);

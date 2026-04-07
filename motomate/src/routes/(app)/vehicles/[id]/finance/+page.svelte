@@ -5,6 +5,7 @@
 	import { toasts } from '$lib/stores/toasts.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { _, waitLocale } from '$lib/i18n';
+	import { quickAdd } from '$lib/stores/quickAdd.js';
 
 	let {
 		data,
@@ -173,9 +174,15 @@
 		<p class="section-sub">{$_('finance.totalSpent', { values: { name: data.vehicle.name } })}</p>
 	</div>
 	<div class="page-actions">
-		<button type="button" class="btn-primary" onclick={() => (showForm = true)}>
-			+ {$_('finance.addExpense')}
-		</button>
+		{#if showForm && window.innerWidth > 768}
+			<button type="button" class="btn-ghost" onclick={() => (showForm = false)}>
+				{$_('common.cancel')}
+			</button>
+		{:else}
+			<button type="button" class="btn-primary" onclick={() => window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : (showForm = true)}>
+				+ {$_('finance.addExpense')}
+			</button>
+		{/if}
 	</div>
 </div>
 
@@ -1138,5 +1145,20 @@
 		.form-row {
 			grid-template-columns: 1fr;
 		}
+	}
+	.btn-ghost {
+		background: transparent;
+		color: var(--text-muted);
+		padding: 0.625rem 1rem;
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.1s, color 0.1s;
+	}
+	.btn-ghost:hover {
+		background: var(--bg-subtle);
+		color: var(--text);
 	}
 </style>

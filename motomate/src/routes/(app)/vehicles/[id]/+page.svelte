@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { _, waitLocale } from '$lib/i18n';
+	import { quickAdd } from '$lib/stores/quickAdd.js';
 	import {
 		formatDateShort,
 		formatYearMonth,
@@ -298,34 +299,14 @@
 		</p>
 	</div>
 	<div class="page-actions">
-		<button
-			class="btn-primary log-trigger"
-			onclick={() => (menuOpen = !menuOpen)}
-			aria-haspopup="true"
-			aria-expanded={menuOpen}
-		>
-			+ {$_('common.add')}
-		</button>
-
-		{#if menuOpen}
-			<div class="log-backdrop" role="presentation" onclick={() => (menuOpen = false)}></div>
-
-			<div class="log-menu-items" role="menu">
-				<button role="menuitem" class="menu-item" onclick={() => openForm('service')}>
-					<span class="menu-item-label">{$_('layout.addEntry.maintenance')}</span>
-					<span class="menu-item-desc">{$_('layout.addEntry.maintenanceDesc')}</span>
-				</button>
-
-				<button role="menuitem" class="menu-item" onclick={() => openForm('odometer')}>
-					<span class="menu-item-label">{$_('layout.addEntry.mileage')}</span>
-					<span class="menu-item-desc">{$_('layout.addEntry.mileageDesc')}</span>
-				</button>
-
-				<button role="menuitem" class="menu-item" onclick={() => openForm('note')}>
-					<span class="menu-item-label">{$_('vehicle.forms.writeNote')}</span>
-					<span class="menu-item-desc">{$_('vehicle.forms.noteDesc')}</span>
-				</button>
-			</div>
+		{#if activeForm && window.innerWidth > 768}
+			<button class="btn-ghost" onclick={() => (activeForm = null)}>
+				{$_('common.cancel')}
+			</button>
+		{:else}
+			<button class="btn-primary" onclick={() => window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : openForm('service')}>
+				+ {$_('common.add')}
+			</button>
 		{/if}
 	</div>
 </div>
@@ -1311,7 +1292,11 @@
 										</label>
 									</div>
 									<label class="field">
-										<span class="field-label">Remark <span class="muted">(optional)</span></span>
+										<span class="field-label"
+											>{$_('vehicle.forms.fields.remark', {
+												values: { optional: $_('common.optional') }
+											})}
+										</span>
 										<input
 											type="text"
 											name="remark"
@@ -1381,6 +1366,13 @@
 		flex-wrap: wrap;
 		margin-bottom: var(--space-6);
 	}
+	@media (min-width: 768px) {
+		.page-header {
+			max-width: 860px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
 	.page-header-text {
 		display: flex;
 		flex-direction: column;
@@ -1403,70 +1395,6 @@
 		align-items: center;
 		flex-shrink: 0;
 		position: relative;
-	}
-
-	/* Log dropdown */
-	.log-trigger {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		padding: 0.5rem 0.875rem;
-		background: var(--accent);
-		color: #fff;
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-	.log-trigger:hover {
-		background: var(--accent-hover);
-	}
-
-	.log-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 10;
-	}
-	.log-menu-items {
-		position: absolute;
-		right: 0;
-		top: calc(100% + 0.375rem);
-		background: var(--bg);
-		border: 1px solid var(--border-strong);
-		border-radius: 8px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-		z-index: 20;
-		min-width: 200px;
-		padding: 0.375rem;
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-	}
-	.menu-item {
-		display: flex;
-		flex-direction: column;
-		padding: 0.625rem 0.75rem;
-		border-radius: 10px;
-		background: none;
-		border: none;
-		cursor: pointer;
-		text-align: left;
-		width: 100%;
-		transition: background 0.1s;
-	}
-	.menu-item:hover {
-		background: var(--bg-muted);
-	}
-	.menu-item-label {
-		font-size: var(--text-sm);
-		font-weight: 500;
-		color: var(--text);
-	}
-	.menu-item-desc {
-		font-size: var(--text-xs);
-		color: var(--text-muted);
-		margin-top: 1px;
 	}
 
 	/* Inline forms */
@@ -1500,6 +1428,7 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 0.75rem;
+		padding-top: 0.5rem;
 	}
 	.field {
 		display: flex;
@@ -1890,11 +1819,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
+		width: 44px;
+		height: 44px;
 		background: none;
 		border: 1px solid transparent;
-		border-radius: 4px;
+		border-radius: 8px;
 		color: var(--text-subtle);
 		font-size: 1rem;
 		cursor: pointer;
@@ -2037,6 +1966,11 @@
 		}
 		.entry-menu-btn {
 			opacity: 1;
+		}
+	}
+	@media (max-width: 380px) {
+		.form-row {
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -2192,7 +2126,7 @@
 		background: var(--bg);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 		overflow: hidden;
-		max-width: 320px;
+		max-width: min(320px, 90vw);
 	}
 	.link-picker-header {
 		display: flex;
@@ -2257,4 +2191,4 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-</style>
+	</style>

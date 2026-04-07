@@ -88,7 +88,7 @@
 		transform: translateY(-1px);
 	}
 	.vehicle-card--archived {
-		opacity: 0.55;
+		opacity: 0.7;
 	}
 
 	.vehicle-avatar {

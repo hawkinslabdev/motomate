@@ -569,6 +569,12 @@
 		flex-direction: column;
 		gap: 1px;
 	}
+	@media (max-width: 380px) {
+		.tracker-menu-dropdown {
+			right: auto;
+			left: 0.5rem;
+		}
+	}
 	.tracker-menu-item {
 		display: block;
 		width: 100%;

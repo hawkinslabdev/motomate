@@ -8,6 +8,7 @@
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import ShortcutsModal from '$lib/components/ui/ShortcutsModal.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
+	import { quickAdd } from '$lib/stores/quickAdd.js';
 
 	import Sun from '$lib/components/icons/Sun.svelte';
 	import Moon from '$lib/components/icons/Moon.svelte';
@@ -73,7 +74,24 @@
 	let quickAddStep = $state<'vehicle' | 'type'>('vehicle');
 	let selectedVehicle = $state<NavVehicle | null>(null);
 
+	// Sync local state with store
+	$effect(() => {
+		const unsub = quickAdd.subscribe((s) => {
+			if (s.open && s.vehicleId) {
+				// Store was triggered from a child page
+				const vehicle = data.vehicles.find((v: NavVehicle) => v.id === s.vehicleId);
+				if (vehicle) {
+					selectedVehicle = vehicle;
+					quickAddStep = 'type';
+					quickAddOpen = true;
+				}
+			}
+		});
+		return unsub;
+	});
+
 	function openQuickAdd() {
+		// Called from bottom nav FAB - original behavior
 		if (data.vehicles.length === 0) {
 			goto('/vehicles/new');
 			return;
@@ -86,6 +104,11 @@
 			selectedVehicle = null;
 		}
 		quickAddOpen = true;
+	}
+
+	function triggerQuickAdd(vehicleId: string) {
+		// Called from a specific page (like timeline), use store
+		quickAdd.open(vehicleId);
 	}
 
 	function closeQuickAdd() {

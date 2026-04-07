@@ -872,7 +872,7 @@
 	}
 	.doc-row {
 		display: flex;
-		align-items: stretch;
+		align-items: flex-start;
 		gap: 1rem;
 		padding: 1rem 0 1rem var(--space-2);
 		border-bottom: 1px solid var(--border);
@@ -988,7 +988,6 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		height: 100%;
 	}
 	.action-btn:hover {
 		background: var(--bg-muted);
@@ -1216,12 +1215,36 @@
 		}
 		.filter-controls {
 			width: 100%;
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 0.5rem;
+			flex-wrap: nowrap !important;
+		}
+		.filter-select {
+			min-height: 44px;
+			width: 100%;
+		}
+		.view-toggle {
+			display: flex;
+		}
+		.view-toggle button {
+			min-height: 44px;
+			padding: 0.5rem 0.75rem;
 		}
 		.doc-row {
 			align-items: flex-start;
+			flex-wrap: wrap;
+		}
+		.doc-info {
+			flex-basis: calc(100% - 3rem);
 		}
 		.doc-actions {
-			flex-wrap: wrap;
+			flex-basis: 100%;
+			margin-top: 0.5rem;
+		}
+		.action-btn {
+			padding: 0.5rem 0.75rem;
+			min-height: 40px;
 		}
 	}
 </style>
