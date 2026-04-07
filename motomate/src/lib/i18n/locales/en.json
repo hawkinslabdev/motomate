@@ -272,7 +272,8 @@
         "notes": "Notes",
         "resetCycle": "Reset cycle for {optional}",
         "checkToReset": "(check to reset)",
-        "currentReading": "Current reading ({unit})"
+        "currentReading": "Current reading ({unit})",
+        "attachments": "Attachments {optional}"
       },
       "placeholders": {
         "partsUsed": "Parts used, observations…",
@@ -287,6 +288,15 @@
         "service": "Save entry",
         "odometer": "Update",
         "note": "Save note"
+      },
+      "attachFile": "Attach file",
+      "chooseFile": "Choose file",
+      "linkDocument": "Link document",
+      "viewDocument": "View document",
+      "attachments": {
+        "pickerTitle": "Link a document",
+        "noDocuments": "No documents available.",
+        "uploading": "Uploading..."
       }
     },
     "edit": {
@@ -563,7 +573,8 @@
     },
     "prevPage": "Previous",
     "nextPage": "Next",
-    "pageOf": "Page {page} of {total}"
+    "pageOf": "Page {page} of {total}",
+    "linkedBadge": "Linked · Service {date}"
   },
   "settings": {
     "title": "Settings",

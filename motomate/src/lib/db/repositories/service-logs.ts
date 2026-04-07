@@ -82,3 +82,17 @@ export async function deleteServiceLog(
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
 }
+
+export async function updateServiceLogAttachments(
+	id: string,
+	vehicleId: string,
+	userId: string,
+	documentIds: string[]
+): Promise<void> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return;
+	db.update(service_logs)
+		.set({ attachments: documentIds })
+		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
+		.run();
+}

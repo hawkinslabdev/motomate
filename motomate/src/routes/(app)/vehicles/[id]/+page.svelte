@@ -71,16 +71,29 @@
 	function startEdit(id: string, kind: 'service' | 'odometer' | 'note') {
 		editingEntry = { id, kind };
 		entryMenu = null;
+		editAttachFile = null;
+		editAttachType = 'service';
+		editShowLink = false;
 	}
 
 	$effect(() => {
 		if (form?.logged || form?.odoUpdated || form?.noteLogged) {
 			activeForm = null;
 			menuOpen = false;
+			attachFile = null;
+			showLinkNew = false;
+			newLinkedDocIds = new Set();
 		}
 		if ((form as any)?.editedLog || (form as any)?.deletedLog) {
 			editingEntry = null;
 			entryMenu = null;
+		}
+		if ((form as any)?.attachUploaded) {
+			editAttachFile = null;
+			editUploading = false;
+		}
+		if ((form as any)?.linked) {
+			editShowLink = false;
 		}
 	});
 
@@ -211,6 +224,61 @@
 	function odoLogById(id: string) {
 		return data.odoLogs.find((l: (typeof data.odoLogs)[number]) => l.id === id);
 	}
+
+	// Attachment state — new service log form
+	let attachFile = $state<File | null>(null);
+	let attachType = $state('service');
+	let showLinkNew = $state(false);
+	let newLinkedDocIds = $state(new Set<string>());
+
+	const docTypeEntries = Object.entries({
+		service: 'documents.types.service',
+		quotation: 'documents.types.quotation',
+		papers: 'documents.types.papers',
+		photo: 'documents.types.photo',
+		notes: 'documents.types.notes',
+		other: 'documents.types.other'
+	});
+
+	function handleAttachPick(e: Event) {
+		const input = e.target as HTMLInputElement;
+		attachFile = input.files?.[0] ?? null;
+	}
+	function clearAttach() {
+		attachFile = null;
+	}
+	function toggleNewLink(id: string) {
+		const next = new Set(newLinkedDocIds);
+		if (next.has(id)) next.delete(id); else next.add(id);
+		newLinkedDocIds = next;
+	}
+
+	// Attachment state — edit service log form
+	let editAttachFile = $state<File | null>(null);
+	let editAttachType = $state('service');
+	let editShowLink = $state(false);
+	let editUploading = $state(false);
+
+	function handleEditAttachPick(e: Event) {
+		const input = e.target as HTMLInputElement;
+		editAttachFile = input.files?.[0] ?? null;
+	}
+	function clearEditAttach() {
+		editAttachFile = null;
+	}
+
+	// Document helpers
+	const docMap = $derived(
+		new Map((data.allDocs ?? []).map((d: (typeof data.allDocs)[number]) => [d.id, d]))
+	);
+	function resolvedAttachments(log: (typeof data.logs)[number]) {
+		const ids: string[] = (log.attachments as string[]) ?? [];
+		return ids.map((id) => docMap.get(id)).filter(Boolean) as (typeof data.allDocs)[number][];
+	}
+	function unlinkedDocs(log: (typeof data.logs)[number]) {
+		const ids = new Set<string>((log.attachments as string[]) ?? []);
+		return (data.allDocs ?? []).filter((d: (typeof data.allDocs)[number]) => !ids.has(d.id));
+	}
 </script>
 
 <svelte:head><title>{data.vehicle.name} · {$_('layout.brand')}</title></svelte:head>
@@ -264,12 +332,16 @@
 		<form
 			method="POST"
 			action="?/logService"
+			enctype="multipart/form-data"
 			class="inline-form"
-			use:enhance={() => {
+			use:enhance={({ formData }) => {
+				if (attachFile) formData.set('attachment_file', attachFile);
+				for (const id of newLinkedDocIds) formData.append('linked_doc_id', id);
 				submitting = true;
 				return async ({ update }) => {
 					await update();
 					submitting = false;
+					attachType = 'service';
 				};
 			}}
 		>
@@ -361,6 +433,71 @@
 					class="input mono"
 				/>
 			</label>
+
+			<div class="form-attachments">
+				<span class="field-label">{$_('vehicle.forms.fields.attachments', { values: { optional: $_('common.optional') } })}</span>
+				<div class="attach-actions">
+					{#if attachFile}
+						<span class="doc-chip">
+							<span class="doc-chip-name">{attachFile.name}</span>
+							<button type="button" class="doc-chip-remove" onclick={clearAttach} aria-label="Remove">×</button>
+						</span>
+						<select name="attachment_type" class="input attach-type" bind:value={attachType}>
+							{#each docTypeEntries as [val, key]}
+								<option value={val}>{$_(key)}</option>
+							{/each}
+						</select>
+					{:else}
+						<label class="attach-action-btn">
+							<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+							{$_('vehicle.forms.attachFile')}
+							<input type="file" class="attach-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onchange={handleAttachPick} />
+						</label>
+					{/if}
+					<button type="button" class="attach-action-btn" onclick={() => (showLinkNew = !showLinkNew)}>
+						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+						{$_('vehicle.forms.linkDocument')}
+					</button>
+				</div>
+				{#if showLinkNew}
+					<div class="link-picker">
+						<div class="link-picker-header">
+							<span class="link-picker-title">{$_('vehicle.forms.attachments.pickerTitle')}</span>
+							<button type="button" class="link-picker-close" onclick={() => (showLinkNew = false)}>×</button>
+						</div>
+						{#if (data.allDocs ?? []).length === 0}
+							<p class="link-picker-empty">{$_('vehicle.forms.attachments.noDocuments')}</p>
+						{:else}
+							<ul class="link-picker-list">
+								{#each data.allDocs as doc}
+									<li>
+										<label class="link-picker-item link-picker-item--check">
+											<input type="checkbox" checked={newLinkedDocIds.has(doc.id)} onchange={() => toggleNewLink(doc.id)} />
+											<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+											<span class="link-picker-item-name">{doc.name}</span>
+										</label>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+				{/if}
+				{#if newLinkedDocIds.size > 0}
+					<div class="attach-chips">
+						{#each [...newLinkedDocIds] as id}
+							{@const doc = docMap.get(id)}
+							{#if doc}
+								<span class="doc-chip">
+									<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+									<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
+									<button type="button" class="doc-chip-remove" onclick={() => toggleNewLink(id)} aria-label="Remove">×</button>
+								</span>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+			</div>
+
 			<div class="form-actions">
 				<button type="submit" class="btn-primary" disabled={submitting}
 					>{submitting ? $_('common.saving') : $_('vehicle.forms.submit.service')}</button
@@ -578,6 +715,7 @@
 					{#each displayEntries as entry}
 						{#if entry.kind === 'service'}
 							{@const log = entry.log}
+							{@const attached = resolvedAttachments(log)}
 							<div class="timeline-entry">
 								<div class="entry-icon service-dot" title="Service" aria-hidden="true"></div>
 								<div class="entry-body">
@@ -600,6 +738,20 @@
 											<span class="odo-note">{log.remark}</span>
 										{/if}
 									</div>
+									{#if attached.length > 0}
+										<div class="entry-attachments">
+											{#each attached as doc}
+												<a
+													href="/vehicles/{data.vehicle.id}/documents?highlight={doc.id}"
+													class="doc-chip doc-chip--link"
+													title={$_('vehicle.forms.viewDocument')}
+												>
+													<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+													<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
+												</a>
+											{/each}
+										</div>
+									{/if}
 								</div>
 								<span class="entry-date">{formatDateShort(log.performed_at, locale)}</span>
 								<div class="entry-actions" class:entry-actions--open={entryMenu === log.id}>
@@ -632,6 +784,8 @@
 
 							{#if editingEntry?.id === log.id}
 								{@const editLog = serviceLogById(log.id)}
+								{@const currentAttached = resolvedAttachments(log)}
+								<div class="entry-edit-card">
 								<form
 									method="POST"
 									action="?/editServiceLog"
@@ -722,6 +876,89 @@
 										>
 									</div>
 								</form>
+
+								<!-- Attachment management inside same card, using separate form actions -->
+								<div class="edit-attachments">
+									<span class="field-label">{$_('vehicle.forms.fields.attachments', { values: { optional: $_('common.optional') } })}</span>
+									{#if currentAttached.length > 0}
+										<div class="attach-chips">
+											{#each currentAttached as doc}
+												<span class="doc-chip">
+													<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+													<span class="doc-chip-name">{doc.name.length > 24 ? doc.name.slice(0, 24) + '…' : doc.name}</span>
+													<form method="POST" action="?/unlinkDocument" use:enhance>
+														<input type="hidden" name="service_log_id" value={log.id} />
+														<input type="hidden" name="document_id" value={doc.id} />
+														<button type="submit" class="doc-chip-remove" aria-label="Remove">×</button>
+													</form>
+												</span>
+											{/each}
+										</div>
+									{/if}
+									<div class="attach-actions">
+										<form method="POST" action="?/uploadToLog" enctype="multipart/form-data"
+											use:enhance={({ formData }) => {
+												if (editAttachFile) formData.set('file', editAttachFile);
+												editUploading = true;
+												return async ({ update }) => { await update(); editUploading = false; };
+											}}
+										>
+											<input type="hidden" name="service_log_id" value={log.id} />
+											{#if editAttachFile}
+												<span class="doc-chip">
+													<span class="doc-chip-name">{editAttachFile.name}</span>
+													<button type="button" class="doc-chip-remove" onclick={clearEditAttach} aria-label="Remove">×</button>
+												</span>
+												<select name="doc_type" class="input attach-type" bind:value={editAttachType}>
+													{#each docTypeEntries as [val, key]}
+														<option value={val}>{$_(key)}</option>
+													{/each}
+												</select>
+												<button type="submit" class="attach-save" disabled={editUploading}>
+													{editUploading ? $_('vehicle.forms.attachments.uploading') : $_('common.save')}
+												</button>
+											{:else}
+												<label class="attach-action-btn">
+													<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+													{$_('vehicle.forms.attachFile')}
+													<input type="file" class="attach-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onchange={handleEditAttachPick} />
+												</label>
+											{/if}
+										</form>
+										<button type="button" class="attach-action-btn" onclick={() => (editShowLink = !editShowLink)}>
+											<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+											{$_('vehicle.forms.linkDocument')}
+										</button>
+									</div>
+									{#if editShowLink}
+										{@const available = unlinkedDocs(log)}
+										<div class="link-picker">
+											<div class="link-picker-header">
+												<span class="link-picker-title">{$_('vehicle.forms.attachments.pickerTitle')}</span>
+												<button type="button" class="link-picker-close" onclick={() => (editShowLink = false)}>×</button>
+											</div>
+											{#if available.length === 0}
+												<p class="link-picker-empty">{$_('vehicle.forms.attachments.noDocuments')}</p>
+											{:else}
+												<ul class="link-picker-list">
+													{#each available as doc}
+														<li>
+															<form method="POST" action="?/linkDocument" use:enhance>
+																<input type="hidden" name="service_log_id" value={log.id} />
+																<input type="hidden" name="document_id" value={doc.id} />
+																<button type="submit" class="link-picker-item">
+																	<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+																	<span class="link-picker-item-name">{doc.name}</span>
+																</button>
+															</form>
+														</li>
+													{/each}
+												</ul>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							</div>
 							{/if}
 						{:else if entry.kind === 'note'}
 							{@const log = entry.log}
@@ -1588,12 +1825,17 @@
 	}
 
 	/* Inline edit form (appears below entry) */
-	.entry-edit-form {
+	.entry-edit-card {
 		border: 1px solid var(--border);
 		border-radius: 8px;
 		background: var(--bg-subtle);
 		padding: 1rem 1.25rem;
 		margin: 0 0 0 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.entry-edit-form {
 		display: flex;
 		flex-direction: column;
 		gap: 0.875rem;
@@ -1653,5 +1895,219 @@
 		.entry-menu-btn {
 			opacity: 1;
 		}
+	}
+
+	/* ── Attachment UI (form + timeline) ── */
+	.form-attachments {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.attach-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+	.attach-action-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		background: none;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		padding: 0.25rem 0.5rem;
+		line-height: 1;
+		transition: border-color 0.1s, color 0.1s;
+	}
+	.attach-action-btn:hover {
+		border-color: var(--border-strong);
+		color: var(--text);
+	}
+	.attach-file-input {
+		display: none;
+	}
+	.attach-type {
+		font-size: var(--text-xs) !important;
+		padding: 0.25rem 0.375rem !important;
+		width: auto !important;
+	}
+	.attach-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+	.attach-save {
+		padding: 0.25rem 0.75rem;
+		background: var(--accent);
+		color: #fff;
+		border: none;
+		border-radius: 6px;
+		font-size: var(--text-xs);
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.attach-save:hover:not(:disabled) {
+		background: var(--accent-hover);
+	}
+	.attach-save:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	/* ── Entry attachments (timeline read-only) ── */
+	.entry-attachments {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.375rem;
+		margin-top: 0.375rem;
+	}
+
+	/* ── Edit form attachments (inside entry-edit-card) ── */
+	.edit-attachments {
+		border-top: 1px solid var(--border);
+		margin-top: 0.625rem;
+		padding-top: 0.625rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.link-picker-item--check {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		cursor: pointer;
+	}
+	.link-picker-item--check input[type='checkbox'] {
+		flex-shrink: 0;
+	}
+	.doc-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: var(--text-xs);
+		color: var(--text);
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		padding: 2px 6px 2px 4px;
+		background: var(--bg);
+	}
+	.doc-chip-type {
+		font-size: 10px;
+		font-weight: 500;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.doc-chip-name {
+		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 150px;
+	}
+	.doc-chip-remove {
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--text-subtle);
+		padding: 0;
+		font-size: 0.85rem;
+		line-height: 1;
+		flex-shrink: 0;
+		margin-left: 1px;
+	}
+	.doc-chip-remove:hover {
+		color: var(--status-overdue);
+	}
+	.doc-chip--link {
+		text-decoration: none;
+		transition: border-color 0.1s, background 0.1s;
+	}
+	.doc-chip--link:hover {
+		border-color: var(--accent);
+		background: var(--accent-subtle);
+	}
+	.doc-chip--link .doc-chip-type,
+	.doc-chip--link .doc-chip-name {
+		color: inherit;
+	}
+
+	/* ── Link picker ── */
+	.link-picker {
+		margin-top: 0.5rem;
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		background: var(--bg);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+		overflow: hidden;
+		max-width: 320px;
+	}
+	.link-picker-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0.75rem;
+		border-bottom: 1px solid var(--border);
+	}
+	.link-picker-title {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.link-picker-close {
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--text-muted);
+		font-size: 1rem;
+		padding: 0;
+		line-height: 1;
+	}
+	.link-picker-close:hover {
+		color: var(--text);
+	}
+	.link-picker-empty {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		padding: 0.75rem;
+		margin: 0;
+	}
+	.link-picker-list {
+		list-style: none;
+		margin: 0;
+		padding: 0.25rem;
+		max-height: 200px;
+		overflow-y: auto;
+	}
+	.link-picker-list li {
+		margin: 0;
+	}
+	.link-picker-item {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		width: 100%;
+		padding: 0.375rem 0.5rem;
+		background: none;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		text-align: left;
+		transition: background 0.1s;
+	}
+	.link-picker-item:hover {
+		background: var(--bg-subtle);
+	}
+	.link-picker-item-name {
+		font-size: var(--text-sm);
+		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>

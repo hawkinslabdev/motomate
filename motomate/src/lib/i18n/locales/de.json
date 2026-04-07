@@ -251,7 +251,8 @@
         "notes": "Notizen",
         "resetCycle": "Zyklus zurücksetzen für {optional}",
         "checkToReset": "(zum Zurücksetzen anhaken)",
-        "currentReading": "Aktueller Stand ({unit})"
+        "currentReading": "Aktueller Stand ({unit})",
+        "attachments": "Anhänge {optional}"
       },
       "placeholders": {
         "partsUsed": "Verwendete Teile, Beobachtungen…",
@@ -266,6 +267,15 @@
         "service": "Eintrag speichern",
         "odometer": "Aktualisieren",
         "note": "Notiz speichern"
+      },
+      "attachFile": "Datei anhängen",
+      "chooseFile": "Datei auswählen",
+      "linkDocument": "Dokument verknüpfen",
+      "viewDocument": "Dokument anzeigen",
+      "attachments": {
+        "pickerTitle": "Dokument verknüpfen",
+        "noDocuments": "Keine Dokumente verfügbar.",
+        "uploading": "Hochladen..."
       }
     },
     "add": {
@@ -561,7 +571,8 @@
     },
     "prevPage": "Zurück",
     "nextPage": "Weiter",
-    "pageOf": "Seite {page} von {total}"
+    "pageOf": "Seite {page} von {total}",
+    "linkedBadge": "Verknüpft · Service {date}"
   },
   "settings": {
     "title": "Einstellungen",

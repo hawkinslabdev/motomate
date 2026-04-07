@@ -251,7 +251,8 @@
         "notes": "Note",
         "resetCycle": "Ripristina ciclo per {optional}",
         "checkToReset": "(seleziona per resettare)",
-        "currentReading": "Lettura attuale ({unit})"
+        "currentReading": "Lettura attuale ({unit})",
+        "attachments": "Allegati {optional}"
       },
       "placeholders": {
         "partsUsed": "Pezzi usati, osservazioni…",
@@ -266,6 +267,15 @@
         "service": "Salva voce",
         "odometer": "Aggiorna",
         "note": "Salva nota"
+      },
+      "attachFile": "Allega file",
+      "chooseFile": "Scegli file",
+      "linkDocument": "Collega documento",
+      "viewDocument": "Visualizza documento",
+      "attachments": {
+        "pickerTitle": "Collega un documento",
+        "noDocuments": "Nessun documento disponibile.",
+        "uploading": "Caricamento..."
       }
     },
     "add": {
@@ -561,7 +571,8 @@
     },
     "prevPage": "Precedente",
     "nextPage": "Successivo",
-    "pageOf": "Pagina {page} di {total}"
+    "pageOf": "Pagina {page} di {total}",
+    "linkedBadge": "Collegato · Servizio {date}"
   },
   "settings": {
     "title": "Impostazioni",

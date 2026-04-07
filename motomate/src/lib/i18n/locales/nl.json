@@ -251,7 +251,8 @@
         "notes": "Notities",
         "resetCycle": "Cyclus resetten voor {optional}",
         "checkToReset": "(vink aan om te resetten)",
-        "currentReading": "Huidige stand ({unit})"
+        "currentReading": "Huidige stand ({unit})",
+        "attachments": "Bijlagen {optional}"
       },
       "placeholders": {
         "partsUsed": "Gebruikte onderdelen, observaties…",
@@ -266,6 +267,15 @@
         "service": "Item opslaan",
         "odometer": "Bijwerken",
         "note": "Notitie opslaan"
+      },
+      "attachFile": "Bestand bijvoegen",
+      "chooseFile": "Bestand kiezen",
+      "linkDocument": "Document koppelen",
+      "viewDocument": "Document bekijken",
+      "attachments": {
+        "pickerTitle": "Koppel een document",
+        "noDocuments": "Geen documenten beschikbaar.",
+        "uploading": "Uploaden..."
       }
     },
     "add": {
@@ -561,7 +571,8 @@
     },
     "prevPage": "Vorige",
     "nextPage": "Volgende",
-    "pageOf": "Pagina {page} van {total}"
+    "pageOf": "Pagina {page} van {total}",
+    "linkedBadge": "Gekoppeld · Service {date}"
   },
   "settings": {
     "title": "Instellingen",

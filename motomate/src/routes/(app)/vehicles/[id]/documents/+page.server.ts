@@ -7,6 +7,7 @@ import {
 	deleteDocument,
 	updateDocumentName
 } from '$lib/db/repositories/documents.js';
+import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
 
@@ -25,15 +26,28 @@ function storageKey(userId: string, filename: string): string {
 
 export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	const { vehicle } = await parent();
+	const highlight = url.searchParams.get('highlight') ?? null;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
-	const offset = (page - 1) * PER_PAGE;
+	// When highlighting a specific doc, load all docs so it's always in the DOM
+	const offset = highlight ? undefined : (page - 1) * PER_PAGE;
+	const limit = highlight ? undefined : PER_PAGE;
 
-	const [docs, total] = await Promise.all([
-		getDocumentsByVehicle(vehicle.id, locals.user!.id, PER_PAGE, offset),
-		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id)
+	const [docs, total, serviceLogs] = await Promise.all([
+		getDocumentsByVehicle(vehicle.id, locals.user!.id, limit, offset),
+		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id),
+		getServiceLogsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
-	return { docs, total, page, perPage: PER_PAGE };
+	// Build reverse map: document ID → service log { id, performed_at }
+	const serviceLogMap: Record<string, { id: string; performed_at: string }> = {};
+	for (const log of serviceLogs) {
+		const attachments = (log.attachments as string[]) ?? [];
+		for (const docId of attachments) {
+			serviceLogMap[docId] = { id: log.id, performed_at: log.performed_at };
+		}
+	}
+
+	return { docs, total, page, perPage: highlight ? total : PER_PAGE, serviceLogMap };
 };
 
 export const actions: Actions = {

@@ -38,7 +38,7 @@ export type PartsUsed = Array<{
 	cost_cents?: number;
 }>;
 
-export type Attachments = string[]; // storage keys
+export type Attachments = string[]; // document IDs
 
 export type RuleTrigger =
 	| { type: 'odometer_upcoming'; km_before: number }

@@ -4,7 +4,9 @@ import {
 	getServiceLogsByVehicle,
 	createServiceLog,
 	updateServiceLog,
-	deleteServiceLog
+	deleteServiceLog,
+	getServiceLogById,
+	updateServiceLogAttachments
 } from '$lib/db/repositories/service-logs.js';
 import {
 	getOdometerLogs,
@@ -20,9 +22,26 @@ import {
 	recomputeTrackerStatuses,
 	updateTrackerAfterService
 } from '$lib/db/repositories/maintenance.js';
+import {
+	getDocumentsByVehicle,
+	createDocument
+} from '$lib/db/repositories/documents.js';
+import { getStorage } from '$lib/storage/index.js';
+import { generateId } from '$lib/utils/id.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
+
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
+
+function attachmentStorageKey(userId: string, filename: string): string {
+	const ext =
+		filename
+			.split('.')
+			.pop()
+			?.replace(/[^a-zA-Z0-9]/g, '') ?? 'bin';
+	return `files/${userId}/${generateId()}.${ext}`;
+}
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
@@ -30,19 +49,21 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	// Ensure tracker statuses are fresh every time the timeline loads
 	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 
-	const [logs, odoLogs, trackers, travelEntries] = await Promise.all([
+	const [logs, odoLogs, trackers, travelEntries, allDocs] = await Promise.all([
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
 		getOdometerLogs(vehicle.id, locals.user!.id),
 		getTrackersByVehicle(vehicle.id, locals.user!.id),
-		getTravelsForTimeline(vehicle.id, locals.user!.id)
+		getTravelsForTimeline(vehicle.id, locals.user!.id),
+		getDocumentsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
-	return { logs, odoLogs, trackers, vehicle, travelEntries };
+	return { logs, odoLogs, trackers, vehicle, travelEntries, allDocs };
 };
 
 export const actions: Actions = {
 	logService: async ({ request, locals, params }) => {
-		const raw = Object.fromEntries(await request.formData());
+		const formData = await request.formData();
+		const raw = Object.fromEntries(formData);
 		const currency = (locals.user as any)?.settings?.currency ?? 'EUR';
 
 		// Handle multiple tracker resets (checkbox array)
@@ -71,6 +92,35 @@ export const actions: Actions = {
 			return fail(400, { error: parsed.error.issues[0]?.message ?? 'Invalid input' });
 		}
 
+		// Handle optional file attachment
+		const attachmentFile = formData.get('attachment_file') as File | null;
+		const attachmentDocIds: string[] = [];
+		if (attachmentFile && attachmentFile.size > 0) {
+			if (attachmentFile.size > MAX_ATTACHMENT_SIZE) {
+				return fail(400, { error: 'Attachment too large (max 10 MB)' });
+			}
+			const key = attachmentStorageKey(locals.user!.id, attachmentFile.name);
+			const buffer = Buffer.from(await attachmentFile.arrayBuffer());
+			try {
+				const storage = getStorage();
+				await storage.put(key, buffer, attachmentFile.type || 'application/octet-stream');
+			} catch (e) {
+				console.error('Attachment upload failed:', e);
+				return fail(500, { error: 'Attachment upload failed' });
+			}
+			const docName = String(raw.attachment_name || attachmentFile.name).trim().slice(0, 200);
+			const docType = String(raw.attachment_type || 'service');
+			const doc = await createDocument(locals.user!.id, {
+				vehicle_id: params.id,
+				name: docName,
+				doc_type: docType,
+				storage_key: key,
+				mime_type: attachmentFile.type || 'application/octet-stream',
+				size_bytes: attachmentFile.size
+			});
+			attachmentDocIds.push(doc.id);
+		}
+
 		const vehicle = await getVehicleById(params.id, locals.user!.id);
 		const maxOdo = vehicle?.current_odometer ?? 0;
 		const warning =
@@ -78,7 +128,13 @@ export const actions: Actions = {
 				? `Odometer is lower than the highest recorded reading (${maxOdo} km). Saved as a historical record.`
 				: undefined;
 
-		await createServiceLog(locals.user!.id, parsed.data);
+		// Collect any existing doc IDs linked from the picker in the new form
+		const linkedDocIds = formData.getAll('linked_doc_id').map(String).filter(Boolean);
+
+		const serviceLog = await createServiceLog(locals.user!.id, {
+			...parsed.data,
+			attachments: [...attachmentDocIds, ...linkedDocIds]
+		});
 
 		// Reset all selected trackers
 		for (const tid of resetTrackerIds) {
@@ -93,6 +149,51 @@ export const actions: Actions = {
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
 		return { logged: true, warning };
+	},
+
+	linkDocument: async ({ request, locals, params }) => {
+		const data = await request.formData();
+		const serviceLogId = String(data.get('service_log_id') ?? '');
+		const documentId = String(data.get('document_id') ?? '');
+		if (!serviceLogId || !documentId) return fail(400, { error: 'Missing fields' });
+
+		const log = await getServiceLogById(serviceLogId);
+		if (!log || log.vehicle_id !== params.id) return fail(404, { error: 'Not found' });
+
+		// Verify vehicle ownership
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		if (!vehicle) return fail(403, { error: 'Forbidden' });
+
+		const current = (log.attachments as string[]) ?? [];
+		if (!current.includes(documentId)) {
+			await updateServiceLogAttachments(serviceLogId, params.id, locals.user!.id, [
+				...current,
+				documentId
+			]);
+		}
+		return { linked: true };
+	},
+
+	unlinkDocument: async ({ request, locals, params }) => {
+		const data = await request.formData();
+		const serviceLogId = String(data.get('service_log_id') ?? '');
+		const documentId = String(data.get('document_id') ?? '');
+		if (!serviceLogId || !documentId) return fail(400, { error: 'Missing fields' });
+
+		const log = await getServiceLogById(serviceLogId);
+		if (!log || log.vehicle_id !== params.id) return fail(404, { error: 'Not found' });
+
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		if (!vehicle) return fail(403, { error: 'Forbidden' });
+
+		const current = (log.attachments as string[]) ?? [];
+		await updateServiceLogAttachments(
+			serviceLogId,
+			params.id,
+			locals.user!.id,
+			current.filter((id) => id !== documentId)
+		);
+		return { unlinked: true };
 	},
 
 	updateOdometer: async ({ request, locals, params }) => {
@@ -250,5 +351,49 @@ export const actions: Actions = {
 		);
 
 		return { noteLogged: true };
+	},
+
+	uploadToLog: async ({ request, locals, params }) => {
+		const formData = await request.formData();
+		const serviceLogId = String(formData.get('service_log_id') ?? '');
+		const file = formData.get('file') as File | null;
+
+		if (!serviceLogId) return fail(400, { uploadError: 'Missing service log ID' });
+		if (!file || file.size === 0) return fail(400, { uploadError: 'No file selected' });
+		if (file.size > MAX_ATTACHMENT_SIZE) return fail(400, { uploadError: 'File too large (max 10 MB)' });
+
+		const log = await getServiceLogById(serviceLogId);
+		if (!log || log.vehicle_id !== params.id) return fail(404, { uploadError: 'Not found' });
+
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		if (!vehicle) return fail(403, { uploadError: 'Forbidden' });
+
+		const key = attachmentStorageKey(locals.user!.id, file.name);
+		const buffer = Buffer.from(await file.arrayBuffer());
+		try {
+			const storage = getStorage();
+			await storage.put(key, buffer, file.type || 'application/octet-stream');
+		} catch (e) {
+			console.error('Attachment upload failed:', e);
+			return fail(500, { uploadError: 'Upload failed' });
+		}
+
+		const docName = String(formData.get('doc_name') || file.name).trim().slice(0, 200);
+		const docType = String(formData.get('doc_type') || 'service');
+		const doc = await createDocument(locals.user!.id, {
+			vehicle_id: params.id,
+			name: docName,
+			doc_type: docType,
+			storage_key: key,
+			mime_type: file.type || 'application/octet-stream',
+			size_bytes: file.size
+		});
+
+		const current = (log.attachments as string[]) ?? [];
+		await updateServiceLogAttachments(serviceLogId, params.id, locals.user!.id, [
+			...current,
+			doc.id
+		]);
+		return { attachUploaded: true };
 	}
 };

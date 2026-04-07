@@ -251,7 +251,8 @@
         "notes": "Notes",
         "resetCycle": "Réinitialiser le cycle pour {optional}",
         "checkToReset": "(cocher pour réinitialiser)",
-        "currentReading": "Lecture actuelle ({unit})"
+        "currentReading": "Lecture actuelle ({unit})",
+        "attachments": "Pièces jointes {optional}"
       },
       "placeholders": {
         "partsUsed": "Pièces utilisées, observations…",
@@ -266,6 +267,15 @@
         "service": "Enregistrer",
         "odometer": "Mettre à jour",
         "note": "Enregistrer la note"
+      },
+      "attachFile": "Joindre un fichier",
+      "chooseFile": "Choisir un fichier",
+      "linkDocument": "Lier un document",
+      "viewDocument": "Voir le document",
+      "attachments": {
+        "pickerTitle": "Lier un document",
+        "noDocuments": "Aucun document disponible.",
+        "uploading": "Envoi en cours..."
       }
     },
     "add": {
@@ -561,7 +571,8 @@
     },
     "prevPage": "Précédent",
     "nextPage": "Suivant",
-    "pageOf": "Page {page} sur {total}"
+    "pageOf": "Page {page} sur {total}",
+    "linkedBadge": "Lié · Service {date}"
   },
   "settings": {
     "title": "Paramètres",

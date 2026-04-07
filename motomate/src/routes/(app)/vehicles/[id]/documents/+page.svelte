@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { tick } from 'svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -124,6 +125,19 @@
 		u.searchParams.set('page', String(p));
 		goto(u.toString(), { replaceState: false });
 	}
+
+	const highlightId = $derived($page.url.searchParams.get('highlight') ?? null);
+
+	$effect(() => {
+		if (highlightId) {
+			const doc = data.docs.find((d) => d.id === highlightId);
+			if (doc) searchQuery = doc.name;
+			tick().then(() => {
+				const el = document.getElementById(`doc-${highlightId}`);
+				if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			});
+		}
+	});
 
 	const filteredDocs = $derived(() => {
 		let docs = [...data.docs];
@@ -367,9 +381,11 @@
 	<div class="doc-list">
 		{#each filteredDocs() as doc}
 			<div
+				id="doc-{doc.id}"
 				class="doc-row"
 				class:doc-row--expiring={isExpiringSoon(doc.expires_at)}
 				class:doc-row--expired={isExpired(doc.expires_at)}
+				class:doc-row--highlight={highlightId === doc.id}
 			>
 				<div class="doc-icon">{@html fileIconSvg(doc.mime_type)}</div>
 				<div class="doc-info">
@@ -396,6 +412,10 @@
 						<span>{formatSize(doc.size_bytes)}</span>
 						<span class="sep">·</span>
 						<span>{formatDate(doc.created_at)}</span>
+						{#if data.serviceLogMap?.[doc.id]}
+							<span class="sep">·</span>
+							<span class="doc-linked-badge">{$_('documents.linkedBadge', { values: { date: formatDate(data.serviceLogMap[doc.id].performed_at) } })}</span>
+						{/if}
 					</div>
 					{#if doc.expires_at}
 						<div class="doc-expiry">
@@ -855,6 +875,15 @@
 	.doc-row--expired {
 		border-left-color: var(--status-overdue);
 	}
+	.doc-row--highlight {
+		background: var(--accent-subtle);
+		border-left-color: var(--accent);
+		animation: highlight-fade 2.5s ease forwards;
+	}
+	@keyframes highlight-fade {
+		0% { background: var(--accent-subtle); }
+		100% { background: var(--bg); }
+	}
 
 	.doc-icon {
 		font-size: 1.25rem;
@@ -892,6 +921,10 @@
 		border-radius: 4px;
 		padding: 0.0625rem 0.375rem;
 		font-size: var(--text-xs);
+	}
+	.doc-linked-badge {
+		font-size: var(--text-xs);
+		color: var(--text-muted);
 	}
 	.doc-expiry {
 		font-size: var(--text-xs);
