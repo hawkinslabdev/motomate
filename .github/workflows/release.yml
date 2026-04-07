@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.0.1) - leave empty for auto-increment'
+        required: false
+        type: string
 
 jobs:
   release:
@@ -15,43 +20,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get latest tag
+      - name: Determine version
         id: get_tag
         run: |
-          # Get all tags matching v* pattern, sorted by version
-          TAGS=$(git tag -l 'v*' --sort=-v:refname 2>/dev/null | head -20)
-          
-          # Find the latest semantic version tag
-          LATEST=""
-          for tag in $TAGS; do
-            if [[ $tag =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-              LATEST=$tag
-              break
+          if [ -n "${{ github.inputs.version }}" ]; then
+            VERSION="${{ github.inputs.version }}"
+            if [[ ! $VERSION =~ ^v ]]; then
+              VERSION="v${VERSION}"
             fi
-          done
-          
-          if [ -z "$LATEST" ]; then
-            echo "No existing v* tags found, starting at v0.0.1"
-            echo "version=v0.0.1" >> $GITHUB_OUTPUT
-            echo "major=0" >> $GITHUB_OUTPUT
-            echo "minor=0" >> $GITHUB_OUTPUT
-            echo "patch=1" >> $GITHUB_OUTPUT
+            echo "Using manually specified version: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
           else
-            echo "Found latest tag: $LATEST"
-            # Extract version components
-            VERSION=${LATEST#v}
-            MAJOR=$(echo $VERSION | cut -d. -f1)
-            MINOR=$(echo $VERSION | cut -d. -f2)
-            PATCH=$(echo $VERSION | cut -d. -f3)
+            # Get all tags matching v* pattern, sorted by version
+            TAGS=$(git tag -l 'v*' --sort=-v:refname 2>/dev/null | head -20)
             
-            # Increment patch
-            NEW_PATCH=$((PATCH + 1))
-            NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+            # Find the latest semantic version tag
+            LATEST=""
+            for tag in $TAGS; do
+              if [[ $tag =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+                LATEST=$tag
+                break
+              fi
+            done
             
-            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-            echo "major=$MAJOR" >> $GITHUB_OUTPUT
-            echo "minor=$MINOR" >> $GITHUB_OUTPUT
-            echo "patch=$NEW_PATCH" >> $GITHUB_OUTPUT
+            if [ -z "$LATEST" ]; then
+              echo "No existing v* tags found, starting at v0.0.1"
+              echo "version=v0.0.1" >> $GITHUB_OUTPUT
+            else
+              echo "Found latest tag: $LATEST"
+              # Extract version components
+              VERSION=${LATEST#v}
+              MAJOR=$(echo $VERSION | cut -d. -f1)
+              MINOR=$(echo $VERSION | cut -d. -f2)
+              PATCH=$(echo $VERSION | cut -d. -f3)
+              
+              # Increment patch
+              NEW_PATCH=$((PATCH + 1))
+              NEW_VERSION="v${MAJOR}.${MINOR}.${NEW_PATCH}"
+              
+              echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: Create and push tag
