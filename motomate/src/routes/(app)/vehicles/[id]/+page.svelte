@@ -27,9 +27,25 @@
 	let activeForm = $state<'service' | 'odometer' | 'note' | null>(null);
 	let submitting = $state(false);
 
+	// Track odometer form input for reactive warning
+	let odoValue = $state('');
+	let odoDirty = $state(false);
+
 	function openForm(kind: 'service' | 'odometer' | 'note') {
 		menuOpen = false;
 		activeForm = kind;
+		if (kind === 'odometer') {
+			odoValue = String(data.vehicle.current_odometer);
+			odoDirty = false;
+		}
+	}
+
+	function getOdoWarning(inputVal: string, currentVal: number): string | undefined {
+		const num = Number(inputVal);
+		if (!Number.isInteger(num) || num < 0) return undefined;
+		if (num === currentVal) return `Je hebt al een stand van ${num} km. Opgeslagen voor je administratie.`;
+		if (num < currentVal) return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
+		return undefined;
 	}
 
 	// Handle ?quick= param from the mobile FAB quick-add flow
@@ -373,8 +389,8 @@
 			{#if (form as any)?.odoError}
 				<div class="form-err">{(form as any).odoError}</div>
 			{/if}
-			{#if (form as any)?.warning}
-				<div class="form-warning">{(form as any).warning}</div>
+			{#if activeForm === 'odometer' && odoDirty && getOdoWarning(odoValue, data.vehicle.current_odometer)}
+				<div class="form-warning">{getOdoWarning(odoValue, data.vehicle.current_odometer)}</div>
 			{/if}
 			<div class="form-row">
 				<label class="field">
@@ -384,7 +400,8 @@
 					<input
 						type="number"
 						name="odometer"
-						value={data.vehicle.current_odometer}
+						bind:value={odoValue}
+						oninput={() => (odoDirty = true)}
 						min="0"
 						class="input mono"
 						required
