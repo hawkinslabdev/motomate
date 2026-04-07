@@ -101,6 +101,11 @@ export const actions: Actions = {
 			for (const { tracker } of seeded) {
 				await updateTrackerAfterService(tracker.id, lastServiceDate, lastServiceOdo);
 			}
+
+			// If the current odometer is ahead of the last service reading, record it as a baseline entry
+			if (vehicleInput.current_odometer > lastServiceOdo) {
+				await insertOdometerLog(vehicle.id, userId, vehicleInput.current_odometer);
+			}
 		} else if (vehicleInput.current_odometer > 0) {
 			// No service info entered — record the starting odometer as a baseline
 			await insertOdometerLog(vehicle.id, userId, vehicleInput.current_odometer);
