@@ -35,6 +35,9 @@
 	// guard so the gpxFiles $effect doesn't run before onMount finishes
 	let mapReady = false;
 
+	// snapshot of the map's view when all routes are shown (for restore on deselect)
+	let initialView: { center: [number, number]; zoom: number } | null = null;
+
 	let loading = $state(true);
 	let error = $state(false);
 
@@ -95,8 +98,39 @@
 	// Re-colour routes whenever selection changes
 	$effect(() => {
 		selectedTravelIds; // reactive dependency
-		if (map) updateColors();
+		if (map) {
+			// Capture the "all routes" view before zooming into a selection
+			if (selectedTravelIds.length > 0 && initialView === null) {
+				const c = map.getCenter();
+				initialView = { center: [c.lat, c.lng], zoom: map.getZoom() };
+			}
+			updateColors();
+			if (selectedTravelIds.length > 0) {
+				fitToSelection();
+			} else if (initialView !== null) {
+				map.setView(initialView.center, initialView.zoom);
+			}
+		}
 	});
+
+	function fitToSelection() {
+		if (selectedTravelIds.length === 0) return;
+		const bounds: any[] = [];
+		for (const travelId of selectedTravelIds) {
+			const polys = gpxPolylines.get(travelId);
+			if (!polys) continue;
+			for (const poly of polys) {
+				try {
+					const b = poly.getBounds?.();
+					if (b?.isValid()) bounds.push(b);
+				} catch { /* ignore */ }
+			}
+		}
+		if (bounds.length > 0) {
+			const combined = bounds.reduce((acc: any, b: any) => acc.extend(b));
+			map.fitBounds(combined, { padding: [32, 32] });
+		}
+	}
 
 	// Sync map layers whenever gpxFiles prop changes (new travel added / deleted)
 	$effect(() => {
