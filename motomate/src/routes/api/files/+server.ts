@@ -78,16 +78,28 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			jpeg: 'image/jpeg',
 			png: 'image/png',
 			webp: 'image/webp',
-			gif: 'image/gif'
+			gif: 'image/gif',
+			gpx: 'application/gpx+xml'
 		};
 		const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
-		return new Response(stream as unknown as ReadableStream, {
-			headers: {
-				'Content-Type': contentType,
-				'Cache-Control': 'private, max-age=3600'
-			}
-		});
+		// Resolve original filename for Content-Disposition
+		let filename: string | null = null;
+		if (isDoc) {
+			const doc = await getDocumentByStorageKey(key);
+			if (doc?.name) filename = doc.name;
+		}
+
+		const headers: Record<string, string> = {
+			'Content-Type': contentType,
+			'Cache-Control': 'private, max-age=3600'
+		};
+		if (filename) {
+			// RFC 5987: encode non-ASCII filenames
+			headers['Content-Disposition'] = `attachment; filename="${filename.replace(/"/g, '\\"')}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+		}
+
+		return new Response(stream as unknown as ReadableStream, { headers });
 	} catch {
 		error(404, 'File not found');
 	}
