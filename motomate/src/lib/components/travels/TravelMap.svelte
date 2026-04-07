@@ -70,7 +70,8 @@
 			}
 		}
 		for (const [travelId, markers] of gpxMarkers) {
-			const visible = selectedTravelIds.length === 0 || selectedTravelIds.includes(travelId);
+			// Only show start/end pins when a specific travel is selected
+			const visible = selectedTravelIds.length > 0 && selectedTravelIds.includes(travelId);
 			const display = visible ? '' : 'none';
 			for (const marker of markers) {
 				const icon = marker._icon;
