@@ -16,4 +16,5 @@ services:
       - DATABASE_URL=/app/data/motomate.db
       - STORAGE_ADAPTER=local
       - STORAGE_LOCAL_PATH=/app/uploads
+      - BODY_SIZE_LIMIT=20971520
     restart: unless-stopped
