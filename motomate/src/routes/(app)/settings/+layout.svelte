@@ -7,6 +7,13 @@
 		waitLocale();
 	});
 
+	const appVersion = (() => {
+		// @ts-ignore - Vite injects this global
+		const v = __APP_VERSION__;
+		const parts = v.split('.');
+		return `${parts[0]}.${parts[1]}`;
+	})();
+
 	const tabs = [
 		{ href: '/settings/profile', labelKey: 'settings.nav.preferences' },
 		{ href: '/settings/account', labelKey: 'settings.nav.account' },
@@ -99,6 +106,8 @@
 					<line x1="10" y1="14" x2="21" y2="3"></line>
 				</svg>
 			</a>
+
+			<div class="settings-nav-version">v{appVersion}</div>
 		</nav>
 		<div class="settings-content">
 			{#if children}
@@ -183,6 +192,13 @@
 		opacity: 1;
 		transform: translateX(0);
 	}
+	.settings-nav-version {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: var(--text-xs);
+		color: var(--text-subtle);
+		padding: 0.5rem 1.0rem;
+		opacity: 0.7;
+	}
 	.settings-nav-divider {
 		height: 1px;
 		background-color: var(--border);
@@ -231,6 +247,9 @@
 		.external-link .external-icon {
 			opacity: 0.5;
 			transform: translateX(0);
+		}
+		.settings-nav-version {
+			display: none;
 		}
 	}
 </style>
