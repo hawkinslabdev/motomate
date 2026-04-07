@@ -810,7 +810,8 @@
     },
     "entry": {
       "days": "{n, plural, =1 {1 day} other {# days}}",
-      "routes": "{n, plural, =1 {1 route} other {# routes}}"
+      "routes": "{n, plural, =1 {1 route} other {# routes}}",
+      "planned": "Planned"
     },
     "form": {
       "createTitle": "Add travel",
@@ -851,7 +852,10 @@
     },
     "filter": {
       "search": "Search travels...",
-      "noResults": "No travels match your search."
+      "noResults": "No travels match your search.",
+      "all": "All",
+      "past": "Past",
+      "upcoming": "Upcoming"
     }
   },
   "notifications": {

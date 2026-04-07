@@ -72,9 +72,12 @@
 		}
 	});
 
-	// Search + sort state
+	// Search + sort + filter state
 	let searchQuery = $state('');
 	let sortBy = $state<'newest' | 'oldest' | 'name'>('newest');
+	let filterBy = $state<'all' | 'past' | 'upcoming'>('all');
+
+	const today = new Date().toISOString().slice(0, 10);
 
 	// Map / row selection state
 	let selectedTravelIds = $state<string[]>([]);
@@ -90,6 +93,7 @@
 	function clearFilter() {
 		selectedTravelIds = [];
 		searchQuery = '';
+		filterBy = 'all';
 	}
 
 	// Filtered + sorted + grouped travels for the list
@@ -116,6 +120,9 @@
 			});
 		}
 
+		if (filterBy === 'past') list = list.filter((t) => t.start_date <= today);
+		else if (filterBy === 'upcoming') list = list.filter((t) => t.start_date > today);
+
 		if (selectedTravelIds.length > 0) {
 			list = list.filter((t) => selectedTravelIds.includes(t.id));
 		}
@@ -139,7 +146,7 @@
 	});
 
 	const hasHistory = $derived(data.travels.length > 0);
-	const hasActiveFilter = $derived(selectedTravelIds.length > 0 || searchQuery.trim() !== '');
+	const hasActiveFilter = $derived(selectedTravelIds.length > 0 || searchQuery.trim() !== '' || filterBy !== 'all');
 
 	// Build GPX file list for the map
 	const gpxFiles = $derived(
@@ -200,6 +207,11 @@
 			/>
 		</div>
 		<div class="filter-controls">
+			<select bind:value={filterBy} class="filter-select">
+				<option value="all">{$_('travels.filter.all')}</option>
+				<option value="past">{$_('travels.filter.past')}</option>
+				<option value="upcoming">{$_('travels.filter.upcoming')}</option>
+			</select>
 			<select bind:value={sortBy} class="filter-select">
 				<option value="newest">{$_('documents.sort.newest')}</option>
 				<option value="oldest">{$_('documents.sort.oldest')}</option>

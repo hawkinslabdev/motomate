@@ -830,7 +830,8 @@
     },
     "entry": {
       "days": "{n, plural, =1 {1 dia} other {# dias}}",
-      "routes": "{n, plural, =1 {1 percurso} other {# percursos}}"
+      "routes": "{n, plural, =1 {1 percurso} other {# percursos}}",
+      "planned": "Planeado"
     },
     "form": {
       "createTitle": "Adicionar viagem",
@@ -871,7 +872,10 @@
     },
     "filter": {
       "search": "Pesquisar viagens...",
-      "noResults": "Nenhuma viagem corresponde à sua pesquisa."
+      "noResults": "Nenhuma viagem corresponde à sua pesquisa.",
+      "all": "Todos",
+      "past": "Passados",
+      "upcoming": "Planeados"
     }
   }
 }

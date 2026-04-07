@@ -830,7 +830,8 @@
     },
     "entry": {
       "days": "{n, plural, =1 {1 dag} other {# dagen}}",
-      "routes": "{n, plural, =1 {1 route} other {# routes}}"
+      "routes": "{n, plural, =1 {1 route} other {# routes}}",
+      "planned": "Gepland"
     },
     "form": {
       "createTitle": "Rit toevoegen",
@@ -871,7 +872,10 @@
     },
     "filter": {
       "search": "Ritten zoeken...",
-      "noResults": "Geen ritten gevonden die overeenkomen met uw zoekopdracht."
+      "noResults": "Geen ritten gevonden die overeenkomen met uw zoekopdracht.",
+      "all": "Alle",
+      "past": "Verleden",
+      "upcoming": "Gepland"
     }
   }
 }

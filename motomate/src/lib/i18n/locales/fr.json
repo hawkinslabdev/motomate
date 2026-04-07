@@ -830,7 +830,8 @@
     },
     "entry": {
       "days": "{n, plural, =1 {1 jour} other {# jours}}",
-      "routes": "{n, plural, =1 {1 itinéraire} other {# itinéraires}}"
+      "routes": "{n, plural, =1 {1 itinéraire} other {# itinéraires}}",
+      "planned": "Planifié"
     },
     "form": {
       "createTitle": "Ajouter un voyage",
@@ -871,7 +872,10 @@
     },
     "filter": {
       "search": "Rechercher des voyages...",
-      "noResults": "Aucun voyage ne correspond à votre recherche."
+      "noResults": "Aucun voyage ne correspond à votre recherche.",
+      "all": "Tous",
+      "past": "Passés",
+      "upcoming": "Planifiés"
     }
   }
 }

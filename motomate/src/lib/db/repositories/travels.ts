@@ -1,4 +1,4 @@
-import { eq, and, desc, inArray } from 'drizzle-orm';
+import { eq, and, desc, inArray, lte, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { travels } from '../schema.js';
 import { getVehicleById } from './vehicles.js';
@@ -102,6 +102,6 @@ export async function getTravelsForTimeline(
 			created_at: travels.created_at
 		})
 		.from(travels)
-		.where(eq(travels.vehicle_id, vehicleId))
+		.where(and(eq(travels.vehicle_id, vehicleId), lte(travels.start_date, sql`date('now')`)))
 		.orderBy(desc(travels.start_date));
 }

@@ -830,7 +830,8 @@
     },
     "entry": {
       "days": "{n, plural, =1 {1 Tag} other {# Tage}}",
-      "routes": "{n, plural, =1 {1 Route} other {# Routen}}"
+      "routes": "{n, plural, =1 {1 Route} other {# Routen}}",
+      "planned": "Geplant"
     },
     "form": {
       "createTitle": "Fahrt hinzufügen",
@@ -871,7 +872,10 @@
     },
     "filter": {
       "search": "Reisen suchen...",
-      "noResults": "Keine Reisen entsprechen Ihrer Suche."
+      "noResults": "Keine Reisen entsprechen Ihrer Suche.",
+      "all": "Alle",
+      "past": "Vergangen",
+      "upcoming": "Geplant"
     }
   }
 }

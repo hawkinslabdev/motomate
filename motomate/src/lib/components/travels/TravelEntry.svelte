@@ -31,6 +31,8 @@
 		d.setDate(d.getDate() + travel.duration_days - 1);
 		return d.toISOString().slice(0, 10);
 	});
+
+	const isPlanned = $derived(travel.start_date > new Date().toISOString().slice(0, 10));
 </script>
 
 <svelte:window onclick={closeMenu} />
@@ -40,6 +42,7 @@
 <div
 	class="travel-entry"
 	class:travel-entry--selected={selected}
+	class:travel-entry--planned={isPlanned}
 	class:travel-entry--clickable={!!onselect}
 	onclick={() => onselect?.(travel)}
 	onkeydown={(e) => { if (onselect && (e.key === 'Enter' || e.key === ' ')) onselect(travel); }}
@@ -62,6 +65,10 @@
 				<span class="route-badge">
 					{$_('travels.entry.routes', { values: { n: travel.gpx_document_ids.length } })}
 				</span>
+			{/if}
+			{#if isPlanned}
+				<span class="sep">·</span>
+				<span class="planned-badge">{$_('travels.entry.planned')}</span>
 			{/if}
 		</div>
 		{#if travel.remark}
@@ -129,6 +136,10 @@
 	.travel-entry--selected:hover {
 		background: color-mix(in srgb, var(--accent) 6%, var(--bg));
 	}
+	.travel-entry--planned {
+		border-left-style: dashed;
+		border-left-color: var(--border-strong);
+	}
 	.entry-body {
 		flex: 1;
 		min-width: 0;
@@ -153,6 +164,15 @@
 	}
 	.route-badge {
 		color: var(--accent);
+	}
+	.planned-badge {
+		font-size: var(--text-xs);
+		color: var(--text-subtle);
+		border: 1px solid var(--border);
+		border-radius: 4px;
+		padding: 0.0625rem 0.375rem;
+		font-weight: 500;
+		letter-spacing: 0.02em;
 	}
 	.entry-remark {
 		font-size: var(--text-sm);
