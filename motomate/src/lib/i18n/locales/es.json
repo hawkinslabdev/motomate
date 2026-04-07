@@ -572,7 +572,8 @@
     "prevPage": "Anterior",
     "nextPage": "Siguiente",
     "pageOf": "Pagina {page} de {total}",
-    "linkedBadge": "Vinculado · Servicio {date}"
+    "linkedBadge": "Vinculado · Servicio {date}",
+    "linkedTravelBadge": "Vinculado · Viaje {title}"
   },
   "settings": {
     "title": "Configuracion",

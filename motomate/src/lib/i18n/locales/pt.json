@@ -572,7 +572,8 @@
     "prevPage": "Anterior",
     "nextPage": "Proximo",
     "pageOf": "Pagina {page} de {total}",
-    "linkedBadge": "Vinculado · Serviço {date}"
+    "linkedBadge": "Vinculado · Serviço {date}",
+    "linkedTravelBadge": "Vinculado · Viagem {title}"
   },
   "settings": {
     "title": "Definições",

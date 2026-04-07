@@ -409,12 +409,16 @@
 					<div class="doc-meta">
 						<span class="doc-type-tag">{docTypeLabels[doc.doc_type] ?? doc.doc_type}</span>
 						<span class="sep">·</span>
-						<span>{formatSize(doc.size_bytes)}</span>
+						<span class="doc-meta-fixed">{formatSize(doc.size_bytes)}</span>
 						<span class="sep">·</span>
-						<span>{formatDate(doc.created_at)}</span>
+						<span class="doc-meta-fixed">{formatDate(doc.created_at)}</span>
 						{#if data.serviceLogMap?.[doc.id]}
 							<span class="sep">·</span>
 							<span class="doc-linked-badge">{$_('documents.linkedBadge', { values: { date: formatDate(data.serviceLogMap[doc.id].performed_at) } })}</span>
+						{/if}
+						{#if data.travelMap?.[doc.id]}
+							<span class="sep">·</span>
+							<span class="doc-linked-badge">{$_('documents.linkedTravelBadge', { values: { title: data.travelMap[doc.id].title } })}</span>
 						{/if}
 					</div>
 					{#if doc.expires_at}
@@ -905,15 +909,18 @@
 	}
 	.doc-meta {
 		display: flex;
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
 		gap: 0.25rem;
 		align-items: center;
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin-top: 0.25rem;
+		min-width: 0;
+		overflow: hidden;
 	}
 	.sep {
 		color: var(--text-subtle);
+		flex-shrink: 0;
 	}
 	.doc-type-tag {
 		background: var(--bg-muted);
@@ -921,10 +928,19 @@
 		border-radius: 4px;
 		padding: 0.0625rem 0.375rem;
 		font-size: var(--text-xs);
+		flex-shrink: 0;
+	}
+	.doc-meta-fixed {
+		flex-shrink: 0;
+		white-space: nowrap;
 	}
 	.doc-linked-badge {
 		font-size: var(--text-xs);
 		color: var(--text-muted);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		min-width: 0;
 	}
 	.doc-expiry {
 		font-size: var(--text-xs);

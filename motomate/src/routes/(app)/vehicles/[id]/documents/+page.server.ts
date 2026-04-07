@@ -8,6 +8,7 @@ import {
 	updateDocumentName
 } from '$lib/db/repositories/documents.js';
 import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
+import { getTravelsByVehicle } from '$lib/db/repositories/travels.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
 
@@ -32,10 +33,11 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	const offset = highlight ? undefined : (page - 1) * PER_PAGE;
 	const limit = highlight ? undefined : PER_PAGE;
 
-	const [docs, total, serviceLogs] = await Promise.all([
+	const [docs, total, serviceLogs, travelEntries] = await Promise.all([
 		getDocumentsByVehicle(vehicle.id, locals.user!.id, limit, offset),
 		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id),
-		getServiceLogsByVehicle(vehicle.id, locals.user!.id)
+		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
+		getTravelsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
 	// Build reverse map: document ID → service log { id, performed_at }
@@ -47,7 +49,16 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		}
 	}
 
-	return { docs, total, page, perPage: highlight ? total : PER_PAGE, serviceLogMap };
+	// Build reverse map: document ID → travel { id, title, start_date }
+	const travelMap: Record<string, { id: string; title: string; start_date: string }> = {};
+	for (const travel of travelEntries) {
+		const gpxIds = (travel.gpx_document_ids as string[]) ?? [];
+		for (const docId of gpxIds) {
+			travelMap[docId] = { id: travel.id, title: travel.title, start_date: travel.start_date };
+		}
+	}
+
+	return { docs, total, page, perPage: highlight ? total : PER_PAGE, serviceLogMap, travelMap };
 };
 
 export const actions: Actions = {

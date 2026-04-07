@@ -572,7 +572,8 @@
     "prevPage": "Précédent",
     "nextPage": "Suivant",
     "pageOf": "Page {page} sur {total}",
-    "linkedBadge": "Lié · Service {date}"
+    "linkedBadge": "Lié · Service {date}",
+    "linkedTravelBadge": "Lié · Voyage {title}"
   },
   "settings": {
     "title": "Paramètres",

@@ -572,7 +572,8 @@
     "prevPage": "Vorige",
     "nextPage": "Volgende",
     "pageOf": "Pagina {page} van {total}",
-    "linkedBadge": "Gekoppeld · Service {date}"
+    "linkedBadge": "Gekoppeld · Service {date}",
+    "linkedTravelBadge": "Gekoppeld · Rit {title}"
   },
   "settings": {
     "title": "Instellingen",

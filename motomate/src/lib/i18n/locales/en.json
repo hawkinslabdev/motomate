@@ -574,7 +574,8 @@
     "prevPage": "Previous",
     "nextPage": "Next",
     "pageOf": "Page {page} of {total}",
-    "linkedBadge": "Linked · Service {date}"
+    "linkedBadge": "Linked · Service {date}",
+    "linkedTravelBadge": "Linked · Travel {title}"
   },
   "settings": {
     "title": "Settings",

@@ -572,7 +572,8 @@
     "prevPage": "Precedente",
     "nextPage": "Successivo",
     "pageOf": "Pagina {page} di {total}",
-    "linkedBadge": "Collegato · Servizio {date}"
+    "linkedBadge": "Collegato · Servizio {date}",
+    "linkedTravelBadge": "Collegato · Viaggio {title}"
   },
   "settings": {
     "title": "Impostazioni",
