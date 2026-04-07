@@ -20,71 +20,53 @@ function isSafePath(key: string): boolean {
 	return true;
 }
 
-function corsError(status: number, message: string, origin: string): Response {
-	return new Response(message, {
-		status,
-		headers: {
-			'Access-Control-Allow-Origin': origin,
-			'Access-Control-Allow-Credentials': 'true'
-		}
-	});
-}
+export const OPTIONS: RequestHandler = async () => {
+	return new Response(null, { status: 204 });
+};
 
-export const GET: RequestHandler = async ({ url, locals, request }) => {
-	const origin = request.headers.get('origin') ?? '*';
-
-	// Must be authenticated
-	const user = locals.user;
-	if (!user) {
-		return new Response('Unauthorized', {
-			status: 401,
-			headers: {
-				'Access-Control-Allow-Origin': origin,
-				'Access-Control-Allow-Credentials': 'true'
-			}
-		});
-	}
-
+export const GET: RequestHandler = async ({ url, locals }) => {
 	const key = url.searchParams.get('key');
 	const expires = url.searchParams.get('expires');
 	const sig = url.searchParams.get('sig');
 
-	if (!key) return corsError(400, 'Missing parameters', origin);
+	if (!key) error(400, 'Missing parameters');
 
 	// Validate path to prevent traversal attacks
-	if (!isSafePath(key)) return corsError(400, 'Invalid file key', origin);
+	if (!isSafePath(key)) error(400, 'Invalid file key');
 
 	// Check if this is an avatar (cover image) or a document
 	const isAvatar = key.startsWith('avatars/');
 	const isDoc = key.startsWith('files/');
 
-	if (isDoc) {
-		// Verify document belongs to current user
-		const doc = await getDocumentByStorageKey(key);
-		if (!doc || doc.user_id !== user.id) return corsError(403, 'Access denied', origin);
-	} else if (isAvatar) {
-		// Verify avatar belongs to a vehicle owned by the current user
-		const vehicle = await getVehicleByCoverImageKey(key);
-		if (!vehicle || vehicle.user_id !== user.id) return corsError(403, 'Access denied', origin);
-	}
-
-	// For signed URLs, verify the signature
 	if (expires && sig) {
+		// Signed URL: verify signature and expiry. No session required.
 		const now = Math.floor(Date.now() / 1000);
-		if (parseInt(expires) < now) return corsError(410, 'Link expired', origin);
+		if (parseInt(expires) < now) error(410, 'Link expired');
 
 		const secret = env.AUTH_SECRET ?? 'dev-secret';
 		const expected = crypto.createHmac('sha256', secret).update(`${key}:${expires}`).digest('hex');
 
 		if (!crypto.timingSafeEqual(Buffer.from(sig, 'hex'), Buffer.from(expected, 'hex'))) {
-			return corsError(403, 'Invalid signature', origin);
+			error(403, 'Invalid signature');
+		}
+	} else {
+		// Unsigned access: require an active session and verify ownership.
+		const user = locals.user;
+		if (!user) error(401, 'Unauthorized');
+
+		if (isDoc) {
+			const doc = await getDocumentByStorageKey(key);
+			if (!doc || doc.user_id !== user.id) error(403, 'Access denied');
+		} else if (isAvatar) {
+			const vehicle = await getVehicleByCoverImageKey(key);
+			if (!vehicle || vehicle.user_id !== user.id) error(403, 'Access denied');
 		}
 	}
 
 	const adapter = getStorage();
 
 	// Only local adapter serves files via this endpoint
-	if (env.STORAGE_ADAPTER === 's3') return corsError(400, 'Use pre-signed S3 URL directly', origin);
+	if (env.STORAGE_ADAPTER === 's3') error(400, 'Use pre-signed S3 URL directly');
 
 	try {
 		const stream = await adapter.getStream(key);
@@ -100,30 +82,13 @@ export const GET: RequestHandler = async ({ url, locals, request }) => {
 		};
 		const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
-		const origin = request.headers.get('origin');
-		const corsOrigin = origin ?? '*';
-
 		return new Response(stream as unknown as ReadableStream, {
 			headers: {
 				'Content-Type': contentType,
-				'Cache-Control': 'private, max-age=3600',
-				'Access-Control-Allow-Origin': corsOrigin,
-				'Access-Control-Allow-Credentials': 'true'
+				'Cache-Control': 'private, max-age=3600'
 			}
 		});
 	} catch {
-		return corsError(404, 'File not found', origin);
+		error(404, 'File not found');
 	}
-};
-
-export const OPTIONS: RequestHandler = async ({ request }) => {
-	const origin = request.headers.get('origin') ?? '*';
-	return new Response(null, {
-		status: 204,
-		headers: {
-			'Access-Control-Allow-Origin': origin,
-			'Access-Control-Allow-Methods': 'GET, OPTIONS',
-			'Access-Control-Allow-Credentials': 'true'
-		}
-	});
 };

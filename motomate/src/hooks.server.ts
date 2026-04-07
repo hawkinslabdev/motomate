@@ -66,13 +66,62 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 	return true;
 }
 
+function buildCorsHeaders(requestOrigin: string | null): Record<string, string> {
+	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
+		? process.env.PUBLIC_APP_ORIGINS.split(',')
+		: [];
+	const appUrl = env.PUBLIC_APP_URL ?? '';
+	const appOrigins: string[] = [];
+	if (appUrl) {
+		try {
+			appOrigins.push(new URL(appUrl).origin);
+		} catch {
+			// ignore
+		}
+	}
+	const allOrigins = [...configuredOrigins, ...appOrigins];
+
+	let allowedOrigin: string | null = null;
+	if (requestOrigin) {
+		for (const trusted of allOrigins) {
+			try {
+				const trustedUrl = new URL(trusted.includes('://') ? trusted : `http://${trusted}`);
+				if (new URL(requestOrigin).hostname === trustedUrl.hostname) {
+					allowedOrigin = requestOrigin;
+					break;
+				}
+			} catch {
+				// skip
+			}
+		}
+	}
+	if (!allowedOrigin) {
+		allowedOrigin = allOrigins.length === 0 ? '*' : null;
+	}
+
+	const headers: Record<string, string> = {
+		'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+		'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+		'Access-Control-Max-Age': '86400'
+	};
+	if (allowedOrigin) {
+		headers['Access-Control-Allow-Origin'] = allowedOrigin;
+		headers['Access-Control-Allow-Credentials'] = 'true';
+	}
+	return headers;
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
+	// Handle CORS preflight before anything else
+	if (event.request.method === 'OPTIONS') {
+		return new Response(null, {
+			status: 204,
+			headers: buildCorsHeaders(event.request.headers.get('origin'))
+		});
+	}
+
 	// CSRF check for non-safe methods
-	if (
-		event.request.method !== 'GET' &&
-		event.request.method !== 'HEAD' &&
-		event.request.method !== 'OPTIONS'
-	) {
+	if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
 		const origin = event.request.headers.get('origin');
 		const referer = event.request.headers.get('referer');
 
@@ -120,57 +169,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	});
 
-	// Add CORS headers using configured origins
-	const requestOrigin = event.request.headers.get('origin');
-	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
-		? process.env.PUBLIC_APP_ORIGINS.split(',')
-		: [];
-	const appUrl = env.PUBLIC_APP_URL ?? '';
-
-	// Derive origin from PUBLIC_APP_URL
-	const appOrigins: string[] = [];
-	if (appUrl) {
-		try {
-			appOrigins.push(new URL(appUrl).origin);
-		} catch (e) {
-			// ignore
-		}
+	// Apply CORS headers to all responses
+	const corsHeaders = buildCorsHeaders(event.request.headers.get('origin'));
+	if (corsHeaders['Access-Control-Allow-Origin']) {
+		response.headers.set('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
 	}
-
-	const allOrigins = [...configuredOrigins, ...appOrigins];
-
-	// Check if request origin is allowed
-	let allowedOrigin: string | null = null;
-	if (requestOrigin) {
-		for (const trusted of allOrigins) {
-			try {
-				const trustedUrl = new URL(trusted.includes('://') ? trusted : `http://${trusted}`);
-				const requestUrl = new URL(requestOrigin);
-				if (requestUrl.hostname === trustedUrl.hostname) {
-					allowedOrigin = requestOrigin;
-					break;
-				}
-			} catch (e) {
-				// skip
-			}
-		}
-	}
-
-	// If not from configured origins, allow all (dev mode) or none
-	if (!allowedOrigin) {
-		if (allOrigins.length === 0) {
-			allowedOrigin = '*';
-		} else if (configuredOrigins.length > 0 && !requestOrigin) {
-			// No origin header but origins configured - allow based on request URL
-			allowedOrigin = '*';
-		} else {
-			allowedOrigin = null;
-		}
-	}
-
-	if (allowedOrigin) {
-		response.headers.set('Access-Control-Allow-Origin', allowedOrigin);
-		response.headers.set('Access-Control-Allow-Credentials', 'true');
+	if (corsHeaders['Access-Control-Allow-Credentials']) {
+		response.headers.set('Access-Control-Allow-Credentials', corsHeaders['Access-Control-Allow-Credentials']);
 	}
 
 	return response;
