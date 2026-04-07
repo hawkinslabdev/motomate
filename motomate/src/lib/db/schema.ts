@@ -322,6 +322,10 @@ export const travels = sqliteTable(
 			.$type<TravelGpxFiles>()
 			.notNull()
 			.default(sql`'[]'`),
+		excluded_gpx_days: text('excluded_gpx_days', { mode: 'json' })
+			.$type<number[]>()
+			.notNull()
+			.default(sql`'[]'`), // day indices (0-based) to hide from map
 		created_at: text('created_at')
 			.notNull()
 			.default(sql`(datetime('now'))`),

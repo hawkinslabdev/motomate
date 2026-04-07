@@ -859,7 +859,9 @@
       "noRoutes": "Keine Routen angehängt",
       "clickHint": "Route auf der Karte anklicken, um Liste zu filtern",
       "filterActive": "{n, plural, =1 {1 Route ausgewählt} other {# Routen ausgewählt}}",
-      "clearFilter": "Alle anzeigen"
+      "clearFilter": "Alle anzeigen",
+      "hideDay": "Diesen Tag von der Karte ausblenden",
+      "showDay": "Diesen Tag auf der Karte anzeigen"
     },
     "delete": {
       "title": "Diese Fahrt löschen?",

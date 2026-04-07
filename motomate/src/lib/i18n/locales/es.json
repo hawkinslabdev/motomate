@@ -859,7 +859,9 @@
       "noRoutes": "Sin rutas adjuntas",
       "clickHint": "Haz clic en una ruta del mapa para filtrar",
       "filterActive": "{n, plural, =1 {1 ruta seleccionada} other {# rutas seleccionadas}}",
-      "clearFilter": "Mostrar todo"
+      "clearFilter": "Mostrar todo",
+      "hideDay": "Ocultar este día del mapa",
+      "showDay": "Mostrar este día en el mapa"
     },
     "delete": {
       "title": "¿Eliminar este viaje?",

@@ -14,6 +14,7 @@ export type CreateTravelInput = {
 	total_expenses_cents?: number | null;
 	currency: string;
 	gpx_document_ids: (string | null)[]; // null = empty slot, preserves day positions
+	excluded_gpx_days?: number[]; // day indices (0-based) to hide from map
 };
 
 export type UpdateTravelInput = Partial<Omit<CreateTravelInput, 'vehicle_id'>>;

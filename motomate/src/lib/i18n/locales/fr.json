@@ -859,7 +859,9 @@
       "noRoutes": "Aucun itinéraire",
       "clickHint": "Cliquez sur un itinéraire pour filtrer la liste",
       "filterActive": "{n, plural, =1 {1 itinéraire sélectionné} other {# itinéraires sélectionnés}}",
-      "clearFilter": "Tout afficher"
+      "clearFilter": "Tout afficher",
+      "hideDay": "Masquer ce jour sur la carte",
+      "showDay": "Afficher ce jour sur la carte"
     },
     "delete": {
       "title": "Supprimer ce voyage?",

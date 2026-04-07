@@ -1,0 +1,1 @@
+ALTER TABLE `travels` ADD `excluded_gpx_days` text DEFAULT '[]' NOT NULL;

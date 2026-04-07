@@ -859,7 +859,9 @@
       "noRoutes": "Nessun percorso allegato",
       "clickHint": "Clicca un percorso sulla mappa per filtrare",
       "filterActive": "{n, plural, =1 {1 percorso selezionato} other {# percorsi selezionati}}",
-      "clearFilter": "Mostra tutti"
+      "clearFilter": "Mostra tutti",
+      "hideDay": "Nascondi questo giorno dalla mappa",
+      "showDay": "Mostra questo giorno sulla mappa"
     },
     "delete": {
       "title": "Eliminare questo viaggio?",

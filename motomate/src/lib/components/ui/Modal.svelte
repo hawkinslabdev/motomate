@@ -114,6 +114,7 @@
 	}
 	.modal-body {
 		padding: var(--space-5);
+		overflow-x: hidden;
 	}
 	.modal-footer {
 		padding: var(--space-4) var(--space-5);

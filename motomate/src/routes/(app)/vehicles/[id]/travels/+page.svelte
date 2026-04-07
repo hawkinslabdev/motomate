@@ -47,6 +47,22 @@
 		formOpen = true;
 	}
 
+	async function toggleExcludedDay(travelId: string, dayIndex: number) {
+		const formData = new FormData();
+		formData.set('id', travelId);
+		formData.set('day_index', String(dayIndex));
+
+		const response = await fetch('?/toggleExcludedDay', {
+			method: 'POST',
+			body: formData
+		});
+
+		if (response.ok) {
+			// Reload the page to get updated data
+			window.location.reload();
+		}
+	}
+
 	// Close modal and reset on successful form submission
 	$effect(() => {
 		if (form?.created || form?.edited) {
@@ -155,18 +171,44 @@
 	const hasHistory = $derived(data.travels.length > 0);
 	const hasActiveFilter = $derived(selectedTravelIds.length > 0 || searchQuery.trim() !== '' || filterBy !== 'all');
 
-	// Build GPX file list for the map
+	// Build GPX file list for the map, filtering out excluded days
 	const gpxFiles = $derived(
-		data.travels.flatMap((t: Travel) =>
-			(t.gpx_document_ids as (string | null)[])
-				.filter((docId): docId is string => !!docId && !!data.gpxUrls[docId])
+		data.travels.flatMap((t: Travel) => {
+			const excluded = (t.excluded_gpx_days as number[]) ?? [];
+			return (t.gpx_document_ids as (string | null)[])
+				.filter((docId, i): docId is string =>
+					!!docId && !!data.gpxUrls[docId] && !excluded.includes(i)
+				)
 				.map((docId, i) => ({
 					travelId: t.id,
 					label: `${t.title} — Day ${i + 1}`,
 					url: data.gpxUrls[docId],
-					num: i + 1
-				}))
-		)
+					num: i + 1,
+					dayIndex: i
+				}));
+		})
+	);
+
+	// Group GPX files by travelId for the day toggle UI
+	const gpxFilesByTravel = $derived(
+		gpxFiles.reduce((acc, f) => {
+			if (!acc[f.travelId]) acc[f.travelId] = [];
+			acc[f.travelId].push(f);
+			return acc;
+		}, {} as Record<string, typeof gpxFiles>)
+	);
+
+	// Get all travels that have GPX (with their excluded days info for toggle UI)
+	const travelsWithGpx = $derived(
+		data.travels
+			.filter((t: Travel) => (t.gpx_document_ids as (string | null)[]).some(Boolean))
+			.map((t: Travel) => ({
+				id: t.id,
+				title: t.title,
+				durationDays: t.duration_days,
+				gpxDocIds: t.gpx_document_ids as (string | null)[],
+				excludedDays: (t.excluded_gpx_days as number[]) ?? []
+			}))
 	);
 
 	const hasGpx = $derived(gpxFiles.length > 0);
@@ -183,6 +225,11 @@
 					})
 					.filter((d: GpxDoc | null): d is GpxDoc => d !== null)
 			: []
+	);
+
+	// Get excluded days for editing travel
+	const editingExcludedDays = $derived(
+		editingTravel ? (editingTravel.excluded_gpx_days as number[]) ?? [] : []
 	);
 </script>
 
@@ -277,6 +324,7 @@
 	mode={formMode}
 	travel={editingTravel}
 	existingGpxDocs={editingGpxDocs}
+	excludedGpxDays={editingExcludedDays}
 	vehicleId={data.vehicle.id}
 	{currency}
 	{locale}
@@ -481,5 +529,70 @@
 		line-height: var(--leading-base);
 		max-width: 320px;
 		margin: 0;
+	}
+
+	/* Day toggle buttons */
+	.day-toggles {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+		margin-top: var(--space-3);
+		padding: var(--space-3);
+		background: var(--bg-muted);
+		border-radius: 8px;
+	}
+	.day-toggle-group {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+	}
+	.day-toggle-label {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		max-width: 120px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.day-toggle-buttons {
+		display: flex;
+		gap: 2px;
+	}
+	.day-toggle-btn {
+		width: 28px;
+		height: 28px;
+		border-radius: 6px;
+		border: 1px solid var(--border);
+		background: var(--bg);
+		color: var(--text);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.15s ease;
+	}
+	.day-toggle-btn:hover:not(:disabled) {
+		border-color: var(--accent);
+		background: var(--accent-subtle);
+	}
+	.day-toggle-btn--excluded {
+		background: var(--bg-muted);
+		color: var(--text-subtle);
+		border-style: dashed;
+	}
+	.day-toggle-btn--excluded:hover:not(:disabled) {
+		background: var(--accent-subtle);
+		color: var(--accent);
+		border-style: solid;
+	}
+	.day-toggle-btn--empty {
+		opacity: 0.3;
+		cursor: default;
+	}
+	.day-toggle-btn:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
 	}
 </style>

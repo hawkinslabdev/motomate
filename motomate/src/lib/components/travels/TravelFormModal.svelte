@@ -17,6 +17,7 @@
 		mode: 'create' | 'edit';
 		travel?: Travel | null;
 		existingGpxDocs?: GpxDoc[];
+		excludedGpxDays?: number[]; // day indices to exclude from map
 		vehicleId: string;
 		currency: string;
 		locale?: string;
@@ -28,6 +29,7 @@
 		mode,
 		travel = null,
 		existingGpxDocs = [],
+		excludedGpxDays = [],
 		vehicleId,
 		currency,
 		locale = 'en',
@@ -42,6 +44,8 @@
 	let removedDocIds = $state<string[]>([]);
 	// Per-slot selected files (keyed by slot index)
 	let selectedFiles = $state<Record<number, File | null>>({});
+	// Days to exclude from map
+	let excludedDays = $state<number[]>([]);
 
 	$effect(() => {
 		if (open) {
@@ -50,8 +54,17 @@
 			startDate = t?.start_date ?? today;
 			removedDocIds = [];
 			selectedFiles = {};
+			excludedDays = [...(excludedGpxDays ?? [])];
 		}
 	});
+
+	function toggleExcludedDay(dayIndex: number) {
+		if (excludedDays.includes(dayIndex)) {
+			excludedDays = excludedDays.filter((d) => d !== dayIndex);
+		} else {
+			excludedDays = [...excludedDays, dayIndex];
+		}
+	}
 
 	function slotDate(i: number): string {
 		try {
@@ -122,6 +135,9 @@
 			{#each removedDocIds as docId}
 				<input type="hidden" name="remove_gpx_doc_id" value={docId} />
 			{/each}
+			{#if excludedDays.length > 0}
+				<input type="hidden" name="excluded_gpx_days" value={JSON.stringify(excludedDays)} />
+			{/if}
 
 			<!-- Title -->
 			<div class="form-group">
@@ -220,39 +236,77 @@
 								{#if slotDate(i)}<span class="gpx-slot-date">{slotDate(i)}</span>{/if}
 							</span>
 							{#if existingDoc && !isRemoved}
-								<!-- Saved file: chip with download + remove -->
-								<div class="file-chip">
-									<span class="file-chip-icon" aria-hidden="true">
-										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<polyline points="3 17 8 12 13 15 21 7" />
-										</svg>
-									</span>
-									<span class="file-chip-name">{existingDoc.name}</span>
-									{#if existingDoc.url}
-										<a href={existingDoc.url} download class="file-chip-action" aria-label="Download {existingDoc.name}" title="Download">
+								<!-- Saved file: chip with download + remove + exclude toggle -->
+								<div class="gpx-slot-row">
+									<div class="file-chip">
+										<span class="file-chip-icon" aria-hidden="true">
 											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-												<path d="M12 5v14M5 19h14M19 12l-7 7-7-7" />
+												<polyline points="3 17 8 12 13 15 21 7" />
 											</svg>
-										</a>
-									{/if}
-									<button type="button" class="file-chip-remove" onclick={() => removeExistingGpx(existingDoc.id)} aria-label="Remove {existingDoc.name}">
+										</span>
+										<span class="file-chip-name">{existingDoc.name}</span>
+										{#if existingDoc.url}
+											<a href={existingDoc.url} download class="file-chip-action" aria-label="Download {existingDoc.name}" title="Download">
+												<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+													<path d="M12 5v14M5 19h14M19 12l-7 7-7-7" />
+												</svg>
+											</a>
+										{/if}
+										<button type="button" class="file-chip-remove" onclick={() => removeExistingGpx(existingDoc.id)} aria-label="Remove {existingDoc.name}">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M18 6L6 18M6 6l12 12" />
+											</svg>
+										</button>
+									</div>
+									<button
+										type="button"
+										class="exclude-toggle"
+										class:exclude-toggle--excluded={excludedDays.includes(i)}
+										title={excludedDays.includes(i) ? $_('travels.map.showDay') : $_('travels.map.hideDay')}
+										onclick={() => toggleExcludedDay(i)}
+									>
 										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M18 6L6 18M6 6l12 12" />
+											{#if excludedDays.includes(i)}
+												<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+												<line x1="1" y1="1" x2="23" y2="23" />
+											{:else}
+												<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+												<circle cx="12" cy="12" r="3" />
+											{/if}
 										</svg>
 									</button>
 								</div>
 							{:else if newFile}
 								<!-- Newly selected file -->
-								<div class="file-chip">
-									<span class="file-chip-icon" aria-hidden="true">
+								<div class="gpx-slot-row">
+									<div class="file-chip">
+										<span class="file-chip-icon" aria-hidden="true">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<polyline points="3 17 8 12 13 15 21 7" />
+											</svg>
+										</span>
+										<span class="file-chip-name">{newFile.name}</span>
+										<button type="button" class="file-chip-remove" onclick={() => clearSlotFile(i)} aria-label="Remove file">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M18 6L6 18M6 6l12 12" />
+											</svg>
+										</button>
+									</div>
+									<button
+										type="button"
+										class="exclude-toggle"
+										class:exclude-toggle--excluded={excludedDays.includes(i)}
+										title={excludedDays.includes(i) ? $_('travels.map.showDay') : $_('travels.map.hideDay')}
+										onclick={() => toggleExcludedDay(i)}
+									>
 										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<polyline points="3 17 8 12 13 15 21 7" />
-										</svg>
-									</span>
-									<span class="file-chip-name">{newFile.name}</span>
-									<button type="button" class="file-chip-remove" onclick={() => clearSlotFile(i)} aria-label="Remove file">
-										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M18 6L6 18M6 6l12 12" />
+											{#if excludedDays.includes(i)}
+												<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+												<line x1="1" y1="1" x2="23" y2="23" />
+											{:else}
+												<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+												<circle cx="12" cy="12" r="3" />
+											{/if}
 										</svg>
 									</button>
 								</div>
@@ -291,6 +345,8 @@
 	.form-scroll {
 		max-height: calc(85vh - 160px);
 		overflow-y: auto;
+		overflow-x: hidden;
+		padding-right: var(--space-1);
 	}
 
 	/* Field groups — matches documents page pattern */
@@ -401,13 +457,15 @@
 	.file-chip {
 		display: flex;
 		align-items: center;
-		gap: var(--space-2);
+		gap: var(--space-1);
 		background: var(--bg-muted);
-		padding: 0.5rem 0.75rem;
+		padding: 0.375rem 0.5rem;
 		border-radius: 8px;
 		min-width: 0;
 		overflow: hidden;
 		border: 1px solid var(--border);
+		flex: 1;
+		max-width: calc(100% - 36px);
 	}
 	.file-chip-icon {
 		color: var(--accent);
@@ -423,6 +481,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		min-width: 0;
 	}
 	.file-chip-action {
 		background: none;
@@ -462,12 +521,16 @@
 		flex-direction: column;
 		gap: var(--space-2);
 		margin-top: var(--space-2);
+		max-height: 280px;
+		overflow-y: auto;
+		padding-right: var(--space-1);
 	}
 	.gpx-slot {
 		display: flex;
 		align-items: center;
-		gap: var(--space-3);
+		gap: var(--space-2);
 		min-width: 0;
+		flex-shrink: 0;
 	}
 	.gpx-slot-day {
 		font-size: var(--text-xs);
@@ -546,4 +609,45 @@
 		font-family: var(--font-sans);
 	}
 	.btn-cancel:hover { background: var(--bg-muted); color: var(--text); }
+
+	/* GPX slot row with file chip + exclude toggle */
+	.gpx-slot-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-width: 0;
+		flex: 1;
+	}
+	.exclude-toggle {
+		flex-shrink: 0;
+		width: 28px;
+		height: 28px;
+		border-radius: 6px;
+		border: 1px solid var(--border);
+		background: var(--bg);
+		color: var(--text-muted);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.15s ease;
+	}
+	.exclude-toggle:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.exclude-toggle--excluded {
+		background: var(--bg-muted);
+		border-style: dashed;
+		color: var(--text-subtle);
+	}
+	.exclude-toggle--excluded:hover {
+		background: var(--accent-subtle);
+		border-style: solid;
+		color: var(--accent);
+	}
+	.exclude-toggle:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+	}
 </style>

@@ -859,7 +859,9 @@
       "noRoutes": "Geen routes bijgevoegd",
       "clickHint": "Klik op een route op de kaart om te filteren",
       "filterActive": "{n, plural, =1 {1 route geselecteerd} other {# routes geselecteerd}}",
-      "clearFilter": "Alles tonen"
+      "clearFilter": "Alles tonen",
+      "hideDay": "Verberg deze dag op de kaart",
+      "showDay": "Toon deze dag op de kaart"
     },
     "delete": {
       "title": "Deze rit verwijderen?",

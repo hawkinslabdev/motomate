@@ -63,6 +63,11 @@ export const actions: Actions = {
 		const currency =
 			(locals.user as any)?.settings?.currency ?? 'EUR';
 
+		const excludedGpxRaw = data.get('excluded_gpx_days');
+		const excludedGpxDays: number[] = excludedGpxRaw
+			? JSON.parse(String(excludedGpxRaw)).filter((n: unknown) => typeof n === 'number')
+			: [];
+
 		if (!title) return fail(400, { createError: 'Title is required' });
 		if (!startDate.match(/^\d{4}-\d{2}-\d{2}$/)) return fail(400, { createError: 'Invalid date' });
 		if (!Number.isInteger(durationDays) || durationDays < 1)
@@ -104,7 +109,8 @@ export const actions: Actions = {
 			remark,
 			total_expenses_cents: totalExpensesCents,
 			currency,
-			gpx_document_ids: gpxDocIds
+			gpx_document_ids: gpxDocIds,
+			excluded_gpx_days: excludedGpxDays
 		});
 
 		return { created: true };
@@ -125,6 +131,11 @@ export const actions: Actions = {
 			expensesRaw && String(expensesRaw).trim() !== ''
 				? Math.round(Number(expensesRaw) * 100)
 				: null;
+
+		const excludedGpxRaw = data.get('excluded_gpx_days');
+		const excludedGpxDays: number[] = excludedGpxRaw
+			? JSON.parse(String(excludedGpxRaw)).filter((n: unknown) => typeof n === 'number')
+			: [];
 
 		if (!id) return fail(400, { editError: 'Missing travel ID' });
 		if (!title) return fail(400, { editError: 'Title is required' });
@@ -185,7 +196,8 @@ export const actions: Actions = {
 			title,
 			remark,
 			total_expenses_cents: totalExpensesCents,
-			gpx_document_ids: updatedDocIds
+			gpx_document_ids: updatedDocIds,
+			excluded_gpx_days: excludedGpxDays
 		});
 
 		return { edited: true };
@@ -216,5 +228,27 @@ export const actions: Actions = {
 		await deleteTravel(id, vehicleId, userId);
 
 		return { deleted: true };
+	},
+
+	toggleExcludedDay: async ({ request, locals, params }) => {
+		const userId = locals.user!.id;
+		const data = await request.formData();
+
+		const id = String(data.get('id') ?? '');
+		const dayIndex = parseInt(String(data.get('day_index') ?? '-1'));
+
+		if (!id || dayIndex < 0) return fail(400, { toggleError: 'Invalid request' });
+
+		const travel = await getTravelById(id, userId);
+		if (!travel) return fail(404, { toggleError: 'Travel not found' });
+
+		const excluded = (travel.excluded_gpx_days as number[]) ?? [];
+		const newExcluded = excluded.includes(dayIndex)
+			? excluded.filter((d) => d !== dayIndex)
+			: [...excluded, dayIndex];
+
+		await updateTravel(id, params.id, userId, { excluded_gpx_days: newExcluded });
+
+		return { toggled: true };
 	}
 };
