@@ -179,7 +179,12 @@
 				{$_('common.cancel')}
 			</button>
 		{:else}
-			<button type="button" class="btn-primary" onclick={() => window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : (showForm = true)}>
+			<button
+				type="button"
+				class="btn-primary"
+				onclick={() =>
+					window.innerWidth <= 768 ? quickAdd.open(data.vehicle.id) : (showForm = true)}
+			>
 				+ {$_('finance.addExpense')}
 			</button>
 		{/if}
@@ -1155,7 +1160,9 @@
 		font-size: var(--text-sm);
 		font-weight: 500;
 		cursor: pointer;
-		transition: background 0.1s, color 0.1s;
+		transition:
+			background 0.1s,
+			color 0.1s;
 	}
 	.btn-ghost:hover {
 		background: var(--bg-subtle);

@@ -16,6 +16,7 @@ export type UserSettings = {
 	odometer_unit: 'km' | 'mi';
 	locale: string;
 	notification_channels?: NotificationChannels;
+	favorite_vehicle?: string | null;
 };
 
 export type VehicleMeta = {

@@ -180,6 +180,8 @@
 			"hide": "Hide archived"
 		},
 		"add": "+ Add vehicle",
+		"favorite": "Mark as favorite",
+		"unfavorite": "Remove from favorites",
 		"empty": {
 			"title": "Your garage is empty",
 			"description": "Add a new vehicle to your collection."

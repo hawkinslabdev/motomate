@@ -53,7 +53,11 @@ export async function deleteDocument(id: string, userId: string): Promise<void> 
 	await db.delete(documents).where(and(eq(documents.id, id), eq(documents.user_id, userId)));
 }
 
-export async function updateDocumentTitle(id: string, userId: string, title: string): Promise<void> {
+export async function updateDocumentTitle(
+	id: string,
+	userId: string,
+	title: string
+): Promise<void> {
 	await db
 		.update(documents)
 		.set({ title: title.slice(0, 200) })

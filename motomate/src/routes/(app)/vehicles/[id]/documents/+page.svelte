@@ -450,7 +450,10 @@
 						rel="noopener"
 						class="action-btn">{$_('documents.actions.view')}</a
 					>
-					<button type="button" class="action-btn" onclick={() => startEditName(doc.id, displayName(doc))}
+					<button
+						type="button"
+						class="action-btn"
+						onclick={() => startEditName(doc.id, displayName(doc))}
 						>{$_('documents.actions.rename')}</button
 					>
 					<button

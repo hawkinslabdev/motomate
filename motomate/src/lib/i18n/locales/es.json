@@ -178,6 +178,8 @@
 			"hide": "Ocultar archivados"
 		},
 		"add": "+ Añadir vehículo",
+		"favorite": "Marcar como favorito",
+		"unfavorite": "Quitar de favoritos",
 		"empty": {
 			"title": "Tu garage está vacío",
 			"description": "Añade un nuevo vehículo a tu colección."

@@ -178,6 +178,8 @@
 			"hide": "Gearchiveerde verbergen"
 		},
 		"add": "+ Voertuig toevoegen",
+		"favorite": "Als favoriet markeren",
+		"unfavorite": "Uit favorieten verwijderen",
 		"empty": {
 			"title": "Je garage is leeg",
 			"description": "Voeg een nieuw voertuig toe aan je collectie."

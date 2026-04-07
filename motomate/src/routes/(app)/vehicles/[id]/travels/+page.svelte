@@ -235,7 +235,13 @@
 						if (!id) return null;
 						const d = data.gpxDocs.find((doc: any) => doc.id === id);
 						if (!d) return null;
-						return { id: d.id, name: d.name, title: d.title ?? null, url: data.gpxUrls[d.id] ?? null, index: i };
+						return {
+							id: d.id,
+							name: d.name,
+							title: d.title ?? null,
+							url: data.gpxUrls[d.id] ?? null,
+							index: i
+						};
 					})
 					.filter((d: GpxDoc | null): d is GpxDoc => d !== null)
 			: []

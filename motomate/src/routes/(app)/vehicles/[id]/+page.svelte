@@ -316,7 +316,10 @@
 				{$_('common.cancel')}
 			</button>
 		{:else}
-			<button class="btn-primary" onclick={() => isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen)}>
+			<button
+				class="btn-primary"
+				onclick={() => (isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen))}
+			>
 				+ {$_('common.add')}
 			</button>
 			{#if !isMobile && menuOpen}
@@ -2282,4 +2285,4 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	</style>
+</style>

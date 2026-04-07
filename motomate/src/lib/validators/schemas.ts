@@ -67,7 +67,8 @@ export const UserSettingsSchema = z.object({
 	currency: z.string().length(3).default('EUR'),
 	odometer_unit: z.enum(['km', 'mi']).default('km'),
 	locale: z.string().default('en'),
-	notification_channels: NotificationChannelsSchema
+	notification_channels: NotificationChannelsSchema,
+	favorite_vehicle: z.string().nonempty().max(64).nullable().optional()
 });
 
 export const CreateUserSchema = z.object({

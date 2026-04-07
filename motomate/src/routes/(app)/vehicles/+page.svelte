@@ -1,12 +1,38 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
 	import VehicleCard from '$lib/components/ui/VehicleCard.svelte';
 	import { _ } from '$lib/i18n';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: Record<string, unknown> | null } = $props();
 
 	const locale = $derived((data as any).user?.settings?.locale ?? 'en');
 	const onboardingDone = $derived((data as any).user?.settings?.onboarding_done ?? false);
+	const favoriteVehicleId = $derived((data as any).user?.settings?.favorite_vehicle ?? null);
+
+	const sortedVehicles = $derived(() => {
+		const list = [...data.vehicles];
+		if (favoriteVehicleId) {
+			list.sort((a, b) => {
+				if (a.id === favoriteVehicleId) return -1;
+				if (b.id === favoriteVehicleId) return 1;
+				return 0;
+			});
+		}
+		return list;
+	});
+
+	async function handleFavorite(vehicleId: string) {
+		const formData = new FormData();
+		formData.set('vehicle_id', vehicleId === favoriteVehicleId ? '' : vehicleId);
+		const response = await fetch('?/setFavorite', {
+			method: 'POST',
+			body: formData
+		});
+		const result = await response.json();
+		invalidateAll();
+	}
 </script>
 
 <svelte:head><title>{$_('vehicles.title')} &middot; MotoMate</title></svelte:head>
@@ -40,9 +66,14 @@
 	</div>
 {:else}
 	<div class="vehicle-list">
-		{#each data.vehicles as vehicle}
+		{#each sortedVehicles() as vehicle}
 			<div class="vehicle-row">
-				<VehicleCard {vehicle} {locale} />
+				<VehicleCard
+					{vehicle}
+					{locale}
+					isFavorite={vehicle.id === favoriteVehicleId}
+					onFavorite={handleFavorite}
+				/>
 			</div>
 		{/each}
 	</div>
