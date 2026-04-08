@@ -104,11 +104,21 @@
 				const c = map.getCenter();
 				initialView = { center: [c.lat, c.lng], zoom: map.getZoom() };
 			}
+			// If selection is cleared entirely (length goes from >0 to 0), reset initialView
+			// so the map refits to show all routes instead of restoring to a single-selection view
+			if (selectedTravelIds.length === 0 && initialView !== null) {
+				// Check if we should refit to all routes vs restore previous view
+				// We reset initialView to trigger a refit to all routes
+				initialView = null;
+			}
 			updateColors();
 			if (selectedTravelIds.length > 0) {
 				fitToSelection();
 			} else if (initialView !== null) {
 				map.setView(initialView.center, initialView.zoom);
+			} else {
+				// No initialView and no selection - refit to all routes
+				fitToAllRoutes();
 			}
 		}
 	});
@@ -126,6 +136,22 @@
 				} catch {
 					/* ignore */
 				}
+			}
+		}
+		if (bounds.length > 0) {
+			const combined = bounds.reduce((acc: any, b: any) => acc.extend(b));
+			map.fitBounds(combined, { padding: [32, 32] });
+		}
+	}
+
+	function fitToAllRoutes() {
+		const bounds: any[] = [];
+		for (const gpxLayer of gpxLayersByUrl.values()) {
+			try {
+				const b = gpxLayer.getBounds?.();
+				if (b?.isValid()) bounds.push(b);
+			} catch {
+				/* ignore */
 			}
 		}
 		if (bounds.length > 0) {
