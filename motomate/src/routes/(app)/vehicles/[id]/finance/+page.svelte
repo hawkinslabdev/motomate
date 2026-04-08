@@ -567,6 +567,12 @@
 									</div>
 								{/if}
 							</div>
+						{:else}
+							<div class="entry-actions">
+								<button class="entry-menu-btn entry-menu-btn--stub" style="opacity: 0;" aria-hidden="true">
+									⋮
+								</button>
+							</div>
 						{/if}
 					</div>
 
@@ -1106,6 +1112,14 @@
 	.entry-menu-btn:focus,
 	.entry-menu-btn.active {
 		opacity: 1;
+	}
+	.entry-menu-btn--stub:hover {
+		opacity: 0 !important;
+		cursor: default;
+		background: none;
+		border-color: transparent;
+	}
+	.entry-menu-btn.active {
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
