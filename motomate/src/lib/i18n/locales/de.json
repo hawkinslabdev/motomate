@@ -436,8 +436,10 @@
 			"logged": "Service-Eintrag gespeichert",
 			"trackerUpdated": "Tracker aktualisiert",
 			"trackerDeleted": "Tracker gelöscht",
-			"taskAdded": "Aufgabe hinzugefügt"
+			"taskAdded": "Aufgabe hinzugefügt",
+			"defaultsApplied": "Standard-Tracker basierend auf Ihrem Serviceverlauf angewendet"
 		},
+		"applyDefaults": "Standardwerte anwenden",
 		"delete": {
 			"title": "{name} löschen?",
 			"description": "Dieser Wartungstracker wird dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",

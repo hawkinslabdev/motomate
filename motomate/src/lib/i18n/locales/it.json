@@ -436,8 +436,10 @@
 			"logged": "Voce di servizio salvata",
 			"trackerUpdated": "Tracker aggiornato",
 			"trackerDeleted": "Tracker eliminato",
-			"taskAdded": "Attività aggiunta"
+			"taskAdded": "Attività aggiunta",
+			"defaultsApplied": "Tracker predefiniti applicati in base al tuo storico dei servizi"
 		},
+		"applyDefaults": "Applica valori predefiniti",
 		"delete": {
 			"title": "Eliminare {name}?",
 			"description": "Questo tracciatore di manutenzione sarà rimosso permanentemente. Questa azione non può essere annullata.",

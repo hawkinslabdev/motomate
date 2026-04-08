@@ -436,8 +436,10 @@
 			"logged": "Service-invoer opgeslagen",
 			"trackerUpdated": "Tracker bijgewerkt",
 			"trackerDeleted": "Tracker verwijderd",
-			"taskAdded": "Taak toegevoegd"
+			"taskAdded": "Taak toegevoegd",
+			"defaultsApplied": "Standaardtrackers toegepast op basis van je servicegeschiedenis"
 		},
+		"applyDefaults": "Standaardinstellingen gebruiken",
 		"delete": {
 			"title": "{name} verwijderen?",
 			"description": "Deze onderhouds tracker wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",

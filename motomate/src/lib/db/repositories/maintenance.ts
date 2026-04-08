@@ -12,6 +12,30 @@ import type {
 } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 
+import en from '$lib/i18n/locales/en.json';
+import de from '$lib/i18n/locales/de.json';
+import fr from '$lib/i18n/locales/fr.json';
+import es from '$lib/i18n/locales/es.json';
+import it from '$lib/i18n/locales/it.json';
+import nl from '$lib/i18n/locales/nl.json';
+import pt from '$lib/i18n/locales/pt.json';
+
+type LocaleMessages = {
+	onboarding: {
+		presets: {
+			tasks: {
+				oil: string;
+				tire: string;
+				chain_lube: string;
+				chain_tension: string;
+				brake: string;
+			};
+		};
+	};
+};
+
+const localeMessages: Record<string, LocaleMessages> = { en, de, fr, es, it, nl, pt };
+
 // Preset task templates
 
 export const PRESET_TEMPLATES = [
@@ -157,6 +181,141 @@ export async function getTrackersByVehicle(vehicleId: string, userId: string) {
 		where: eq(active_trackers.vehicle_id, vehicleId),
 		with: { template: true }
 	});
+}
+
+export async function applyDefaultTrackersFromHistory(
+	vehicleId: string,
+	userId: string,
+	serviceLogs: { performed_at: string; odometer_at_service: number }[],
+	locale?: string
+): Promise<void> {
+	const userLocale = locale ?? 'en';
+	const messages = localeMessages[userLocale] ?? localeMessages['en'];
+	const tasks = messages.onboarding.presets.tasks;
+
+	const nameMap: Record<string, { name: string; description?: string }> = {
+		oil: { name: tasks.oil },
+		tire: { name: tasks.tire },
+		chain_lube: { name: tasks.chain_lube, description: 'Clean and lubricate the chain' },
+		chain_tension: { name: tasks.chain_tension, description: 'Check and adjust chain tension' },
+		brake: { name: tasks.brake }
+	};
+
+	if (serviceLogs.length === 0) {
+		await seedPresetsForVehicle(userId, vehicleId, undefined, 0, nameMap);
+		return;
+	}
+
+	const sorted = [...serviceLogs].sort((a, b) => b.performed_at.localeCompare(a.performed_at));
+	const latest = sorted[0];
+	const currentOdometer = latest.odometer_at_service;
+
+	const kmStats = new Map<string, number[]>();
+	for (const log of serviceLogs) {
+		const key = log.performed_at.slice(0, 7);
+		kmStats.set(key, (kmStats.get(key) ?? []).concat([log.odometer_at_service]));
+	}
+
+	const avgKmPerMonth = (() => {
+		const months = new Set(serviceLogs.map((l) => l.performed_at.slice(0, 7))).size;
+		if (months <= 1) return null;
+		const range = serviceLogs.length / months;
+		return range > 0 ? range : null;
+	})();
+
+	const presetIntervals: Record<string, { km: number | null; months: number | null }> = {
+		oil: { km: 5000, months: 12 },
+		brake: { km: 10000, months: 24 },
+		chain_lube: { km: 500, months: null },
+		chain_tension: { km: 1000, months: null },
+		tire: { km: null, months: 1 }
+	};
+
+	const derivedIntervals: Record<string, { km: number | null; months: number | null }> = {};
+	for (const [key, stats] of kmStats) {
+		if (stats.length >= 2) {
+			const sortedKm = [...stats].sort((a, b) => b - a);
+			const diff = sortedKm[0] - sortedKm[sortedKm.length - 1];
+			const interval = Math.round(diff / (sortedKm.length - 1));
+			if (interval > 0 && interval < 50000) {
+				const preset = presetIntervals[key];
+				if (!preset || (preset.km !== null && interval < preset.km * 1.5)) {
+					derivedIntervals[key] = { km: interval, months: avgKmPerMonth ? Math.round(12 / avgKmPerMonth) : null };
+				}
+			}
+		}
+	}
+
+	for (const key of Object.keys(presetIntervals)) {
+		const derived = derivedIntervals[key];
+		const preset = presetIntervals[key];
+		if (derived) {
+			nameMap[key] = {
+				...nameMap[key],
+				description: `Recurring maintenance (auto-detected from ${serviceLogs.length} service entries)`
+			};
+			presetIntervals[key] = { km: derived.km ?? preset.km, months: derived.months ?? preset.months };
+		}
+	}
+
+	const results = [];
+	for (const preset of PRESET_TEMPLATES) {
+		const template = await createTaskTemplate(userId, {
+			...preset,
+			name: nameMap[preset.key].name,
+			description: nameMap[preset.key].description,
+			vehicle_id: vehicleId,
+			interval_km: presetIntervals[preset.key].km,
+			interval_months: presetIntervals[preset.key].months,
+			is_preset: true
+		});
+
+		const tracker = await createTrackerWithHistory(
+			vehicleId,
+			template.id,
+			currentOdometer,
+			latest.performed_at
+		);
+		results.push({ template, tracker });
+	}
+}
+
+async function createTrackerWithHistory(
+	vehicleId: string,
+	templateId: string,
+	currentOdometer: number,
+	lastServiceDate: string
+): Promise<ActiveTracker> {
+	const template = await db.query.task_templates.findFirst({
+		where: eq(task_templates.id, templateId)
+	});
+
+	let next_due_odometer: number | null = null;
+	let next_due_at: string | null = null;
+
+	if (template?.interval_km) {
+		next_due_odometer = currentOdometer + template.interval_km;
+	}
+	if (template?.interval_months) {
+		next_due_at = formatISO(addMonths(parseISO(lastServiceDate), template.interval_months), {
+			representation: 'date'
+		});
+	}
+
+	const id = generateId();
+	const row: InsertActiveTracker = {
+		id,
+		vehicle_id: vehicleId,
+		template_id: templateId,
+		next_due_odometer,
+		next_due_at,
+		last_done_at: lastServiceDate,
+		last_done_odometer: currentOdometer
+	};
+	await db.insert(active_trackers).values(row);
+	return db.query.active_trackers.findFirst({
+		where: eq(active_trackers.id, id)
+	}) as Promise<ActiveTracker>;
 }
 
 export async function updateTrackerAfterService(

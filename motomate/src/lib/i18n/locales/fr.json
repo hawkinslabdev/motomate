@@ -436,8 +436,10 @@
 			"logged": "Entrée de service enregistrée",
 			"trackerUpdated": "Tracker mis à jour",
 			"trackerDeleted": "Tracker supprimé",
-			"taskAdded": "Tâche ajoutée"
+			"taskAdded": "Tâche ajoutée",
+			"defaultsApplied": "Trackers par défaut appliqués basés sur votre historique de service"
 		},
+		"applyDefaults": "Appliquer les valeurs par défaut",
 		"delete": {
 			"title": "Supprimer {name} ?",
 			"description": "Ce traceur d'entretien sera définitivement supprimé. Cette action est irréversible.",

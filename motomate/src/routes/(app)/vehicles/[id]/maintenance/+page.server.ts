@@ -6,10 +6,11 @@ import {
 	createTracker,
 	recomputeTrackerStatuses,
 	updateTrackerState,
-	deleteTracker
+	deleteTracker,
+	applyDefaultTrackersFromHistory
 } from '$lib/db/repositories/maintenance.js';
 import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { createServiceLog } from '$lib/db/repositories/service-logs.js';
+import { createServiceLog, getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import { insertOdometerLog } from '$lib/db/repositories/vehicles.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
@@ -119,5 +120,20 @@ export const actions: Actions = {
 		const raw = Object.fromEntries(await request.formData());
 		await deleteTracker(String(raw.id), params.id);
 		return { trackerDeleted: true };
+	},
+
+	// Apply default trackers based on service history
+	applyDefaults: async ({ locals, params }) => {
+		try {
+			const logs = await getServiceLogsByVehicle(params.id, locals.user!.id);
+			const vehicle = await getVehicleById(params.id, locals.user!.id);
+			const userLocale = (locals.user as any)?.settings?.locale ?? 'en';
+			await applyDefaultTrackersFromHistory(params.id, locals.user!.id, logs, userLocale);
+			await recomputeTrackerStatuses(params.id, vehicle?.current_odometer ?? 0);
+			return { defaultsApplied: true };
+		} catch (err) {
+			console.error('[applyDefaults]', err);
+			return fail(500, { defaultsError: 'Failed to apply default trackers' });
+		}
 	}
 };

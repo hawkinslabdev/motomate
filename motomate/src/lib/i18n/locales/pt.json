@@ -436,8 +436,10 @@
 			"logged": "Entrada de serviço guardada",
 			"trackerUpdated": "Rastreador atualizado",
 			"trackerDeleted": "Rastreador excluído",
-			"taskAdded": "Tarefa adicionada"
+			"taskAdded": "Tarefa adicionada",
+			"defaultsApplied": "Rastreadores predefinidos aplicados com base no seu histórico de serviço"
 		},
+		"applyDefaults": "Aplicar valores predefinidos",
 		"delete": {
 			"title": "Eliminar {name}?",
 			"description": "Este rastreador de manutenção será removido permanentemente. Esta ação não pode ser desfeita.",

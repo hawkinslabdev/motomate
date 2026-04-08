@@ -438,8 +438,10 @@
 			"logged": "Service entry logged",
 			"trackerUpdated": "Tracker updated",
 			"trackerDeleted": "Tracker deleted",
-			"taskAdded": "Task added"
+			"taskAdded": "Task added",
+			"defaultsApplied": "Default trackers applied based on your service history"
 		},
+		"applyDefaults": "Apply defaults",
 		"delete": {
 			"title": "Delete {name}?",
 			"description": "This maintenance tracker will be permanently removed. This action cannot be undone.",

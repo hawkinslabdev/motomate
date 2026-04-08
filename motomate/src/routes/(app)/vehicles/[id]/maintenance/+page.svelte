@@ -78,6 +78,13 @@
 		if (form?.taskError) {
 			toasts.error(String(form.taskError));
 		}
+		if (form?.defaultsApplied) {
+			toasts.success($_('maintenance.toasts.defaultsApplied'));
+			invalidateAll();
+		}
+		if (form?.defaultsError) {
+			toasts.error(String(form.defaultsError));
+		}
 	});
 
 	function trackerById(id: string) {
@@ -126,6 +133,13 @@
 		<p class="page-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
+		{#if sortedTrackers.length === 0}
+			<form method="POST" action="?/applyDefaults" use:enhance>
+				<button type="submit" class="btn-ghost">
+					{$_('maintenance.applyDefaults')}
+				</button>
+			</form>
+		{/if}
 		<button class="btn-ghost" onclick={() => (showAddTask = !showAddTask)}>
 			{showAddTask ? $_('common.cancel') : $_('maintenance.addTask.button')}
 		</button>
