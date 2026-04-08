@@ -12,7 +12,9 @@
 		"optional": "(optioneel)",
 		"required": "*",
 		"close": "Sluiten",
-		"saving": "Opslaan…"
+		"saving": "Opslaan…",
+		"months": "mnd",
+		"or": "of"
 	},
 	"auth": {
 		"login": {
@@ -402,6 +404,7 @@
 		},
 		"tracker": {
 			"every": "Elke {interval}",
+			"next": "Volgende op {info}",
 			"due": "Verwacht op {info}",
 			"last": "Laatste op {info}",
 			"notScheduled": "Niet gepland",

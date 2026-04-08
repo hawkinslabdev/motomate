@@ -12,7 +12,9 @@
 		"optional": "(optionnel)",
 		"required": "*",
 		"close": "Fermer",
-		"saving": "Enregistrement…"
+		"saving": "Enregistrement…",
+		"months": "m",
+		"or": "ou"
 	},
 	"auth": {
 		"login": {
@@ -409,6 +411,7 @@
 			"edit": "Modifier",
 			"delete": "Supprimer",
 			"every": "Tous les {interval}",
+			"next": "Suivant {info}",
 			"due": "Prévu {info}",
 			"last": "Dernière fois {info}",
 			"notScheduled": "Non planifié"

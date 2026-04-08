@@ -1,5 +1,5 @@
 {
-	"common": {
+"common": {
 		"save": "Speichern",
 		"cancel": "Abbrechen",
 		"delete": "Löschen",
@@ -12,7 +12,9 @@
 		"optional": "(optional)",
 		"required": "*",
 		"close": "Schließen",
-		"saving": "Speichern…"
+		"saving": "Speichern…",
+		"months": "Mo",
+		"or": "oder"
 	},
 	"auth": {
 		"login": {
@@ -409,6 +411,7 @@
 			"edit": "Bearbeiten",
 			"delete": "Löschen",
 			"every": "Alle {interval}",
+			"next": "Nächste {info}",
 			"due": "Fällig {info}",
 			"last": "Zuletzt {info}",
 			"notScheduled": "Nicht geplant"

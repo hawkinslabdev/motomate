@@ -12,7 +12,9 @@
 		"optional": "(opzionale)",
 		"required": "*",
 		"close": "Chiudi",
-		"saving": "Salvataggio…"
+		"saving": "Salvataggio…",
+		"months": "m",
+		"or": "o"
 	},
 	"auth": {
 		"login": {

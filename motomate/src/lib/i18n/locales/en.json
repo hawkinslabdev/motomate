@@ -12,8 +12,9 @@
 		"optional": "(optional)",
 		"required": "*",
 		"close": "Close",
+		"saving": "Saving…",
 		"months": "mo",
-		"saving": "Saving…"
+		"or": "or"
 	},
 	"auth": {
 		"login": {
@@ -404,6 +405,7 @@
 		},
 		"tracker": {
 			"every": "Every {interval}",
+			"next": "Next {info}",
 			"due": "Due {info}",
 			"last": "Last {info}",
 			"status": {

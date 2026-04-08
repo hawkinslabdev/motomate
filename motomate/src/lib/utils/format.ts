@@ -32,10 +32,21 @@ export function formatCurrency(cents: number, currency = 'EUR', locale = 'en'): 
 	return fmt.format(cents / 100);
 }
 
-/** Format a YYYY-MM-DD string as a short date (e.g. "12 Jan"). */
+/** Format a YYYY-MM-DD string as a short date (e.g. "12 Jan" or "12 Jan '25"). */
 export function formatDateShort(dateStr: string, locale = 'en'): string {
 	const d = new Date(dateStr + 'T00:00:00'); // force local midnight parse
-	return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	const targetYear = d.getFullYear();
+	const nextJan1 = new Date(currentYear + 1, 0, 1);
+	const monthsDiff = (d.getTime() - now.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
+	const includeYear = targetYear > currentYear || d.getTime() > nextJan1.getTime() || monthsDiff > 6;
+	const opts: Intl.DateTimeFormatOptions = {
+		day: 'numeric',
+		month: 'short',
+		...(includeYear && { year: '2-digit' })
+	};
+	return d.toLocaleDateString(locale, opts);
 }
 
 /** Format a YYYY-MM-DD string as a long date (e.g. "12 January 2025"). */

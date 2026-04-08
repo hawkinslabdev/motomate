@@ -12,7 +12,9 @@
 		"optional": "(opcional)",
 		"required": "*",
 		"close": "Fechar",
-		"saving": "A guardar…"
+		"saving": "A guardar…",
+		"months": "m",
+		"or": "ou"
 	},
 	"auth": {
 		"login": {

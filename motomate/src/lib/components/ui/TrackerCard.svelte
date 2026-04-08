@@ -37,10 +37,11 @@
 		const parts: string[] = [];
 		if (t.interval_km) parts.push(`${formatNumber(t.interval_km, locale)} ${vehicleUnit}`);
 		if (t.interval_months) parts.push(`${t.interval_months} ${$_('common.months')}`);
-		return parts.join(' or ') || '—';
+		const sep = ` ${$_('common.or')} `;
+		return parts.join(sep) || '—';
 	}
 
-	function dueInfo() {
+	function nextInfo() {
 		const parts: string[] = [];
 		if (tracker.next_due_odometer)
 			parts.push(`${formatNumber(tracker.next_due_odometer, locale)} ${vehicleUnit}`);
@@ -78,7 +79,7 @@
 				<span>{$_('maintenance.tracker.every', { values: { interval: formatInterval() } })}</span>
 				{#if tracker.next_due_odometer || tracker.next_due_at}
 					<span class="meta-sep">·</span>
-					<span>{$_('maintenance.tracker.due', { values: { info: dueInfo() } })}</span>
+					<span>{$_('maintenance.tracker.next', { values: { info: nextInfo() } })}</span>
 				{/if}
 			</div>
 			{#if tracker.last_done_at}
