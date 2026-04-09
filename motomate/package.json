@@ -59,7 +59,7 @@
 		"leaflet": "^1.9.4",
 		"leaflet-gpx": "^2.2.0",
 		"lucia": "^3.2.2",
-		"nodemailer": "^8.0.4",
+		"nodemailer": "^8.0.5",
 		"oslo": "^1.2.1",
 		"svelte-i18n": "^4.0.1",
 		"web-push": "^3.6.7",
