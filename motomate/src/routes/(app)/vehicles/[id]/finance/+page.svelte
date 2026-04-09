@@ -569,7 +569,11 @@
 							</div>
 						{:else}
 							<div class="entry-actions">
-								<button class="entry-menu-btn entry-menu-btn--stub" style="opacity: 0;" aria-hidden="true">
+								<button
+									class="entry-menu-btn entry-menu-btn--stub"
+									style="opacity: 0;"
+									aria-hidden="true"
+								>
 									⋮
 								</button>
 							</div>
@@ -1118,8 +1122,6 @@
 		cursor: default;
 		background: none;
 		border-color: transparent;
-	}
-	.entry-menu-btn.active {
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {

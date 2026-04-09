@@ -254,6 +254,7 @@
 				"cost": "Custo {optional}",
 				"notes": "Notas",
 				"resetCycle": "Reiniciar ciclo para {optional}",
+				"usedTracker": "Manutenção realizada para",
 				"checkToReset": "(marcar para repor)",
 				"currentReading": "Leitura atual ({unit})",
 				"attachments": "Anexos {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Manutenção",
 		"subtitle": "Acompanhe o seu plano de serviço",
+		"view": {
+			"current": "Atual",
+			"forecast": "Previsão",
+			"history": "Histórico"
+		},
+		"forecast": {
+			"basedOnUsage": "baseado em {months} meses de uso",
+			"insufficientData": "dados insuficientes para previsão",
+			"estimated": "est."
+		},
+		"filter": {
+			"search": "Pesquisar tarefas...",
+			"sortStatus": "Ordenar por estado",
+			"sortName": "Ordenar por nome",
+			"sortLast": "Ordenar por último serviço",
+			"sortDate": "Ordenar por data"
+		},
+		"history": {
+			"title": "Histórico de serviços",
+			"noHistory": "Sem histórico de serviços",
+			"noHistoryDesc": "Registe uma intervenção de serviço para a ver aqui.",
+			"serviceEntry": "Serviço"
+		},
+		"editLog": {
+			"date": "Data",
+			"odometer": "Quilometragem ({unit})",
+			"cost": "Custo",
+			"notes": "Descrição",
+			"remark": "Observação (opcional)",
+			"remarkPlaceholder": "Detalhes adicionais...",
+			"save": "Guardar alterações"
+		},
 		"addTask": {
 			"button": "+ Adicionar tarefa",
 			"cancel": "Cancelar",
 			"title": "Adicionar tarefa",
+			"historyDisabled": "Adicionar na Vista Atual ou Previsão",
 			"fields": {
 				"name": "Nome da tarefa",
 				"intervalKm": "Intervalo ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Ainda sem tarefas de manutenção",
-			"description": "Adicione tarefas personalizadas ou execute o assistente de configuração para definir predefinições."
+			"description": "Adicione tarefas personalizadas ou execute o assistente de configuração para definir predefinições.",
+			"noMatch": "Nenhuma tarefa correspondente",
+			"noMatchDesc": "Tente um termo de pesquisa diferente ou limpe o filtro."
 		},
 		"tracker": {
 			"status": {

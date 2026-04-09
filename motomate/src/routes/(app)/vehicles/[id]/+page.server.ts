@@ -246,6 +246,7 @@ export const actions: Actions = {
 			notes,
 			remark
 		});
+
 		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});

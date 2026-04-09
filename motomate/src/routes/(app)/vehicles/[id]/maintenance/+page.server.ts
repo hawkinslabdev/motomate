@@ -9,9 +9,15 @@ import {
 	deleteTracker,
 	applyDefaultTrackersFromHistory
 } from '$lib/db/repositories/maintenance.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { createServiceLog, getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
-import { insertOdometerLog } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById, updateOdometer } from '$lib/db/repositories/vehicles.js';
+import {
+	createServiceLog,
+	getServiceLogsByVehicle,
+	getServiceLogsByTracker,
+	getServiceLogById,
+	updateServiceLog
+} from '$lib/db/repositories/service-logs.js';
+import { insertOdometerLog, getOdometerLogs } from '$lib/db/repositories/vehicles.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 
@@ -19,7 +25,9 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
 	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 	const trackers = await getTrackersByVehicle(vehicle.id, locals.user!.id);
-	return { trackers };
+	const odometerLogs = await getOdometerLogs(vehicle.id, locals.user!.id);
+	const allServiceLogs = await getServiceLogsByVehicle(vehicle.id, locals.user!.id);
+	return { trackers, odometerLogs, allServiceLogs };
 };
 
 export const actions: Actions = {
@@ -120,6 +128,55 @@ export const actions: Actions = {
 		const raw = Object.fromEntries(await request.formData());
 		await deleteTracker(String(raw.id), params.id);
 		return { trackerDeleted: true };
+	},
+
+	editServiceLog: async ({ request, locals, params }) => {
+		const raw = Object.fromEntries(await request.formData());
+		const id = String(raw.id);
+
+		await updateServiceLog(id, params.id, locals.user!.id, {
+			performed_at: raw.performed_at ? String(raw.performed_at) : undefined,
+			odometer_at_service: raw.odometer_at_service ? Number(raw.odometer_at_service) : undefined,
+			cost_cents: raw.cost ? Math.round(Number(raw.cost) * 100) : undefined,
+			notes: raw.notes ? String(raw.notes) : undefined,
+			remark: raw.remark ? String(raw.remark) : undefined
+		});
+
+		// Handle tracker resets
+		const resetTrackerIds = raw.reset_trackers
+			? Array.isArray(raw.reset_trackers)
+				? raw.reset_trackers
+				: [raw.reset_trackers]
+			: [];
+		if (resetTrackerIds.length > 0) {
+			const vehicle = await getVehicleById(params.id, locals.user!.id);
+			const odometer = raw.odometer_at_service
+				? Number(raw.odometer_at_service)
+				: (vehicle?.current_odometer ?? 0);
+			const performedAt = raw.performed_at
+				? String(raw.performed_at)
+				: new Date().toISOString().slice(0, 10);
+			for (const trackerId of resetTrackerIds) {
+				await updateTrackerState(trackerId, params.id, {
+					last_done_at: performedAt,
+					last_done_odometer: odometer
+				});
+			}
+			await recomputeTrackerStatuses(params.id, odometer);
+		}
+
+		const log = await getServiceLogById(id);
+		if (log) {
+			const vehicle = await getVehicleById(params.id, locals.user!.id);
+			if (vehicle && log.odometer_at_service > vehicle.current_odometer) {
+				await updateOdometer(params.id, locals.user!.id, log.odometer_at_service);
+			}
+			if (resetTrackerIds.length === 0) {
+				await recomputeTrackerStatuses(params.id, vehicle?.current_odometer ?? 0);
+			}
+		}
+
+		return { logUpdated: true };
 	},
 
 	// Apply default trackers based on service history

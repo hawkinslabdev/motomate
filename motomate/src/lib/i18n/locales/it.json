@@ -254,6 +254,7 @@
 				"cost": "Costo {optional}",
 				"notes": "Note",
 				"resetCycle": "Ripristina ciclo per {optional}",
+				"usedTracker": "Manutenzione eseguita per",
 				"checkToReset": "(seleziona per resettare)",
 				"currentReading": "Lettura attuale ({unit})",
 				"attachments": "Allegati {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Manutenzione",
 		"subtitle": "Traccia il tuo programma di servizio",
+		"view": {
+			"current": "Attuale",
+			"forecast": "Previsione",
+			"history": "Storico"
+		},
+		"forecast": {
+			"basedOnUsage": "basato su {months} mesi di utilizzo",
+			"insufficientData": "dati insufficienti per previsione",
+			"estimated": "circa"
+		},
+		"filter": {
+			"search": "Cerca attività...",
+			"sortStatus": "Ordina per stato",
+			"sortName": "Ordina per nome",
+			"sortLast": "Ordina per ultimo servizio",
+			"sortDate": "Ordina per data"
+		},
+		"history": {
+			"title": "Storico servizi",
+			"noHistory": "Nessuno storico servizi",
+			"noHistoryDesc": "Registra un intervento di servizio per visualizzarlo qui.",
+			"serviceEntry": "Servizio"
+		},
+		"editLog": {
+			"date": "Data",
+			"odometer": "Chilometraggio ({unit})",
+			"cost": "Costo",
+			"notes": "Descrizione",
+			"remark": "Nota (opzionale)",
+			"remarkPlaceholder": "Dettagli aggiuntivi...",
+			"save": "Salva modifiche"
+		},
 		"addTask": {
 			"button": "+ Aggiungi attività",
 			"cancel": "Annulla",
 			"title": "Aggiungi attività",
+			"historyDisabled": "Aggiungi in Vista Attuale o Previsione",
 			"fields": {
 				"name": "Nome attività",
 				"intervalKm": "Intervallo ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Nessuna attività di manutenzione ancora",
-			"description": "Aggiungi attività personalizzate o esegui la configurazione guidata per impostare i preset."
+			"description": "Aggiungi attività personalizzate o esegui la configurazione guidata per impostare i preset.",
+			"noMatch": "Nessuna attività corrispondente",
+			"noMatchDesc": "Prova un altro termine di ricerca o cancella il filtro."
 		},
 		"tracker": {
 			"status": {

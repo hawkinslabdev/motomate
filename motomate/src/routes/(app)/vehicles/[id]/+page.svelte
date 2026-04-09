@@ -902,6 +902,37 @@
 												/>
 											</label>
 										</div>
+										{#if editLog?.tracker_id}
+											<fieldset class="tracker-select">
+												<legend class="field-label">{$_('vehicle.forms.fields.usedTracker')}</legend
+												>
+												<div class="tracker-checkboxes">
+													{#each data.trackers.filter((t) => editLog?.tracker_id === t.id) as t}
+														<label class="tracker-checkbox">
+															<input
+																type="checkbox"
+																name="reset_trackers"
+																value={t.id}
+																checked={true}
+																disabled
+															/>
+															<span class="tracker-check-label">
+																<span class="tracker-check-name">{t.template.name}</span>
+																{#if t.status === 'due'}
+																	<span class="tracker-check-status tracker-check-status--due"
+																		>{$_('maintenance.tracker.status.due')}</span
+																	>
+																{:else if t.status === 'overdue'}
+																	<span class="tracker-check-status tracker-check-status--overdue"
+																		>{$_('maintenance.tracker.status.overdue')}</span
+																	>
+																{/if}
+															</span>
+														</label>
+													{/each}
+												</div>
+											</fieldset>
+										{/if}
 										<label class="field">
 											<span class="field-label">{$_('vehicle.forms.fields.description')}</span>
 											<input
@@ -939,6 +970,7 @@
 												value={editLog?.cost_cents ? editLog.cost_cents / 100 : ''}
 												min="0"
 												step="0.01"
+												placeholder={$_('vehicle.forms.placeholders.cost')}
 												class="input mono"
 											/>
 										</label>
@@ -1471,10 +1503,6 @@
 		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--text-muted);
-	}
-	.muted {
-		font-weight: 400;
-		color: var(--text-subtle);
 	}
 	.input {
 		padding: 0.5rem 0.75rem;

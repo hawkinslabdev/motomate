@@ -254,6 +254,7 @@
 				"cost": "Coût {optional}",
 				"notes": "Notes",
 				"resetCycle": "Réinitialiser le cycle pour {optional}",
+				"usedTracker": "Entretien effectué pour",
 				"checkToReset": "(cocher pour réinitialiser)",
 				"currentReading": "Lecture actuelle ({unit})",
 				"attachments": "Pièces jointes {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Entretien",
 		"subtitle": "Suivez votre calendrier d'entretien",
+		"view": {
+			"current": "Actuel",
+			"forecast": "Prévision",
+			"history": "Historique"
+		},
+		"forecast": {
+			"basedOnUsage": "basé sur {months} mois d'utilisation",
+			"insufficientData": "données insuffisantes pour la prévision",
+			"estimated": "env."
+		},
+		"filter": {
+			"search": "Rechercher des tâches...",
+			"sortStatus": "Trier par statut",
+			"sortName": "Trier par nom",
+			"sortLast": "Trier par dernier entretien",
+			"sortDate": "Trier par date"
+		},
+		"history": {
+			"title": "Historique des services",
+			"noHistory": "Pas encore d'historique",
+			"noHistoryDesc": "Enregistrez une intervention de service pour la voir ici.",
+			"serviceEntry": "Service"
+		},
+		"editLog": {
+			"date": "Date",
+			"odometer": "Kilométrage ({unit})",
+			"cost": "Coût",
+			"notes": "Description",
+			"remark": "Remarque (optionnel)",
+			"remarkPlaceholder": "Détails supplémentaires...",
+			"save": "Enregistrer"
+		},
 		"addTask": {
 			"button": "+ Ajouter une tâche",
 			"cancel": "Annuler",
 			"title": "Ajouter une tâche",
+			"historyDisabled": "Ajouter dans Vue Actuel ou Prévision",
 			"fields": {
 				"name": "Nom de la tâche",
 				"intervalKm": "Intervalle ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Pas encore de tâches d'entretien",
-			"description": "Ajoutez des tâches personnalisées ou lancez l'assistant d'onboarding pour configurer les préréglages."
+			"description": "Ajoutez des tâches personnalisées ou lancez l'assistant d'onboarding pour configurer les préréglages.",
+			"noMatch": "Aucune tâche correspondante",
+			"noMatchDesc": "Essayez un autre terme de recherche ou effacez le filtre."
 		},
 		"tracker": {
 			"status": {

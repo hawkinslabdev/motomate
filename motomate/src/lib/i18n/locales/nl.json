@@ -254,6 +254,7 @@
 				"cost": "Kosten {optional}",
 				"notes": "Notities",
 				"resetCycle": "Cyclus resetten voor {optional}",
+				"usedTracker": "Onderhoud uitgevoerd voor",
 				"checkToReset": "(vink aan om te resetten)",
 				"currentReading": "Huidige stand ({unit})",
 				"attachments": "Bijlagen {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Onderhoud",
 		"subtitle": "Houd je service-schema bij",
+		"view": {
+			"current": "Actueel",
+			"forecast": "Verwacht",
+			"history": "Geschiedenis"
+		},
+		"forecast": {
+			"basedOnUsage": "op basis van {months} maanden gebruik",
+			"insufficientData": "onvoldoende data voor voorspelling",
+			"estimated": "ca."
+		},
+		"filter": {
+			"search": "Zoek taken...",
+			"sortStatus": "Sorteer op status",
+			"sortName": "Sorteer op naam",
+			"sortLast": "Sorteer op laatste service",
+			"sortDate": "Sorteer op datum"
+		},
+		"history": {
+			"title": "Servicegeschiedenis",
+			"noHistory": "Nog geen servicegeschiedenis",
+			"noHistoryDesc": "Log een service-item om het hier te zien.",
+			"serviceEntry": "Service"
+		},
+		"editLog": {
+			"date": "Datum",
+			"odometer": "Kilometerstand ({unit})",
+			"cost": "Kosten",
+			"notes": "Beschrijving",
+			"remark": "Opmerking (optioneel)",
+			"remarkPlaceholder": "Aanvullende details...",
+			"save": "Wijzigingen opslaan"
+		},
 		"addTask": {
 			"button": "+ Taak toevoegen",
 			"cancel": "Annuleren",
 			"title": "Taak toevoegen",
+			"historyDisabled": "Toevoegen in Actueel of Verwacht weergave",
 			"fields": {
 				"name": "Omschrijving",
 				"intervalKm": "Interval ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Nog geen onderhoudstaken",
-			"description": "Voeg aangepaste taken toe of voer de onboarding-wizard uit om voorkeuren in te stellen."
+			"description": "Voeg aangepaste taken toe of voer de onboarding-wizard uit om voorkeuren in te stellen.",
+			"noMatch": "Geen taken gevonden",
+			"noMatchDesc": "Probeer een andere zoekterm of verwijder het filter."
 		},
 		"tracker": {
 			"every": "Elke {interval}",
@@ -634,10 +670,10 @@
 				"zip": "Exporteren als ZIP",
 				"zipHint": "Inclusief bijgevoegde documenten"
 			},
-			"dangerZone": "Gevaarlijke zone",
+			"dangerZone": "Gevarenzone",
 			"delete": {
 				"title": "Dit account verwijderen",
-				"desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten.",
+				"desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten. Dit kan je niet ongedaan maken.",
 				"btn": "Account verwijderen",
 				"dialog": {
 					"title": "Je account verwijderen?",

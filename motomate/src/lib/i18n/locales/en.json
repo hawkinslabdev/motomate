@@ -274,6 +274,7 @@
 				"cost": "Cost {optional}",
 				"notes": "Notes",
 				"resetCycle": "Reset cycle for {optional}",
+				"usedTracker": "Maintenance done for",
 				"checkToReset": "(check to reset)",
 				"currentReading": "Current reading ({unit})",
 				"attachments": "Attachments {optional}"
@@ -383,10 +384,47 @@
 	"maintenance": {
 		"title": "Maintenance",
 		"subtitle": "Track your service schedule",
+		"view": {
+			"current": "Current",
+			"forecast": "Forecast"
+		},
+		"forecast": {
+			"basedOnUsage": "based on {months} months usage",
+			"insufficientData": "insufficient data for prediction",
+			"estimated": "est."
+		},
+		"view": {
+			"current": "Current",
+			"forecast": "Forecast",
+			"history": "History"
+		},
+		"filter": {
+			"search": "Search tasks...",
+			"sortStatus": "Sort by status",
+			"sortName": "Sort by name",
+			"sortLast": "Sort by last serviced",
+			"sortDate": "Sort by date"
+		},
+		"history": {
+			"title": "Service history",
+			"noHistory": "No service history yet",
+			"noHistoryDesc": "Log a service entry to see it here.",
+			"serviceEntry": "Service"
+		},
+		"editLog": {
+			"date": "Date",
+			"odometer": "Odometer ({unit})",
+			"cost": "Cost",
+			"notes": "Description",
+			"remark": "Remark (optional)",
+			"remarkPlaceholder": "Additional details...",
+			"save": "Save changes"
+		},
 		"addTask": {
 			"button": "+ Add task",
 			"cancel": "Cancel",
 			"title": "Add task",
+			"historyDisabled": "Add task in Current or Forecast view",
 			"fields": {
 				"name": "Task name",
 				"intervalKm": "Interval ({unit})",
@@ -401,7 +439,9 @@
 		},
 		"empty": {
 			"title": "No maintenance tasks yet",
-			"description": "Add custom tasks or run the onboarding wizard to set up presets."
+			"description": "Add custom tasks or run the onboarding wizard to set up presets.",
+			"noMatch": "No tasks match your search",
+			"noMatchDesc": "Try a different search term or clear the filter."
 		},
 		"tracker": {
 			"every": "Every {interval}",

@@ -1,5 +1,5 @@
 {
-"common": {
+	"common": {
 		"save": "Speichern",
 		"cancel": "Abbrechen",
 		"delete": "Löschen",
@@ -254,6 +254,7 @@
 				"cost": "Kosten {optional}",
 				"notes": "Notizen",
 				"resetCycle": "Zyklus zurücksetzen für {optional}",
+				"usedTracker": "Wartung durchgeführt für",
 				"checkToReset": "(zum Zurücksetzen anhaken)",
 				"currentReading": "Aktueller Stand ({unit})",
 				"attachments": "Anhänge {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Wartung",
 		"subtitle": "Verfolgen Sie Ihren Serviceplan",
+		"view": {
+			"current": "Aktuell",
+			"forecast": "Prognose",
+			"history": "Historie"
+		},
+		"forecast": {
+			"basedOnUsage": "basierend auf {months} Monaten Nutzung",
+			"insufficientData": "ungenügend Daten für Prognose",
+			"estimated": "ca."
+		},
+		"filter": {
+			"search": "Aufgaben suchen...",
+			"sortStatus": "Sortieren nach Status",
+			"sortName": "Sortieren nach Name",
+			"sortLast": "Sortieren nach letztem Service",
+			"sortDate": "Sortieren nach Datum"
+		},
+		"history": {
+			"title": "Servicehistorie",
+			"noHistory": "Noch keine Servicehistorie",
+			"noHistoryDesc": "Protokollieren Sie einen Serviceeintrag, um ihn hier zu sehen.",
+			"serviceEntry": "Service"
+		},
+		"editLog": {
+			"date": "Datum",
+			"odometer": "Kilometerstand ({unit})",
+			"cost": "Kosten",
+			"notes": "Beschreibung",
+			"remark": "Bemerkung (optional)",
+			"remarkPlaceholder": "Zusätzliche Details...",
+			"save": "Änderungen speichern"
+		},
 		"addTask": {
 			"button": "+ Aufgabe hinzufügen",
 			"cancel": "Abbrechen",
 			"title": "Aufgabe hinzufügen",
+			"historyDisabled": "Hinzufügen in Aktuell oder Prognose Ansicht",
 			"fields": {
 				"name": "Aufgabenname",
 				"intervalKm": "Intervall ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Noch keine Wartungsaufgaben",
-			"description": "Fügen Sie benutzerdefinierte Aufgaben hinzu oder führen Sie den Onboarding-Assistenten aus, um Voreinstellungen einzurichten."
+			"description": "Fügen Sie benutzerdefinierte Aufgaben hinzu oder führen Sie den Onboarding-Assistenten aus, um Voreinstellungen einzurichten.",
+			"noMatch": "Keine Aufgaben gefunden",
+			"noMatchDesc": "Versuchen Sie einen anderen Suchbegriff oder löschen Sie das Filter."
 		},
 		"tracker": {
 			"status": {

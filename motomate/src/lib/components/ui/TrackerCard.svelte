@@ -1,14 +1,31 @@
 <script lang="ts">
-	import { formatNumber, formatDateShort } from '$lib/utils/format';
+	import { formatNumber, formatDateShort, formatCurrency } from '$lib/utils/format';
 	import { _, waitLocale } from '$lib/i18n';
+
+	type ServiceLog = {
+		id: string;
+		performed_at: string;
+		odometer_at_service: number;
+		cost_cents: number | null;
+		currency: string;
+		notes: string | null;
+		remark: string | null;
+		created_at: string;
+	};
 
 	let {
 		tracker,
 		vehicleUnit,
 		locale,
+		serviceLogs = [],
+		forecastMode = false,
+		forecastData = null,
+		monthsOfUsage = 0,
 		isLogging = false,
 		isRecentlyLogged = false,
+		showHistory = false,
 		onlogclick,
+		onhistoryclick,
 		onoptionsclick
 	}: {
 		tracker: {
@@ -22,9 +39,15 @@
 		};
 		vehicleUnit: string;
 		locale: string;
+		serviceLogs?: ServiceLog[];
+		forecastMode?: boolean;
+		forecastData?: { odometer: number | null; monthsUntil: number | null } | null;
+		monthsOfUsage?: number;
 		isLogging?: boolean;
 		isRecentlyLogged?: boolean;
+		showHistory?: boolean;
 		onlogclick?: (id: string) => void;
+		onhistoryclick?: (id: string) => void;
 		onoptionsclick?: (id: string) => void;
 	} = $props();
 
@@ -56,6 +79,16 @@
 			parts.push(`${formatNumber(tracker.last_done_odometer, locale)} ${vehicleUnit}`);
 		return parts.join(' · ');
 	}
+
+	const historyGrouped = $derived(() => {
+		const map = new Map<string, ServiceLog[]>();
+		for (const log of serviceLogs) {
+			const key = log.performed_at.slice(0, 7);
+			if (!map.has(key)) map.set(key, []);
+			map.get(key)!.push(log);
+		}
+		return [...map.entries()];
+	});
 </script>
 
 <div
@@ -63,32 +96,79 @@
 	class:tracker-card--due={tracker.status === 'due'}
 	class:tracker-card--overdue={tracker.status === 'overdue'}
 	class:tracker-card--logged={isRecentlyLogged}
-	onclick={() => onoptionsclick?.(tracker.id)}
+	onclick={() => {
+		if (serviceLogs.length > 0) {
+			onhistoryclick?.(tracker.id);
+		}
+	}}
 	onkeydown={(e) => {
 		if (e.key === 'Enter' || e.key === ' ') {
-			onoptionsclick?.(tracker.id);
+			if (serviceLogs.length > 0) {
+				onhistoryclick?.(tracker.id);
+			}
 		}
 	}}
 	role="button"
-	tabindex="0"
+	tabindex={serviceLogs.length > 0 ? 0 : -1}
 >
 	<div class="tracker-main">
 		<div class="tracker-info">
 			<div class="tracker-name">{tracker.template.name}</div>
 			<div class="tracker-meta">
 				<span>{$_('maintenance.tracker.every', { values: { interval: formatInterval() } })}</span>
-				{#if tracker.next_due_odometer || tracker.next_due_at}
+				{#if !forecastMode && (tracker.next_due_odometer || tracker.next_due_at)}
 					<span class="meta-sep">·</span>
 					<span>{$_('maintenance.tracker.next', { values: { info: nextInfo() } })}</span>
 				{/if}
+				{#if forecastMode && forecastData}
+					{#if forecastData.odometer}
+						<span class="meta-sep">·</span>
+						<span class="forecast-info">
+							{$_('maintenance.forecast.estimated')}
+							{formatNumber(forecastData.odometer, locale)}
+							{vehicleUnit}
+							{#if monthsOfUsage >= 5}
+								<span class="forecast-confidence">
+									{$_('maintenance.forecast.basedOnUsage', { values: { months: monthsOfUsage } })}
+								</span>
+							{:else}
+								<span class="forecast-confidence">
+									{$_('maintenance.forecast.insufficientData')}
+								</span>
+							{/if}
+						</span>
+					{/if}
+				{/if}
 			</div>
-			{#if tracker.last_done_at}
+			{#if !forecastMode && tracker.last_done_at}
 				<div class="tracker-last">
 					<span>{$_('maintenance.tracker.last', { values: { info: lastInfo() } })}</span>
 				</div>
 			{/if}
 		</div>
 		<div class="tracker-actions">
+			{#if serviceLogs.length > 0}
+				<button
+					class="history-btn"
+					onclick={(e) => {
+						e.stopPropagation();
+						onlogclick?.(tracker.id);
+					}}
+				>
+					<svg
+						width="16"
+						height="16"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<circle cx="12" cy="12" r="10" />
+						<polyline points="12,6 12,12 16,14" />
+					</svg>
+					{serviceLogs.length}
+				</button>
+			{/if}
 			{#if tracker.status !== 'ok'}
 				<button
 					class="log-btn"
@@ -113,6 +193,37 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if showHistory && serviceLogs.length > 0}
+		<div class="tracker-history">
+			{#each historyGrouped() as [yearMonth, logs]}
+				<div class="history-month">
+					<div class="history-month-label">
+						<span class="history-month-name">{yearMonth}</span>
+						<span class="history-month-line"></span>
+					</div>
+					{#each logs as log}
+						<div class="history-entry">
+							<span class="history-dot"></span>
+							<span class="history-title">{tracker.template.name}</span>
+							<span class="history-meta">
+								{formatDateShort(log.performed_at, locale)} · {formatNumber(
+									log.odometer_at_service,
+									locale
+								)}
+								{vehicleUnit}
+								{#if log.cost_cents}
+									<span class="history-cost">
+										· {formatCurrency(log.cost_cents, log.currency, locale)}</span
+									>
+								{/if}
+							</span>
+						</div>
+					{/each}
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -236,9 +347,35 @@
 		flex-shrink: 0;
 	}
 
+	.history-btn {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.375rem 0.5rem;
+		min-height: 44px;
+		font-size: var(--text-xs);
+		font-weight: 500;
+		background: none;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		cursor: pointer;
+		color: var(--text-subtle);
+		transition:
+			border-color 0.15s,
+			color 0.15s;
+	}
+	.history-btn:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.history-btn svg {
+		opacity: 0.7;
+	}
+
 	.log-btn {
 		flex-shrink: 0;
 		padding: 0.375rem 0.75rem;
+		min-height: 44px;
 		font-size: var(--text-sm);
 		font-weight: 500;
 		background: none;
@@ -310,5 +447,85 @@
 		background: var(--bg-muted);
 		border-color: var(--border);
 		color: var(--text);
+	}
+
+	/* Forecast mode */
+	.forecast-info {
+		color: var(--text-muted);
+	}
+	.forecast-confidence {
+		color: var(--text-subtle);
+		font-size: var(--text-xs);
+		margin-left: 0.25rem;
+	}
+
+	/* History section */
+	.tracker-history {
+		position: relative;
+		z-index: 2;
+		margin-top: 0.75rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--border);
+	}
+	.history-month {
+		margin-bottom: var(--space-4);
+	}
+	.history-month-label {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-bottom: var(--space-2);
+	}
+	.history-month:first-child .history-month-line {
+		display: none;
+	}
+	.history-month-name {
+		font-size: var(--text-xs);
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		letter-spacing: 0.07em;
+		flex-shrink: 0;
+	}
+	.history-month-line {
+		flex: 1;
+		height: 1px;
+		background: var(--border);
+	}
+	.history-month:first-child .history-month-line {
+		display: none;
+	}
+	.history-entry {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		padding: 0.875rem 0;
+		padding-left: 0.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+	.history-entry:first-child {
+		border-top: 1px solid var(--border);
+	}
+	.history-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--text-subtle);
+		flex-shrink: 0;
+		margin-top: 0.35rem;
+	}
+	.history-title {
+		font-size: var(--text-base);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.history-meta {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+	}
+	.history-cost {
+		color: var(--text-subtle);
 	}
 </style>

@@ -40,7 +40,8 @@ export function formatDateShort(dateStr: string, locale = 'en'): string {
 	const targetYear = d.getFullYear();
 	const nextJan1 = new Date(currentYear + 1, 0, 1);
 	const monthsDiff = (d.getTime() - now.getTime()) / (30.44 * 24 * 60 * 60 * 1000);
-	const includeYear = targetYear > currentYear || d.getTime() > nextJan1.getTime() || monthsDiff > 6;
+	const includeYear =
+		targetYear > currentYear || d.getTime() > nextJan1.getTime() || monthsDiff > 6;
 	const opts: Intl.DateTimeFormatOptions = {
 		day: 'numeric',
 		month: 'short',

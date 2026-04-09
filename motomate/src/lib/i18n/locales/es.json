@@ -254,6 +254,7 @@
 				"cost": "Coste {optional}",
 				"notes": "Notas",
 				"resetCycle": "Reiniciar ciclo para {optional}",
+				"usedTracker": "Mantenimiento realizado para",
 				"checkToReset": "(marcar para reiniciar)",
 				"currentReading": "Lectura actual ({unit})",
 				"attachments": "Adjuntos {optional}"
@@ -382,10 +383,43 @@
 	"maintenance": {
 		"title": "Mantenimiento",
 		"subtitle": "Rastrea tu programa de servicio",
+		"view": {
+			"current": "Actual",
+			"forecast": "Pronóstico",
+			"history": "Historial"
+		},
+		"forecast": {
+			"basedOnUsage": "basado en {months} meses de uso",
+			"insufficientData": "datos insuficientes para predicción",
+			"estimated": "est."
+		},
+		"filter": {
+			"search": "Buscar tareas...",
+			"sortStatus": "Ordenar por estado",
+			"sortName": "Ordenar por nombre",
+			"sortLast": "Ordenar por último servicio",
+			"sortDate": "Ordenar por fecha"
+		},
+		"history": {
+			"title": "Historial de servicio",
+			"noHistory": "Sin historial de servicio",
+			"noHistoryDesc": "Registra una intervención de servicio para verla aquí.",
+			"serviceEntry": "Servicio"
+		},
+		"editLog": {
+			"date": "Fecha",
+			"odometer": "Kilometraje ({unit})",
+			"cost": "Coste",
+			"notes": "Descripción",
+			"remark": "Observación (opcional)",
+			"remarkPlaceholder": "Detalles adicionales...",
+			"save": "Guardar cambios"
+		},
 		"addTask": {
 			"button": "+ Añadir tarea",
 			"cancel": "Cancelar",
 			"title": "Añadir tarea",
+			"historyDisabled": "Añadir en Vista Actual o Pronóstico",
 			"fields": {
 				"name": "Nombre de tarea",
 				"intervalKm": "Intervalo ({unit})",
@@ -400,7 +434,9 @@
 		},
 		"empty": {
 			"title": "Sin tareas de mantenimiento todavía",
-			"description": "Añade tareas personalizadas o ejecuta el asistente de configuración para configurar valores predeterminados."
+			"description": "Añade tareas personalizadas o ejecuta el asistente de configuración para configurar valores predeterminados.",
+			"noMatch": "No hay tareas que coincidan",
+			"noMatchDesc": "Prueba con otro término de búsqueda o borra el filtro."
 		},
 		"tracker": {
 			"status": {

@@ -6,6 +6,7 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 	import { _, waitLocale } from '$lib/i18n';
+	import { formatNumber, formatDateShort, formatCurrency } from '$lib/utils/format.js';
 
 	let {
 		data,
@@ -28,11 +29,78 @@
 	let editingTracker = $state<string | null>(null);
 	let editSubmitting = $state(false);
 	let deletingTracker = $state<{ id: string; name: string } | null>(null);
+	let historyTracker = $state<string | null>(null);
+	let viewMode = $state<'current' | 'forecast' | 'history'>('current');
+	let searchQuery = $state('');
+	let sortBy = $state<'status' | 'name' | 'last'>('status');
+	let historySortBy = $state<'date' | 'name'>('date');
+	let editingLog = $state<string | null>(null);
+	let logMenu = $state<string | null>(null);
+
+	const averageKmPerMonth = $derived(() => {
+		const logs = data.odometerLogs ?? [];
+		if (logs.length < 5) return null;
+		const odoValues = logs.map((l) => l.odometer).filter((v): v is number => v !== null && v > 0);
+		if (odoValues.length < 5) return null;
+		const maxOdo = Math.max(...odoValues);
+		const minOdo = Math.min(...odoValues);
+		const kmDiff = maxOdo - minOdo;
+		if (kmDiff <= 0) return null;
+		const dates = logs.map((l) => l.recorded_at).sort();
+		const firstDate = new Date(dates[0]);
+		const lastDate = new Date(dates[dates.length - 1]);
+		const monthsDiff = (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+		if (monthsDiff < 1) return null;
+		return Math.round(kmDiff / monthsDiff);
+	});
+
+	const monthsOfUsage = $derived(() => {
+		const logs = data.odometerLogs ?? [];
+		if (logs.length < 2) return 0;
+		const dates = logs.map((l) => l.recorded_at).sort();
+		const firstDate = new Date(dates[0]);
+		const lastDate = new Date(dates[dates.length - 1]);
+		return Math.max(
+			1,
+			Math.round((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24 * 30))
+		);
+	});
+
+	const trackerServiceLogs = $derived(() => {
+		const map = new Map<string, typeof data.allServiceLogs>();
+		for (const log of data.allServiceLogs ?? []) {
+			if (log.tracker_id) {
+				if (!map.has(log.tracker_id)) map.set(log.tracker_id, []);
+				map.get(log.tracker_id)!.push(log);
+			}
+		}
+		return map;
+	});
+
+	const filteredTrackers = $derived(() => {
+		let trackers = [...data.trackers];
+		if (searchQuery) {
+			const q = searchQuery.toLowerCase();
+			trackers = trackers.filter((t) => t.template.name.toLowerCase().includes(q));
+		}
+		return trackers;
+	});
 
 	const sortedTrackers = $derived(
-		[...data.trackers].sort((a, b) => {
-			const order: Record<string, number> = { overdue: 0, due: 1, ok: 2 };
-			return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+		filteredTrackers().sort((a, b) => {
+			if (sortBy === 'status' || viewMode === 'current') {
+				const order: Record<string, number> = { overdue: 0, due: 1, ok: 2 };
+				return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+			}
+			if (sortBy === 'name') {
+				return a.template.name.localeCompare(b.template.name);
+			}
+			if (sortBy === 'last') {
+				const aDate = a.last_done_at ?? '1970-01-01';
+				const bDate = b.last_done_at ?? '1970-01-01';
+				return bDate.localeCompare(aDate);
+			}
+			return 0;
 		})
 	);
 
@@ -43,6 +111,32 @@
 		editingTracker = id;
 		trackerMenu = null;
 		loggingTracker = null;
+		historyTracker = null;
+	}
+
+	function getForecastDate(tracker: (typeof data.trackers)[number]): string | null {
+		if (!tracker.last_done_at) return null;
+		const lastDate = new Date(tracker.last_done_at);
+		const intervalMonths = tracker.template.interval_months;
+		if (!intervalMonths) return null;
+		const nextDate = new Date(lastDate);
+		nextDate.setMonth(nextDate.getMonth() + intervalMonths);
+		return nextDate.toISOString().slice(0, 10);
+	}
+
+	function getKmForecast(tracker: (typeof data.trackers)[number]): {
+		odometer: number | null;
+		monthsUntil: number | null;
+	} {
+		const avgKm = averageKmPerMonth();
+		if (!avgKm || !tracker.last_done_odometer || !tracker.template.interval_km) {
+			return { odometer: null, monthsUntil: null };
+		}
+		const nextOdo = tracker.last_done_odometer + tracker.template.interval_km;
+		const kmRemaining = nextOdo - data.vehicle.current_odometer;
+		if (kmRemaining <= 0) return { odometer: nextOdo, monthsUntil: 0 };
+		const monthsUntil = Math.ceil(kmRemaining / avgKm);
+		return { odometer: nextOdo, monthsUntil };
 	}
 
 	$effect(() => {
@@ -113,6 +207,18 @@
 	});
 
 	$effect(() => {
+		const id = editingLog;
+		if (id && typeof window !== 'undefined') {
+			requestAnimationFrame(() => {
+				document.querySelector(`[data-edit-log="${id}"]`)?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center'
+				});
+			});
+		}
+	});
+
+	$effect(() => {
 		const id = editingTracker;
 		if (id && typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches) {
 			setTimeout(() => {
@@ -133,20 +239,177 @@
 		<p class="page-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
-		{#if sortedTrackers.length === 0}
+		{#if data.trackers.length > 0}
+			<div class="view-toggle">
+				<button
+					type="button"
+					class="view-toggle-btn"
+					class:view-toggle-btn--active={viewMode === 'current'}
+					onclick={() => (viewMode = 'current')}>{$_('maintenance.view.current')}</button
+				>
+				<button
+					type="button"
+					class="view-toggle-btn"
+					class:view-toggle-btn--active={viewMode === 'forecast'}
+					onclick={() => (viewMode = 'forecast')}>{$_('maintenance.view.forecast')}</button
+				>
+				<button
+					type="button"
+					class="view-toggle-btn"
+					class:view-toggle-btn--active={viewMode === 'history'}
+					onclick={() => (viewMode = 'history')}>{$_('maintenance.view.history')}</button
+				>
+			</div>
+		{/if}
+		{#if data.trackers.length === 0}
 			<form method="POST" action="?/applyDefaults" use:enhance>
 				<button type="submit" class="btn-ghost">
 					{$_('maintenance.applyDefaults')}
 				</button>
 			</form>
 		{/if}
-		<button class="btn-ghost" onclick={() => (showAddTask = !showAddTask)}>
+		<button
+			class="btn-ghost"
+			class:btn-ghost--disabled={viewMode === 'history'}
+			disabled={viewMode === 'history'}
+			title={viewMode === 'history' ? $_('maintenance.addTask.historyDisabled') : ''}
+			onclick={() => (showAddTask = !showAddTask)}
+		>
 			{showAddTask ? $_('common.cancel') : $_('maintenance.addTask.button')}
 		</button>
 	</div>
 </div>
 
-{#if showAddTask}
+{#if sortedTrackers.length > 0 || searchQuery || viewMode === 'history'}
+	<div class="filters">
+		<div class="search-box">
+			<input
+				type="text"
+				placeholder={$_('maintenance.filter.search')}
+				bind:value={searchQuery}
+				class="search-input"
+			/>
+		</div>
+		<div class="filter-controls">
+			{#if viewMode === 'history'}
+				<select bind:value={historySortBy} class="filter-select">
+					<option value="date">{$_('maintenance.filter.sortDate')}</option>
+					<option value="name">{$_('maintenance.filter.sortName')}</option>
+				</select>
+			{:else}
+				<select bind:value={sortBy} class="filter-select">
+					<option value="status">{$_('maintenance.filter.sortStatus')}</option>
+					<option value="name">{$_('maintenance.filter.sortName')}</option>
+					<option value="last">{$_('maintenance.filter.sortLast')}</option>
+				</select>
+			{/if}
+		</div>
+	</div>
+{/if}
+
+{#if viewMode === 'history'}
+	<div class="history-timeline">
+		{#if (data.allServiceLogs ?? []).length === 0}
+			<div class="empty">
+				<div class="empty-icon" aria-hidden="true">📋</div>
+				<p class="empty-title">{$_('maintenance.history.noHistory')}</p>
+				<p class="empty-desc">{$_('maintenance.history.noHistoryDesc')}</p>
+			</div>
+		{:else}
+			{@const filteredHistory = (() => {
+				let logs = [...(data.allServiceLogs ?? [])];
+				if (searchQuery) {
+					const q = searchQuery.toLowerCase();
+					logs = logs.filter((log) => {
+						const tracker = data.trackers.find((t) => t.id === log.tracker_id);
+						const name = tracker?.template.name?.toLowerCase() ?? '';
+						return name.includes(q);
+					});
+				}
+				return logs;
+			})()}
+			{@const historySorted = (() => {
+				const logs = [...filteredHistory];
+				if (historySortBy === 'name') {
+					logs.sort((a, b) => {
+						const trackA = data.trackers.find((t) => t.id === a.tracker_id)?.template.name ?? '';
+						const trackB = data.trackers.find((t) => t.id === b.tracker_id)?.template.name ?? '';
+						return trackA.localeCompare(trackB);
+					});
+				} else {
+					logs.sort((a, b) => b.performed_at.localeCompare(a.performed_at));
+				}
+				return logs;
+			})()}
+			{@const historyGrouped = (() => {
+				const map = new Map<string, typeof historySorted>();
+				for (const log of historySorted) {
+					const key = log.performed_at.slice(0, 7);
+					if (!map.has(key)) map.set(key, []);
+					map.get(key)!.push(log);
+				}
+				return [...map.entries()];
+			})()}
+			{#if historySorted.length === 0}
+				<div class="empty">
+					<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
+					<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
+				</div>
+			{:else}
+				{#each historyGrouped as [yearMonth, logs]}
+					<div class="timeline-month">
+						<div class="timeline-month-label">
+							<span class="timeline-month-name">{yearMonth}</span>
+							<span class="timeline-month-line"></span>
+						</div>
+						{#each logs as log}
+							{@const tracker = data.trackers.find((t) => t.id === log.tracker_id)}
+							<div class="timeline-entry" data-log-id={log.id}>
+								<span class="timeline-dot"></span>
+								<span class="timeline-title"
+									>{tracker?.template.name ?? $_('maintenance.history.serviceEntry')}</span
+								>
+								<span class="timeline-meta">
+									{formatDateShort(log.performed_at, locale)} · {formatNumber(
+										log.odometer_at_service,
+										locale
+									)}
+									{data.vehicle.odometer_unit}
+									{#if log.cost_cents}
+										<span class="timeline-cost">
+											· {formatCurrency(log.cost_cents, log.currency, locale)}</span
+										>
+									{/if}
+								</span>
+								<div class="entry-actions" class:entry-actions--open={logMenu === log.id}>
+									<button
+										class="entry-menu-btn"
+										class:active={logMenu === log.id}
+										onclick={() => (logMenu = logMenu === log.id ? null : log.id)}
+										aria-label="Entry options"
+										aria-haspopup="true">⋮</button
+									>
+									{#if logMenu === log.id}
+										<div class="entry-menu-dropdown" role="menu">
+											<button
+												role="menuitem"
+												class="entry-menu-item"
+												onclick={() => {
+													editingLog = log.id;
+													logMenu = null;
+												}}>{$_('common.edit')}</button
+											>
+										</div>
+									{/if}
+								</div>
+							</div>
+						{/each}
+					</div>
+				{/each}
+			{/if}
+		{/if}
+	</div>
+{:else if showAddTask && viewMode !== 'history'}
 	<form method="POST" action="?/addTask" use:enhance use:scrollOnMount class="add-task-form">
 		<div class="add-task-fields">
 			<label class="field">
@@ -193,11 +456,145 @@
 	</form>
 {/if}
 
-{#if sortedTrackers.length === 0}
+{#if editingLog}
+	{@const editLog = data.allServiceLogs?.find((l) => l.id === editingLog)}
+	{#if editLog}
+		<div class="expand-wrap open" data-edit-log={editLog.id}>
+			<div class="expand-inner">
+				<div class="entry-edit-card">
+					<form
+						method="POST"
+						action="?/editServiceLog"
+						class="entry-edit-form"
+						use:enhance={() => {
+							editSubmitting = true;
+							return async ({ update }) => {
+								await update();
+								editSubmitting = false;
+								editingLog = null;
+							};
+						}}
+					>
+						<input type="hidden" name="id" value={editLog.id} />
+						<div class="form-row">
+							<label class="field">
+								<span class="field-label">{$_('maintenance.editLog.date')}</span>
+								<input
+									type="date"
+									name="performed_at"
+									value={editLog.performed_at}
+									class="input"
+									required
+								/>
+							</label>
+							<label class="field">
+								<span class="field-label"
+									>{$_('maintenance.editLog.odometer', {
+										values: { unit: data.vehicle.odometer_unit }
+									})}</span
+								>
+								<input
+									type="number"
+									name="odometer_at_service"
+									min="0"
+									value={editLog.odometer_at_service}
+									class="input mono"
+									required
+								/>
+							</label>
+						</div>
+						{#if data.trackers.length > 0}
+							<fieldset class="tracker-select">
+								<legend class="field-label"
+									>{$_('vehicle.forms.fields.resetCycle', {
+										values: { optional: $_('vehicle.forms.fields.checkToReset') }
+									})}</legend
+								>
+								<div class="tracker-checkboxes">
+									{#each data.trackers as t}
+										<label class="tracker-checkbox">
+											<input
+												type="checkbox"
+												name="reset_trackers"
+												value={t.id}
+												checked={editLog?.tracker_id === t.id}
+											/>
+											<span class="tracker-check-label">
+												<span class="tracker-check-name">{t.template.name}</span>
+												{#if t.status === 'due'}
+													<span class="tracker-check-status tracker-check-status--due"
+														>{$_('maintenance.tracker.status.due')}</span
+													>
+												{:else if t.status === 'overdue'}
+													<span class="tracker-check-status tracker-check-status--overdue"
+														>{$_('maintenance.tracker.status.overdue')}</span
+													>
+												{/if}
+											</span>
+										</label>
+									{/each}
+								</div>
+							</fieldset>
+						{/if}
+						<label class="field">
+							<span class="field-label">{$_('maintenance.editLog.notes')}</span>
+							<input
+								type="text"
+								name="notes"
+								maxlength="200"
+								value={editLog.notes ?? ''}
+								class="input"
+							/>
+						</label>
+						<label class="field">
+							<span class="field-label">{$_('maintenance.editLog.remark')}</span>
+							<input
+								type="text"
+								name="remark"
+								maxlength="200"
+								value={editLog.remark ?? ''}
+								class="input"
+								placeholder={$_('maintenance.editLog.remarkPlaceholder')}
+							/>
+						</label>
+						<label class="field">
+							<span class="field-label">{$_('maintenance.editLog.cost')}</span>
+							<input
+								type="number"
+								name="cost"
+								min="0"
+								step="0.01"
+								value={editLog.cost_cents != null ? editLog.cost_cents / 100 : ''}
+								class="input mono"
+							/>
+						</label>
+						<div class="form-actions">
+							<button type="submit" class="btn-primary" disabled={editSubmitting}>
+								{editSubmitting ? $_('maintenance.saving') : $_('maintenance.editLog.save')}
+							</button>
+							<button type="button" class="btn-ghost" onclick={() => (editingLog = null)}
+								>{$_('common.cancel')}</button
+							>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	{/if}
+{/if}
+
+{#if data.trackers.length === 0}
 	<div class="empty">
 		<div class="empty-icon" aria-hidden="true">🔧</div>
 		<p class="empty-title">{$_('maintenance.empty.title')}</p>
 		<p class="empty-desc">{$_('maintenance.empty.description')}</p>
+	</div>
+{:else if viewMode === 'history'}
+	<!-- History view is shown above, no need to render anything here -->
+{:else if sortedTrackers.length === 0}
+	<div class="empty">
+		<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
+		<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
 	</div>
 {:else}
 	<!-- Single backdrop for tracker menus -->
@@ -214,14 +611,26 @@
 						{tracker}
 						vehicleUnit={data.vehicle.odometer_unit}
 						{locale}
+						serviceLogs={trackerServiceLogs().get(t.id) ?? []}
+						showHistory={historyTracker === t.id}
+						forecastMode={viewMode === 'forecast'}
+						forecastData={viewMode === 'forecast' ? getKmForecast(t) : null}
+						monthsOfUsage={monthsOfUsage()}
 						isLogging={loggingTracker === t.id}
 						isRecentlyLogged={recentlyLoggedId === t.id}
 						onlogclick={(id) => {
 							loggingTracker = loggingTracker === id ? null : id;
+							historyTracker = null;
+							editingTracker = null;
+						}}
+						onhistoryclick={(id) => {
+							historyTracker = historyTracker === id ? null : id;
+							loggingTracker = null;
 							editingTracker = null;
 						}}
 						onoptionsclick={(id) => {
 							loggingTracker = null;
+							historyTracker = null;
 							toggleTrackerMenu(id);
 						}}
 					/>
@@ -520,6 +929,36 @@
 		margin: 0;
 	}
 
+	/* View toggle */
+	.view-toggle {
+		display: flex;
+		background: var(--bg-muted);
+		border-radius: 8px;
+		padding: 2px;
+		gap: 2px;
+	}
+	.view-toggle-btn {
+		padding: 0.375rem 0.75rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		background: transparent;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		color: var(--text-muted);
+		transition:
+			background 0.15s,
+			color 0.15s;
+	}
+	.view-toggle-btn:hover {
+		color: var(--text);
+	}
+	.view-toggle-btn--active {
+		background: var(--bg);
+		color: var(--text);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
 	/* Add task form */
 	.add-task-form {
 		border: 1px solid var(--border);
@@ -540,6 +979,56 @@
 	.add-task-actions {
 		display: flex;
 		gap: 0.5rem;
+	}
+
+	/* Filters */
+	.filters {
+		display: flex;
+		gap: var(--space-3);
+		margin-bottom: var(--space-5);
+		flex-wrap: wrap;
+		align-items: center;
+	}
+	.search-box {
+		flex: 1;
+		min-width: 200px;
+	}
+	.search-input {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		color: var(--text);
+		font-size: var(--text-sm);
+		min-height: 40px;
+	}
+	.search-input:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: 1px;
+		border-color: transparent;
+	}
+	.filter-controls {
+		display: flex;
+		gap: var(--space-2);
+		flex-wrap: wrap;
+		align-items: center;
+	}
+	.filter-select {
+		padding: 0.375rem 0.625rem;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		color: var(--text);
+		font-size: var(--text-sm);
+		cursor: pointer;
+		min-height: 40px;
+		box-sizing: border-box;
+	}
+	.filter-select:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: -1px;
+		border-color: transparent;
 	}
 
 	/* Tracker list — open, no outer box */
@@ -624,6 +1113,23 @@
 	}
 	.expand-inner {
 		overflow: hidden;
+	}
+
+	/* Inline edit form (appears below entry) - matches vehicle detail page */
+	.entry-edit-card {
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		padding: 1rem 1.25rem;
+		margin: 0 0 0 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+	.entry-edit-form {
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
 	}
 
 	/* Edit tracker form */
@@ -749,53 +1255,182 @@
 		color: var(--text-muted);
 	}
 	.btn-ghost:hover {
-		background: var(--bg-muted);
+		background: var(--bg-subtle);
 		color: var(--text);
 	}
 
-	/* Empty state */
-	.empty {
+	/* Tracker checkboxes */
+	.tracker-select {
+		border: none;
+		padding: 0;
+		margin: 0;
+	}
+	.tracker-select legend {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text-muted);
+		padding: 0;
+		margin-bottom: 0.5rem;
+	}
+	.tracker-checkboxes {
 		display: flex;
-		flex-direction: column;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.tracker-checkbox {
+		display: flex;
 		align-items: center;
-		text-align: center;
-		padding: 3rem 1.5rem;
+		gap: 0.375rem;
+		padding: 0.375rem 0.625rem;
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: var(--text-sm);
+		transition:
+			background 0.1s,
+			border-color 0.1s;
 	}
-	.empty-icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
+	.tracker-checkbox:hover {
+		background: var(--bg-muted);
+		border-color: var(--border-strong);
 	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
+	.tracker-checkbox input[type='checkbox'] {
+		width: 1rem;
+		height: 1rem;
+		accent-color: var(--accent);
+	}
+	.tracker-check-label {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+	}
+	.tracker-check-name {
 		color: var(--text);
-		margin: 0 0 0.5rem;
 	}
-	.empty-desc {
+	.tracker-check-status {
+		font-size: var(--text-xs);
+		font-weight: 500;
+		padding: 0.125rem 0.375rem;
+		border-radius: 4px;
+	}
+	.tracker-check-status--due {
+		background: color-mix(in srgb, var(--status-due) 15%, transparent);
+		color: var(--status-due);
+	}
+	.tracker-check-status--overdue {
+		background: color-mix(in srgb, var(--status-overdue) 15%, transparent);
+		color: var(--status-overdue);
+	}
+
+	/* History timeline */
+	.history-timeline {
+		padding: var(--space-4) 0;
+	}
+	.timeline-month {
+		margin-bottom: var(--space-5);
+	}
+	.timeline-month-label {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		margin-bottom: var(--space-4);
+	}
+	.timeline-month-name {
+		font-size: var(--text-xs);
+		font-weight: 600;
+		color: var(--text-subtle);
+		text-transform: uppercase;
+		letter-spacing: 0.07em;
+		flex-shrink: 0;
+	}
+	.timeline-month-line {
+		flex: 1;
+		height: 1px;
+		background: var(--border);
+	}
+	.timeline-entry {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		padding: 0.875rem 0;
+		border-bottom: 1px solid var(--border);
+		cursor: default;
+		transition: background 0.15s;
+	}
+	.timeline-entry:first-child {
+		border-top: 1px solid var(--border);
+	}
+	.timeline-entry:hover {
+		background: var(--bg-subtle);
+	}
+	.timeline-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--text-subtle);
+		flex-shrink: 0;
+		margin-top: 0.35rem;
+		transition:
+			transform 0.15s,
+			background 0.15s;
+	}
+	.timeline-entry:hover .timeline-dot {
+		transform: scale(1.35);
+	}
+	.timeline-title {
+		font-size: var(--text-base);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.timeline-meta {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
-		margin: 0;
-		line-height: var(--leading-base);
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+	}
+	.timeline-cost {
+		color: var(--text-subtle);
+	}
+	.entry-actions {
+		position: relative;
+		flex-shrink: 0;
+		align-self: center;
+	}
+	.entry-menu-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: none;
+		border: 1px solid transparent;
+		border-radius: 6px;
+		color: var(--text-subtle);
+		font-size: 1rem;
+		line-height: 1;
+		cursor: pointer;
+		opacity: 0;
+		transition:
+			opacity 0.15s,
+			background 0.15s,
+			border-color 0.15s;
+	}
+	.entry-menu-btn:focus,
+	.entry-menu-btn.active {
+		opacity: 1;
+	}
+	.entry-menu-btn:hover,
+	.entry-menu-btn.active {
+		background: var(--bg-muted);
+		border-color: var(--border);
 	}
 
-	/* Mobile: narrower grid */
 	@media (max-width: 540px) {
-		.log-fields {
-			grid-template-columns: 1fr 1fr;
-		}
-		.add-task-fields {
-			grid-template-columns: 1fr 1fr;
-		}
-		.edit-row {
-			grid-template-columns: 1fr;
-		}
-	}
-	@media (max-width: 380px) {
-		.log-fields {
-			grid-template-columns: 1fr;
-		}
-		.add-task-fields {
-			grid-template-columns: 1fr;
+		.entry-menu-btn {
+			opacity: 1;
+			width: 44px;
+			height: 44px;
 		}
 	}
 </style>

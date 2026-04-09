@@ -44,7 +44,7 @@ export const PRESET_TEMPLATES = [
 		name: 'Oil & Filter Change',
 		category: 'oil' as const,
 		description: 'Engine oil and oil filter replacement',
-		interval_km: 5000,
+		interval_km: 10000,
 		interval_months: 12
 	},
 	{
@@ -224,7 +224,7 @@ export async function applyDefaultTrackersFromHistory(
 	})();
 
 	const presetIntervals: Record<string, { km: number | null; months: number | null }> = {
-		oil: { km: 5000, months: 12 },
+		oil: { km: 10000, months: 12 },
 		brake: { km: 10000, months: 24 },
 		chain_lube: { km: 500, months: null },
 		chain_tension: { km: 1000, months: null },
@@ -240,7 +240,10 @@ export async function applyDefaultTrackersFromHistory(
 			if (interval > 0 && interval < 50000) {
 				const preset = presetIntervals[key];
 				if (!preset || (preset.km !== null && interval < preset.km * 1.5)) {
-					derivedIntervals[key] = { km: interval, months: avgKmPerMonth ? Math.round(12 / avgKmPerMonth) : null };
+					derivedIntervals[key] = {
+						km: interval,
+						months: avgKmPerMonth ? Math.round(12 / avgKmPerMonth) : null
+					};
 				}
 			}
 		}
@@ -254,7 +257,10 @@ export async function applyDefaultTrackersFromHistory(
 				...nameMap[key],
 				description: `Recurring maintenance (auto-detected from ${serviceLogs.length} service entries)`
 			};
-			presetIntervals[key] = { km: derived.km ?? preset.km, months: derived.months ?? preset.months };
+			presetIntervals[key] = {
+				km: derived.km ?? preset.km,
+				months: derived.months ?? preset.months
+			};
 		}
 	}
 
