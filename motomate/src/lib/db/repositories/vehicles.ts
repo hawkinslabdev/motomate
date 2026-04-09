@@ -73,6 +73,9 @@ export async function insertOdometerLog(
 	recordedAt?: string,
 	kind: 'odometer' | 'note' = 'odometer'
 ): Promise<void> {
+	if (odometer < 0) {
+		throw new Error('Odometer cannot be negative');
+	}
 	await db.insert(odometer_logs).values({
 		id: generateId(),
 		vehicle_id: vehicleId,

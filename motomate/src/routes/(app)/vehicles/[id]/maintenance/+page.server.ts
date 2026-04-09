@@ -9,15 +9,14 @@ import {
 	deleteTracker,
 	applyDefaultTrackersFromHistory
 } from '$lib/db/repositories/maintenance.js';
-import { getVehicleById, updateOdometer } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
 import {
 	createServiceLog,
 	getServiceLogsByVehicle,
 	getServiceLogsByTracker,
-	getServiceLogById,
 	updateServiceLog
 } from '$lib/db/repositories/service-logs.js';
-import { insertOdometerLog, getOdometerLogs } from '$lib/db/repositories/vehicles.js';
+import { getOdometerLogs } from '$lib/db/repositories/vehicles.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 
@@ -52,7 +51,6 @@ export const actions: Actions = {
 		}
 
 		await createServiceLog(locals.user!.id, parsed.data);
-		await insertOdometerLog(params.id, locals.user!.id, parsed.data.odometer_at_service);
 		await recomputeTrackerStatuses(params.id, parsed.data.odometer_at_service);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
@@ -165,16 +163,8 @@ export const actions: Actions = {
 			await recomputeTrackerStatuses(params.id, odometer);
 		}
 
-		const log = await getServiceLogById(id);
-		if (log) {
-			const vehicle = await getVehicleById(params.id, locals.user!.id);
-			if (vehicle && log.odometer_at_service > vehicle.current_odometer) {
-				await updateOdometer(params.id, locals.user!.id, log.odometer_at_service);
-			}
-			if (resetTrackerIds.length === 0) {
-				await recomputeTrackerStatuses(params.id, vehicle?.current_odometer ?? 0);
-			}
-		}
+		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
+		await recomputeTrackerStatuses(params.id, trueOdo);
 
 		return { logUpdated: true };
 	},

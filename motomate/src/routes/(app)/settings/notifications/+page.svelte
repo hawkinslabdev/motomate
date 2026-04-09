@@ -11,16 +11,20 @@
 	});
 
 	// Channel toggles (local reactive state for instant UI feedback)
-	// Destructure once to avoid $state-referencing-data warnings (initial values only)
-	const { channels: initChannels, vapidPublicKey: initVapid, smtpConfigured: initSmtp } = data;
-	let pushEnabled = $state(initChannels.push?.enabled ?? false);
-	let emailEnabled = $state(initChannels.email?.enabled ?? false);
-	let emailAddress = $state(initChannels.email?.address ?? '');
-	let webhookEnabled = $state(initChannels.webhook?.enabled ?? false);
-	let webhookUrl = $state(initChannels.webhook?.url ?? '');
-	let webhookAuth = $state(initChannels.webhook?.auth_header ?? '');
-	let haEnabled = $state(initChannels.home_assistant?.enabled ?? false);
-	let haUrl = $state(initChannels.home_assistant?.webhook_url ?? '');
+	// Use $state.raw for values only read at initialization (not reactive to data changes)
+	const initialChannels = data.channels ?? {};
+	let pushEnabled = $state(initialChannels.push?.enabled ?? false);
+	let emailEnabled = $state(initialChannels.email?.enabled ?? false);
+	let emailAddress = $state(initialChannels.email?.address ?? '');
+	let webhookEnabled = $state(initialChannels.webhook?.enabled ?? false);
+	let webhookUrl = $state(initialChannels.webhook?.url ?? '');
+	let webhookAuth = $state(initialChannels.webhook?.auth_header ?? '');
+	let haEnabled = $state(initialChannels.home_assistant?.enabled ?? false);
+	let haUrl = $state(initialChannels.home_assistant?.webhook_url ?? '');
+
+	// Derived values for display (reactive)
+	let initVapid = $derived(data.vapidPublicKey);
+	let initSmtp = $derived(data.smtpConfigured);
 
 	function extractHaWebhookId(url: string): string | null {
 		try {

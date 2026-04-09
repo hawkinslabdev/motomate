@@ -152,7 +152,7 @@
 					class="history-btn"
 					onclick={(e) => {
 						e.stopPropagation();
-						onlogclick?.(tracker.id);
+						onhistoryclick?.(tracker.id);
 					}}
 				>
 					<svg

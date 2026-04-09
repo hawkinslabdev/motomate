@@ -409,7 +409,7 @@
 			{/if}
 		{/if}
 	</div>
-{:else if showAddTask && viewMode !== 'history'}
+{:else if showAddTask && (viewMode === 'current' || viewMode === 'forecast')}
 	<form method="POST" action="?/addTask" use:enhance use:scrollOnMount class="add-task-form">
 		<div class="add-task-fields">
 			<label class="field">
