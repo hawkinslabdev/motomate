@@ -391,7 +391,10 @@
 		"forecast": {
 			"basedOnUsage": "basé sur {months} mois d'utilisation",
 			"insufficientData": "données insuffisantes pour la prévision",
-			"estimated": "env."
+			"estimated": "env.",
+			"inMonths": "dans ~{months} mois",
+			"dueSoon": "bientôt dû",
+			"estimatedDate": "env. {date}"
 		},
 		"filter": {
 			"search": "Rechercher des tâches...",
@@ -918,6 +921,7 @@
 		"filter": {
 			"search": "Rechercher des voyages...",
 			"noResults": "Aucun voyage ne correspond à votre recherche.",
+			"noResultsDesc": "Essayez un autre terme de recherche ou effacez le filtre.",
 			"all": "Tous",
 			"past": "Passés",
 			"upcoming": "Planifiés"

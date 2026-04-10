@@ -391,7 +391,10 @@
 		"forecast": {
 			"basedOnUsage": "based on {months} months usage",
 			"insufficientData": "insufficient data for prediction",
-			"estimated": "est."
+			"estimated": "est.",
+			"inMonths": "in ~{months} months",
+			"dueSoon": "due soon",
+			"estimatedDate": "est. {date}"
 		},
 		"view": {
 			"current": "Current",
@@ -901,6 +904,7 @@
 		"filter": {
 			"search": "Search travels...",
 			"noResults": "No travels match your search.",
+			"noResultsDesc": "Try a different search term or clear the filter.",
 			"all": "All",
 			"past": "Past",
 			"upcoming": "Upcoming"

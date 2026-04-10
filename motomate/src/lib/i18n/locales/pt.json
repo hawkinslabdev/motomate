@@ -391,7 +391,10 @@
 		"forecast": {
 			"basedOnUsage": "baseado em {months} meses de uso",
 			"insufficientData": "dados insuficientes para previsão",
-			"estimated": "est."
+			"estimated": "est.",
+			"inMonths": "em ~{months} meses",
+			"dueSoon": "vence em breve",
+			"estimatedDate": "est. {date}"
 		},
 		"filter": {
 			"search": "Pesquisar tarefas...",
@@ -917,6 +920,7 @@
 		"filter": {
 			"search": "Pesquisar viagens...",
 			"noResults": "Nenhuma viagem corresponde à sua pesquisa.",
+			"noResultsDesc": "Tente outro termo de pesquisa ou limpe o filtro.",
 			"all": "Todos",
 			"past": "Passados",
 			"upcoming": "Planeados"

@@ -391,7 +391,10 @@
 		"forecast": {
 			"basedOnUsage": "basato su {months} mesi di utilizzo",
 			"insufficientData": "dati insufficienti per previsione",
-			"estimated": "circa"
+			"estimated": "circa",
+			"inMonths": "tra ~{months} mesi",
+			"dueSoon": "in scadenza",
+			"estimatedDate": "circa {date}"
 		},
 		"filter": {
 			"search": "Cerca attività...",
@@ -917,6 +920,7 @@
 		"filter": {
 			"search": "Cerca viaggi...",
 			"noResults": "Nessun viaggio corrisponde alla ricerca.",
+			"noResultsDesc": "Prova un altro termine di ricerca o cancella il filtro.",
 			"all": "Tutti",
 			"past": "Passati",
 			"upcoming": "Pianificati"

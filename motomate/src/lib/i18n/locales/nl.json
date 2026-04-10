@@ -391,7 +391,10 @@
 		"forecast": {
 			"basedOnUsage": "op basis van {months} maanden gebruik",
 			"insufficientData": "onvoldoende data voor voorspelling",
-			"estimated": "ca."
+			"estimated": "ca.",
+			"inMonths": "over ~{months} maanden",
+			"dueSoon": "binnenkort verschuldigd",
+			"estimatedDate": "ca. {date}"
 		},
 		"filter": {
 			"search": "Zoek taken...",
@@ -917,7 +920,8 @@
 		},
 		"filter": {
 			"search": "Ritten zoeken...",
-			"noResults": "Geen ritten gevonden die overeenkomen met uw zoekopdracht.",
+			"noResults": "Geen ritten gevonden",
+			"noResultsDesc": "Probeer een andere zoekterm of pas je filters aan.",
 			"all": "Alle",
 			"past": "Verleden",
 			"upcoming": "Gepland"

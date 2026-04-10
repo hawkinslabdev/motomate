@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatNumber, formatDateShort, formatCurrency } from '$lib/utils/format';
+	import { formatNumber, formatDateShort, formatCurrency, formatYearMonth } from '$lib/utils/format';
 	import { _, waitLocale } from '$lib/i18n';
 
 	type ServiceLog = {
@@ -20,6 +20,7 @@
 		serviceLogs = [],
 		forecastMode = false,
 		forecastData = null,
+		forecastDateEstimate = null,
 		monthsOfUsage = 0,
 		isLogging = false,
 		isRecentlyLogged = false,
@@ -42,6 +43,7 @@
 		serviceLogs?: ServiceLog[];
 		forecastMode?: boolean;
 		forecastData?: { odometer: number | null; monthsUntil: number | null } | null;
+		forecastDateEstimate?: string | null;
 		monthsOfUsage?: number;
 		isLogging?: boolean;
 		isRecentlyLogged?: boolean;
@@ -96,20 +98,6 @@
 	class:tracker-card--due={tracker.status === 'due'}
 	class:tracker-card--overdue={tracker.status === 'overdue'}
 	class:tracker-card--logged={isRecentlyLogged}
-	onclick={() => {
-		if (serviceLogs.length > 0) {
-			onhistoryclick?.(tracker.id);
-		}
-	}}
-	onkeydown={(e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-			if (serviceLogs.length > 0) {
-				onhistoryclick?.(tracker.id);
-			}
-		}
-	}}
-	role="button"
-	tabindex={serviceLogs.length > 0 ? 0 : -1}
 >
 	<div class="tracker-main">
 		<div class="tracker-info">
@@ -120,13 +108,18 @@
 					<span class="meta-sep">·</span>
 					<span>{$_('maintenance.tracker.next', { values: { info: nextInfo() } })}</span>
 				{/if}
-				{#if forecastMode && forecastData}
-					{#if forecastData.odometer}
+				{#if forecastMode}
+					{#if forecastData?.odometer}
 						<span class="meta-sep">·</span>
 						<span class="forecast-info">
 							{$_('maintenance.forecast.estimated')}
 							{formatNumber(forecastData.odometer, locale)}
 							{vehicleUnit}
+							{#if forecastData.monthsUntil !== null && forecastData.monthsUntil > 0}
+								<span class="forecast-when">· {$_('maintenance.forecast.inMonths', { values: { months: forecastData.monthsUntil } })}</span>
+							{:else if forecastData.monthsUntil === 0}
+								<span class="forecast-when forecast-when--due">{$_('maintenance.forecast.dueSoon')}</span>
+							{/if}
 							{#if monthsOfUsage >= 5}
 								<span class="forecast-confidence">
 									{$_('maintenance.forecast.basedOnUsage', { values: { months: monthsOfUsage } })}
@@ -136,6 +129,11 @@
 									{$_('maintenance.forecast.insufficientData')}
 								</span>
 							{/if}
+						</span>
+					{:else if forecastDateEstimate}
+						<span class="meta-sep">·</span>
+						<span class="forecast-info">
+							{$_('maintenance.forecast.estimatedDate', { values: { date: forecastDateEstimate } })}
 						</span>
 					{/if}
 				{/if}
@@ -199,7 +197,7 @@
 			{#each historyGrouped() as [yearMonth, logs]}
 				<div class="history-month">
 					<div class="history-month-label">
-						<span class="history-month-name">{yearMonth}</span>
+						<span class="history-month-name">{formatYearMonth(yearMonth, locale)}</span>
 						<span class="history-month-line"></span>
 					</div>
 					{#each logs as log}
@@ -232,7 +230,6 @@
 		border-left: 3px solid var(--border);
 		padding: 1rem 0.5rem 1rem 1.25rem;
 		background: var(--bg);
-		cursor: pointer;
 		transition: border-left-color 0.15s cubic-bezier(0.25, 1, 0.5, 1);
 	}
 	/* Hover tint via pseudo-element — opacity-only = GPU composited, no repaint */
@@ -320,7 +317,7 @@
 		color: var(--text);
 		transition: color 0.15s;
 	}
-	.tracker-card:hover .tracker-name {
+	.tracker-card:has(.history-btn:hover) .tracker-name {
 		color: var(--accent);
 	}
 	.tracker-meta {
@@ -452,6 +449,14 @@
 	/* Forecast mode */
 	.forecast-info {
 		color: var(--text-muted);
+	}
+	.forecast-when {
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+	}
+	.forecast-when--due {
+		color: var(--status-due);
 	}
 	.forecast-confidence {
 		color: var(--text-subtle);

@@ -6,7 +6,7 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 	import { _, waitLocale } from '$lib/i18n';
-	import { formatNumber, formatDateShort, formatCurrency } from '$lib/utils/format.js';
+	import { formatNumber, formatDateShort, formatCurrency, formatYearMonth } from '$lib/utils/format.js';
 
 	let {
 		data,
@@ -296,7 +296,7 @@
 					<option value="date">{$_('maintenance.filter.sortDate')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
 				</select>
-			{:else}
+			{:else if viewMode === 'current'}
 				<select bind:value={sortBy} class="filter-select">
 					<option value="status">{$_('maintenance.filter.sortStatus')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
@@ -308,10 +308,13 @@
 {/if}
 
 {#if viewMode === 'history'}
+	{#if logMenu !== null}
+		<div class="tracker-backdrop" role="presentation" onclick={() => (logMenu = null)}></div>
+	{/if}
 	<div class="history-timeline">
 		{#if (data.allServiceLogs ?? []).length === 0}
 			<div class="empty">
-				<div class="empty-icon" aria-hidden="true">📋</div>
+				<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span>
 				<p class="empty-title">{$_('maintenance.history.noHistory')}</p>
 				<p class="empty-desc">{$_('maintenance.history.noHistoryDesc')}</p>
 			</div>
@@ -352,6 +355,7 @@
 			})()}
 			{#if historySorted.length === 0}
 				<div class="empty">
+					<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
 					<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
 					<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
 				</div>
@@ -359,7 +363,7 @@
 				{#each historyGrouped as [yearMonth, logs]}
 					<div class="timeline-month">
 						<div class="timeline-month-label">
-							<span class="timeline-month-name">{yearMonth}</span>
+							<span class="timeline-month-name">{formatYearMonth(yearMonth, locale)}</span>
 							<span class="timeline-month-line"></span>
 						</div>
 						{#each logs as log}
@@ -403,6 +407,125 @@
 									{/if}
 								</div>
 							</div>
+							{#if editingLog === log.id}
+								<div class="entry-edit-card" data-edit-log={log.id}>
+									<form
+										method="POST"
+										action="?/editServiceLog"
+										class="entry-edit-form"
+										use:enhance={() => {
+											editSubmitting = true;
+											return async ({ update }) => {
+												await update();
+												editSubmitting = false;
+												editingLog = null;
+											};
+										}}
+									>
+										<input type="hidden" name="id" value={log.id} />
+										<div class="form-row">
+											<label class="field">
+												<span class="field-label">{$_('maintenance.editLog.date')}</span>
+												<input
+													type="date"
+													name="performed_at"
+													value={log.performed_at}
+													class="input"
+													required
+												/>
+											</label>
+											<label class="field">
+												<span class="field-label"
+													>{$_('maintenance.editLog.odometer', {
+														values: { unit: data.vehicle.odometer_unit }
+													})}</span
+												>
+												<input
+													type="number"
+													name="odometer_at_service"
+													min="0"
+													value={log.odometer_at_service}
+													class="input mono"
+													required
+												/>
+											</label>
+										</div>
+										{#if data.trackers.length > 0}
+											<fieldset class="tracker-select">
+												<legend class="field-label"
+													>{$_('vehicle.forms.fields.resetCycle', {
+														values: { optional: $_('vehicle.forms.fields.checkToReset') }
+													})}</legend
+												>
+												<div class="tracker-checkboxes">
+													{#each data.trackers as t}
+														<label class="tracker-checkbox">
+															<input
+																type="checkbox"
+																name="reset_trackers"
+																value={t.id}
+																checked={log.tracker_id === t.id}
+															/>
+															<span class="tracker-check-label">
+																<span class="tracker-check-name">{t.template.name}</span>
+																{#if t.status === 'due'}
+																	<span class="tracker-check-status tracker-check-status--due"
+																		>{$_('maintenance.tracker.status.due')}</span
+																	>
+																{:else if t.status === 'overdue'}
+																	<span class="tracker-check-status tracker-check-status--overdue"
+																		>{$_('maintenance.tracker.status.overdue')}</span
+																	>
+																{/if}
+															</span>
+														</label>
+													{/each}
+												</div>
+											</fieldset>
+										{/if}
+										<label class="field">
+											<span class="field-label">{$_('maintenance.editLog.notes')}</span>
+											<input
+												type="text"
+												name="notes"
+												maxlength="200"
+												value={log.notes ?? ''}
+												class="input"
+											/>
+										</label>
+										<label class="field">
+											<span class="field-label">{$_('maintenance.editLog.remark')}</span>
+											<input
+												type="text"
+												name="remark"
+												maxlength="200"
+												value={log.remark ?? ''}
+												class="input"
+												placeholder={$_('maintenance.editLog.remarkPlaceholder')}
+											/>
+										</label>
+										<label class="field">
+											<span class="field-label">{$_('maintenance.editLog.cost')}</span>
+											<input
+												type="number"
+												name="cost"
+												min="0"
+												step="0.01"
+												value={log.cost_cents != null ? log.cost_cents / 100 : ''}
+												class="input mono"
+											/>
+										</label>
+										<div class="form-actions">
+											<button type="submit" class="btn-primary" disabled={editSubmitting}>
+												{editSubmitting ? $_('maintenance.saving') : $_('maintenance.editLog.save')}
+											</button>
+											<button type="button" class="btn-ghost" onclick={() => (editingLog = null)}
+												>{$_('common.cancel')}</button
+											>
+										</div>
+									</form>
+								</div>
+							{/if}
 						{/each}
 					</div>
 				{/each}
@@ -456,136 +579,9 @@
 	</form>
 {/if}
 
-{#if editingLog}
-	{@const editLog = data.allServiceLogs?.find((l) => l.id === editingLog)}
-	{#if editLog}
-		<div class="expand-wrap open" data-edit-log={editLog.id}>
-			<div class="expand-inner">
-				<div class="entry-edit-card">
-					<form
-						method="POST"
-						action="?/editServiceLog"
-						class="entry-edit-form"
-						use:enhance={() => {
-							editSubmitting = true;
-							return async ({ update }) => {
-								await update();
-								editSubmitting = false;
-								editingLog = null;
-							};
-						}}
-					>
-						<input type="hidden" name="id" value={editLog.id} />
-						<div class="form-row">
-							<label class="field">
-								<span class="field-label">{$_('maintenance.editLog.date')}</span>
-								<input
-									type="date"
-									name="performed_at"
-									value={editLog.performed_at}
-									class="input"
-									required
-								/>
-							</label>
-							<label class="field">
-								<span class="field-label"
-									>{$_('maintenance.editLog.odometer', {
-										values: { unit: data.vehicle.odometer_unit }
-									})}</span
-								>
-								<input
-									type="number"
-									name="odometer_at_service"
-									min="0"
-									value={editLog.odometer_at_service}
-									class="input mono"
-									required
-								/>
-							</label>
-						</div>
-						{#if data.trackers.length > 0}
-							<fieldset class="tracker-select">
-								<legend class="field-label"
-									>{$_('vehicle.forms.fields.resetCycle', {
-										values: { optional: $_('vehicle.forms.fields.checkToReset') }
-									})}</legend
-								>
-								<div class="tracker-checkboxes">
-									{#each data.trackers as t}
-										<label class="tracker-checkbox">
-											<input
-												type="checkbox"
-												name="reset_trackers"
-												value={t.id}
-												checked={editLog?.tracker_id === t.id}
-											/>
-											<span class="tracker-check-label">
-												<span class="tracker-check-name">{t.template.name}</span>
-												{#if t.status === 'due'}
-													<span class="tracker-check-status tracker-check-status--due"
-														>{$_('maintenance.tracker.status.due')}</span
-													>
-												{:else if t.status === 'overdue'}
-													<span class="tracker-check-status tracker-check-status--overdue"
-														>{$_('maintenance.tracker.status.overdue')}</span
-													>
-												{/if}
-											</span>
-										</label>
-									{/each}
-								</div>
-							</fieldset>
-						{/if}
-						<label class="field">
-							<span class="field-label">{$_('maintenance.editLog.notes')}</span>
-							<input
-								type="text"
-								name="notes"
-								maxlength="200"
-								value={editLog.notes ?? ''}
-								class="input"
-							/>
-						</label>
-						<label class="field">
-							<span class="field-label">{$_('maintenance.editLog.remark')}</span>
-							<input
-								type="text"
-								name="remark"
-								maxlength="200"
-								value={editLog.remark ?? ''}
-								class="input"
-								placeholder={$_('maintenance.editLog.remarkPlaceholder')}
-							/>
-						</label>
-						<label class="field">
-							<span class="field-label">{$_('maintenance.editLog.cost')}</span>
-							<input
-								type="number"
-								name="cost"
-								min="0"
-								step="0.01"
-								value={editLog.cost_cents != null ? editLog.cost_cents / 100 : ''}
-								class="input mono"
-							/>
-						</label>
-						<div class="form-actions">
-							<button type="submit" class="btn-primary" disabled={editSubmitting}>
-								{editSubmitting ? $_('maintenance.saving') : $_('maintenance.editLog.save')}
-							</button>
-							<button type="button" class="btn-ghost" onclick={() => (editingLog = null)}
-								>{$_('common.cancel')}</button
-							>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	{/if}
-{/if}
-
 {#if data.trackers.length === 0}
 	<div class="empty">
-		<div class="empty-icon" aria-hidden="true">🔧</div>
+		<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`}</span>
 		<p class="empty-title">{$_('maintenance.empty.title')}</p>
 		<p class="empty-desc">{$_('maintenance.empty.description')}</p>
 	</div>
@@ -593,6 +589,7 @@
 	<!-- History view is shown above, no need to render anything here -->
 {:else if sortedTrackers.length === 0}
 	<div class="empty">
+		<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
 		<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
 		<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
 	</div>
@@ -615,6 +612,12 @@
 						showHistory={historyTracker === t.id}
 						forecastMode={viewMode === 'forecast'}
 						forecastData={viewMode === 'forecast' ? getKmForecast(t) : null}
+						forecastDateEstimate={viewMode === 'forecast'
+							? (() => {
+									const d = getForecastDate(t);
+									return d ? formatDateShort(d, locale) : null;
+								})()
+							: null}
 						monthsOfUsage={monthsOfUsage()}
 						isLogging={loggingTracker === t.id}
 						isRecentlyLogged={recentlyLoggedId === t.id}
@@ -1351,12 +1354,13 @@
 	}
 	.timeline-entry {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: 0.5rem;
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		cursor: default;
 		transition: background 0.15s;
+		position: relative;
 	}
 	.timeline-entry:first-child {
 		border-top: 1px solid var(--border);
@@ -1370,7 +1374,6 @@
 		border-radius: 50%;
 		background: var(--text-subtle);
 		flex-shrink: 0;
-		margin-top: 0.35rem;
 		transition:
 			transform 0.15s,
 			background 0.15s;
@@ -1395,7 +1398,8 @@
 	.entry-actions {
 		position: relative;
 		flex-shrink: 0;
-		align-self: center;
+		margin-left: auto;
+		z-index: 20;
 	}
 	.entry-menu-btn {
 		display: flex;
@@ -1416,6 +1420,7 @@
 			background 0.15s,
 			border-color 0.15s;
 	}
+	.timeline-entry:hover .entry-menu-btn,
 	.entry-menu-btn:focus,
 	.entry-menu-btn.active {
 		opacity: 1;
@@ -1424,6 +1429,50 @@
 	.entry-menu-btn.active {
 		background: var(--bg-muted);
 		border-color: var(--border);
+		color: var(--text);
+	}
+	.entry-menu-dropdown {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 2px);
+		background: var(--bg);
+		border: 1px solid var(--border-strong);
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		z-index: 30;
+		min-width: 120px;
+		padding: 0.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		animation: fadeIn 0.1s ease;
+	}
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-2px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	.entry-menu-item {
+		display: block;
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border-radius: 5px;
+		background: none;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text);
+		transition: background 0.1s;
+	}
+	.entry-menu-item:hover {
+		background: var(--bg-muted);
 	}
 
 	@media (max-width: 540px) {
@@ -1432,5 +1481,30 @@
 			width: 44px;
 			height: 44px;
 		}
+	}
+
+	.empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: 3rem 1.5rem;
+	}
+	.empty-icon {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		opacity: 0.5;
+	}
+	.empty-title {
+		font-size: var(--text-lg);
+		font-weight: 600;
+		color: var(--text);
+		margin: 0 0 0.5rem;
+	}
+	.empty-desc {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		margin: 0;
+		line-height: var(--leading-base);
 	}
 </style>

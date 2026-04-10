@@ -307,8 +307,10 @@
 <!-- Travel List -->
 {#if hasHistory}
 	{#if grouped().length === 0}
-		<div class="empty-search">
-			<p>{$_('travels.filter.noResults')}</p>
+		<div class="empty">
+			<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
+			<p class="empty-title">{$_('travels.filter.noResults')}</p>
+			<p class="empty-desc">{$_('travels.filter.noResultsDesc')}</p>
 		</div>
 	{:else}
 		<div class="travel-list">
@@ -503,11 +505,29 @@
 	}
 
 	/* Empty search result */
-	.empty-search {
-		padding: var(--space-6) 0;
+	.empty {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		text-align: center;
+		padding: 3rem 1.5rem;
+	}
+	.empty .empty-icon {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		opacity: 0.5;
+	}
+	.empty .empty-title {
+		font-size: var(--text-lg);
+		font-weight: 600;
+		color: var(--text);
+		margin: 0 0 0.5rem;
+	}
+	.empty .empty-desc {
 		font-size: var(--text-sm);
-		color: var(--text-subtle);
+		color: var(--text-muted);
+		margin: 0;
+		line-height: var(--leading-base);
 	}
 
 	/* Travel list */
