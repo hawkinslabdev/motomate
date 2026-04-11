@@ -16,9 +16,7 @@ function isSafePath(key: string): boolean {
 		return false;
 	if (isAvatars) {
 		// User profile avatar: avatars/users/{userId}.{ext}
-		const isUserAvatar = normalized.match(
-			/^avatars\/users\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/
-		);
+		const isUserAvatar = normalized.match(/^avatars\/users\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/);
 		// Vehicle avatar: avatars/{userId}/{vehicleId}.{ext}
 		const isVehicleAvatar = normalized.match(
 			/^avatars\/[a-zA-Z0-9]+\/[a-zA-Z0-9\-]+\.[a-zA-Z0-9]+$/

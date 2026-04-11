@@ -6,7 +6,12 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 	import { _, waitLocale } from '$lib/i18n';
-	import { formatNumber, formatDateShort, formatCurrency, formatYearMonth } from '$lib/utils/format.js';
+	import {
+		formatNumber,
+		formatDateShort,
+		formatCurrency,
+		formatYearMonth
+	} from '$lib/utils/format.js';
 
 	let {
 		data,
@@ -314,7 +319,9 @@
 	<div class="history-timeline">
 		{#if (data.allServiceLogs ?? []).length === 0}
 			<div class="empty">
-				<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span>
+				<span class="empty-icon"
+					>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span
+				>
 				<p class="empty-title">{$_('maintenance.history.noHistory')}</p>
 				<p class="empty-desc">{$_('maintenance.history.noHistoryDesc')}</p>
 			</div>
@@ -355,7 +362,9 @@
 			})()}
 			{#if historySorted.length === 0}
 				<div class="empty">
-					<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
+					<span class="empty-icon"
+						>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span
+					>
 					<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
 					<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
 				</div>
@@ -581,7 +590,9 @@
 
 {#if data.trackers.length === 0}
 	<div class="empty">
-		<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`}</span>
+		<span class="empty-icon"
+			>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`}</span
+		>
 		<p class="empty-title">{$_('maintenance.empty.title')}</p>
 		<p class="empty-desc">{$_('maintenance.empty.description')}</p>
 	</div>
@@ -589,7 +600,9 @@
 	<!-- History view is shown above, no need to render anything here -->
 {:else if sortedTrackers.length === 0}
 	<div class="empty">
-		<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
+		<span class="empty-icon"
+			>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span
+		>
 		<p class="empty-title">{$_('maintenance.empty.noMatch')}</p>
 		<p class="empty-desc">{$_('maintenance.empty.noMatchDesc')}</p>
 	</div>

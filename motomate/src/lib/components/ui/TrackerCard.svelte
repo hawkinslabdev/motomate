@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { formatNumber, formatDateShort, formatCurrency, formatYearMonth } from '$lib/utils/format';
+	import {
+		formatNumber,
+		formatDateShort,
+		formatCurrency,
+		formatYearMonth
+	} from '$lib/utils/format';
 	import { _, waitLocale } from '$lib/i18n';
 
 	type ServiceLog = {
@@ -116,9 +121,15 @@
 							{formatNumber(forecastData.odometer, locale)}
 							{vehicleUnit}
 							{#if forecastData.monthsUntil !== null && forecastData.monthsUntil > 0}
-								<span class="forecast-when">· {$_('maintenance.forecast.inMonths', { values: { months: forecastData.monthsUntil } })}</span>
+								<span class="forecast-when"
+									>· {$_('maintenance.forecast.inMonths', {
+										values: { months: forecastData.monthsUntil }
+									})}</span
+								>
 							{:else if forecastData.monthsUntil === 0}
-								<span class="forecast-when forecast-when--due">{$_('maintenance.forecast.dueSoon')}</span>
+								<span class="forecast-when forecast-when--due"
+									>{$_('maintenance.forecast.dueSoon')}</span
+								>
 							{/if}
 							{#if monthsOfUsage >= 5}
 								<span class="forecast-confidence">

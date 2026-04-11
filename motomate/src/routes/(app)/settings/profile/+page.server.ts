@@ -63,7 +63,12 @@ export const actions: Actions = {
 		}
 
 		const mime = file.type || '';
-		const ext = (file.name.split('.').pop()?.replace(/[^a-zA-Z0-9]/g, '') || '').toLowerCase();
+		const ext = (
+			file.name
+				.split('.')
+				.pop()
+				?.replace(/[^a-zA-Z0-9]/g, '') || ''
+		).toLowerCase();
 
 		if (!mime || !ALLOWED_AVATAR_MIMES.has(mime.toLowerCase())) {
 			return fail(400, { avatarError: 'Invalid image format. Supported: JPEG, PNG, WebP, GIF' });

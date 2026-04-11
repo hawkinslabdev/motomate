@@ -165,7 +165,8 @@ export const actions: Actions = {
 
 		const locale = user.settings.locale;
 		const vehicle = await getVehicleById(vehicleId, user.id);
-		if (!vehicle) return fail(404, { error: await serverT('vehicle.edit.errors.notFound', locale) });
+		if (!vehicle)
+			return fail(404, { error: await serverT('vehicle.edit.errors.notFound', locale) });
 
 		const currentMeta: VehicleMeta = vehicle.meta ?? {};
 		const newMeta: VehicleMeta = { ...currentMeta };
@@ -189,7 +190,9 @@ export const actions: Actions = {
 			).toLowerCase();
 
 			if (!mime || !validateAvatarMimeType(mime)) {
-				return fail(400, { error: await serverT('vehicle.edit.errors.invalidImageFormat', locale) });
+				return fail(400, {
+					error: await serverT('vehicle.edit.errors.invalidImageFormat', locale)
+				});
 			}
 
 			if (!ALLOWED_AVATAR_EXTS.has(ext)) {

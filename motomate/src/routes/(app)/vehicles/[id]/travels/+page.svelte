@@ -308,7 +308,9 @@
 {#if hasHistory}
 	{#if grouped().length === 0}
 		<div class="empty">
-			<span class="empty-icon">{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span>
+			<span class="empty-icon"
+				>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span
+			>
 			<p class="empty-title">{$_('travels.filter.noResults')}</p>
 			<p class="empty-desc">{$_('travels.filter.noResultsDesc')}</p>
 		</div>

@@ -7,7 +7,12 @@
 
 	let { data, form } = $props<{
 		data: { user: User };
-		form: { savedPrefs?: boolean; avatarUpdated?: boolean; avatarError?: string; error?: string } | null;
+		form: {
+			savedPrefs?: boolean;
+			avatarUpdated?: boolean;
+			avatarError?: string;
+			error?: string;
+		} | null;
 	}>();
 
 	let saving = $state(false);
