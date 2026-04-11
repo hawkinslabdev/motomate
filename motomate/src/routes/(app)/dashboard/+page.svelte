@@ -112,6 +112,7 @@
 						vehicle.type === 'scooter' ? '🛵' : vehicle.type === 'bike' ? '🚲' : '🏍'}
 					{@const avatarEmoji = vehicle.meta?.avatar_emoji ?? defaultEmoji}
 					{@const hasAvatarImage = !!vehicle.cover_image_key}
+					{@const vStatus = data.vehicleStatus[vehicle.id] ?? 'ok'}
 					<a href="/vehicles/{vehicle.id}" class="entry">
 						<div class="entry-avatar" aria-hidden="true">
 							{#if hasAvatarImage}
@@ -131,6 +132,14 @@
 								>
 							</div>
 						</div>
+						{#if vStatus !== 'ok'}
+							<span
+								class="vehicle-status-dot"
+								class:vehicle-status-dot--overdue={vStatus === 'overdue'}
+								class:vehicle-status-dot--due={vStatus === 'due'}
+								aria-label={vStatus}
+							></span>
+						{/if}
 					</a>
 				{/each}
 			</div>
@@ -143,9 +152,11 @@
 			<h2 class="section-eyebrow">{$_('dashboard.sections.recentActivity')}</h2>
 			<div class="entry-list">
 				{#each data.recentLogs as log}
-					<a href="/vehicles/{log.vehicle_id}" class="entry">
+					<a href="/vehicles/{log.vehicle_id}/maintenance" class="entry">
 						<div class="entry-body">
-							<div class="entry-title">{log.notes?.split('\n')[0] ?? 'Service entry'}</div>
+							<div class="entry-title">
+								{log.trackerName ?? log.notes?.split('\n')[0] ?? $_('dashboard.serviceEntry')}
+							</div>
 							<div class="entry-meta">
 								<span>{log.vehicle.name}</span>
 								<span class="sep">·</span>
@@ -335,6 +346,20 @@
 	.date {
 		flex-shrink: 0;
 		color: var(--text-subtle);
+	}
+
+	.vehicle-status-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		flex-shrink: 0;
+		background: var(--border-strong);
+	}
+	.vehicle-status-dot--due {
+		background: var(--status-due);
+	}
+	.vehicle-status-dot--overdue {
+		background: var(--status-overdue);
 	}
 
 	/* Empty state */

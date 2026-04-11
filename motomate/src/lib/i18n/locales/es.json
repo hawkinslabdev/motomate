@@ -165,6 +165,7 @@
 			"recentActivity": "Actividad reciente"
 		},
 		"viewAll": "Ver todo →",
+		"serviceEntry": "Entrada de servicio",
 		"empty": {
 			"title": "Tu garage está vacío",
 			"descriptionOnboarding": "Añade tu primera moto o ciclomotor para comenzar.",

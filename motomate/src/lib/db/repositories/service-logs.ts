@@ -1,9 +1,10 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, inArray, desc } from 'drizzle-orm';
 import { db } from '../index.js';
 import { service_logs, vehicles } from '../schema.js';
 import { CreateServiceLogSchema } from '../../validators/schemas.js';
 import { updateTrackerAfterService } from './maintenance.js';
 import { updateOdometer, getVehicleById } from './vehicles.js';
+import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 
@@ -45,6 +46,26 @@ export async function getServiceLogsByVehicle(
 		where: eq(service_logs.vehicle_id, vehicleId),
 		orderBy: (s, { desc }) => [desc(s.performed_at)]
 	});
+}
+
+export async function getRecentLogsAcrossVehicles(
+	vehicleIds: string[],
+	limit = 5
+): Promise<(ServiceLog & { trackerName: string | null })[]> {
+	if (vehicleIds.length === 0) return [];
+	const rows = db
+		.select({
+			log: service_logs,
+			trackerName: task_templates.name
+		})
+		.from(service_logs)
+		.leftJoin(active_trackers, eq(service_logs.tracker_id, active_trackers.id))
+		.leftJoin(task_templates, eq(active_trackers.template_id, task_templates.id))
+		.where(inArray(service_logs.vehicle_id, vehicleIds))
+		.orderBy(desc(service_logs.performed_at))
+		.limit(limit)
+		.all();
+	return rows.map(({ log, trackerName }) => ({ ...log, trackerName: trackerName ?? null }));
 }
 
 export async function getServiceLogById(id: string): Promise<ServiceLog | undefined> {

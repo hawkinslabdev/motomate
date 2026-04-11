@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { _ } from '$lib/i18n';
+
 	let {
 		status,
 		vehicleName,
@@ -20,7 +22,7 @@
 		<div class="card-task">{taskName}</div>
 		<div class="card-detail">{detail}</div>
 	</div>
-	<div class="card-arrow" aria-hidden="true">→</div>
+	<div class="card-cta" aria-hidden="true">{$_('vehicle.detail.logLink')} →</div>
 </a>
 
 <style>
@@ -79,9 +81,17 @@
 		color: var(--status-overdue);
 	}
 
-	.card-arrow {
+	.card-cta {
 		font-size: var(--text-sm);
+		font-weight: 500;
 		color: var(--text-subtle);
 		flex-shrink: 0;
+		white-space: nowrap;
+	}
+	.attention-card--due .card-cta {
+		color: var(--status-due);
+	}
+	.attention-card--overdue .card-cta {
+		color: var(--status-overdue);
 	}
 </style>

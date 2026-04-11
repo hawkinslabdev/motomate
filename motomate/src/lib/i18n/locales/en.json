@@ -166,6 +166,7 @@
 			"recentActivity": "Recent activity"
 		},
 		"viewAll": "View all →",
+		"serviceEntry": "Service entry",
 		"empty": {
 			"title": "Your garage is empty",
 			"descriptionOnboarding": "Add your first motorcycle or scooter to get started.",
