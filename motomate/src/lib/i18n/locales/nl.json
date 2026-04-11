@@ -166,6 +166,9 @@
 		},
 		"viewAll": "Alles bekijken →",
 		"serviceEntry": "Service-invoer",
+		"attention": {
+			"andMore": "{count, plural, =1 {+ 1 item meer} other {+ # items meer}}"
+		},
 		"empty": {
 			"title": "Je garage is leeg",
 			"descriptionOnboarding": "Voeg je eerste motor of bromfiets toe om te beginnen.",

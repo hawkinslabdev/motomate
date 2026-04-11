@@ -18,6 +18,14 @@
 				: $_('dashboard.greeting.evening')
 	);
 
+	type TrackerItem = (typeof data.overdueTrackers)[number];
+	const attentionItems = $derived([
+		...data.overdueTrackers.map((t: TrackerItem) => ({ ...t, status: 'overdue' as const })),
+		...data.dueTrackers.map((t: TrackerItem) => ({ ...t, status: 'due' as const }))
+	]);
+	const visibleAttention = $derived(attentionItems.slice(0, 3));
+	const hiddenAttentionCount = $derived(attentionItems.length - visibleAttention.length);
+
 	function attentionDetail(tracker: (typeof data.overdueTrackers)[0]) {
 		const v = tracker.vehicle;
 		if (tracker.status === 'overdue' && tracker.next_due_odometer && v.current_odometer) {
@@ -73,28 +81,24 @@
 	</div>
 
 	<!-- Attention needed -->
-	{#if data.overdueTrackers.length > 0 || data.dueTrackers.length > 0}
+	{#if attentionItems.length > 0}
 		<section class="dash-section">
 			<h2 class="section-eyebrow">{$_('dashboard.sections.needsAttention')}</h2>
 			<div class="attention-list">
-				{#each data.overdueTrackers as tracker}
+				{#each visibleAttention as tracker}
 					<AttentionCard
-						status="overdue"
+						status={tracker.status}
 						vehicleName={tracker.vehicle.name}
 						taskName={tracker.template.name}
 						detail={attentionDetail(tracker)}
 						href="/vehicles/{tracker.vehicle.id}/maintenance"
 					/>
 				{/each}
-				{#each data.dueTrackers as tracker}
-					<AttentionCard
-						status="due"
-						vehicleName={tracker.vehicle.name}
-						taskName={tracker.template.name}
-						detail={attentionDetail(tracker)}
-						href="/vehicles/{tracker.vehicle.id}/maintenance"
-					/>
-				{/each}
+				{#if hiddenAttentionCount > 0}
+					<a href="/vehicles" class="attention-overflow">
+						{$_('dashboard.attention.andMore', { values: { count: hiddenAttentionCount } })}
+					</a>
+				{/if}
 			</div>
 		</section>
 	{/if}
@@ -264,6 +268,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
+	}
+	.attention-overflow {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		text-decoration: none;
+		padding: var(--space-2) 0 0;
+		display: block;
+	}
+	.attention-overflow:hover {
+		color: var(--accent);
 	}
 
 	/* Open entry list */

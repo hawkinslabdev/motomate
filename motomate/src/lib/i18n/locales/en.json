@@ -167,6 +167,9 @@
 		},
 		"viewAll": "View all →",
 		"serviceEntry": "Service entry",
+		"attention": {
+			"andMore": "{count, plural, =1 {+ 1 more item} other {+ # more items}}"
+		},
 		"empty": {
 			"title": "Your garage is empty",
 			"descriptionOnboarding": "Add your first motorcycle or scooter to get started.",

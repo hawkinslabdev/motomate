@@ -39,11 +39,11 @@
 	}
 	.attention-card--due {
 		border-left-color: var(--status-due);
-		background: color-mix(in srgb, var(--status-due) 5%, var(--bg));
+		background: color-mix(in srgb, var(--status-due) 6%, var(--bg));
 	}
 	.attention-card--overdue {
 		border-left-color: var(--status-overdue);
-		background: color-mix(in srgb, var(--status-overdue) 5%, var(--bg));
+		background: color-mix(in srgb, var(--status-overdue) 6%, var(--bg));
 	}
 	.attention-card:hover {
 		border-color: var(--border-strong);

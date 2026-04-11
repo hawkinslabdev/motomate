@@ -166,6 +166,9 @@
 		},
 		"viewAll": "Ver tudo →",
 		"serviceEntry": "Entrada de serviço",
+		"attention": {
+			"andMore": "{count, plural, =1 {+ 1 item a mais} other {+ # itens a mais}}"
+		},
 		"empty": {
 			"title": "A sua garage está vazia",
 			"descriptionOnboarding": "Adicione a sua primeira moto ou ciclomotor para começar.",

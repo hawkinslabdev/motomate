@@ -166,6 +166,9 @@
 		},
 		"viewAll": "Alle anzeigen →",
 		"serviceEntry": "Serviceeintrag",
+		"attention": {
+			"andMore": "{count, plural, =1 {+ 1 weiteres Element} other {+ # weitere Elemente}}"
+		},
 		"empty": {
 			"title": "Ihre Garage ist leer",
 			"descriptionOnboarding": "Fügen Sie Ihr erstes Motorrad oder Ihren Roller hinzu, um zu beginnen.",

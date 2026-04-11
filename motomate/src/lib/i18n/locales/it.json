@@ -166,6 +166,9 @@
 		},
 		"viewAll": "Visualizza tutto →",
 		"serviceEntry": "Voce di servizio",
+		"attention": {
+			"andMore": "{count, plural, =1 {+ 1 altro elemento} other {+ # altri elementi}}"
+		},
 		"empty": {
 			"title": "Il tuo garage è vuoto",
 			"descriptionOnboarding": "Aggiungi la tua prima motocicletta o scooter per iniziare.",
