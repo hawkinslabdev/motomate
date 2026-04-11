@@ -200,6 +200,7 @@
 							selectedSeed = seed;
 							return async ({ update }) => {
 								await update();
+								gridSeeds = [seed, ...gridSeeds.filter((s) => s !== seed).slice(0, 8)];
 								await invalidateAll();
 							};
 						}}
