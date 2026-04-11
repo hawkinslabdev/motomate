@@ -108,7 +108,8 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		purchasePriceCents,
 		soldPriceCents,
 		totalInvestmentCents,
-		profitLossCents
+		profitLossCents,
+		page_prefs: locals.user!.settings?.page_prefs?.finance ?? null
 	};
 };
 

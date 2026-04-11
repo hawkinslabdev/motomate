@@ -62,6 +62,28 @@ export const NotificationChannelsSchema = z
 	})
 	.optional();
 
+const PagePrefsSchema = z.object({
+	maintenance: z.object({ sortBy: z.enum(['status', 'name', 'last']).optional() }).optional(),
+	documents: z
+		.object({
+			sortBy: z.enum(['newest', 'oldest', 'name']).optional(),
+			viewMode: z.enum(['list', 'timeline']).optional()
+		})
+		.optional(),
+	finance: z
+		.object({
+			groupBy: z.enum(['category', 'year', 'description', 'none']).optional(),
+			last_category: z.string().max(64).optional()
+		})
+		.optional(),
+	travels: z
+		.object({
+			sortBy: z.enum(['newest', 'oldest', 'name']).optional(),
+			filterBy: z.enum(['all', 'past', 'upcoming']).optional()
+		})
+		.optional()
+});
+
 export const UserSettingsSchema = z.object({
 	theme: z.enum(['system', 'light', 'dark']).default('system'),
 	currency: z.string().length(3).default('EUR'),
@@ -70,7 +92,8 @@ export const UserSettingsSchema = z.object({
 	notification_channels: NotificationChannelsSchema,
 	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),
 	avatar_key: z.string().max(500).nullable().optional(),
-	avatar_seed: z.string().max(64).nullable().optional()
+	avatar_seed: z.string().max(64).nullable().optional(),
+	page_prefs: PagePrefsSchema.optional()
 });
 
 export const CreateUserSchema = z.object({

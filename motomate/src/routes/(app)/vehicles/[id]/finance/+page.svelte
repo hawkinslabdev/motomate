@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { replaceState } from '$app/navigation';
+	import { replaceState, beforeNavigate } from '$app/navigation';
 	import { formatCurrency, formatDateShort, formatNumber } from '$lib/utils/format.js';
 	import { toasts } from '$lib/stores/toasts.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -33,11 +34,45 @@
 	const currency = $derived(data.currency || 'EUR');
 
 	// Grouping state
-	let groupBy = $state<'category' | 'year' | 'description' | 'none'>('category');
+	let groupBy = $state<'category' | 'year' | 'description' | 'none'>(
+		untrack(() => data.page_prefs?.groupBy ?? 'category')
+	);
 
 	// Form state
 	let showForm = $state(false);
-	let category = $state('maintenance');
+	let category = $state(untrack(() => data.page_prefs?.last_category ?? 'maintenance'));
+
+	// Persist groupBy and last_category
+	let _prefTimer: ReturnType<typeof setTimeout>;
+	let _pendingPrefs: object | null = null;
+	let _firstRun = true;
+
+	function flushPrefs() {
+		if (!_pendingPrefs) return;
+		const body = JSON.stringify({ page_prefs: { finance: _pendingPrefs } });
+		_pendingPrefs = null;
+		clearTimeout(_prefTimer);
+		fetch('/api/prefs', {
+			method: 'PATCH',
+			keepalive: true,
+			headers: { 'content-type': 'application/json' },
+			body
+		});
+	}
+
+	beforeNavigate(() => flushPrefs());
+
+	$effect(() => {
+		const g = groupBy;
+		const c = category;
+		if (_firstRun) {
+			_firstRun = false;
+			return;
+		}
+		_pendingPrefs = { groupBy: g, last_category: c };
+		clearTimeout(_prefTimer);
+		_prefTimer = setTimeout(flushPrefs, 600);
+	});
 	let amount = $state('');
 	let date = $state(new Date().toISOString().slice(0, 10));
 	let odometer = $state<string>('');

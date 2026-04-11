@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { replaceState } from '$app/navigation';
+	import { replaceState, beforeNavigate } from '$app/navigation';
 	import { _, waitLocale } from '$lib/i18n';
 	import { formatYearMonth } from '$lib/utils/format.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -98,8 +99,44 @@
 
 	// Search + sort + filter state
 	let searchQuery = $state('');
-	let sortBy = $state<'newest' | 'oldest' | 'name'>('newest');
-	let filterBy = $state<'all' | 'past' | 'upcoming'>('all');
+	let sortBy = $state<'newest' | 'oldest' | 'name'>(
+		untrack(() => data.page_prefs?.sortBy ?? 'newest')
+	);
+	let filterBy = $state<'all' | 'past' | 'upcoming'>(
+		untrack(() => data.page_prefs?.filterBy ?? 'all')
+	);
+
+	// Persist sort + filter preferences
+	let _prefTimer: ReturnType<typeof setTimeout>;
+	let _pendingPrefs: object | null = null;
+	let _firstRun = true;
+
+	function flushPrefs() {
+		if (!_pendingPrefs) return;
+		const body = JSON.stringify({ page_prefs: { travels: _pendingPrefs } });
+		_pendingPrefs = null;
+		clearTimeout(_prefTimer);
+		fetch('/api/prefs', {
+			method: 'PATCH',
+			keepalive: true,
+			headers: { 'content-type': 'application/json' },
+			body
+		});
+	}
+
+	beforeNavigate(() => flushPrefs());
+
+	$effect(() => {
+		const s = sortBy;
+		const f = filterBy;
+		if (_firstRun) {
+			_firstRun = false;
+			return;
+		}
+		_pendingPrefs = { sortBy: s, filterBy: f };
+		clearTimeout(_prefTimer);
+		_prefTimer = setTimeout(flushPrefs, 600);
+	});
 
 	const today = new Date().toISOString().slice(0, 10);
 

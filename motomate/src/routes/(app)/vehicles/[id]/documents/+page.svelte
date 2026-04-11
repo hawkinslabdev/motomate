@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { goto, beforeNavigate } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
@@ -33,8 +34,42 @@
 
 	let searchQuery = $state('');
 	let categoryFilter = $state<string>('all');
-	let sortBy = $state<'newest' | 'oldest' | 'name'>('newest');
-	let viewMode = $state<'list' | 'timeline'>('list');
+	let sortBy = $state<'newest' | 'oldest' | 'name'>(
+		untrack(() => data.page_prefs?.sortBy ?? 'newest')
+	);
+	let viewMode = $state<'list' | 'timeline'>(untrack(() => data.page_prefs?.viewMode ?? 'list'));
+
+	// Persist sort + view preferences
+	let _prefTimer: ReturnType<typeof setTimeout>;
+	let _pendingPrefs: object | null = null;
+	let _firstRun = true;
+
+	function flushPrefs() {
+		if (!_pendingPrefs) return;
+		const body = JSON.stringify({ page_prefs: { documents: _pendingPrefs } });
+		_pendingPrefs = null;
+		clearTimeout(_prefTimer);
+		fetch('/api/prefs', {
+			method: 'PATCH',
+			keepalive: true,
+			headers: { 'content-type': 'application/json' },
+			body
+		});
+	}
+
+	beforeNavigate(() => flushPrefs());
+
+	$effect(() => {
+		const s = sortBy;
+		const v = viewMode;
+		if (_firstRun) {
+			_firstRun = false;
+			return;
+		}
+		_pendingPrefs = { sortBy: s, viewMode: v };
+		clearTimeout(_prefTimer);
+		_prefTimer = setTimeout(flushPrefs, 600);
+	});
 	let editingDocId = $state<string | null>(null);
 	let editingName = $state('');
 

@@ -44,7 +44,12 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 		gpxUrls[doc.id] = await storage.presignedUrl(doc.storage_key, 3600);
 	}
 
-	return { travels: travelList, gpxDocs, gpxUrls };
+	return {
+		travels: travelList,
+		gpxDocs,
+		gpxUrls,
+		page_prefs: locals.user!.settings?.page_prefs?.travels ?? null
+	};
 };
 
 export const actions: Actions = {

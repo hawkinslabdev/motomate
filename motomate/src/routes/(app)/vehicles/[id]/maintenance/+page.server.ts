@@ -26,7 +26,12 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	const trackers = await getTrackersByVehicle(vehicle.id, locals.user!.id);
 	const odometerLogs = await getOdometerLogs(vehicle.id, locals.user!.id);
 	const allServiceLogs = await getServiceLogsByVehicle(vehicle.id, locals.user!.id);
-	return { trackers, odometerLogs, allServiceLogs };
+	return {
+		trackers,
+		odometerLogs,
+		allServiceLogs,
+		page_prefs: locals.user!.settings?.page_prefs?.maintenance ?? null
+	};
 };
 
 export const actions: Actions = {

@@ -60,7 +60,15 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		}
 	}
 
-	return { docs, total, page, perPage: highlight ? total : PER_PAGE, serviceLogMap, travelMap };
+	return {
+		docs,
+		total,
+		page,
+		perPage: highlight ? total : PER_PAGE,
+		serviceLogMap,
+		travelMap,
+		page_prefs: locals.user!.settings?.page_prefs?.documents ?? null
+	};
 };
 
 export const actions: Actions = {

@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
+	import { invalidateAll, beforeNavigate } from '$app/navigation';
 	import type { PageData } from './$types';
 	import TrackerCard from '$lib/components/ui/TrackerCard.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -37,8 +38,41 @@
 	let historyTracker = $state<string | null>(null);
 	let viewMode = $state<'current' | 'forecast' | 'history'>('current');
 	let searchQuery = $state('');
-	let sortBy = $state<'status' | 'name' | 'last'>('status');
+	let sortBy = $state<'status' | 'name' | 'last'>(
+		untrack(() => data.page_prefs?.sortBy ?? 'status')
+	);
 	let historySortBy = $state<'date' | 'name'>('date');
+
+	// Persist sort preference
+	let _prefTimer: ReturnType<typeof setTimeout>;
+	let _pendingPrefs: object | null = null;
+	let _firstRun = true;
+
+	function flushPrefs() {
+		if (!_pendingPrefs) return;
+		const body = JSON.stringify({ page_prefs: { maintenance: _pendingPrefs } });
+		_pendingPrefs = null;
+		clearTimeout(_prefTimer);
+		fetch('/api/prefs', {
+			method: 'PATCH',
+			keepalive: true,
+			headers: { 'content-type': 'application/json' },
+			body
+		});
+	}
+
+	beforeNavigate(() => flushPrefs());
+
+	$effect(() => {
+		const s = sortBy;
+		if (_firstRun) {
+			_firstRun = false;
+			return;
+		}
+		_pendingPrefs = { sortBy: s };
+		clearTimeout(_prefTimer);
+		_prefTimer = setTimeout(flushPrefs, 600);
+	});
 	let editingLog = $state<string | null>(null);
 	let logMenu = $state<string | null>(null);
 
@@ -93,7 +127,7 @@
 
 	const sortedTrackers = $derived(
 		filteredTrackers().sort((a, b) => {
-			if (sortBy === 'status' || viewMode === 'current') {
+			if (sortBy === 'status') {
 				const order: Record<string, number> = { overdue: 0, due: 1, ok: 2 };
 				return (order[a.status] ?? 3) - (order[b.status] ?? 3);
 			}

@@ -10,6 +10,13 @@ export type NotificationChannels = {
 	home_assistant?: { enabled: boolean; webhook_url?: string };
 };
 
+export type PagePrefs = {
+	maintenance?: { sortBy?: 'status' | 'name' | 'last' };
+	documents?: { sortBy?: 'newest' | 'oldest' | 'name'; viewMode?: 'list' | 'timeline' };
+	finance?: { groupBy?: 'category' | 'year' | 'description' | 'none'; last_category?: string };
+	travels?: { sortBy?: 'newest' | 'oldest' | 'name'; filterBy?: 'all' | 'past' | 'upcoming' };
+};
+
 export type UserSettings = {
 	theme: 'system' | 'light' | 'dark';
 	currency: string; // 'EUR', 'GBP', etc.
@@ -19,6 +26,7 @@ export type UserSettings = {
 	favorite_vehicle?: string | null;
 	avatar_key?: string | null;
 	avatar_seed?: string | null;
+	page_prefs?: PagePrefs;
 };
 
 export type VehicleMeta = {
