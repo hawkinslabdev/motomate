@@ -93,5 +93,18 @@ export const actions: Actions = {
 
 		await updateUserSettings(user.id, { avatar_key: key });
 		return { avatarUpdated: true };
+	},
+
+	setDiceBearSeed: async ({ request, locals }) => {
+		const user = locals.user!;
+		const seed = String((await request.formData()).get('seed') ?? '').trim();
+		if (!seed || seed.length > 64) return fail(400, { avatarError: 'Invalid seed' });
+		// Clear uploaded image when switching to DiceBear
+		const currentKey = user.settings.avatar_key ?? null;
+		if (currentKey) {
+			await safeDeleteStorage(currentKey);
+		}
+		await updateUserSettings(user.id, { avatar_seed: seed, avatar_key: null });
+		return { avatarUpdated: true };
 	}
 };

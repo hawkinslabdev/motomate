@@ -645,7 +645,9 @@
 			"avatar": "Profilbild",
 			"avatarUpload": "Foto hochladen",
 			"avatarRemove": "Entfernen",
-			"avatarUpdated": "Profilbild aktualisiert"
+			"avatarUpdated": "Profilbild aktualisiert",
+			"avatarDicebear": "Avatar wählen",
+			"avatarShuffle": "Neu mischen"
 		},
 		"account": {
 			"title": "Konto",

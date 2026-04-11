@@ -18,6 +18,7 @@ export type UserSettings = {
 	notification_channels?: NotificationChannels;
 	favorite_vehicle?: string | null;
 	avatar_key?: string | null;
+	avatar_seed?: string | null;
 };
 
 export type VehicleMeta = {

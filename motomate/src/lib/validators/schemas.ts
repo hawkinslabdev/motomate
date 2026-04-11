@@ -69,7 +69,8 @@ export const UserSettingsSchema = z.object({
 	locale: z.string().default('en'),
 	notification_channels: NotificationChannelsSchema,
 	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),
-	avatar_key: z.string().max(500).nullable().optional()
+	avatar_key: z.string().max(500).nullable().optional(),
+	avatar_seed: z.string().max(64).nullable().optional()
 });
 
 export const CreateUserSchema = z.object({

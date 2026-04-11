@@ -43,6 +43,8 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.772.0",
 		"@aws-sdk/s3-request-presigner": "^3.772.0",
+		"@dicebear/collection": "^9.4.2",
+		"@dicebear/core": "^9.4.2",
 		"@fontsource/inter": "^5.1.1",
 		"@fontsource/jetbrains-mono": "^5.1.1",
 		"@lucia-auth/adapter-drizzle": "^1.1.0",

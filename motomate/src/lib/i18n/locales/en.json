@@ -659,7 +659,9 @@
 			"avatar": "Profile picture",
 			"avatarUpload": "Upload photo",
 			"avatarRemove": "Remove",
-			"avatarUpdated": "Profile picture updated"
+			"avatarUpdated": "Profile picture updated",
+			"avatarDicebear": "Choose an avatar",
+			"avatarShuffle": "Shuffle"
 		},
 		"account": {
 			"title": "Account",

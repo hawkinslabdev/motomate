@@ -9,6 +9,7 @@
 	import ShortcutsModal from '$lib/components/ui/ShortcutsModal.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { quickAdd } from '$lib/stores/quickAdd.js';
+	import { dicebearUri } from '$lib/utils/dicebear.js';
 
 	import Sun from '$lib/components/icons/Sun.svelte';
 	import Moon from '$lib/components/icons/Moon.svelte';
@@ -46,6 +47,11 @@
 	] as const;
 
 	let notifCount = $derived(data.unreadCount ?? 0);
+	const topnavAvatarUri = $derived(
+		!data.user.settings?.avatar_key && data.user.settings?.avatar_seed
+			? dicebearUri(data.user.settings.avatar_seed)
+			: null
+	);
 	let shortcutsOpen = $state(false);
 	let themeMenuOpen = $state(false);
 	let isMobile = $state(false);
@@ -287,6 +293,8 @@
 							alt=""
 							class="topnav-avatar-img"
 						/>
+					{:else if topnavAvatarUri}
+						<img src={topnavAvatarUri} alt="" class="topnav-avatar-img" />
 					{:else}
 						<span class="topnav-avatar-initials">{data.user.email[0].toUpperCase()}</span>
 					{/if}

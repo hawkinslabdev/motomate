@@ -644,7 +644,9 @@
 			"avatar": "Foto de perfil",
 			"avatarUpload": "Carregar foto",
 			"avatarRemove": "Remover",
-			"avatarUpdated": "Foto de perfil atualizada"
+			"avatarUpdated": "Foto de perfil atualizada",
+			"avatarDicebear": "Escolher um avatar",
+			"avatarShuffle": "Misturar"
 		},
 		"account": {
 			"title": "Conta",

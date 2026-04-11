@@ -645,7 +645,9 @@
 			"avatar": "Photo de profil",
 			"avatarUpload": "Télécharger une photo",
 			"avatarRemove": "Supprimer",
-			"avatarUpdated": "Photo de profil mise à jour"
+			"avatarUpdated": "Photo de profil mise à jour",
+			"avatarDicebear": "Choisir un avatar",
+			"avatarShuffle": "Mélanger"
 		},
 		"account": {
 			"title": "Compte",
@@ -769,7 +771,7 @@
 					"label": "Email",
 					"description": "Send an email notification to the address below.",
 					"addressLabel": "Notification address",
-					"addressPlaceholder": "you@example.com",
+					"addressPlaceholder": "pierre@email.fr",
 					"hint": "Separate from your account login email.",
 					"noSmtp": "SMTP is not configured on this server."
 				},

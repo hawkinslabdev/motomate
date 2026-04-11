@@ -80,7 +80,7 @@
 				name="email"
 				type="email"
 				autocomplete="email"
-				placeholder="you@example.com"
+				placeholder="example@email.com"
 				class="input"
 				required
 			/>

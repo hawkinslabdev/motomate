@@ -638,14 +638,16 @@
 			"display": "Weergave",
 			"language": "Taal & regio",
 			"currency": "Valuta",
-			"odometerUnit": "Kilometerstand-eenheid",
+			"odometerUnit": "Eenheid",
 			"saved": "Voorkeuren opgeslagen",
 			"submit": "Voorkeuren opslaan",
 			"saving": "Opslaan…",
 			"avatar": "Profielfoto",
 			"avatarUpload": "Foto uploaden",
 			"avatarRemove": "Verwijderen",
-			"avatarUpdated": "Profielfoto bijgewerkt"
+			"avatarUpdated": "Profielfoto bijgewerkt",
+			"avatarDicebear": "Kies een avatar",
+			"avatarShuffle": "Shufflen"
 		},
 		"account": {
 			"title": "Account",

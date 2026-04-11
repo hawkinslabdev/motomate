@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 	import type { User } from '$lib/db/schema.js';
 	import { _ } from '$lib/i18n';
+	import { dicebearUri, randomSeed } from '$lib/utils/dicebear.js';
 
 	let { data, form } = $props<{
 		data: { user: User };
@@ -11,28 +13,50 @@
 	let saving = $state(false);
 	let avatarUploading = $state(false);
 	let showAvatarPopover = $state(false);
-	let avatarCacheBuster = $state(Date.now());
+	let avatarCacheBuster = $state(0);
 	let fileInput = $state<HTMLInputElement | null>(null);
 	let uploadForm = $state<HTMLFormElement | null>(null);
+
+	// 9 seeds: index 0 = currently selected, 1-8 = alternatives
+	function buildGrid(): string[] {
+		const current = data.user.settings.avatar_seed ?? randomSeed();
+		return [current, ...Array.from({ length: 8 }, randomSeed)];
+	}
+
+	let gridSeeds = $state<string[]>(buildGrid());
+	let selectedSeed = $state(data.user.settings.avatar_seed ?? gridSeeds[0]);
+
+	// Data URIs — recompute when seeds change
+	const gridUris = $derived(gridSeeds.map(dicebearUri));
 
 	$effect(() => {
 		if (form?.avatarUpdated) {
 			avatarCacheBuster = Date.now();
 			showAvatarPopover = false;
+			if (data.user.settings.avatar_seed) {
+				selectedSeed = data.user.settings.avatar_seed;
+			}
 		}
 	});
 
 	const hasAvatarImage = $derived(!!data.user.settings.avatar_key);
 	const avatarSrc = $derived(
 		data.user.settings.avatar_key
-			? `/api/files?key=${data.user.settings.avatar_key}&v=${avatarCacheBuster}`
+			? `/api/files?key=${data.user.settings.avatar_key}${avatarCacheBuster > 0 ? `&v=${avatarCacheBuster}` : ''}`
 			: null
 	);
+
+	// DiceBear URI for the 56px button and 96px preview
+	const previewUri = $derived(!hasAvatarImage ? dicebearUri(selectedSeed) : null);
 
 	function triggerFileUpload() {
 		if (fileInput?.files?.length) {
 			uploadForm?.requestSubmit();
 		}
+	}
+
+	function shuffle() {
+		gridSeeds = [gridSeeds[0], ...Array.from({ length: 8 }, randomSeed)];
 	}
 </script>
 
@@ -50,12 +74,14 @@
 	<button
 		type="button"
 		class="user-avatar"
-		class:user-avatar--image={hasAvatarImage}
+		class:user-avatar--image={hasAvatarImage || previewUri}
 		onclick={() => (showAvatarPopover = true)}
 		aria-label={$_('settings.profile.avatarUpload')}
 	>
 		{#if hasAvatarImage && avatarSrc}
 			<img src={avatarSrc} alt="" class="avatar-img" />
+		{:else if previewUri}
+			<img src={previewUri} alt="" class="avatar-img" />
 		{:else}
 			<span class="avatar-initials">{data.user.email[0].toUpperCase()}</span>
 		{/if}
@@ -147,6 +173,8 @@
 			<div class="popover-preview">
 				{#if hasAvatarImage && avatarSrc}
 					<img src={avatarSrc} alt="" class="popover-preview-img" />
+				{:else if previewUri}
+					<img src={previewUri} alt="" class="popover-preview-img" />
 				{:else}
 					<span class="popover-preview-initials">{data.user.email[0].toUpperCase()}</span>
 				{/if}
@@ -155,6 +183,40 @@
 			{#if form?.avatarError}
 				<div class="banner banner--err" style="margin-bottom: 0.75rem">{form.avatarError}</div>
 			{/if}
+
+			<!-- DiceBear grid (3×3) -->
+			<div class="dice-label">{$_('settings.profile.avatarDicebear')}</div>
+			<div class="dice-grid">
+				{#each gridSeeds as seed, i (seed)}
+					<form
+						method="POST"
+						action="?/setDiceBearSeed"
+						use:enhance={() => {
+							selectedSeed = seed;
+							return async ({ update }) => {
+								await update();
+								await invalidateAll();
+							};
+						}}
+					>
+						<input type="hidden" name="seed" value={seed} />
+						<button
+							type="submit"
+							class="dice-btn"
+							class:dice-btn--selected={seed === selectedSeed && !hasAvatarImage}
+							aria-label="Avatar option {i + 1}"
+						>
+							<img src={gridUris[i]} alt="" />
+						</button>
+					</form>
+				{/each}
+			</div>
+
+			<button type="button" class="popover-btn popover-btn--muted" onclick={shuffle}>
+				{$_('settings.profile.avatarShuffle')}
+			</button>
+
+			<div class="popover-divider"></div>
 
 			<button
 				type="button"
@@ -462,5 +524,58 @@
 	}
 	.popover-btn--danger:hover:not(:disabled) {
 		background: color-mix(in srgb, var(--status-overdue) 6%, var(--bg));
+	}
+	.popover-btn--muted {
+		color: var(--text-muted);
+		font-size: var(--text-sm);
+	}
+	.popover-divider {
+		height: 1px;
+		background: var(--border);
+		margin: 0.5rem 0;
+	}
+	.dice-label {
+		font-size: var(--text-xs);
+		font-weight: 500;
+		color: var(--text-muted);
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		margin-bottom: 0.5rem;
+	}
+	.dice-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+	.dice-btn {
+		width: 100%;
+		aspect-ratio: 1;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		padding: 0;
+		transition:
+			background 0.1s,
+			border-color 0.1s;
+	}
+	.dice-btn img {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+	.dice-btn:hover {
+		background: var(--bg-muted);
+		border-color: var(--border-strong);
+	}
+	.dice-btn--selected {
+		background: var(--accent-subtle);
+		border-color: var(--accent);
 	}
 </style>

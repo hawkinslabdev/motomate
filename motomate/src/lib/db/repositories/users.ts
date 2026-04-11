@@ -16,7 +16,8 @@ export async function createUser(input: {
 		theme: 'system',
 		currency: 'EUR',
 		odometer_unit: 'km',
-		locale: 'en'
+		locale: 'en',
+		avatar_seed: generateId()
 	};
 	const row: InsertUser = {
 		id,
