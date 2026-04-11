@@ -250,7 +250,7 @@ export const finance_transactions = sqliteTable(
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		category: text('category', {
-			enum: ['maintenance', 'parts', 'accessories', 'administrative', 'other']
+			enum: ['maintenance', 'parts', 'accessories', 'administrative', 'fuel', 'other']
 		})
 			.notNull()
 			.default('other'),

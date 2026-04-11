@@ -561,6 +561,7 @@
 			"parts": "Ricambi",
 			"accessories": "Accessori",
 			"administrative": "Amministrativo",
+			"fuel": "Carburante",
 			"other": "Altro"
 		},
 		"empty": {
@@ -859,7 +860,9 @@
 			"maintenance": "Manutenzione",
 			"maintenanceDesc": "Olio, pneumatici o riparazioni",
 			"mileage": "Chilometraggio",
-			"mileageDesc": "Numero sul tuo cruscotto"
+			"mileageDesc": "Numero sul tuo cruscotto",
+			"finance": "Finanze",
+			"financeDesc": "Carburante, assicurazione o ricambi"
 		}
 	},
 	"notifications": {

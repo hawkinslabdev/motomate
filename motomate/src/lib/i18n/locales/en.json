@@ -399,7 +399,8 @@
 		"subtitle": "Track your service schedule",
 		"view": {
 			"current": "Current",
-			"forecast": "Forecast"
+			"forecast": "Forecast",
+			"history": "History"
 		},
 		"forecast": {
 			"basedOnUsage": "based on {months} months usage",
@@ -408,11 +409,6 @@
 			"inMonths": "in ~{months} months",
 			"dueSoon": "due soon",
 			"estimatedDate": "est. {date}"
-		},
-		"view": {
-			"current": "Current",
-			"forecast": "Forecast",
-			"history": "History"
 		},
 		"filter": {
 			"search": "Search tasks...",
@@ -567,6 +563,7 @@
 			"parts": "Parts",
 			"accessories": "Accessories",
 			"administrative": "Administrative",
+			"fuel": "Fuel",
 			"other": "Other"
 		},
 		"empty": {
@@ -855,7 +852,9 @@
 			"maintenance": "Maintenance",
 			"maintenanceDesc": "Oil, tires, or repairs",
 			"mileage": "Mileage",
-			"mileageDesc": "Number on your dash"
+			"mileageDesc": "Number on your dash",
+			"finance": "Finance",
+			"financeDesc": "Fuel, insurance, or parts"
 		}
 	},
 	"units": {

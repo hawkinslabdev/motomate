@@ -562,6 +562,7 @@
 			"parts": "Pièces",
 			"accessories": "Accessoires",
 			"administrative": "Administratif",
+			"fuel": "Carburant",
 			"other": "Autre"
 		},
 		"empty": {
@@ -860,7 +861,9 @@
 			"maintenance": "Entretien",
 			"maintenanceDesc": "Huile, pneus ou réparations",
 			"mileage": "Kilométrage",
-			"mileageDesc": "Nombre sur votre tableau de bord"
+			"mileageDesc": "Nombre sur votre tableau de bord",
+			"finance": "Finance",
+			"financeDesc": "Carburant, assurance ou pièces"
 		}
 	},
 	"notifications": {

@@ -51,7 +51,7 @@ export async function updateFinanceTransaction(
 	vehicleId: string,
 	userId: string,
 	data: {
-		category?: 'other' | 'maintenance' | 'parts' | 'accessories' | 'administrative';
+		category?: 'other' | 'maintenance' | 'parts' | 'accessories' | 'administrative' | 'fuel';
 		amount_cents?: number;
 		notes?: string | null;
 		performed_at?: string;

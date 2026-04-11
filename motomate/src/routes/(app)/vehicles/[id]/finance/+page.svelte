@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
+	import { replaceState } from '$app/navigation';
 	import { formatCurrency, formatDateShort, formatNumber } from '$lib/utils/format.js';
 	import { toasts } from '$lib/stores/toasts.js';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -15,6 +17,16 @@
 
 	$effect(() => {
 		waitLocale();
+	});
+
+	// Handle ?quick=finance from mobile FAB quick-add flow
+	$effect(() => {
+		if ($page.url.searchParams.get('quick') === 'finance') {
+			showForm = true;
+			const url = new URL($page.url);
+			url.searchParams.delete('quick');
+			replaceState(url, $page.state);
+		}
 	});
 
 	const locale = $derived(data.user?.settings?.locale ?? 'en');
@@ -72,6 +84,7 @@
 		{ value: 'parts', label: $_('finance.categories.parts') },
 		{ value: 'accessories', label: $_('finance.categories.accessories') },
 		{ value: 'administrative', label: $_('finance.categories.administrative') },
+		{ value: 'fuel', label: $_('finance.categories.fuel') },
 		{ value: 'other', label: $_('finance.categories.other') }
 	]);
 

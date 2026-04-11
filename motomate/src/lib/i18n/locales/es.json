@@ -561,6 +561,7 @@
 			"parts": "Piezas",
 			"accessories": "Accesorios",
 			"administrative": "Administrativo",
+			"fuel": "Combustible",
 			"other": "Otro"
 		},
 		"empty": {
@@ -859,7 +860,9 @@
 			"maintenance": "Mantenimiento",
 			"maintenanceDesc": "Aceite, neumáticos o reparaciones",
 			"mileage": "Kilometraje",
-			"mileageDesc": "Número en tu salpicadero"
+			"mileageDesc": "Número en tu salpicadero",
+			"finance": "Finanzas",
+			"financeDesc": "Combustible, seguro o piezas"
 		}
 	},
 	"notifications": {

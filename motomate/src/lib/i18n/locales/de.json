@@ -562,6 +562,7 @@
 			"parts": "Teile",
 			"accessories": "Zubehör",
 			"administrative": "Verwaltung",
+			"fuel": "Kraftstoff",
 			"other": "Sonstiges"
 		},
 		"empty": {
@@ -860,7 +861,9 @@
 			"maintenance": "Wartung",
 			"maintenanceDesc": "Öl, Reifen oder Reparaturen",
 			"mileage": "Kilometerstand",
-			"mileageDesc": "Zahl auf Ihrem Tacho"
+			"mileageDesc": "Zahl auf Ihrem Tacho",
+			"finance": "Finanzen",
+			"financeDesc": "Kraftstoff, Versicherung oder Teile"
 		}
 	},
 	"notifications": {

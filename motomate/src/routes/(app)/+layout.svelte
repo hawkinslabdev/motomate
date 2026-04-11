@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
@@ -112,22 +112,21 @@
 		quickAddOpen = true;
 	}
 
-	function triggerQuickAdd(vehicleId: string) {
-		// Called from a specific page (like timeline), use store
-		quickAdd.open(vehicleId);
-	}
-
 	function closeQuickAdd() {
 		quickAddOpen = false;
 		quickAddStep = 'vehicle';
 		selectedVehicle = null;
 	}
 
-	function quickAddNavigate(type: 'service' | 'odometer' | 'note') {
+	function quickAddNavigate(type: 'service' | 'odometer' | 'note' | 'finance') {
 		if (!quickAddOpen || !selectedVehicle) return;
 		const vehicleId = selectedVehicle.id;
 		closeQuickAdd();
-		goto(`/vehicles/${vehicleId}?quick=${type}`);
+		if (type === 'finance') {
+			goto(`/vehicles/${vehicleId}/finance?quick=finance`);
+		} else {
+			goto(`/vehicles/${vehicleId}?quick=${type}`);
+		}
 	}
 
 	function vehicleEmoji(v: NavVehicle) {
@@ -229,7 +228,7 @@
 					<a
 						href={link.href}
 						class="topnav-link"
-						class:active={$page.url.pathname.startsWith(link.href)}
+						class:active={page.url.pathname.startsWith(link.href)}
 					>
 						{$_(link.labelKey)}
 					</a>
@@ -315,7 +314,7 @@
 		<a
 			href="/dashboard"
 			class="bottom-tab"
-			class:active={$page.url.pathname.startsWith('/dashboard')}
+			class:active={page.url.pathname.startsWith('/dashboard')}
 		>
 			<svg
 				class="tab-icon"
@@ -333,11 +332,7 @@
 			<span class="tab-label">{$_('layout.nav.dashboard')}</span>
 		</a>
 
-		<a
-			href="/vehicles"
-			class="bottom-tab"
-			class:active={$page.url.pathname.startsWith('/vehicles')}
-		>
+		<a href="/vehicles" class="bottom-tab" class:active={page.url.pathname.startsWith('/vehicles')}>
 			<svg
 				class="tab-icon"
 				viewBox="0 0 24 24"
@@ -378,11 +373,7 @@
 			</button>
 		</div>
 
-		<a
-			href="/settings"
-			class="bottom-tab"
-			class:active={$page.url.pathname.startsWith('/settings')}
-		>
+		<a href="/settings" class="bottom-tab" class:active={page.url.pathname.startsWith('/settings')}>
 			<svg
 				class="tab-icon"
 				viewBox="0 0 24 24"
@@ -613,6 +604,36 @@
 						<span class="type-text">
 							<span class="type-label">{$_('vehicle.forms.writeNote')}</span>
 							<span class="type-desc">{$_('vehicle.forms.noteDesc')}</span>
+						</span>
+						<svg
+							class="pick-arrow"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+						>
+					</button>
+					<button class="pick-item pick-item--type" onclick={() => quickAddNavigate('finance')}>
+						<span class="type-icon">
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+								><line x1="12" y1="1" x2="12" y2="23" /><path
+									d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+								/></svg
+							>
+						</span>
+						<span class="type-text">
+							<span class="type-label">{$_('layout.addEntry.finance')}</span>
+							<span class="type-desc">{$_('layout.addEntry.financeDesc')}</span>
 						</span>
 						<svg
 							class="pick-arrow"

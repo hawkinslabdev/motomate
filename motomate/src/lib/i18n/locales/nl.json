@@ -562,6 +562,7 @@
 			"parts": "Onderdelen",
 			"accessories": "Accessoires",
 			"administrative": "Administratief",
+			"fuel": "Brandstof",
 			"other": "Anders"
 		},
 		"empty": {
@@ -860,7 +861,9 @@
 			"maintenance": "Onderhoud",
 			"maintenanceDesc": "Olie, banden of reparaties",
 			"mileage": "Kilometerstand",
-			"mileageDesc": "Nummer op je dashboard"
+			"mileageDesc": "Nummer op je dashboard",
+			"finance": "Financiën",
+			"financeDesc": "Brandstof, verzekering of onderdelen"
 		}
 	},
 	"notifications": {
