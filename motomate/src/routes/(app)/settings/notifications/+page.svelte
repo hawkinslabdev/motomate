@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
+	import { untrack } from 'svelte';
 	import { _, waitLocale } from '$lib/i18n';
 	import { formatDateTime } from '$lib/utils/format';
 
@@ -10,9 +11,8 @@
 		waitLocale();
 	});
 
-	// Channel toggles (local reactive state for instant UI feedback)
-	// Use $state.raw for values only read at initialization (not reactive to data changes)
-	const initialChannels = data.channels ?? {};
+	// Channel toggles — intentionally snapshot initial values from props
+	const initialChannels = untrack(() => data.channels ?? {});
 	let pushEnabled = $state(initialChannels.push?.enabled ?? false);
 	let emailEnabled = $state(initialChannels.email?.enabled ?? false);
 	let emailAddress = $state(initialChannels.email?.address ?? '');

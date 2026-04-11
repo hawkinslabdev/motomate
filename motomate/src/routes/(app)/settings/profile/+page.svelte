@@ -3,6 +3,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import type { User } from '$lib/db/schema.js';
 	import { _ } from '$lib/i18n';
+	import { untrack } from 'svelte';
 	import { dicebearUri, randomSeed } from '$lib/utils/dicebear.js';
 
 	let { data, form } = $props<{
@@ -29,7 +30,7 @@
 	}
 
 	let gridSeeds = $state<string[]>(buildGrid());
-	let selectedSeed = $state(data.user.settings.avatar_seed ?? gridSeeds[0]);
+	let selectedSeed = $state(untrack(() => data.user.settings.avatar_seed ?? gridSeeds[0]));
 
 	// Data URIs — recompute when seeds change
 	const gridUris = $derived(gridSeeds.map(dicebearUri));
