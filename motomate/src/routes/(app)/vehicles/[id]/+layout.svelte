@@ -220,7 +220,13 @@
 				aria-modal="true"
 				tabindex="-1"
 			>
-				<div class="popover-header">{$_('vehicle.layout.avatar.choose')}</div>
+				{#if hasAvatarImage && avatarSrc}
+					<div class="popover-preview">
+						<img src={avatarSrc} alt="" class="popover-preview-img" />
+					</div>
+				{:else}
+					<div class="popover-header">{$_('vehicle.layout.avatar.choose')}</div>
+				{/if}
 
 				<div class="emoji-grid">
 					{#each avatarEmojis as e}
@@ -549,6 +555,24 @@
 		justify-content: center;
 		padding: 1rem;
 	}
+	.popover-preview {
+		width: 96px;
+		height: 96px;
+		border-radius: 50%;
+		background: var(--bg-muted);
+		border: 1px solid var(--border);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		margin: 0 auto 1.25rem;
+	}
+	.popover-preview-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
 	.avatar-popover {
 		background: var(--bg);
 		border: 1px solid var(--border);

@@ -378,6 +378,15 @@
 					"confirm": "Wiederherstellen",
 					"cancel": "Archiviert lassen"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Ungültiger Kilometerstand",
+				"odometerTooLow": "Der neue Wert muss höher als der aktuelle Kilometerstand sein",
+				"notFound": "Fahrzeug nicht gefunden",
+				"imageTooLarge": "Bild zu groß (max. 2 MB)",
+				"invalidImageFormat": "Ungültiges Bildformat. Unterstützt: JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Ungültige Dateiendung. Unterstützt: .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Upload fehlgeschlagen: Speicherfehler"
 			}
 		}
 	},
@@ -632,7 +641,11 @@
 			"odometerUnit": "Kilometerstand-Einheit",
 			"saved": "Einstellungen gespeichert",
 			"submit": "Einstellungen speichern",
-			"saving": "Wird gespeichert…"
+			"saving": "Wird gespeichert…",
+			"avatar": "Profilbild",
+			"avatarUpload": "Foto hochladen",
+			"avatarRemove": "Entfernen",
+			"avatarUpdated": "Profilbild aktualisiert"
 		},
 		"account": {
 			"title": "Konto",

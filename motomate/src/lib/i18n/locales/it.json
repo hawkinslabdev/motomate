@@ -378,6 +378,15 @@
 					"confirm": "Ripristina",
 					"cancel": "Mantieni archiviato"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Lettura del contachilometri non valida",
+				"odometerTooLow": "La nuova lettura deve essere superiore al contachilometri attuale",
+				"notFound": "Veicolo non trovato",
+				"imageTooLarge": "Immagine troppo grande (max 2 MB)",
+				"invalidImageFormat": "Formato immagine non valido. Supportati: JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Estensione file non valida. Supportate: .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Caricamento fallito: errore di archiviazione"
 			}
 		}
 	},
@@ -631,7 +640,11 @@
 			"odometerUnit": "Unità contachilometri",
 			"saved": "Preferenze salvate",
 			"submit": "Salva preferenze",
-			"saving": "Salvataggio…"
+			"saving": "Salvataggio…",
+			"avatar": "Foto del profilo",
+			"avatarUpload": "Carica foto",
+			"avatarRemove": "Rimuovi",
+			"avatarUpdated": "Foto del profilo aggiornata"
 		},
 		"account": {
 			"title": "Account",

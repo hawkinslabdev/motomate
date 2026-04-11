@@ -5,15 +5,63 @@
 
 	let { data, form } = $props<{
 		data: { user: User };
-		form: { savedPrefs?: boolean; error?: string } | null;
+		form: { savedPrefs?: boolean; avatarUpdated?: boolean; avatarError?: string; error?: string } | null;
 	}>();
 
 	let saving = $state(false);
+	let avatarUploading = $state(false);
+	let showAvatarPopover = $state(false);
+	let avatarCacheBuster = $state(Date.now());
+	let fileInput = $state<HTMLInputElement | null>(null);
+	let uploadForm = $state<HTMLFormElement | null>(null);
+
+	$effect(() => {
+		if (form?.avatarUpdated) {
+			avatarCacheBuster = Date.now();
+			showAvatarPopover = false;
+		}
+	});
+
+	const hasAvatarImage = $derived(!!data.user.settings.avatar_key);
+	const avatarSrc = $derived(
+		data.user.settings.avatar_key
+			? `/api/files?key=${data.user.settings.avatar_key}&v=${avatarCacheBuster}`
+			: null
+	);
+
+	function triggerFileUpload() {
+		if (fileInput?.files?.length) {
+			uploadForm?.requestSubmit();
+		}
+	}
 </script>
 
 <svelte:head><title>{$_('settings.profile.title')} &middot; Settings</title></svelte:head>
 
 <h2 class="section-title">{$_('settings.profile.title')}</h2>
+
+<section class="setting-section">
+	<h3 class="sub-title">{$_('settings.profile.avatar')}</h3>
+
+	{#if form?.avatarError}
+		<div class="banner banner--err">{form.avatarError}</div>
+	{/if}
+
+	<button
+		type="button"
+		class="user-avatar"
+		class:user-avatar--image={hasAvatarImage}
+		onclick={() => (showAvatarPopover = true)}
+		aria-label={$_('settings.profile.avatarUpload')}
+	>
+		{#if hasAvatarImage && avatarSrc}
+			<img src={avatarSrc} alt="" class="avatar-img" />
+		{:else}
+			<span class="avatar-initials">{data.user.email[0].toUpperCase()}</span>
+		{/if}
+		<span class="avatar-edit-icon" aria-hidden="true">✎</span>
+	</button>
+</section>
 
 <section class="setting-section">
 	<h3 class="sub-title">{$_('settings.profile.display')}</h3>
@@ -82,6 +130,89 @@
 	</form>
 </section>
 
+{#if showAvatarPopover}
+	<div
+		class="avatar-popover-overlay"
+		onclick={() => (showAvatarPopover = false)}
+		role="presentation"
+	>
+		<div
+			class="avatar-popover"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="popover-preview">
+				{#if hasAvatarImage && avatarSrc}
+					<img src={avatarSrc} alt="" class="popover-preview-img" />
+				{:else}
+					<span class="popover-preview-initials">{data.user.email[0].toUpperCase()}</span>
+				{/if}
+			</div>
+
+			{#if form?.avatarError}
+				<div class="banner banner--err" style="margin-bottom: 0.75rem">{form.avatarError}</div>
+			{/if}
+
+			<button
+				type="button"
+				class="popover-btn"
+				disabled={avatarUploading}
+				onclick={() => fileInput?.click()}
+			>
+				{avatarUploading ? $_('settings.profile.saving') : $_('settings.profile.avatarUpload')}
+			</button>
+
+			<form
+				bind:this={uploadForm}
+				method="POST"
+				action="?/uploadAvatar"
+				enctype="multipart/form-data"
+				use:enhance={({ formData, cancel }) => {
+					const file = formData.get('file') as File;
+					if (!file || file.size === 0) return cancel();
+					avatarUploading = true;
+					return async ({ update }) => {
+						await update();
+						avatarUploading = false;
+						if (fileInput) fileInput.value = '';
+					};
+				}}
+			>
+				<input
+					bind:this={fileInput}
+					type="file"
+					name="file"
+					accept="image/jpeg,image/png,image/webp,image/gif"
+					class="avatar-file-input"
+					onchange={triggerFileUpload}
+				/>
+			</form>
+
+			{#if hasAvatarImage}
+				<form
+					method="POST"
+					action="?/uploadAvatar"
+					use:enhance={() => {
+						avatarUploading = true;
+						return async ({ update }) => {
+							await update();
+							avatarUploading = false;
+						};
+					}}
+				>
+					<input type="hidden" name="remove" value="true" />
+					<button type="submit" class="popover-btn popover-btn--danger" disabled={avatarUploading}>
+						{$_('settings.profile.avatarRemove')}
+					</button>
+				</form>
+			{/if}
+		</div>
+	</div>
+{/if}
+
 <style>
 	.section-title {
 		font-size: var(--text-2xl);
@@ -94,13 +225,14 @@
 		font-size: var(--text-lg);
 		font-weight: 600;
 		color: var(--text);
-		margin: 0 0 0.25rem;
+		margin: 0 0 0.75rem;
 	}
 	.setting-section {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		max-width: 420px;
+		margin-bottom: var(--space-6);
 	}
 	.pref-form {
 		display: flex;
@@ -193,5 +325,142 @@
 	}
 	.btn-secondary:hover:not(:disabled) {
 		background: var(--bg-muted);
+	}
+
+	/* User avatar button — mirrors .vehicle-avatar */
+	.user-avatar {
+		position: relative;
+		width: 56px;
+		height: 56px;
+		border-radius: 50%;
+		background: var(--bg-muted);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.75rem;
+		flex-shrink: 0;
+		line-height: 1;
+		cursor: pointer;
+		border: none;
+		padding: 0;
+		transition: box-shadow 0.15s;
+	}
+	.user-avatar:hover {
+		box-shadow: 0 0 0 2px var(--accent);
+	}
+	.user-avatar--image {
+		background: transparent;
+	}
+	.avatar-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 50%;
+	}
+	.avatar-initials {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		line-height: 1;
+	}
+	.avatar-edit-icon {
+		position: absolute;
+		bottom: -2px;
+		right: -2px;
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: var(--bg);
+		border: 1px solid var(--border);
+		font-size: 0.6875rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-subtle);
+		opacity: 0;
+		transition: opacity 0.15s;
+	}
+	.user-avatar:hover .avatar-edit-icon {
+		opacity: 1;
+	}
+
+	/* Avatar popover — mirrors vehicle avatar popover */
+	.avatar-popover-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+	}
+	.avatar-popover {
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		padding: 1.25rem;
+		width: 100%;
+		max-width: 280px;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+	}
+	.popover-preview {
+		width: 96px;
+		height: 96px;
+		border-radius: 50%;
+		background: var(--bg-muted);
+		border: 1px solid var(--border);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		margin: 0 auto 1.25rem;
+	}
+	.popover-preview-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.popover-preview-initials {
+		font-size: 2.25rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		line-height: 1;
+	}
+	.avatar-file-input {
+		display: none;
+	}
+	.popover-btn {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		font-size: var(--text-base);
+		font-weight: 500;
+		color: var(--text);
+		cursor: pointer;
+		margin-bottom: 0.5rem;
+		transition: background 0.1s;
+		text-align: center;
+	}
+	.popover-btn:last-child {
+		margin-bottom: 0;
+	}
+	.popover-btn:hover:not(:disabled) {
+		background: var(--bg-muted);
+	}
+	.popover-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.popover-btn--danger {
+		color: var(--status-overdue);
+		border-color: color-mix(in srgb, var(--status-overdue) 25%, var(--border));
+	}
+	.popover-btn--danger:hover:not(:disabled) {
+		background: color-mix(in srgb, var(--status-overdue) 6%, var(--bg));
 	}
 </style>

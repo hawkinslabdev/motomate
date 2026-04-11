@@ -378,6 +378,15 @@
 					"confirm": "Restaurar",
 					"cancel": "Mantener archivado"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Lectura del odómetro no válida",
+				"odometerTooLow": "La nueva lectura debe ser mayor que el odómetro actual",
+				"notFound": "Vehículo no encontrado",
+				"imageTooLarge": "Imagen demasiado grande (máx. 2 MB)",
+				"invalidImageFormat": "Formato de imagen no válido. Compatible: JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Extensión de archivo no válida. Compatible: .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Error al subir: error de almacenamiento"
 			}
 		}
 	},
@@ -631,7 +640,11 @@
 			"odometerUnit": "Unidad del odómetro",
 			"saved": "Preferencias guardadas",
 			"submit": "Guardar preferencias",
-			"saving": "Guardando…"
+			"saving": "Guardando…",
+			"avatar": "Foto de perfil",
+			"avatarUpload": "Subir foto",
+			"avatarRemove": "Eliminar",
+			"avatarUpdated": "Foto de perfil actualizada"
 		},
 		"account": {
 			"title": "Cuenta",

@@ -14,8 +14,17 @@ function isSafePath(key: string): boolean {
 	if (!isFiles && !isAvatars) return false;
 	if (isFiles && !normalized.match(/^files\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/))
 		return false;
-	if (isAvatars && !normalized.match(/^avatars\/[a-zA-Z0-9]+\/[a-zA-Z0-9\-]+\.[a-zA-Z0-9]+$/))
-		return false;
+	if (isAvatars) {
+		// User profile avatar: avatars/users/{userId}.{ext}
+		const isUserAvatar = normalized.match(
+			/^avatars\/users\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/
+		);
+		// Vehicle avatar: avatars/{userId}/{vehicleId}.{ext}
+		const isVehicleAvatar = normalized.match(
+			/^avatars\/[a-zA-Z0-9]+\/[a-zA-Z0-9\-]+\.[a-zA-Z0-9]+$/
+		);
+		if (!isUserAvatar && !isVehicleAvatar) return false;
+	}
 	if (normalized.includes('..')) return false;
 	return true;
 }
@@ -58,8 +67,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 			const doc = await getDocumentByStorageKey(key);
 			if (!doc || doc.user_id !== user.id) error(403, 'Access denied');
 		} else if (isAvatar) {
-			const vehicle = await getVehicleByCoverImageKey(key);
-			if (!vehicle || vehicle.user_id !== user.id) error(403, 'Access denied');
+			// User profile avatar: avatars/users/{userId}.{ext}
+			const isUserAvatar = key.startsWith('avatars/users/');
+			if (isUserAvatar) {
+				const parts = key.split('/'); // ['avatars', 'users', '{userId}.{ext}']
+				const pathUserId = parts[2]?.split('.')[0];
+				if (!pathUserId || pathUserId !== user.id) error(403, 'Access denied');
+			} else {
+				// Vehicle avatar: avatars/{userId}/{vehicleId}.{ext}
+				const vehicle = await getVehicleByCoverImageKey(key);
+				if (!vehicle || vehicle.user_id !== user.id) error(403, 'Access denied');
+			}
 		}
 	}
 
@@ -83,17 +101,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 		};
 		const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
-		// Use the original filename (doc.name) for download — always has correct extension
-		const doc = await getDocumentByStorageKey(key);
-		const filename = doc?.name ?? key.split('/').pop() ?? null;
-
 		const headers: Record<string, string> = {
 			'Content-Type': contentType,
 			'Cache-Control': 'private, max-age=3600'
 		};
-		if (filename) {
-			headers['Content-Disposition'] =
-				`attachment; filename="${filename.replace(/"/g, '\\"')}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+
+		// Documents get Content-Disposition: attachment for download; avatars are served inline
+		if (isDoc) {
+			const doc = await getDocumentByStorageKey(key);
+			const filename = doc?.name ?? key.split('/').pop() ?? null;
+			if (filename) {
+				headers['Content-Disposition'] =
+					`attachment; filename="${filename.replace(/"/g, '\\"')}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+			}
 		}
 
 		return new Response(stream as unknown as ReadableStream, { headers });

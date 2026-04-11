@@ -15,6 +15,7 @@ import { generateId } from '$lib/utils/id.js';
 import type { VehicleMeta } from '$lib/db/schema.js';
 import { db } from '$lib/db/index.js';
 import { vehicles } from '$lib/db/schema.js';
+import { serverT } from '$lib/i18n/server.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 
@@ -94,15 +95,16 @@ export const actions: Actions = {
 	odometer: async ({ request, locals, params }) => {
 		const raw = Object.fromEntries(await request.formData());
 		const odometer = Number(raw.odometer);
+		const locale = locals.user!.settings.locale;
 
 		if (isNaN(odometer) || odometer < 0) {
-			return fail(400, { error: 'Invalid odometer reading' });
+			return fail(400, { error: await serverT('vehicle.edit.errors.invalidOdometer', locale) });
 		}
 
 		const vehicle = await getVehicleById(params.id, locals.user!.id);
 
 		if (!vehicle || odometer <= vehicle.current_odometer) {
-			return fail(400, { error: 'New reading must be higher than current odometer' });
+			return fail(400, { error: await serverT('vehicle.edit.errors.odometerTooLow', locale) });
 		}
 
 		await updateOdometer(params.id, locals.user!.id, odometer);
@@ -161,8 +163,9 @@ export const actions: Actions = {
 		const remove = formData.get('remove') === 'true';
 		const file = formData.get('file') as File | null;
 
+		const locale = user.settings.locale;
 		const vehicle = await getVehicleById(vehicleId, user.id);
-		if (!vehicle) return fail(404, { error: 'Vehicle not found' });
+		if (!vehicle) return fail(404, { error: await serverT('vehicle.edit.errors.notFound', locale) });
 
 		const currentMeta: VehicleMeta = vehicle.meta ?? {};
 		const newMeta: VehicleMeta = { ...currentMeta };
@@ -174,7 +177,7 @@ export const actions: Actions = {
 			newCoverKey = null;
 		} else if (file && file.size > 0) {
 			if (file.size > MAX_AVATAR_SIZE) {
-				return fail(400, { error: 'Image too large (max 2 MB)' });
+				return fail(400, { error: await serverT('vehicle.edit.errors.imageTooLarge', locale) });
 			}
 
 			const mime = file.type || '';
@@ -186,13 +189,11 @@ export const actions: Actions = {
 			).toLowerCase();
 
 			if (!mime || !validateAvatarMimeType(mime)) {
-				return fail(400, { error: 'Invalid image format. Supported: JPEG, PNG, WebP, GIF' });
+				return fail(400, { error: await serverT('vehicle.edit.errors.invalidImageFormat', locale) });
 			}
 
 			if (!ALLOWED_AVATAR_EXTS.has(ext)) {
-				return fail(400, {
-					error: 'Invalid file extension. Supported: .jpg, .jpeg, .png, .webp, .gif'
-				});
+				return fail(400, { error: await serverT('vehicle.edit.errors.invalidFileExt', locale) });
 			}
 
 			const safeExt = ext.slice(0, 4);
@@ -213,7 +214,7 @@ export const actions: Actions = {
 				await storage.put(key, buffer, MimeTypeMap[safeExt] || 'image/jpeg');
 			} catch (e) {
 				console.error('Avatar upload failed:', e);
-				return fail(500, { error: 'Upload failed — storage error' });
+				return fail(500, { error: await serverT('vehicle.edit.errors.uploadFailed', locale) });
 			}
 
 			newCoverKey = key;

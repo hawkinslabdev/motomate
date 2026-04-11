@@ -378,6 +378,15 @@
 					"confirm": "Herstellen",
 					"cancel": "Gearchiveerd houden"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Ongeldige kilometerstand",
+				"odometerTooLow": "De nieuwe waarde moet hoger zijn dan de huidige kilometerstand",
+				"notFound": "Voertuig niet gevonden",
+				"imageTooLarge": "Afbeelding te groot (max. 2 MB)",
+				"invalidImageFormat": "Ongeldig afbeeldingsformaat. Ondersteund: JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Ongeldige bestandsextensie. Ondersteund: .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Upload mislukt: opslagfout"
 			}
 		}
 	},
@@ -632,7 +641,11 @@
 			"odometerUnit": "Kilometerstand-eenheid",
 			"saved": "Voorkeuren opgeslagen",
 			"submit": "Voorkeuren opslaan",
-			"saving": "Opslaan…"
+			"saving": "Opslaan…",
+			"avatar": "Profielfoto",
+			"avatarUpload": "Foto uploaden",
+			"avatarRemove": "Verwijderen",
+			"avatarUpdated": "Profielfoto bijgewerkt"
 		},
 		"account": {
 			"title": "Account",

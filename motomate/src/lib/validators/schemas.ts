@@ -68,7 +68,8 @@ export const UserSettingsSchema = z.object({
 	odometer_unit: z.enum(['km', 'mi']).default('km'),
 	locale: z.string().default('en'),
 	notification_channels: NotificationChannelsSchema,
-	favorite_vehicle: z.string().nonempty().max(64).nullable().optional()
+	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),
+	avatar_key: z.string().max(500).nullable().optional()
 });
 
 export const CreateUserSchema = z.object({

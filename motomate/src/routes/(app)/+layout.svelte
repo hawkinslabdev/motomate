@@ -280,6 +280,18 @@
 					/>
 				</div>
 
+				<a href="/settings/profile" class="topnav-avatar" aria-label="Profile settings">
+					{#if data.user.settings?.avatar_key}
+						<img
+							src="/api/files?key={data.user.settings.avatar_key}"
+							alt=""
+							class="topnav-avatar-img"
+						/>
+					{:else}
+						<span class="topnav-avatar-initials">{data.user.email[0].toUpperCase()}</span>
+					{/if}
+				</a>
+
 				<button type="button" class="topnav-signout" onclick={() => (logoutConfirmOpen = true)}
 					>{$_('layout.signOut')}</button
 				>
@@ -847,8 +859,53 @@
 		cursor: default;
 	}
 
+	.topnav-avatar {
+		width: 42px;
+		height: 42px;
+		border-radius: 12px;
+		background: transparent;
+		border: 3px solid transparent;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		flex-shrink: 0;
+		transition:
+			background 0.15s cubic-bezier(0.25, 1, 0.5, 1),
+			border-color 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+	}
+	.topnav-avatar:hover {
+		background: var(--bg-muted);
+	}
+	.topnav-avatar:active {
+		background: rgba(37, 99, 235, 0.04);
+		border-color: rgba(37, 99, 235, 0.15);
+	}
+	.topnav-avatar-img {
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		object-fit: cover;
+		flex-shrink: 0;
+	}
+	.topnav-avatar-initials {
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		background: var(--bg-muted);
+		border: 1px solid var(--border);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		line-height: 1;
+	}
+
 	.topnav-signout {
-		margin-left: var(--space-2);
+		margin-left: 0;
 	}
 
 	.topnav-signout:hover {

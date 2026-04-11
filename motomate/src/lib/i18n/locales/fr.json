@@ -378,6 +378,15 @@
 					"confirm": "Restaurer",
 					"cancel": "Garder archivé"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Lecture du kilométrage invalide",
+				"odometerTooLow": "La nouvelle valeur doit être supérieure au kilométrage actuel",
+				"notFound": "Véhicule introuvable",
+				"imageTooLarge": "Image trop grande (max 2 Mo)",
+				"invalidImageFormat": "Format d'image invalide. Pris en charge : JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Extension de fichier invalide. Prise en charge : .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Échec du téléchargement : erreur de stockage"
 			}
 		}
 	},
@@ -632,7 +641,11 @@
 			"odometerUnit": "Unité du compteur",
 			"saved": "Préférences enregistrées",
 			"submit": "Enregistrer les préférences",
-			"saving": "Enregistrement…"
+			"saving": "Enregistrement…",
+			"avatar": "Photo de profil",
+			"avatarUpload": "Télécharger une photo",
+			"avatarRemove": "Supprimer",
+			"avatarUpdated": "Photo de profil mise à jour"
 		},
 		"account": {
 			"title": "Compte",

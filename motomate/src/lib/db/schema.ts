@@ -17,6 +17,7 @@ export type UserSettings = {
 	locale: string;
 	notification_channels?: NotificationChannels;
 	favorite_vehicle?: string | null;
+	avatar_key?: string | null;
 };
 
 export type VehicleMeta = {

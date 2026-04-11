@@ -362,6 +362,15 @@
 					"confirm": "Restore",
 					"cancel": "Keep archived"
 				}
+			},
+			"errors": {
+				"invalidOdometer": "Invalid odometer reading",
+				"odometerTooLow": "New reading must be higher than current odometer",
+				"notFound": "Vehicle not found",
+				"imageTooLarge": "Image too large (max 2 MB)",
+				"invalidImageFormat": "Invalid image format. Supported: JPEG, PNG, WebP, GIF",
+				"invalidFileExt": "Invalid file extension. Supported: .jpg, .jpeg, .png, .webp, .gif",
+				"uploadFailed": "Upload failed: storage error"
 			}
 		},
 		"layout": {
@@ -646,7 +655,11 @@
 			"odometerUnit": "Odometer unit",
 			"saved": "Preferences saved",
 			"submit": "Save preferences",
-			"saving": "Saving…"
+			"saving": "Saving…",
+			"avatar": "Profile picture",
+			"avatarUpload": "Upload photo",
+			"avatarRemove": "Remove",
+			"avatarUpdated": "Profile picture updated"
 		},
 		"account": {
 			"title": "Account",
