@@ -4,7 +4,7 @@ import { z } from 'zod';
 // Form data and preset objects can both produce null, undefined, or "" for
 // optional number fields. These preprocessors normalise that before validation.
 
-/** Optional integer: null / undefined / "" → undefined; coerces strings to number */
+/** Optional integer: null / undefined / "" > undefined; coerces strings to number */
 const optInt = (min?: number, max?: number) =>
 	z.preprocess(
 		(v) => (v === '' || v === null || v === undefined ? undefined : Number(v)),
@@ -15,7 +15,7 @@ const optInt = (min?: number, max?: number) =>
 				: z.number().int().optional()
 	);
 
-/** Optional positive integer (>0): null / undefined / "" → undefined */
+/** Optional positive integer (>0): null / undefined / "" > undefined */
 const optPosInt = () =>
 	z.preprocess(
 		(v) => (v === '' || v === null || v === undefined ? undefined : Number(v)),

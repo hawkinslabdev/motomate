@@ -70,3 +70,15 @@ export async function getDocumentsByIds(ids: string[], userId: string): Promise<
 		where: and(inArray(documents.id, ids), eq(documents.user_id, userId))
 	}) as Promise<Document[]>;
 }
+
+export async function getRouteDocumentsByVehicle(
+	vehicleId: string,
+	userId: string
+): Promise<Document[]> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return [];
+	return db.query.documents.findMany({
+		where: and(eq(documents.vehicle_id, vehicleId), eq(documents.doc_type, 'route')),
+		orderBy: (d, { desc }) => [desc(d.created_at)]
+	});
+}

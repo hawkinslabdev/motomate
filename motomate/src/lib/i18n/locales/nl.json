@@ -918,7 +918,9 @@
 				"create": "Rit opslaan",
 				"edit": "Wijzigingen opslaan"
 			},
-			"gpxChoose": "Kies GPX-bestand"
+			"gpxChoose": "Kies GPX-bestand",
+			"gpxPickExisting": "Kies uit bibliotheek",
+			"gpxPickPlaceholder": "Selecteer een route..."
 		},
 		"map": {
 			"title": "Kaart",

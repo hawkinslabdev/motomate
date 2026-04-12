@@ -5,12 +5,14 @@ import {
 	getTravelById,
 	createTravel,
 	updateTravel,
-	deleteTravel
+	deleteTravel,
+	isDocumentReferencedByOtherTravels
 } from '$lib/db/repositories/travels.js';
 import {
 	createDocument,
 	deleteDocument,
-	getDocumentsByIds
+	getDocumentsByIds,
+	getRouteDocumentsByVehicle
 } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
@@ -44,10 +46,20 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 		gpxUrls[doc.id] = await storage.presignedUrl(doc.storage_key, 3600);
 	}
 
+	// All route documents for this vehicle (for the "pick from library" selector)
+	const routeDocs = await getRouteDocumentsByVehicle(vehicle.id, userId);
+	const routeDocUrls: Record<string, string> = {};
+	for (const doc of routeDocs) {
+		// Reuse already-generated URL if available, otherwise generate
+		routeDocUrls[doc.id] = gpxUrls[doc.id] ?? (await storage.presignedUrl(doc.storage_key, 3600));
+	}
+
 	return {
 		travels: travelList,
 		gpxDocs,
 		gpxUrls,
+		routeDocs,
+		routeDocUrls,
 		page_prefs: locals.user!.settings?.page_prefs?.travels ?? null
 	};
 };
@@ -86,6 +98,13 @@ export const actions: Actions = {
 		const storage = getStorage();
 
 		for (let i = 0; i < maxSlots; i++) {
+			// Check for an existing library doc being borrowed first
+			const existingDocId = String(data.get(`gpx_existing_doc_${i}`) ?? '').trim();
+			if (existingDocId) {
+				gpxDocIds[i] = existingDocId;
+				continue;
+			}
+
 			const file = data.get(`gpx_file_${i}`) as File | null;
 			if (!file || file.size === 0) continue;
 
@@ -150,8 +169,6 @@ export const actions: Actions = {
 		const travel = await getTravelById(id, userId);
 		if (!travel) return fail(404, { editError: 'Travel not found' });
 
-		// Remove GPX docs that were marked for removal
-		const removeIds = data.getAll('remove_gpx_doc_id').map(String);
 		const storage = getStorage();
 
 		const updatedDocIds = [...travel.gpx_document_ids] as (string | null)[];
@@ -162,19 +179,38 @@ export const actions: Actions = {
 			updatedDocIds.push(null);
 		}
 
-		for (const docId of removeIds) {
-			const docs = await getDocumentsByIds([docId], userId);
-			if (docs[0]) {
-				await storage.delete(docs[0].storage_key).catch(() => {});
-				await deleteDocument(docId, userId);
+		// Process slot-indexed removals: remove_gpx_slot_{i} = docId
+		for (let i = 0; i < maxSlots; i++) {
+			const docId = String(data.get(`remove_gpx_slot_${i}`) ?? '').trim();
+			if (!docId) continue;
+
+			// Null this specific slot first
+			updatedDocIds[i] = null;
+
+			// Only delete from storage/DB if no other slot in this travel still references
+			// the same docId, and no other travel references it either
+			const stillInThisTravel = updatedDocIds.some((id) => id === docId);
+			if (!stillInThisTravel) {
+				const isShared = await isDocumentReferencedByOtherTravels(docId, id, vehicleId);
+				if (!isShared) {
+					const docs = await getDocumentsByIds([docId], userId);
+					if (docs[0]) {
+						await storage.delete(docs[0].storage_key).catch(() => {});
+						await deleteDocument(docId, userId);
+					}
+				}
 			}
-			// Set to null instead of splicing to preserve slot position
-			const idx = updatedDocIds.indexOf(docId);
-			if (idx !== -1) updatedDocIds[idx] = null;
 		}
 
-		// Upload new GPX files - assign to specific slot index, preserve null placeholders
+		// Upload new GPX files or assign existing library docs to slots
 		for (let i = 0; i < maxSlots; i++) {
+			// Check for an existing library doc being borrowed first
+			const existingDocId = String(data.get(`gpx_existing_doc_${i}`) ?? '').trim();
+			if (existingDocId) {
+				updatedDocIds[i] = existingDocId;
+				continue;
+			}
+
 			const file = data.get(`gpx_file_${i}`) as File | null;
 			if (!file || file.size === 0) continue;
 
@@ -220,14 +256,17 @@ export const actions: Actions = {
 		const travel = await getTravelById(id, userId);
 		if (!travel) return fail(404, { deleteError: 'Travel not found' });
 
-		// Delete linked GPX documents from storage + DB
+		// Delete linked GPX documents from storage + DB (skip docs borrowed by other travels)
 		const storage = getStorage();
 		const docIds = travel.gpx_document_ids.filter(Boolean) as string[];
 		if (docIds.length > 0) {
 			const docs = await getDocumentsByIds(docIds, userId);
 			for (const doc of docs) {
-				await storage.delete(doc.storage_key).catch(() => {});
-				await deleteDocument(doc.id, userId);
+				const isShared = await isDocumentReferencedByOtherTravels(doc.id, id, vehicleId);
+				if (!isShared) {
+					await storage.delete(doc.storage_key).catch(() => {});
+					await deleteDocument(doc.id, userId);
+				}
 			}
 		}
 

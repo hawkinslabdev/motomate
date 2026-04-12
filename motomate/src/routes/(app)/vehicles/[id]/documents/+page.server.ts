@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		getTravelsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
-	// Build reverse map: document ID → service log { id, performed_at }
+	// Build reverse map: document ID > service log { id, performed_at }
 	const serviceLogMap: Record<string, { id: string; performed_at: string }> = {};
 	for (const log of serviceLogs) {
 		const attachments = (log.attachments as string[]) ?? [];
@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		}
 	}
 
-	// Build reverse map: document ID → travel { id, title, start_date }
+	// Build reverse map: document ID > travel { id, title, start_date }
 	const travelMap: Record<string, { id: string; title: string; start_date: string }> = {};
 	for (const travel of travelEntries) {
 		const gpxIds = (travel.gpx_document_ids as string[]) ?? [];

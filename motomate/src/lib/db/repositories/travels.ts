@@ -86,6 +86,25 @@ export async function deleteTravel(id: string, vehicleId: string, userId: string
 	await db.delete(travels).where(and(eq(travels.id, id), eq(travels.vehicle_id, vehicleId)));
 }
 
+export async function isDocumentReferencedByOtherTravels(
+	docId: string,
+	excludeTravelId: string,
+	vehicleId: string
+): Promise<boolean> {
+	const rows = await db
+		.select({ id: travels.id })
+		.from(travels)
+		.where(
+			and(
+				eq(travels.vehicle_id, vehicleId),
+				sql`${travels.id} != ${excludeTravelId}`,
+				sql`${travels.gpx_document_ids} LIKE ${'%' + docId + '%'}`
+			)
+		)
+		.limit(1);
+	return rows.length > 0;
+}
+
 export async function getTravelsForTimeline(
 	vehicleId: string,
 	userId: string

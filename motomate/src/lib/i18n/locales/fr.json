@@ -918,7 +918,9 @@
 				"create": "Enregistrer",
 				"edit": "Sauvegarder"
 			},
-			"gpxChoose": "Choisir fichier GPX"
+			"gpxChoose": "Choisir fichier GPX",
+			"gpxPickExisting": "Choisir depuis la bibliothèque",
+			"gpxPickPlaceholder": "Sélectionner un itinéraire..."
 		},
 		"map": {
 			"title": "Carte",

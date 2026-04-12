@@ -288,6 +288,17 @@
 	const editingExcludedDays = $derived(
 		editingTravel ? ((editingTravel.excluded_gpx_days as number[]) ?? []) : []
 	);
+
+	// All route docs available for the "pick from library" selector
+	const availableRouteDocs = $derived(
+		data.routeDocs.map((doc: any) => ({
+			id: doc.id,
+			name: doc.name,
+			title: doc.title ?? null,
+			url: data.routeDocUrls[doc.id] ?? null,
+			index: -1
+		}))
+	);
 </script>
 
 <!-- Page Header -->
@@ -388,6 +399,7 @@
 	travel={editingTravel}
 	existingGpxDocs={editingGpxDocs}
 	excludedGpxDays={editingExcludedDays}
+	{availableRouteDocs}
 	vehicleId={data.vehicle.id}
 	{currency}
 	{locale}

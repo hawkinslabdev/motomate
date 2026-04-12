@@ -893,6 +893,8 @@
 			"gpxFiles": "GPX routes",
 			"gpxSlot": "Day {n}",
 			"gpxChoose": "Choose GPX file",
+			"gpxPickExisting": "Pick from library",
+			"gpxPickPlaceholder": "Select a route...",
 			"gpxHint": "One GPX file per day of the trip. Max 20 MB each.",
 			"submit": {
 				"create": "Save travel",

@@ -918,7 +918,9 @@
 				"create": "Fahrt speichern",
 				"edit": "Änderungen speichern"
 			},
-			"gpxChoose": "GPX-Datei wählen"
+			"gpxChoose": "GPX-Datei wählen",
+			"gpxPickExisting": "Aus Bibliothek wählen",
+			"gpxPickPlaceholder": "Route auswählen..."
 		},
 		"map": {
 			"title": "Karte",

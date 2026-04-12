@@ -414,7 +414,9 @@
 							<div class="timeline-entry" data-log-id={log.id}>
 								<span class="timeline-dot"></span>
 								<span class="timeline-title"
-									>{log.notes?.split('\n')[0] || tracker?.template.name || $_('maintenance.history.serviceEntry')}</span
+									>{log.notes?.split('\n')[0] ||
+										tracker?.template.name ||
+										$_('maintenance.history.serviceEntry')}</span
 								>
 								<span class="timeline-meta">
 									{formatDateShort(log.performed_at, locale)} · {formatNumber(

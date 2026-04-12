@@ -19,6 +19,7 @@
 		travel?: Travel | null;
 		existingGpxDocs?: GpxDoc[];
 		excludedGpxDays?: number[]; // day indices to exclude from map
+		availableRouteDocs?: GpxDoc[]; // all vehicle route docs for "pick from library"
 		vehicleId: string;
 		currency: string;
 		locale?: string;
@@ -31,6 +32,7 @@
 		travel = null,
 		existingGpxDocs = [],
 		excludedGpxDays = [],
+		availableRouteDocs = [],
 		vehicleId,
 		currency,
 		locale = 'en',
@@ -42,20 +44,26 @@
 	let submitting = $state(false);
 	let durationDays = $state(1);
 	let startDate = $state(today);
-	let removedDocIds = $state<string[]>([]);
+	let removedSlots = $state<Record<number, string>>({}); // slot index → docId
 	// Per-slot selected files (keyed by slot index)
 	let selectedFiles = $state<Record<number, File | null>>({});
 	// Days to exclude from map
 	let excludedDays = $state<number[]>([]);
+	// Per-slot: true = show library picker, false = show upload zone
+	let slotPickMode = $state<Record<number, boolean>>({});
+	// Per-slot: selected existing doc ID from library
+	let selectedExistingIds = $state<Record<number, string>>({});
 
 	$effect(() => {
 		if (open) {
 			const t = travel;
 			durationDays = t?.duration_days ?? 1;
 			startDate = t?.start_date ?? today;
-			removedDocIds = [];
+			removedSlots = {};
 			selectedFiles = {};
 			excludedDays = [...(excludedGpxDays ?? [])];
+			slotPickMode = {};
+			selectedExistingIds = {};
 		}
 	});
 
@@ -85,8 +93,8 @@
 	// Ensure enough slots to show all existing docs even if duration was reduced
 	const slots = $derived(Math.min(Math.max(durationDays, maxExistingIndex + 1, 1), MAX_SLOTS));
 
-	function removeExistingGpx(docId: string) {
-		removedDocIds = [...removedDocIds, docId];
+	function removeExistingGpx(slotIndex: number, docId: string) {
+		removedSlots = { ...removedSlots, [slotIndex]: docId };
 	}
 
 	function handleSlotFileChange(i: number, e: Event) {
@@ -99,6 +107,12 @@
 		// Also clear the actual input
 		const input = document.getElementById(`gpx-slot-${i}`) as HTMLInputElement | null;
 		if (input) input.value = '';
+	}
+
+	function clearSelectedExisting(i: number) {
+		const next = { ...selectedExistingIds };
+		delete next[i];
+		selectedExistingIds = next;
 	}
 
 	const defaultExpenses = $derived(
@@ -133,8 +147,11 @@
 			{#if mode === 'edit' && travel}
 				<input type="hidden" name="id" value={travel.id} />
 			{/if}
-			{#each removedDocIds as docId}
-				<input type="hidden" name="remove_gpx_doc_id" value={docId} />
+			{#each Object.entries(removedSlots) as [slotIdx, docId]}
+				<input type="hidden" name="remove_gpx_slot_{slotIdx}" value={docId} />
+			{/each}
+			{#each Object.entries(selectedExistingIds) as [i, docId]}
+				<input type="hidden" name="gpx_existing_doc_{i}" value={docId} />
 			{/each}
 			{#if excludedDays.length > 0}
 				<input type="hidden" name="excluded_gpx_days" value={JSON.stringify(excludedDays)} />
@@ -233,7 +250,7 @@
 				<div class="gpx-slots">
 					{#each Array.from({ length: slots }, (_, i) => i) as i}
 						{@const existingDoc = existingGpxDocs.find((d) => d.index === i)}
-						{@const isRemoved = existingDoc ? removedDocIds.includes(existingDoc.id) : false}
+						{@const isRemoved = removedSlots[i] !== undefined}
 						{@const newFile = selectedFiles[i]}
 						<div class="gpx-slot">
 							<span class="gpx-slot-day">
@@ -280,7 +297,7 @@
 										<button
 											type="button"
 											class="file-chip-remove"
-											onclick={() => removeExistingGpx(existingDoc.id)}
+											onclick={() => removeExistingGpx(i, existingDoc.id)}
 											aria-label="Remove {existingDoc.name}"
 										>
 											<svg
@@ -388,30 +405,134 @@
 										</svg>
 									</button>
 								</div>
-							{:else}
-								<!-- Empty slot: upload zone -->
-								<label class="upload-slot" for="gpx-slot-{i}">
-									<svg
-										class="upload-slot-icon"
-										width="14"
-										height="14"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
+							{:else if selectedExistingIds[i]}
+								<!-- Borrowed existing doc from library -->
+								{@const borrowedDoc = availableRouteDocs.find(
+									(d) => d.id === selectedExistingIds[i]
+								)}
+								<div class="gpx-slot-row">
+									<div class="file-chip">
+										<span class="file-chip-icon" aria-hidden="true">
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+											>
+												<polyline points="3 17 8 12 13 15 21 7" />
+											</svg>
+										</span>
+										<span class="file-chip-name">{borrowedDoc?.title || borrowedDoc?.name}</span>
+										<button
+											type="button"
+											class="file-chip-remove"
+											onclick={() => clearSelectedExisting(i)}
+											aria-label="Remove selection"
+										>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+											>
+												<path d="M18 6L6 18M6 6l12 12" />
+											</svg>
+										</button>
+									</div>
+									<button
+										type="button"
+										class="exclude-toggle"
+										class:exclude-toggle--excluded={excludedDays.includes(i)}
+										title={excludedDays.includes(i)
+											? $_('travels.map.showDay')
+											: $_('travels.map.hideDay')}
+										onclick={() => toggleExcludedDay(i)}
 									>
-										<path d="M12 5v14M5 12l7-7 7 7" />
-									</svg>
-									<span>{$_('travels.form.gpxChoose')}</span>
-									<input
-										id="gpx-slot-{i}"
-										type="file"
-										name="gpx_file_{i}"
-										accept=".gpx,application/gpx+xml"
-										class="upload-slot-input"
-										onchange={(e) => handleSlotFileChange(i, e)}
-									/>
-								</label>
+										<svg
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											{#if excludedDays.includes(i)}
+												<path
+													d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+												/>
+												<line x1="1" y1="1" x2="23" y2="23" />
+											{:else}
+												<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+												<circle cx="12" cy="12" r="3" />
+											{/if}
+										</svg>
+									</button>
+								</div>
+							{:else if slotPickMode[i]}
+								<!-- Library picker: select dropdown -->
+								<div class="gpx-pick-row">
+									<select
+										class="gpx-pick-select"
+										onchange={(e) => {
+											const val = (e.target as HTMLSelectElement).value;
+											if (val) {
+												selectedExistingIds = { ...selectedExistingIds, [i]: val };
+											}
+											slotPickMode = { ...slotPickMode, [i]: false };
+										}}
+									>
+										<option value="">{$_('travels.form.gpxPickPlaceholder')}</option>
+										{#each availableRouteDocs as doc}
+											<option value={doc.id}>{doc.title || doc.name}</option>
+										{/each}
+									</select>
+									<button
+										type="button"
+										class="gpx-pick-cancel"
+										onclick={() => (slotPickMode = { ...slotPickMode, [i]: false })}
+									>
+										{$_('common.cancel')}
+									</button>
+								</div>
+							{:else}
+								<!-- Empty slot: upload zone + optional pick-from-library -->
+								<div class="gpx-slot-options">
+									<label class="upload-slot" for="gpx-slot-{i}">
+										<svg
+											class="upload-slot-icon"
+											width="14"
+											height="14"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											<path d="M12 5v14M5 12l7-7 7 7" />
+										</svg>
+										<span>{$_('travels.form.gpxChoose')}</span>
+										<input
+											id="gpx-slot-{i}"
+											type="file"
+											name="gpx_file_{i}"
+											accept=".gpx,application/gpx+xml"
+											class="upload-slot-input"
+											onchange={(e) => handleSlotFileChange(i, e)}
+										/>
+									</label>
+									{#if availableRouteDocs.length > 0}
+										<button
+											type="button"
+											class="gpx-pick-trigger"
+											onclick={() => (slotPickMode = { ...slotPickMode, [i]: true })}
+										>
+											{$_('travels.form.gpxPickExisting')}
+										</button>
+									{/if}
+								</div>
 							{/if}
 						</div>
 					{/each}
@@ -624,6 +745,7 @@
 		margin-top: var(--space-2);
 		max-height: 280px;
 		overflow-y: auto;
+		overflow-x: hidden;
 		padding-right: var(--space-1);
 	}
 	.gpx-slot {
@@ -760,5 +882,55 @@
 	.exclude-toggle:focus-visible {
 		outline: 2px solid var(--accent);
 		outline-offset: 1px;
+	}
+	.gpx-slot-options {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		flex: 1;
+	}
+	.gpx-pick-trigger {
+		font-size: var(--text-xs);
+		color: var(--accent);
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: var(--space-1) 0;
+		text-align: left;
+		line-height: var(--leading-tight);
+	}
+	.gpx-pick-trigger:hover {
+		color: var(--accent-hover);
+	}
+	.gpx-pick-row {
+		display: flex;
+		gap: var(--space-2);
+		flex: 1;
+		min-width: 0;
+		align-items: center;
+	}
+	.gpx-pick-select {
+		flex: 1;
+		font-size: max(1rem, 16px);
+		padding: var(--space-1) var(--space-2);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg);
+		color: var(--text);
+		min-width: 0;
+	}
+	.gpx-pick-cancel {
+		font-size: var(--text-xs);
+		color: var(--text-muted);
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: var(--space-1) 0;
+		white-space: nowrap;
+		flex-shrink: 0;
+		line-height: var(--leading-tight);
+	}
+	.gpx-pick-cancel:hover {
+		color: var(--text);
 	}
 </style>
