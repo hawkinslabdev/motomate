@@ -123,6 +123,7 @@
 				name="current_password"
 				type="password"
 				autocomplete="current-password"
+				placeholder={$_('settings.account.password.current')}
 				class="input"
 				required
 			/>
@@ -145,6 +146,7 @@
 				name="confirm_password"
 				type="password"
 				autocomplete="new-password"
+				placeholder={$_('settings.account.password.hint')}
 				class="input"
 				required
 			/>
