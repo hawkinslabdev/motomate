@@ -81,6 +81,15 @@ const PagePrefsSchema = z.object({
 			sortBy: z.enum(['newest', 'oldest', 'name']).optional(),
 			filterBy: z.enum(['all', 'past', 'upcoming']).optional()
 		})
+		.optional(),
+	timeline: z
+		.object({
+			showService: z.boolean().optional(),
+			showOdometer: z.boolean().optional(),
+			showNotes: z.boolean().optional(),
+			showTravel: z.boolean().optional(),
+			showFinance: z.boolean().optional()
+		})
 		.optional()
 });
 

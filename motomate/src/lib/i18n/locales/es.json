@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Sin historial todavía",
 					"description": "Registra tu primer servicio o control de kilometraje para iniciar la línea de tiempo."
+				},
+				"filter": {
+					"service": "Mantenimiento",
+					"odometer": "Odómetro",
+					"notes": "Notas",
+					"travels": "Viajes",
+					"finance": "Finanzas"
 				}
 			},
 			"upcoming": "Próximo",
@@ -785,7 +792,7 @@
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "MotoMate sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
 				},
 				"ha": {
 					"label": "Home Assistant",

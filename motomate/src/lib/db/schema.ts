@@ -15,6 +15,13 @@ export type PagePrefs = {
 	documents?: { sortBy?: 'newest' | 'oldest' | 'name'; viewMode?: 'list' | 'timeline' };
 	finance?: { groupBy?: 'category' | 'year' | 'description' | 'none'; last_category?: string };
 	travels?: { sortBy?: 'newest' | 'oldest' | 'name'; filterBy?: 'all' | 'past' | 'upcoming' };
+	timeline?: {
+		showService?: boolean;
+		showOdometer?: boolean;
+		showNotes?: boolean;
+		showTravel?: boolean;
+		showFinance?: boolean;
+	};
 };
 
 export type UserSettings = {
@@ -267,6 +274,10 @@ export const finance_transactions = sqliteTable(
 		notes: text('notes'),
 		performed_at: text('performed_at').notNull(), // ISO date string
 		odometer_at_transaction: integer('odometer_at_transaction'), // optional odometer reading
+		attachments: text('attachments', { mode: 'json' })
+			.$type<Attachments>()
+			.notNull()
+			.default(sql`'[]'`),
 		created_at: text('created_at')
 			.notNull()
 			.default(sql`(datetime('now'))`),

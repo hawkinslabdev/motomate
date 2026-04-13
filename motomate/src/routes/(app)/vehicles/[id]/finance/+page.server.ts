@@ -3,10 +3,25 @@ import type { Actions, PageServerLoad } from './$types';
 import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import {
 	getFinanceTransactionsByVehicle,
+	getFinanceTransactionById,
 	createFinanceTransaction,
 	updateFinanceTransaction,
+	updateFinanceTransactionAttachments,
 	deleteFinanceTransaction
 } from '$lib/db/repositories/finance-transactions.js';
+import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
+import { getStorage } from '$lib/storage/index.js';
+import { attachmentStorageKey } from '$lib/utils/storage.js';
+import { updateUserSettings } from '$lib/db/repositories/users.js';
+
+const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
+
+const VALID_DOC_TYPES = ['service', 'quotation', 'papers', 'photo', 'notes', 'other'] as const;
+type ValidDocType = (typeof VALID_DOC_TYPES)[number];
+
+function validateDocType(raw: string): ValidDocType {
+	return VALID_DOC_TYPES.includes(raw as ValidDocType) ? (raw as ValidDocType) : 'other';
+}
 
 export const load: PageServerLoad = async ({ parent, params, locals }) => {
 	const { vehicle } = await parent();
@@ -16,6 +31,9 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 
 	// Get all finance transactions
 	const financeTransactions = await getFinanceTransactionsByVehicle(params.id, locals.user!.id);
+
+	// Get all vehicle documents (for attachment link picker)
+	const allDocs = await getDocumentsByVehicle(params.id, locals.user!.id);
 
 	// Filter service logs with costs
 	const serviceLogsWithCosts = serviceLogs.filter((log) => log.cost_cents && log.cost_cents > 0);
@@ -40,7 +58,8 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 			amountCents: tx.amount_cents,
 			currency: tx.currency,
 			notes: tx.notes,
-			category: tx.category
+			category: tx.category,
+			attachments: tx.attachments
 		}))
 	].sort((a, b) => b.date.localeCompare(a.date));
 
@@ -109,7 +128,8 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		soldPriceCents,
 		totalInvestmentCents,
 		profitLossCents,
-		page_prefs: locals.user!.settings?.page_prefs?.finance ?? null
+		page_prefs: locals.user!.settings?.page_prefs?.finance ?? null,
+		allDocs
 	};
 };
 
@@ -149,6 +169,38 @@ export const actions: Actions = {
 			return fail(400, { error: 'Invalid category' });
 		}
 
+		// Handle optional file attachment
+		const attachmentFile = formData.get('attachment_file') as File | null;
+		const attachmentDocIds: string[] = [];
+		if (attachmentFile && attachmentFile.size > 0) {
+			if (attachmentFile.size > MAX_ATTACHMENT_SIZE) {
+				return fail(400, { error: 'Attachment too large (max 10 MB)' });
+			}
+			const key = attachmentStorageKey(locals.user!.id, attachmentFile.name);
+			const buffer = Buffer.from(await attachmentFile.arrayBuffer());
+			try {
+				const storage = getStorage();
+				await storage.put(key, buffer, attachmentFile.type || 'application/octet-stream');
+			} catch (e) {
+				console.error('Attachment upload failed:', e);
+				return fail(500, { error: 'Attachment upload failed' });
+			}
+			const docName = String(formData.get('attachment_name') || attachmentFile.name)
+				.trim()
+				.slice(0, 200);
+			const docType = validateDocType(String(formData.get('attachment_type') || 'other'));
+			const doc = await createDocument(locals.user!.id, {
+				vehicle_id: params.id,
+				name: docName,
+				doc_type: docType,
+				storage_key: key,
+				mime_type: attachmentFile.type || 'application/octet-stream',
+				size_bytes: attachmentFile.size
+			});
+			attachmentDocIds.push(doc.id);
+		}
+		const linkedDocIds = formData.getAll('linked_doc_id').map(String).filter(Boolean);
+
 		// Create transaction
 		await createFinanceTransaction(locals.user!.id, {
 			vehicle_id: params.id,
@@ -163,7 +215,17 @@ export const actions: Actions = {
 			currency: (locals.user as any)?.settings?.currency || 'EUR',
 			notes,
 			performed_at: date,
-			odometer_at_transaction: odometer
+			odometer_at_transaction: odometer,
+			attachments: [...attachmentDocIds, ...linkedDocIds]
+		});
+
+		// Persist last used category so the form pre-selects it next time
+		const existingPrefs = (locals.user as any)?.settings?.page_prefs ?? {};
+		await updateUserSettings(locals.user!.id, {
+			page_prefs: {
+				...existingPrefs,
+				finance: { ...(existingPrefs.finance ?? {}), last_category: category }
+			}
 		});
 
 		return { created: true };
@@ -221,6 +283,88 @@ export const actions: Actions = {
 		});
 
 		return { edited: true };
+	},
+
+	linkFinanceDocument: async ({ request, locals, params }) => {
+		const formData = await request.formData();
+		const transactionId = String(formData.get('transaction_id') ?? '');
+		const documentId = String(formData.get('document_id') ?? '');
+		if (!transactionId || !documentId) return fail(400, { error: 'Missing fields' });
+
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { error: 'Not found' });
+
+		const current = (tx.attachments as string[]) ?? [];
+		if (!current.includes(documentId)) {
+			await updateFinanceTransactionAttachments(transactionId, params.id, locals.user!.id, [
+				...current,
+				documentId
+			]);
+		}
+		return { linked: true };
+	},
+
+	unlinkFinanceDocument: async ({ request, locals, params }) => {
+		const formData = await request.formData();
+		const transactionId = String(formData.get('transaction_id') ?? '');
+		const documentId = String(formData.get('document_id') ?? '');
+		if (!transactionId || !documentId) return fail(400, { error: 'Missing fields' });
+
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { error: 'Not found' });
+
+		const current = (tx.attachments as string[]) ?? [];
+		await updateFinanceTransactionAttachments(
+			transactionId,
+			params.id,
+			locals.user!.id,
+			current.filter((id) => id !== documentId)
+		);
+		return { unlinked: true };
+	},
+
+	uploadToFinanceTransaction: async ({ request, locals, params }) => {
+		const formData = await request.formData();
+		const transactionId = String(formData.get('transaction_id') ?? '');
+		const file = formData.get('file') as File | null;
+
+		if (!transactionId) return fail(400, { uploadError: 'Missing transaction ID' });
+		if (!file || file.size === 0) return fail(400, { uploadError: 'No file selected' });
+		if (file.size > MAX_ATTACHMENT_SIZE)
+			return fail(400, { uploadError: 'File too large (max 10 MB)' });
+
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { uploadError: 'Not found' });
+
+		const key = attachmentStorageKey(locals.user!.id, file.name);
+		const buffer = Buffer.from(await file.arrayBuffer());
+		try {
+			const storage = getStorage();
+			await storage.put(key, buffer, file.type || 'application/octet-stream');
+		} catch (e) {
+			console.error('Attachment upload failed:', e);
+			return fail(500, { uploadError: 'Upload failed' });
+		}
+
+		const docName = String(formData.get('doc_name') || file.name)
+			.trim()
+			.slice(0, 200);
+		const docType = validateDocType(String(formData.get('doc_type') || 'other'));
+		const doc = await createDocument(locals.user!.id, {
+			vehicle_id: params.id,
+			name: docName,
+			doc_type: docType,
+			storage_key: key,
+			mime_type: file.type || 'application/octet-stream',
+			size_bytes: file.size
+		});
+
+		const current = (tx.attachments as string[]) ?? [];
+		await updateFinanceTransactionAttachments(transactionId, params.id, locals.user!.id, [
+			...current,
+			doc.id
+		]);
+		return { attachUploaded: true };
 	},
 
 	deleteTransaction: async ({ request, locals, params }) => {

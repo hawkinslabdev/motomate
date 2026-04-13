@@ -24,21 +24,16 @@ import {
 } from '$lib/db/repositories/maintenance.js';
 import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
-import { generateId } from '$lib/utils/id.js';
+import { attachmentStorageKey } from '$lib/utils/storage.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
+import {
+	getFinanceTransactionsByVehicle,
+	deleteFinanceTransaction
+} from '$lib/db/repositories/finance-transactions.js';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
-
-function attachmentStorageKey(userId: string, filename: string): string {
-	const ext =
-		filename
-			.split('.')
-			.pop()
-			?.replace(/[^a-zA-Z0-9]/g, '') ?? 'bin';
-	return `files/${userId}/${generateId()}.${ext}`;
-}
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
@@ -46,15 +41,25 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	// Ensure tracker statuses are fresh every time the timeline loads
 	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 
-	const [logs, odoLogs, trackers, travelEntries, allDocs] = await Promise.all([
+	const [logs, odoLogs, trackers, travelEntries, allDocs, financeEntries] = await Promise.all([
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
 		getOdometerLogs(vehicle.id, locals.user!.id),
 		getTrackersByVehicle(vehicle.id, locals.user!.id),
 		getTravelsForTimeline(vehicle.id, locals.user!.id),
-		getDocumentsByVehicle(vehicle.id, locals.user!.id)
+		getDocumentsByVehicle(vehicle.id, locals.user!.id),
+		getFinanceTransactionsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
-	return { logs, odoLogs, trackers, vehicle, travelEntries, allDocs };
+	return {
+		logs,
+		odoLogs,
+		trackers,
+		vehicle,
+		travelEntries,
+		allDocs,
+		financeEntries,
+		timelinePrefs: locals.user!.settings?.page_prefs?.timeline ?? null
+	};
 };
 
 export const actions: Actions = {
@@ -398,5 +403,13 @@ export const actions: Actions = {
 			doc.id
 		]);
 		return { attachUploaded: true };
+	},
+
+	deleteFinanceEntry: async ({ request, locals, params }) => {
+		const data = await request.formData();
+		const id = String(data.get('id') ?? '');
+		if (!id) return fail(400, { error: 'Missing ID' });
+		await deleteFinanceTransaction(id, params.id, locals.user!.id);
+		return { deletedLog: true };
 	}
 };

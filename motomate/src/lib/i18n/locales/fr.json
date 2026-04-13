@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Pas encore d'historique",
 					"description": "Enregistrez votre premier entretien ou contrôle du kilométrage pour démarrer la chronologie."
+				},
+				"filter": {
+					"service": "Entretien",
+					"odometer": "Kilométrage",
+					"notes": "Notes",
+					"travels": "Voyages",
+					"finance": "Finances"
 				}
 			},
 			"upcoming": "À venir",
@@ -786,7 +793,7 @@
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "MotoMate sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
 				},
 				"ha": {
 					"label": "Home Assistant",

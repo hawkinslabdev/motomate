@@ -39,10 +39,14 @@ export async function getFinanceTransactionsByVehicle(
 }
 
 export async function getFinanceTransactionById(
-	id: string
+	id: string,
+	vehicleId: string,
+	userId: string
 ): Promise<FinanceTransaction | undefined> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return undefined;
 	return db.query.finance_transactions.findFirst({
-		where: eq(finance_transactions.id, id)
+		where: and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId))
 	});
 }
 
@@ -64,6 +68,21 @@ export async function updateFinanceTransaction(
 	await db
 		.update(finance_transactions)
 		.set({ ...data, updated_at: now })
+		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
+}
+
+export async function updateFinanceTransactionAttachments(
+	id: string,
+	vehicleId: string,
+	userId: string,
+	documentIds: string[]
+): Promise<void> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return;
+	const now = new Date().toISOString();
+	await db
+		.update(finance_transactions)
+		.set({ attachments: documentIds, updated_at: now })
 		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
 }
 
