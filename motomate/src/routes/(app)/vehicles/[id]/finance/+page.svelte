@@ -30,6 +30,28 @@
 		}
 	});
 
+	// Handle ?edit=txid — auto-open edit form and highlight the entry
+	let highlightId = $state<string | null>(null);
+	$effect(() => {
+		const editId = $page.url.searchParams.get('edit');
+		if (!editId) return;
+		const tx = data.recentTransactions.find((t) => t.id === editId && t.type === 'finance');
+		if (tx) {
+			prepareEdit(tx);
+			startEdit(tx.id, 'finance');
+			highlightId = editId;
+			setTimeout(() => (highlightId = null), 1800);
+			setTimeout(() => {
+				document
+					.getElementById('tx-' + editId)
+					?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}, 80);
+		}
+		const url = new URL($page.url);
+		url.searchParams.delete('edit');
+		replaceState(url, $page.state);
+	});
+
 	const locale = $derived(data.user?.settings?.locale ?? 'en');
 	const currency = $derived(data.currency || 'EUR');
 
@@ -869,7 +891,7 @@
 			<h3 class="section-label">{$_('finance.recentTransactions')}</h3>
 			<div class="transaction-list">
 				{#each data.recentTransactions as tx}
-					<div class="transaction-row">
+					<div id="tx-{tx.id}" class="transaction-row" class:transaction-row--highlight={highlightId === tx.id}>
 						<div class="transaction-icon">
 							<span class="dot"></span>
 						</div>
@@ -1543,6 +1565,14 @@
 	}
 	.transaction-row:hover {
 		background: var(--bg-subtle);
+	}
+	.transaction-row--highlight {
+		animation: row-highlight 1.8s ease-out forwards;
+	}
+	@keyframes row-highlight {
+		0% { background: var(--accent-subtle); }
+		60% { background: var(--accent-subtle); }
+		100% { background: transparent; }
 	}
 	.transaction-icon {
 		flex-shrink: 0;

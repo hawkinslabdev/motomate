@@ -1546,9 +1546,8 @@
 											<a
 												role="menuitem"
 												class="entry-menu-item"
-												href="/vehicles/{data.vehicle.id}/finance"
-												onclick={() => (entryMenu = null)}
-												>{$_('common.edit')}</a
+												href="/vehicles/{data.vehicle.id}/finance?edit={tx.id}"
+												onclick={() => (entryMenu = null)}>{$_('common.edit')}</a
 											>
 											<button
 												role="menuitem"
