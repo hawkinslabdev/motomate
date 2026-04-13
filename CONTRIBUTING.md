@@ -1,10 +1,10 @@
 # Contributing
 
-Thank you for considering to helping me out. Follow these steps to get your local environment running.
+Thank you for considering to helping me out. Please follow the steps below to get your local environment running; then submit a pull request to contribute. If you're more into planning features, please help me along planning features or joining discussions in (open) issues.
 
----
+## Build
 
-## Build & Development
+There are some trivial steps here:
 
 ### Prerequisites
 
@@ -31,9 +31,9 @@ npm run format       # Auto-format with Prettier
 npx svelte-check     # Run all checks
 ```
 
----
+Before starting the development server, make sure to generate your database first:
 
-## Database
+#### Database
 
 * **Schema**: `src/lib/db/schema.ts`
 * **Migrations**: `./drizzle/`
@@ -44,9 +44,7 @@ npm run db:migrate   # Apply pending migrations
 npm run db:studio    # Open Drizzle Studio (browser DB viewer)
 ```
 
----
-
-## Build & Preview
+### Build & Preview
 
 ```bash
 npm run build        # Production build → ./build/
@@ -55,9 +53,7 @@ npm run preview      # Preview production build locally
 
 The build uses `@sveltejs/adapter-node`, resulting in a Node.js server at `build/index.js`.
 
----
-
-## Push Notifications
+### Push Notifications
 
 If you need to test push notifications locally, generate your own VAPID keys:
 
