@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Pas encore d'historique",
 					"description": "Enregistrez votre premier entretien ou contrôle du kilométrage pour démarrer la chronologie."
+				},
+				"filter": {
+					"service": "Entretien",
+					"odometer": "Kilométrage",
+					"notes": "Notes",
+					"travels": "Voyages",
+					"finance": "Finances"
 				}
 			},
 			"upcoming": "À venir",

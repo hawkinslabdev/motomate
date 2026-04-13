@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Noch kein Verlauf",
 					"description": "Protokollieren Sie Ihren ersten Service oder Kilometerstand-Check-in, um die Zeitleiste zu starten."
+				},
+				"filter": {
+					"service": "Wartung",
+					"odometer": "Kilometerstand",
+					"notes": "Notizen",
+					"travels": "Fahrten",
+					"finance": "Finanzen"
 				}
 			},
 			"upcoming": "Bevorstehend",

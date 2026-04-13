@@ -241,6 +241,13 @@
 				"empty": {
 					"title": "No history yet",
 					"description": "Log your first service or odometer check-in to start the timeline."
+				},
+				"filter": {
+					"service": "Maintenance",
+					"odometer": "Odometer",
+					"notes": "Notes",
+					"travels": "Travels",
+					"finance": "Finance"
 				}
 			},
 			"upcoming": "Upcoming",

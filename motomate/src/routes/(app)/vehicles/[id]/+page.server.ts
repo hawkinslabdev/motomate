@@ -28,6 +28,7 @@ import { generateId } from '$lib/utils/id.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
+import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -46,15 +47,25 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	// Ensure tracker statuses are fresh every time the timeline loads
 	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 
-	const [logs, odoLogs, trackers, travelEntries, allDocs] = await Promise.all([
+	const [logs, odoLogs, trackers, travelEntries, allDocs, financeEntries] = await Promise.all([
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
 		getOdometerLogs(vehicle.id, locals.user!.id),
 		getTrackersByVehicle(vehicle.id, locals.user!.id),
 		getTravelsForTimeline(vehicle.id, locals.user!.id),
-		getDocumentsByVehicle(vehicle.id, locals.user!.id)
+		getDocumentsByVehicle(vehicle.id, locals.user!.id),
+		getFinanceTransactionsByVehicle(vehicle.id, locals.user!.id)
 	]);
 
-	return { logs, odoLogs, trackers, vehicle, travelEntries, allDocs };
+	return {
+		logs,
+		odoLogs,
+		trackers,
+		vehicle,
+		travelEntries,
+		allDocs,
+		financeEntries,
+		timelinePrefs: locals.user!.settings?.page_prefs?.timeline ?? null
+	};
 };
 
 export const actions: Actions = {

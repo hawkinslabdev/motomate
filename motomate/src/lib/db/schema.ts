@@ -15,6 +15,13 @@ export type PagePrefs = {
 	documents?: { sortBy?: 'newest' | 'oldest' | 'name'; viewMode?: 'list' | 'timeline' };
 	finance?: { groupBy?: 'category' | 'year' | 'description' | 'none'; last_category?: string };
 	travels?: { sortBy?: 'newest' | 'oldest' | 'name'; filterBy?: 'all' | 'past' | 'upcoming' };
+	timeline?: {
+		showService?: boolean;
+		showOdometer?: boolean;
+		showNotes?: boolean;
+		showTravel?: boolean;
+		showFinance?: boolean;
+	};
 };
 
 export type UserSettings = {

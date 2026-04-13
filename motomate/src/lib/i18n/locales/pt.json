@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Ainda sem histórico",
 					"description": "Registe a sua primeira manutenção ou verificação de quilometragem para iniciar a cronologia."
+				},
+				"filter": {
+					"service": "Manutenção",
+					"odometer": "Odômetro",
+					"notes": "Notas",
+					"travels": "Viagens",
+					"finance": "Finanças"
 				}
 			},
 			"upcoming": "Próximo",

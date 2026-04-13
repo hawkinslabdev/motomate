@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Nessuna cronologia ancora",
 					"description": "Registra la tua prima manutenzione o controllo del chilometraggio per avviare la cronologia."
+				},
+				"filter": {
+					"service": "Manutenzione",
+					"odometer": "Odometro",
+					"notes": "Note",
+					"travels": "Viaggi",
+					"finance": "Finanze"
 				}
 			},
 			"upcoming": "Prossimo",

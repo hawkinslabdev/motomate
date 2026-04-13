@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	import { replaceState } from '$app/navigation';
+	import { replaceState, beforeNavigate } from '$app/navigation';
+	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import { _, waitLocale } from '$lib/i18n';
 	import { quickAdd } from '$lib/stores/quickAdd.js';
 	import {
@@ -135,38 +137,139 @@
 		return diff > 0 ? diff : null;
 	}
 
+	// Timeline filter state — persisted to page_prefs.timeline
+	let filters = $state({
+		service: untrack(() => data.timelinePrefs?.showService ?? true),
+		odometer: untrack(() => data.timelinePrefs?.showOdometer ?? true),
+		note: untrack(() => data.timelinePrefs?.showNotes ?? true),
+		travel: untrack(() => data.timelinePrefs?.showTravel ?? true),
+		finance: untrack(() => data.timelinePrefs?.showFinance ?? false)
+	});
+
+	let filterOpen = $state(false);
+
+	const filtersNonDefault = $derived(
+		!filters.service || !filters.odometer || !filters.note || !filters.travel || filters.finance
+	);
+
+	let _prefTimer: ReturnType<typeof setTimeout>;
+	let _pendingTimelinePrefs: object | null = null;
+	let _prefFirstRun = true;
+
+	function flushTimelinePrefs() {
+		if (!_pendingTimelinePrefs) return;
+		const body = JSON.stringify({ page_prefs: { timeline: _pendingTimelinePrefs } });
+		_pendingTimelinePrefs = null;
+		clearTimeout(_prefTimer);
+		fetch('/api/prefs', {
+			method: 'PATCH',
+			keepalive: true,
+			headers: { 'content-type': 'application/json' },
+			body
+		});
+	}
+
+	beforeNavigate(() => flushTimelinePrefs());
+
+	// Also flush on hard refresh / browser close (beforeNavigate doesn't fire for those)
+	$effect(() => {
+		window.addEventListener('beforeunload', flushTimelinePrefs);
+		return () => window.removeEventListener('beforeunload', flushTimelinePrefs);
+	});
+
+	$effect(() => {
+		// Read each property explicitly so Svelte 5 tracks them individually
+		const service = filters.service;
+		const odometer = filters.odometer;
+		const note = filters.note;
+		const travel = filters.travel;
+		const finance = filters.finance;
+		if (_prefFirstRun) {
+			_prefFirstRun = false;
+			return;
+		}
+		_pendingTimelinePrefs = {
+			showService: service,
+			showOdometer: odometer,
+			showNotes: note,
+			showTravel: travel,
+			showFinance: finance
+		};
+		clearTimeout(_prefTimer);
+		_prefTimer = setTimeout(flushTimelinePrefs, 600);
+	});
+
 	// Combined timeline (newest first)
 	type Entry =
 		| { kind: 'service'; date: string; odometer: number; log: (typeof data.logs)[0] }
 		| { kind: 'odometer'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
 		| { kind: 'note'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
-		| { kind: 'travel'; date: string; travel: (typeof data.travelEntries)[0] };
+		| { kind: 'travel'; date: string; travel: (typeof data.travelEntries)[0] }
+		| { kind: 'finance'; date: string; tx: (typeof data.financeEntries)[0] };
 
 	const allEntries = $derived((): Entry[] => {
-		const entries: Entry[] = [
-			...data.logs.map((log: (typeof data.logs)[number]) => ({
-				kind: 'service' as const,
-				date: log.performed_at,
-				odometer: log.odometer_at_service,
-				log
-			})),
-			...data.odoLogs.map((log: (typeof data.odoLogs)[number]) => {
-				if (log.kind === 'note') {
-					return { kind: 'note' as const, date: log.recorded_at, odometer: log.odometer, log };
-				}
-				return { kind: 'odometer' as const, date: log.recorded_at, odometer: log.odometer, log };
-			}),
-			...data.travelEntries.map((t: (typeof data.travelEntries)[number]) => ({
-				kind: 'travel' as const,
-				date: t.start_date,
-				travel: t
-			}))
-		];
+		const entries: Entry[] = [];
+		if (filters.service) {
+			entries.push(
+				...data.logs.map((log: (typeof data.logs)[number]) => ({
+					kind: 'service' as const,
+					date: log.performed_at,
+					odometer: log.odometer_at_service,
+					log
+				}))
+			);
+		}
+		entries.push(
+			...(data.odoLogs
+				.map((log: (typeof data.odoLogs)[number]) => {
+					if (log.kind === 'note') {
+						return filters.note
+							? { kind: 'note' as const, date: log.recorded_at, odometer: log.odometer, log }
+							: null;
+					}
+					return filters.odometer
+						? { kind: 'odometer' as const, date: log.recorded_at, odometer: log.odometer, log }
+						: null;
+				})
+				.filter(Boolean) as Entry[])
+		);
+		if (filters.travel) {
+			entries.push(
+				...data.travelEntries.map((t: (typeof data.travelEntries)[number]) => ({
+					kind: 'travel' as const,
+					date: t.start_date,
+					travel: t
+				}))
+			);
+		}
+		if (filters.finance) {
+			entries.push(
+				...data.financeEntries.map((tx: (typeof data.financeEntries)[number]) => ({
+					kind: 'finance' as const,
+					date: tx.performed_at,
+					tx
+				}))
+			);
+		}
 		return entries.sort((a, b) => {
 			const dateCmp = b.date.localeCompare(a.date);
 			if (dateCmp !== 0) return dateCmp;
-			const aCreated = 'log' in a ? a.log.created_at : 'travel' in a ? a.travel.created_at : '';
-			const bCreated = 'log' in b ? b.log.created_at : 'travel' in b ? b.travel.created_at : '';
+			const aCreated =
+				'log' in a
+					? a.log.created_at
+					: 'travel' in a
+						? a.travel.created_at
+						: 'tx' in a
+							? a.tx.created_at
+							: '';
+			const bCreated =
+				'log' in b
+					? b.log.created_at
+					: 'travel' in b
+						? b.travel.created_at
+						: 'tx' in b
+							? b.tx.created_at
+							: '';
 			return bCreated.localeCompare(aCreated);
 		});
 	});
@@ -316,6 +419,132 @@
 				{$_('common.cancel')}
 			</button>
 		{:else}
+			<!-- Filter button -->
+			<div class="filter-wrap">
+				<button
+					class="btn-ghost btn-icon"
+					class:btn-icon--active={filtersNonDefault}
+					onclick={() => (filterOpen = !filterOpen)}
+					aria-label="Filter entries"
+					aria-expanded={filterOpen}
+				>
+					<svg
+						width="15"
+						height="15"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<line x1="4" y1="21" x2="4" y2="14" />
+						<line x1="4" y1="10" x2="4" y2="3" />
+						<line x1="12" y1="21" x2="12" y2="12" />
+						<line x1="12" y1="8" x2="12" y2="3" />
+						<line x1="20" y1="21" x2="20" y2="16" />
+						<line x1="20" y1="12" x2="20" y2="3" />
+						<line x1="1" y1="14" x2="7" y2="14" />
+						<line x1="9" y1="8" x2="15" y2="8" />
+						<line x1="17" y1="16" x2="23" y2="16" />
+					</svg>
+					{#if filtersNonDefault}
+						<span class="filter-active-dot" aria-hidden="true"></span>
+					{/if}
+				</button>
+				{#if filterOpen}
+					<div
+						class="add-menu-backdrop"
+						role="presentation"
+						onclick={() => (filterOpen = false)}
+					></div>
+					<div class="filter-dropdown">
+						<button class="filter-row" onclick={() => (filters.service = !filters.service)}>
+							<span class="filter-check" class:filter-check--on={filters.service}>
+								{#if filters.service}<svg
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
+									>{/if}
+							</span>
+							<span class="filter-label">{$_('vehicle.detail.timeline.filter.service')}</span>
+						</button>
+						<button class="filter-row" onclick={() => (filters.odometer = !filters.odometer)}>
+							<span class="filter-check" class:filter-check--on={filters.odometer}>
+								{#if filters.odometer}<svg
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
+									>{/if}
+							</span>
+							<span class="filter-label">{$_('vehicle.detail.timeline.filter.odometer')}</span>
+						</button>
+						<button class="filter-row" onclick={() => (filters.note = !filters.note)}>
+							<span class="filter-check" class:filter-check--on={filters.note}>
+								{#if filters.note}<svg
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
+									>{/if}
+							</span>
+							<span class="filter-label">{$_('vehicle.detail.timeline.filter.notes')}</span>
+						</button>
+						<button class="filter-row" onclick={() => (filters.travel = !filters.travel)}>
+							<span class="filter-check" class:filter-check--on={filters.travel}>
+								{#if filters.travel}<svg
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
+									>{/if}
+							</span>
+							<span class="filter-label">{$_('vehicle.detail.timeline.filter.travels')}</span>
+						</button>
+						<div class="filter-divider hidden"></div>
+						<button class="filter-row" onclick={() => (filters.finance = !filters.finance)}>
+							<span class="filter-check" class:filter-check--on={filters.finance}>
+								{#if filters.finance}<svg
+										width="9"
+										height="9"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2.5"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
+									>{/if}
+							</span>
+							<span class="filter-label">{$_('vehicle.detail.timeline.filter.finance')}</span>
+						</button>
+					</div>
+				{/if}
+			</div>
+
 			<button
 				class="btn-primary"
 				onclick={() => (isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen))}
@@ -763,11 +992,11 @@
 
 	<!-- Timeline -->
 	{#if !hasHistory}
-		<div class="empty">
-			<div class="empty-icon" aria-hidden="true">📋</div>
-			<p class="empty-title">{$_('vehicle.detail.timeline.empty.title')}</p>
-			<p class="empty-desc">{$_('vehicle.detail.timeline.empty.description')}</p>
-		</div>
+		<EmptyState
+			icon="📋"
+			title={$_('vehicle.detail.timeline.empty.title')}
+			description={$_('vehicle.detail.timeline.empty.description')}
+		/>
 	{:else}
 		<!-- Single backdrop for all entry menus -->
 		{#if entryMenu !== null}
@@ -790,7 +1019,7 @@
 							{@const log = entry.log}
 							{@const attached = resolvedAttachments(log)}
 							<div class="timeline-entry">
-								<div class="entry-icon service-dot" title="Service" aria-hidden="true"></div>
+								<div class="entry-icon" title="Service" aria-hidden="true"></div>
 								<div class="entry-body">
 									<div class="entry-title">
 										{log.notes?.split('\n')[0] ?? $_('vehicle.detail.serviceEntry')}
@@ -1144,7 +1373,7 @@
 						{:else if entry.kind === 'note'}
 							{@const log = entry.log}
 							<div class="timeline-entry note-entry">
-								<div class="entry-icon note-dot" title="Note" aria-hidden="true"></div>
+								<div class="entry-icon" title="Note" aria-hidden="true"></div>
 								<div class="entry-body">
 									<div class="entry-title note-entry">{log.remark}</div>
 								</div>
@@ -1231,7 +1460,7 @@
 						{:else if entry.kind === 'travel'}
 							{@const t = entry.travel}
 							<div class="timeline-entry travel-entry">
-								<div class="entry-icon travel-dot" title="Travel" aria-hidden="true"></div>
+								<div class="entry-icon" title="Travel" aria-hidden="true"></div>
 								<div class="entry-body">
 									<div class="entry-title">{t.title}</div>
 									<div class="entry-meta">
@@ -1273,10 +1502,35 @@
 									{/if}
 								</div>
 							</div>
+						{:else if entry.kind === 'finance'}
+							{@const tx = entry.tx}
+							<div class="timeline-entry">
+								<div class="entry-icon" title="Finance" aria-hidden="true"></div>
+								<div class="entry-body">
+									<div class="entry-title">
+										{tx.notes ?? $_(`finance.categories.${tx.category}`)}
+									</div>
+									<div class="entry-meta">
+										<span>{$_(`finance.categories.${tx.category}`)}</span>
+										<span class="sep">·</span>
+										<span class="mono cost"
+											>{formatCurrency(tx.amount_cents, tx.currency, locale)}</span
+										>
+									</div>
+								</div>
+								<span class="entry-date">{formatDateShort(tx.performed_at, locale)}</span>
+								<div class="entry-actions">
+									<a
+										class="entry-menu-btn entry-menu-btn--stub"
+										href="/vehicles/{data.vehicle.id}/finance"
+										aria-label="View in finance">⋮</a
+									>
+								</div>
+							</div>
 						{:else}
 							{@const log = entry.log}
 							<div class="timeline-entry odo-entry">
-								<div class="entry-icon odo-dot" title="Mileage" aria-hidden="true"></div>
+								<div class="entry-icon" title="Mileage" aria-hidden="true"></div>
 								<div class="entry-body">
 									<div class="entry-title odo-title">
 										<span class="mono">{formatNumber(log.odometer, locale)} {unit}</span>
@@ -1456,7 +1710,6 @@
 	.page-actions {
 		display: flex;
 		gap: var(--space-2);
-		align-items: center;
 		flex-shrink: 0;
 		position: relative;
 	}
@@ -1640,10 +1893,101 @@
 		color: var(--text);
 	}
 
-	/* Add menu dropdown */
+	/* Add menu + filter dropdown */
 	.page-actions {
 		position: relative;
+		display: flex;
+		gap: 0.5rem;
 	}
+	/* Icon-only btn-ghost variant */
+	.btn-icon {
+		padding: 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 0;
+		position: relative;
+	}
+	.btn-icon--active {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.filter-active-dot {
+		position: absolute;
+		top: 3px;
+		right: 3px;
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--accent);
+		border: 1.5px solid var(--bg);
+	}
+
+	/* Filter dropdown */
+	.filter-wrap {
+		position: relative;
+		display: flex;
+	}
+	.filter-dropdown {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 0.375rem);
+		background: var(--bg);
+		border: 1px solid var(--border-strong);
+		border-radius: 8px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		z-index: 20;
+		min-width: 176px;
+		padding: 0.375rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.filter-row {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.5rem 0.625rem;
+		border-radius: 6px;
+		cursor: pointer;
+		border: none;
+		background: none;
+		width: 100%;
+		text-align: left;
+		transition: background 0.1s;
+	}
+	.filter-row:hover {
+		background: var(--bg-muted);
+	}
+	.filter-check {
+		width: 14px;
+		height: 14px;
+		border-radius: 3px;
+		border: 1.5px solid var(--border-strong);
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		transition:
+			background 0.1s,
+			border-color 0.1s;
+	}
+	.filter-check--on {
+		background: var(--accent);
+		border-color: var(--accent);
+	}
+	.filter-label {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text);
+	}
+	.filter-divider {
+		height: 1px;
+		background: var(--border);
+		margin: 0.25rem 0;
+	}
+
 	.add-menu-backdrop {
 		position: fixed;
 		inset: 0;
@@ -1805,7 +2149,7 @@
 		font-weight: 600;
 		color: var(--text-subtle);
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.07em;
 		white-space: nowrap;
 		flex-shrink: 0;
 	}
@@ -1818,53 +2162,24 @@
 
 	.timeline-entry {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.75rem;
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		position: relative;
-	}
-
-	.entry-icon {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		flex-shrink: 0;
-		transition: transform 0.15s ease-out-quart;
 	}
 	.timeline-entry:first-of-type {
 		border-top: 1px solid var(--border);
 	}
 
 	.entry-icon {
-		width: 8px;
-		height: 8px;
+		width: 6px;
+		height: 6px;
 		border-radius: 50%;
 		flex-shrink: 0;
-		margin-top: 0.375rem;
-		transition: transform 0.15s ease-out-quart;
-	}
-	.service-dot {
 		background: var(--text-subtle);
-	}
-	.odo-dot {
-		background: var(--bg);
-		border: 2px solid var(--border-strong);
-	}
-	.note-dot {
-		background: transparent;
-		border: 2px solid var(--text-subtle);
-	}
-	.travel-dot {
-		background: var(--accent-subtle);
-		border: 2px solid var(--accent);
-	}
-	.timeline-entry:first-of-type .service-dot {
-		background: var(--accent);
-	}
-	.timeline-entry:first-of-type .odo-dot,
-	.timeline-entry:first-of-type .note-dot {
-		border-color: var(--accent);
+		margin-top: 0.45rem;
+		transition: transform 0.15s ease-out-quart;
 	}
 	.timeline-entry:hover .entry-icon {
 		transform: scale(1.35);
@@ -2031,31 +2346,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.875rem;
-	}
-
-	/* ── Empty ── */
-	.empty {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: 4rem var(--space-5);
-	}
-	.empty-icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.5rem;
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-		line-height: var(--leading-base);
 	}
 
 	/* Collapse toggle */

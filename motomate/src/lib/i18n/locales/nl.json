@@ -221,6 +221,13 @@
 				"empty": {
 					"title": "Nog geen geschiedenis",
 					"description": "Registreer je eerste onderhoud of kilometerstand om de tijdlijn te starten."
+				},
+				"filter": {
+					"service": "Onderhoud",
+					"odometer": "Kilometerstand",
+					"notes": "Notities",
+					"travels": "Routes",
+					"finance": "Financieel"
 				}
 			},
 			"upcoming": "Aankomende",
