@@ -463,7 +463,12 @@
 						onclick={() => (filterOpen = false)}
 					></div>
 					<div class="filter-dropdown">
-						<button class="filter-row" onclick={() => (filters.service = !filters.service)}>
+						<button
+							class="filter-row"
+							role="checkbox"
+							aria-checked={filters.service}
+							onclick={() => (filters.service = !filters.service)}
+						>
 							<span class="filter-check" class:filter-check--on={filters.service}>
 								{#if filters.service}<svg
 										width="9"
@@ -479,7 +484,12 @@
 							</span>
 							<span class="filter-label">{$_('vehicle.detail.timeline.filter.service')}</span>
 						</button>
-						<button class="filter-row" onclick={() => (filters.odometer = !filters.odometer)}>
+						<button
+							class="filter-row"
+							role="checkbox"
+							aria-checked={filters.odometer}
+							onclick={() => (filters.odometer = !filters.odometer)}
+						>
 							<span class="filter-check" class:filter-check--on={filters.odometer}>
 								{#if filters.odometer}<svg
 										width="9"
@@ -495,7 +505,12 @@
 							</span>
 							<span class="filter-label">{$_('vehicle.detail.timeline.filter.odometer')}</span>
 						</button>
-						<button class="filter-row" onclick={() => (filters.note = !filters.note)}>
+						<button
+							class="filter-row"
+							role="checkbox"
+							aria-checked={filters.note}
+							onclick={() => (filters.note = !filters.note)}
+						>
 							<span class="filter-check" class:filter-check--on={filters.note}>
 								{#if filters.note}<svg
 										width="9"
@@ -511,7 +526,12 @@
 							</span>
 							<span class="filter-label">{$_('vehicle.detail.timeline.filter.notes')}</span>
 						</button>
-						<button class="filter-row" onclick={() => (filters.travel = !filters.travel)}>
+						<button
+							class="filter-row"
+							role="checkbox"
+							aria-checked={filters.travel}
+							onclick={() => (filters.travel = !filters.travel)}
+						>
 							<span class="filter-check" class:filter-check--on={filters.travel}>
 								{#if filters.travel}<svg
 										width="9"
@@ -527,8 +547,13 @@
 							</span>
 							<span class="filter-label">{$_('vehicle.detail.timeline.filter.travels')}</span>
 						</button>
-						<div class="filter-divider hidden"></div>
-						<button class="filter-row" onclick={() => (filters.finance = !filters.finance)}>
+						<div class="filter-divider"></div>
+						<button
+							class="filter-row"
+							role="checkbox"
+							aria-checked={filters.finance}
+							onclick={() => (filters.finance = !filters.finance)}
+						>
 							<span class="filter-check" class:filter-check--on={filters.finance}>
 								{#if filters.finance}<svg
 										width="9"
@@ -570,7 +595,7 @@
 						<span class="add-menu-desc">{$_('vehicle.forms.noteDesc')}</span>
 					</button>
 					{#if filters.finance}
-						<div class="add-menu-divider hidden"></div>
+						<div class="add-menu-divider"></div>
 						<a
 							class="add-menu-item"
 							href="/vehicles/{data.vehicle.id}/finance?quick=finance"
@@ -1518,7 +1543,7 @@
 							</div>
 						{:else if entry.kind === 'finance'}
 							{@const tx = entry.tx}
-							<div class="timeline-entry">
+							<div class="timeline-entry finance-entry">
 								<div class="entry-icon" title="Finance" aria-hidden="true"></div>
 								<div class="entry-body">
 									<div class="entry-title">
@@ -1941,6 +1966,8 @@
 	/* Icon-only btn-ghost variant */
 	.btn-icon {
 		padding: 0.5rem;
+		min-width: 44px;
+		min-height: 44px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1974,7 +2001,7 @@
 		background: var(--bg);
 		border: 1px solid var(--border-strong);
 		border-radius: 8px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 4px 16px color-mix(in srgb, var(--text) 12%, transparent);
 		z-index: 20;
 		min-width: 176px;
 		padding: 0.375rem;
@@ -2007,7 +2034,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #fff;
+		color: var(--bg);
 		transition:
 			background 0.1s,
 			border-color 0.1s;
@@ -2039,7 +2066,7 @@
 		background: var(--bg);
 		border: 1px solid var(--border-strong);
 		border-radius: 8px;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 4px 16px color-mix(in srgb, var(--text) 12%, transparent);
 		z-index: 20;
 		min-width: 200px;
 		padding: 0.375rem;
@@ -2224,6 +2251,14 @@
 		background: var(--text-subtle);
 		margin-top: 0.45rem;
 		transition: transform 0.15s ease-out-quart;
+	}
+	.travel-entry .entry-icon {
+		background: var(--accent);
+		opacity: 0.75;
+	}
+	.finance-entry .entry-icon {
+		background: var(--status-ok);
+		opacity: 0.75;
 	}
 	.timeline-entry:hover .entry-icon {
 		transform: scale(1.35);

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { untrack } from 'svelte';
+	import { untrack, tick } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import { replaceState, beforeNavigate } from '$app/navigation';
@@ -41,11 +41,11 @@
 			startEdit(tx.id, 'finance');
 			highlightId = editId;
 			setTimeout(() => (highlightId = null), 1800);
-			setTimeout(() => {
+			tick().then(() => {
 				document
 					.getElementById('tx-' + editId)
 					?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-			}, 80);
+			});
 		}
 		const url = new URL($page.url);
 		url.searchParams.delete('edit');
@@ -153,13 +153,15 @@
 
 	const docMap = $derived(new Map((data.allDocs ?? []).map((d) => [d.id, d])));
 
-	function resolvedAttachments(tx: (typeof data.recentTransactions)[number]) {
-		return (((tx as any).attachments as string[]) ?? [])
-			.map((id) => docMap.get(id))
-			.filter(Boolean) as NonNullable<ReturnType<typeof docMap.get>>[];
+	type FinanceTx = Extract<(typeof data.recentTransactions)[number], { type: 'finance' }>;
+
+	function resolvedAttachments(tx: FinanceTx) {
+		return (tx.attachments ?? []).map((id) => docMap.get(id)).filter(Boolean) as NonNullable<
+			ReturnType<typeof docMap.get>
+		>[];
 	}
-	function unlinkedDocs(tx: (typeof data.recentTransactions)[number]) {
-		const attached = new Set(((tx as any).attachments as string[]) ?? []);
+	function unlinkedDocs(tx: FinanceTx) {
+		const attached = new Set(tx.attachments ?? []);
 		return (data.allDocs ?? []).filter((d) => !attached.has(d.id));
 	}
 
@@ -891,7 +893,11 @@
 			<h3 class="section-label">{$_('finance.recentTransactions')}</h3>
 			<div class="transaction-list">
 				{#each data.recentTransactions as tx}
-					<div id="tx-{tx.id}" class="transaction-row" class:transaction-row--highlight={highlightId === tx.id}>
+					<div
+						id="tx-{tx.id}"
+						class="transaction-row"
+						class:transaction-row--highlight={highlightId === tx.id}
+					>
 						<div class="transaction-icon">
 							<span class="dot"></span>
 						</div>
@@ -1570,9 +1576,15 @@
 		animation: row-highlight 1.8s ease-out forwards;
 	}
 	@keyframes row-highlight {
-		0% { background: var(--accent-subtle); }
-		60% { background: var(--accent-subtle); }
-		100% { background: transparent; }
+		0% {
+			background: var(--accent-subtle);
+		}
+		60% {
+			background: var(--accent-subtle);
+		}
+		100% {
+			background: transparent;
+		}
 	}
 	.transaction-icon {
 		flex-shrink: 0;

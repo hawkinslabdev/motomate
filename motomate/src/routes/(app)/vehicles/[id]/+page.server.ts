@@ -24,7 +24,7 @@ import {
 } from '$lib/db/repositories/maintenance.js';
 import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
-import { generateId } from '$lib/utils/id.js';
+import { attachmentStorageKey } from '$lib/utils/storage.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
@@ -34,15 +34,6 @@ import {
 } from '$lib/db/repositories/finance-transactions.js';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
-
-function attachmentStorageKey(userId: string, filename: string): string {
-	const ext =
-		filename
-			.split('.')
-			.pop()
-			?.replace(/[^a-zA-Z0-9]/g, '') ?? 'bin';
-	return `files/${userId}/${generateId()}.${ext}`;
-}
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();

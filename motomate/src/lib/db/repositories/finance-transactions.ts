@@ -39,10 +39,14 @@ export async function getFinanceTransactionsByVehicle(
 }
 
 export async function getFinanceTransactionById(
-	id: string
+	id: string,
+	vehicleId: string,
+	userId: string
 ): Promise<FinanceTransaction | undefined> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return undefined;
 	return db.query.finance_transactions.findFirst({
-		where: eq(finance_transactions.id, id)
+		where: and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId))
 	});
 }
 

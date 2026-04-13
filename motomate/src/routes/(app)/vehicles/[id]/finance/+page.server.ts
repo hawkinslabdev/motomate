@@ -11,18 +11,16 @@ import {
 } from '$lib/db/repositories/finance-transactions.js';
 import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
-import { generateId } from '$lib/utils/id.js';
+import { attachmentStorageKey } from '$lib/utils/storage.js';
 import { updateUserSettings } from '$lib/db/repositories/users.js';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
 
-function attachmentStorageKey(userId: string, filename: string): string {
-	const ext =
-		filename
-			.split('.')
-			.pop()
-			?.replace(/[^a-zA-Z0-9]/g, '') ?? 'bin';
-	return `files/${userId}/${generateId()}.${ext}`;
+const VALID_DOC_TYPES = ['service', 'quotation', 'papers', 'photo', 'notes', 'other'] as const;
+type ValidDocType = (typeof VALID_DOC_TYPES)[number];
+
+function validateDocType(raw: string): ValidDocType {
+	return VALID_DOC_TYPES.includes(raw as ValidDocType) ? (raw as ValidDocType) : 'other';
 }
 
 export const load: PageServerLoad = async ({ parent, params, locals }) => {
@@ -190,7 +188,7 @@ export const actions: Actions = {
 			const docName = String(formData.get('attachment_name') || attachmentFile.name)
 				.trim()
 				.slice(0, 200);
-			const docType = String(formData.get('attachment_type') || 'other');
+			const docType = validateDocType(String(formData.get('attachment_type') || 'other'));
 			const doc = await createDocument(locals.user!.id, {
 				vehicle_id: params.id,
 				name: docName,
@@ -293,9 +291,8 @@ export const actions: Actions = {
 		const documentId = String(formData.get('document_id') ?? '');
 		if (!transactionId || !documentId) return fail(400, { error: 'Missing fields' });
 
-		const tx = await getFinanceTransactionById(transactionId);
-		if (!tx || tx.vehicle_id !== params.id || tx.user_id !== locals.user!.id)
-			return fail(404, { error: 'Not found' });
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { error: 'Not found' });
 
 		const current = (tx.attachments as string[]) ?? [];
 		if (!current.includes(documentId)) {
@@ -313,9 +310,8 @@ export const actions: Actions = {
 		const documentId = String(formData.get('document_id') ?? '');
 		if (!transactionId || !documentId) return fail(400, { error: 'Missing fields' });
 
-		const tx = await getFinanceTransactionById(transactionId);
-		if (!tx || tx.vehicle_id !== params.id || tx.user_id !== locals.user!.id)
-			return fail(404, { error: 'Not found' });
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { error: 'Not found' });
 
 		const current = (tx.attachments as string[]) ?? [];
 		await updateFinanceTransactionAttachments(
@@ -337,9 +333,8 @@ export const actions: Actions = {
 		if (file.size > MAX_ATTACHMENT_SIZE)
 			return fail(400, { uploadError: 'File too large (max 10 MB)' });
 
-		const tx = await getFinanceTransactionById(transactionId);
-		if (!tx || tx.vehicle_id !== params.id || tx.user_id !== locals.user!.id)
-			return fail(404, { uploadError: 'Not found' });
+		const tx = await getFinanceTransactionById(transactionId, params.id, locals.user!.id);
+		if (!tx) return fail(404, { uploadError: 'Not found' });
 
 		const key = attachmentStorageKey(locals.user!.id, file.name);
 		const buffer = Buffer.from(await file.arrayBuffer());
@@ -354,7 +349,7 @@ export const actions: Actions = {
 		const docName = String(formData.get('doc_name') || file.name)
 			.trim()
 			.slice(0, 200);
-		const docType = String(formData.get('doc_type') || 'other');
+		const docType = validateDocType(String(formData.get('doc_type') || 'other'));
 		const doc = await createDocument(locals.user!.id, {
 			vehicle_id: params.id,
 			name: docName,
