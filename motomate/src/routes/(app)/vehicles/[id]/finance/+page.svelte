@@ -934,7 +934,7 @@
 												startEdit(tx.id, 'finance');
 											}}
 										>
-											Edit
+											{$_('common.edit')}
 										</button>
 										<button
 											role="menuitem"
@@ -944,7 +944,7 @@
 												entryMenu = null;
 											}}
 										>
-											Delete
+											{$_('common.delete')}
 										</button>
 									</div>
 								{/if}
@@ -1348,8 +1348,11 @@
 
 	/* Inline edit form */
 	.entry-edit-form {
-		padding: 1.25rem 0 1rem;
-		border-bottom: 1px solid var(--border);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-subtle);
+		padding: 1rem 1.25rem;
+		margin-bottom: 0.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.875rem;
