@@ -274,6 +274,10 @@ export const finance_transactions = sqliteTable(
 		notes: text('notes'),
 		performed_at: text('performed_at').notNull(), // ISO date string
 		odometer_at_transaction: integer('odometer_at_transaction'), // optional odometer reading
+		attachments: text('attachments', { mode: 'json' })
+			.$type<Attachments>()
+			.notNull()
+			.default(sql`'[]'`),
 		created_at: text('created_at')
 			.notNull()
 			.default(sql`(datetime('now'))`),

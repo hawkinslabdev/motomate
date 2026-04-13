@@ -1,0 +1,1 @@
+ALTER TABLE `finance_transactions` ADD `attachments` text DEFAULT '[]' NOT NULL;

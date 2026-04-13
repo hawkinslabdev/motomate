@@ -67,6 +67,21 @@ export async function updateFinanceTransaction(
 		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
 }
 
+export async function updateFinanceTransactionAttachments(
+	id: string,
+	vehicleId: string,
+	userId: string,
+	documentIds: string[]
+): Promise<void> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return;
+	const now = new Date().toISOString();
+	await db
+		.update(finance_transactions)
+		.set({ attachments: documentIds, updated_at: now })
+		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
+}
+
 export async function deleteFinanceTransaction(
 	id: string,
 	vehicleId: string,
