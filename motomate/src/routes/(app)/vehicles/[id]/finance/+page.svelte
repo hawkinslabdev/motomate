@@ -1745,6 +1745,9 @@
 		font-size: var(--text-xs) !important;
 		padding: 0.25rem 0.375rem !important;
 		width: auto !important;
+		min-height: auto !important;
+		border-radius: 6px !important;
+		line-height: 1.4 !important;
 	}
 	.attach-chips {
 		display: flex;

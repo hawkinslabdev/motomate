@@ -60,7 +60,8 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 			amountCents: tx.amount_cents,
 			currency: tx.currency,
 			notes: tx.notes,
-			category: tx.category
+			category: tx.category,
+			attachments: tx.attachments
 		}))
 	].sort((a, b) => b.date.localeCompare(a.date));
 
