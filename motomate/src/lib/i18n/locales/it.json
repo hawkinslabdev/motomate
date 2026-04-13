@@ -792,7 +792,7 @@
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "MotoMate sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
 				},
 				"ha": {
 					"label": "Home Assistant",

@@ -219,7 +219,7 @@
 				"title": "Tijdlijn",
 				"subtitle": "Al je gegevens voor {name} op een plek.",
 				"empty": {
-					"title": "Nog geen geschiedenis",
+					"title": "Nog geen gegevens",
 					"description": "Registreer je eerste onderhoud of kilometerstand om de tijdlijn te starten."
 				},
 				"filter": {
@@ -793,7 +793,7 @@
 					"urlPlaceholder": "https://hooks.voorbeeld.nl/...",
 					"authLabel": "Autorisatie-header",
 					"authPlaceholder": "Bearer token123 (optioneel)",
-					"hint": "MotoMate stuurt een POST-request met de gebeurtenis, de titel, de tekst, de voertuignaam en de data."
+					"hint": "Stuurt een POST-request met de gebeurtenis, de titel, de tekst, de voertuignaam en de data."
 				},
 				"ha": {
 					"label": "Home Assistant",
