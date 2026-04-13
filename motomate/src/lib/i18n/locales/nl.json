@@ -870,7 +870,7 @@
 			"mileage": "Kilometerstand",
 			"mileageDesc": "Nummer op je dashboard",
 			"finance": "Financiën",
-			"financeDesc": "Brandstof, verzekering of onderdelen"
+			"financeDesc": "Brandstof, onderdelen of andere kosten"
 		}
 	},
 	"notifications": {

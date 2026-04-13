@@ -566,6 +566,17 @@
 						<span>{$_('vehicle.forms.writeNote')}</span>
 						<span class="add-menu-desc">{$_('vehicle.forms.noteDesc')}</span>
 					</button>
+					{#if filters.finance}
+						<div class="add-menu-divider hidden"></div>
+						<a
+							class="add-menu-item"
+							href="/vehicles/{data.vehicle.id}/finance?quick=finance"
+							onclick={() => (menuOpen = false)}
+						>
+							<span>{$_('layout.addEntry.finance')}</span>
+							<span class="add-menu-desc">{$_('layout.addEntry.financeDesc')}</span>
+						</a>
+					{/if}
 				</div>
 			{/if}
 		{/if}
@@ -2022,6 +2033,11 @@
 	}
 	.add-menu-item:hover {
 		background: var(--bg-muted);
+	}
+	.add-menu-divider {
+		height: 1px;
+		background: var(--border);
+		margin: 0.25rem 0;
 	}
 	.add-menu-item span:first-child {
 		font-size: var(--text-sm);

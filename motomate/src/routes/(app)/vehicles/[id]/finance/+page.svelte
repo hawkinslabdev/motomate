@@ -42,6 +42,14 @@
 	let showForm = $state(false);
 	let category = $state(untrack(() => data.page_prefs?.last_category ?? 'maintenance'));
 
+	// Re-read last_category from server data each time form opens so it reflects the
+	// category saved after the previous submission (data is refreshed by use:enhance update()).
+	$effect(() => {
+		if (showForm) {
+			category = untrack(() => data.page_prefs?.last_category ?? 'maintenance');
+		}
+	});
+
 	// Persist groupBy and last_category
 	let _prefTimer: ReturnType<typeof setTimeout>;
 	let _pendingPrefs: object | null = null;
@@ -197,7 +205,6 @@
 	});
 
 	function resetForm() {
-		category = 'maintenance';
 		amount = '';
 		date = new Date().toISOString().slice(0, 10);
 		odometer = '';
@@ -570,10 +577,8 @@
 										>{formatNumber(tx.odometer, locale)} {data.vehicle.odometer_unit}</span
 									>
 								{/if}
-								{#if tx.category && tx.type === 'finance'}
-									<span class="sep">·</span>
-									<span class="tx-category">{getCategoryLabel(tx.category)}</span>
-								{/if}
+								<span class="sep">·</span>
+								<span class="tx-category">{getCategoryLabel(tx.category ?? 'service')}</span>
 							</div>
 						</div>
 						<div class="transaction-amount mono">

@@ -7,6 +7,7 @@ import {
 	updateFinanceTransaction,
 	deleteFinanceTransaction
 } from '$lib/db/repositories/finance-transactions.js';
+import { updateUserSettings } from '$lib/db/repositories/users.js';
 
 export const load: PageServerLoad = async ({ parent, params, locals }) => {
 	const { vehicle } = await parent();
@@ -164,6 +165,15 @@ export const actions: Actions = {
 			notes,
 			performed_at: date,
 			odometer_at_transaction: odometer
+		});
+
+		// Persist last used category so the form pre-selects it next time
+		const existingPrefs = (locals.user as any)?.settings?.page_prefs ?? {};
+		await updateUserSettings(locals.user!.id, {
+			page_prefs: {
+				...existingPrefs,
+				finance: { ...(existingPrefs.finance ?? {}), last_category: category }
+			}
 		});
 
 		return { created: true };
