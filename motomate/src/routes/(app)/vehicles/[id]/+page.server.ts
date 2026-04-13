@@ -28,7 +28,10 @@ import { generateId } from '$lib/utils/id.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
-import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
+import {
+	getFinanceTransactionsByVehicle,
+	deleteFinanceTransaction
+} from '$lib/db/repositories/finance-transactions.js';
 
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -409,5 +412,13 @@ export const actions: Actions = {
 			doc.id
 		]);
 		return { attachUploaded: true };
+	},
+
+	deleteFinanceEntry: async ({ request, locals, params }) => {
+		const data = await request.formData();
+		const id = String(data.get('id') ?? '');
+		if (!id) return fail(400, { error: 'Missing ID' });
+		await deleteFinanceTransaction(id, params.id, locals.user!.id);
+		return { deletedLog: true };
 	}
 };

@@ -80,7 +80,10 @@
 	let entryMenu = $state<string | null>(null);
 	let editingEntry = $state<{ id: string; kind: 'service' | 'odometer' | 'note' } | null>(null);
 	let editSubmitting = $state(false);
-	let deletingEntry = $state<{ id: string; kind: 'service' | 'odometer' | 'note' } | null>(null);
+	let deletingEntry = $state<{
+		id: string;
+		kind: 'service' | 'odometer' | 'note' | 'finance';
+	} | null>(null);
 
 	function toggleEntryMenu(id: string) {
 		entryMenu = entryMenu === id ? null : id;
@@ -1530,12 +1533,33 @@
 									</div>
 								</div>
 								<span class="entry-date">{formatDateShort(tx.performed_at, locale)}</span>
-								<div class="entry-actions">
-									<a
-										class="entry-menu-btn entry-menu-btn--stub"
-										href="/vehicles/{data.vehicle.id}/finance"
-										aria-label="View in finance">⋮</a
+								<div class="entry-actions" class:entry-actions--open={entryMenu === tx.id}>
+									<button
+										class="entry-menu-btn"
+										class:active={entryMenu === tx.id}
+										onclick={() => toggleEntryMenu(tx.id)}
+										aria-label="Entry options"
+										aria-haspopup="true">⋮</button
 									>
+									{#if entryMenu === tx.id}
+										<div class="entry-menu-dropdown" role="menu">
+											<a
+												role="menuitem"
+												class="entry-menu-item"
+												href="/vehicles/{data.vehicle.id}/finance"
+												onclick={() => (entryMenu = null)}
+												>{$_('common.edit')}</a
+											>
+											<button
+												role="menuitem"
+												class="entry-menu-item entry-menu-item--danger"
+												onclick={() => {
+													deletingEntry = { id: tx.id, kind: 'finance' };
+													entryMenu = null;
+												}}>{$_('common.delete')}</button
+											>
+										</div>
+									{/if}
 								</div>
 							</div>
 						{:else}
@@ -1673,7 +1697,12 @@
 			const entry = deletingEntry!;
 			const form = document.createElement('form');
 			form.method = 'POST';
-			form.action = entry.kind === 'service' ? '?/deleteServiceLog' : '?/deleteOdometerLog';
+			form.action =
+				entry.kind === 'service'
+					? '?/deleteServiceLog'
+					: entry.kind === 'finance'
+						? '?/deleteFinanceEntry'
+						: '?/deleteOdometerLog';
 			const input = document.createElement('input');
 			input.type = 'hidden';
 			input.name = 'id';
