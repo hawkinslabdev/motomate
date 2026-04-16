@@ -1,10 +1,6 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 import { sql, relations } from 'drizzle-orm';
-import {
-	DEFAULT_ODOMETER_UNIT,
-	DISTANCE_UNITS,
-	type OdometerUnit
-} from '../utils/measurement.js';
+import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, type OdometerUnit } from '../utils/measurement.js';
 
 // State types (I'm defining these in JSON)
 
