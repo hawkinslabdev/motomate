@@ -108,9 +108,12 @@
 	const trackerServiceLogs = $derived(() => {
 		const map = new Map<string, typeof data.allServiceLogs>();
 		for (const log of data.allServiceLogs ?? []) {
-			if (log.tracker_id) {
-				if (!map.has(log.tracker_id)) map.set(log.tracker_id, []);
-				map.get(log.tracker_id)!.push(log);
+			const ids = new Set<string>();
+			if (log.tracker_id) ids.add(log.tracker_id);
+			for (const id of log.serviced_tracker_ids ?? []) ids.add(id);
+			for (const id of ids) {
+				if (!map.has(id)) map.set(id, []);
+				map.get(id)!.push(log);
 			}
 		}
 		return map;
@@ -365,9 +368,15 @@
 				if (searchQuery) {
 					const q = searchQuery.toLowerCase();
 					logs = logs.filter((log) => {
-						const tracker = data.trackers.find((t) => t.id === log.tracker_id);
-						const name = tracker?.template.name?.toLowerCase() ?? '';
-						return name.includes(q);
+						if (log.notes?.toLowerCase().includes(q)) return true;
+						const allIds = new Set([
+							...(log.tracker_id ? [log.tracker_id] : []),
+							...(log.serviced_tracker_ids ?? [])
+						]);
+						return [...allIds].some((id) => {
+							const tracker = data.trackers.find((t) => t.id === id);
+							return tracker?.template.name?.toLowerCase().includes(q);
+						});
 					});
 				}
 				return logs;
@@ -376,9 +385,14 @@
 				const logs = [...filteredHistory];
 				if (historySortBy === 'name') {
 					logs.sort((a, b) => {
-						const trackA = data.trackers.find((t) => t.id === a.tracker_id)?.template.name ?? '';
-						const trackB = data.trackers.find((t) => t.id === b.tracker_id)?.template.name ?? '';
-						return trackA.localeCompare(trackB);
+						const getName = (log: (typeof logs)[number]) => {
+							if (log.tracker_id) {
+								return data.trackers.find((t) => t.id === log.tracker_id)?.template.name ?? '';
+							}
+							const first = (log.serviced_tracker_ids ?? [])[0];
+							return first ? (data.trackers.find((t) => t.id === first)?.template.name ?? '') : '';
+						};
+						return getName(a).localeCompare(getName(b));
 					});
 				} else {
 					logs.sort((a, b) => b.performed_at.localeCompare(a.performed_at));
@@ -411,13 +425,24 @@
 						</div>
 						{#each logs as log}
 							{@const tracker = data.trackers.find((t) => t.id === log.tracker_id)}
+							{@const isFullService =
+								!log.tracker_id && (log.serviced_tracker_ids ?? []).length > 0}
 							<div class="timeline-entry" data-log-id={log.id}>
 								<span class="timeline-dot"></span>
-								<span class="timeline-title"
-									>{log.notes?.split('\n')[0] ||
-										tracker?.template.name ||
-										$_('maintenance.history.serviceEntry')}</span
-								>
+								<span class="timeline-title">
+									{log.notes?.split('\n')[0] ||
+										(isFullService
+											? $_('maintenance.fullService.title')
+											: tracker?.template.name) ||
+										$_('maintenance.history.serviceEntry')}
+									{#if isFullService}
+										<span class="tracker-check-status tracker-check-status--full"
+											>{$_('maintenance.fullService.badge', {
+												values: { n: (log.serviced_tracker_ids ?? []).length }
+											})}</span
+										>
+									{/if}
+								</span>
 								<span class="timeline-meta">
 									{formatDateShort(log.performed_at, locale)} · {formatNumber(
 										log.odometer_at_service,
@@ -509,7 +534,8 @@
 																type="checkbox"
 																name="reset_trackers"
 																value={t.id}
-																checked={log.tracker_id === t.id}
+																checked={log.tracker_id === t.id ||
+																	(log.serviced_tracker_ids ?? []).includes(t.id)}
 															/>
 															<span class="tracker-check-label">
 																<span class="tracker-check-name">{t.template.name}</span>
@@ -651,6 +677,7 @@
 	<div class="tracker-list">
 		{#each sortedTrackers as tracker}
 			{@const t = tracker}
+			{@const otherTrackers = data.trackers.filter((ot) => ot.id !== t.id)}
 			<div class="tracker-item">
 				<div class="tracker-card-row">
 					<TrackerCard
@@ -899,6 +926,34 @@
 									/>
 								</label>
 							</div>
+							{#if otherTrackers.length > 0}
+								<fieldset class="tracker-select">
+									<legend class="field-label"
+										>{$_('vehicle.forms.fields.resetCycle', {
+											values: { optional: $_('vehicle.forms.fields.checkToReset') }
+										})}</legend
+									>
+									<div class="tracker-checkboxes">
+										{#each otherTrackers as ot}
+											<label class="tracker-checkbox">
+												<input type="checkbox" name="additional_tracker_ids" value={ot.id} />
+												<span class="tracker-check-label">
+													<span class="tracker-check-name">{ot.template.name}</span>
+													{#if ot.status === 'due'}
+														<span class="tracker-check-status tracker-check-status--due"
+															>{$_('maintenance.tracker.status.due')}</span
+														>
+													{:else if ot.status === 'overdue'}
+														<span class="tracker-check-status tracker-check-status--overdue"
+															>{$_('maintenance.tracker.status.overdue')}</span
+														>
+													{/if}
+												</span>
+											</label>
+										{/each}
+									</div>
+								</fieldset>
+							{/if}
 							<label class="field">
 								<span class="field-label">{$_('vehicle.forms.fields.notes')}</span>
 								<textarea

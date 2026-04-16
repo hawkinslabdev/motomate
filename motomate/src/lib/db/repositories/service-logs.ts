@@ -16,13 +16,20 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	// Insert the log (sync — better-sqlite3)
 	db.insert(service_logs).values(row).run();
 
-	// Update tracker if linked
+	// Reset primary tracker
 	if (parsed.tracker_id) {
 		await updateTrackerAfterService(
 			parsed.tracker_id,
 			parsed.performed_at,
 			parsed.odometer_at_service
 		);
+	}
+
+	// Reset any additional trackers selected alongside this entry
+	for (const id of parsed.serviced_tracker_ids) {
+		if (id !== parsed.tracker_id) {
+			await updateTrackerAfterService(id, parsed.performed_at, parsed.odometer_at_service);
+		}
 	}
 
 	// Only advance the vehicle odometer — never move it backwards.
@@ -97,6 +104,7 @@ export async function updateServiceLog(
 		cost_cents?: number | null;
 		notes?: string | null;
 		remark?: string | null;
+		serviced_tracker_ids?: string[];
 	}
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);

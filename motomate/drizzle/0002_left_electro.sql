@@ -1,0 +1,1 @@
+ALTER TABLE `service_logs` ADD `serviced_tracker_ids` text DEFAULT '[]' NOT NULL;

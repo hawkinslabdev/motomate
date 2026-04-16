@@ -13,7 +13,6 @@ import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/v
 import {
 	createServiceLog,
 	getServiceLogsByVehicle,
-	getServiceLogsByTracker,
 	updateServiceLog
 } from '$lib/db/repositories/service-logs.js';
 import { getOdometerLogs } from '$lib/db/repositories/vehicles.js';
@@ -37,8 +36,13 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 export const actions: Actions = {
 	// Log a service entry for a specific tracker
 	log: async ({ request, locals, params }) => {
-		const raw = Object.fromEntries(await request.formData());
+		const formData = await request.formData();
+		const raw = Object.fromEntries(formData);
 		const currency = (locals.user as any)?.settings?.currency ?? 'EUR';
+		const additionalTrackerIds = formData
+			.getAll('additional_tracker_ids')
+			.map(String)
+			.filter(Boolean);
 		const input = {
 			vehicle_id: params.id,
 			tracker_id: raw.tracker_id || undefined,
@@ -47,7 +51,8 @@ export const actions: Actions = {
 			cost_cents: raw.cost ? Math.round(Number(raw.cost) * 100) : undefined,
 			currency,
 			notes: raw.notes || undefined,
-			parts_used: raw.parts_used ? JSON.parse(raw.parts_used as string) : []
+			parts_used: raw.parts_used ? JSON.parse(raw.parts_used as string) : [],
+			serviced_tracker_ids: additionalTrackerIds
 		};
 
 		const parsed = CreateServiceLogSchema.safeParse(input);
@@ -134,23 +139,21 @@ export const actions: Actions = {
 	},
 
 	editServiceLog: async ({ request, locals, params }) => {
-		const raw = Object.fromEntries(await request.formData());
+		const formData = await request.formData();
+		const raw = Object.fromEntries(formData);
 		const id = String(raw.id);
+
+		// Must use getAll() — Object.fromEntries drops duplicate keys for multi-checkboxes
+		const resetTrackerIds = formData.getAll('reset_trackers').map(String);
 
 		await updateServiceLog(id, params.id, locals.user!.id, {
 			performed_at: raw.performed_at ? String(raw.performed_at) : undefined,
 			odometer_at_service: raw.odometer_at_service ? Number(raw.odometer_at_service) : undefined,
 			cost_cents: raw.cost ? Math.round(Number(raw.cost) * 100) : undefined,
 			notes: raw.notes ? String(raw.notes) : undefined,
-			remark: raw.remark ? String(raw.remark) : undefined
+			remark: raw.remark ? String(raw.remark) : undefined,
+			serviced_tracker_ids: resetTrackerIds.length > 0 ? resetTrackerIds : undefined
 		});
-
-		// Handle tracker resets
-		const resetTrackerIds = raw.reset_trackers
-			? Array.isArray(raw.reset_trackers)
-				? raw.reset_trackers
-				: [raw.reset_trackers]
-			: [];
 		if (resetTrackerIds.length > 0) {
 			const vehicle = await getVehicleById(params.id, locals.user!.id);
 			const odometer = raw.odometer_at_service

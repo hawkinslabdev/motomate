@@ -15,6 +15,13 @@
 			"when": 1776065621135,
 			"tag": "0001_goofy_doctor_doom",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "6",
+			"when": 1776325844174,
+			"tag": "0002_left_electro",
+			"breakpoints": true
 		}
 	]
 }

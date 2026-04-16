@@ -189,7 +189,8 @@ export const CreateServiceLogSchema = z.object({
 		)
 		.default([]),
 	attachments: z.array(z.string()).default([]),
-	remark: optStr(200)
+	remark: optStr(200),
+	serviced_tracker_ids: z.array(z.string()).default([])
 });
 
 export const CreateDocumentSchema = z.object({
