@@ -30,6 +30,7 @@
 		isLogging = false,
 		isRecentlyLogged = false,
 		showHistory = false,
+		isMenuOpen = false,
 		onlogclick,
 		onhistoryclick,
 		onoptionsclick
@@ -53,6 +54,7 @@
 		isLogging?: boolean;
 		isRecentlyLogged?: boolean;
 		showHistory?: boolean;
+		isMenuOpen?: boolean;
 		onlogclick?: (id: string) => void;
 		onhistoryclick?: (id: string) => void;
 		onoptionsclick?: (id: string) => void;
@@ -197,7 +199,9 @@
 						e.stopPropagation();
 						onoptionsclick!(tracker.id);
 					}}
-					aria-label="Tracker options">⋮</button
+					aria-label="Tracker options"
+					aria-haspopup="menu"
+					aria-expanded={isMenuOpen ?? false}>⋮</button
 				>
 			{/if}
 		</div>
@@ -323,7 +327,7 @@
 	}
 
 	.tracker-name {
-		font-size: var(--text-base);
+		font-size: var(--text-lg);
 		font-weight: 500;
 		color: var(--text);
 		transition: color 0.15s;

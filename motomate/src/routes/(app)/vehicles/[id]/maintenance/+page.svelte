@@ -277,7 +277,7 @@
 
 <div class="page-header">
 	<div class="page-header-text">
-		<h2 class="section-title">{$_('maintenance.title')}</h2>
+		<h1 class="page-title">{$_('maintenance.title')}</h1>
 		<p class="page-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
@@ -461,7 +461,8 @@
 										class:active={logMenu === log.id}
 										onclick={() => (logMenu = logMenu === log.id ? null : log.id)}
 										aria-label="Entry options"
-										aria-haspopup="true">⋮</button
+										aria-haspopup="menu"
+										aria-expanded={logMenu === log.id}>⋮</button
 									>
 									{#if logMenu === log.id}
 										<div class="entry-menu-dropdown" role="menu">
@@ -697,6 +698,7 @@
 						monthsOfUsage={monthsOfUsage()}
 						isLogging={loggingTracker === t.id}
 						isRecentlyLogged={recentlyLoggedId === t.id}
+						isMenuOpen={trackerMenu === t.id}
 						onlogclick={(id) => {
 							loggingTracker = loggingTracker === id ? null : id;
 							historyTracker = null;
@@ -1024,11 +1026,12 @@
 		align-items: center;
 		flex-shrink: 0;
 	}
-	.section-title {
-		font-size: var(--text-lg);
+	.page-title {
+		font-size: var(--text-2xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0;
+		line-height: var(--leading-tight);
 	}
 	.page-sub {
 		font-size: var(--text-sm);
@@ -1082,6 +1085,11 @@
 		display: grid;
 		grid-template-columns: 2fr 1fr 1fr;
 		gap: 0.75rem;
+	}
+	@media (max-width: 540px) {
+		.add-task-fields {
+			grid-template-columns: 1fr;
+		}
 	}
 	.add-task-actions {
 		display: flex;
@@ -1293,6 +1301,11 @@
 		grid-template-columns: 1fr 1fr 1fr;
 		gap: 0.75rem;
 	}
+	@media (max-width: 540px) {
+		.log-fields {
+			grid-template-columns: 1fr;
+		}
+	}
 	.log-actions {
 		display: flex;
 		gap: 0.5rem;
@@ -1365,6 +1378,15 @@
 		background: var(--bg-subtle);
 		color: var(--text);
 	}
+	.btn-ghost--disabled,
+	.btn-ghost:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+	.btn-ghost--disabled:hover {
+		background: transparent;
+		color: var(--text-muted);
+	}
 
 	/* Tracker checkboxes */
 	.tracker-select {
@@ -1428,6 +1450,10 @@
 	.tracker-check-status--overdue {
 		background: color-mix(in srgb, var(--status-overdue) 15%, transparent);
 		color: var(--status-overdue);
+	}
+	.tracker-check-status--full {
+		background: var(--bg-muted);
+		color: var(--text-muted);
 	}
 
 	/* History timeline */
