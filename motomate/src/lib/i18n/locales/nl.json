@@ -115,14 +115,22 @@
 				"tire": "Bandenspanning & slijtage",
 				"chain_lube": "Ketting reinigen & smeren",
 				"chain_tension": "Kettingspanning controleren",
-				"brake": "Remmen & remvloeistof"
+				"brake": "Remmen & remvloeistof",
+				"belt": "Aandrijfriem controleren",
+				"air_filter": "Luchtfilter",
+				"cable_check": "Kabels & versnelling",
+				"battery": "Batterijcontrole"
 			},
 			"intervals": {
 				"oil": "elke 5.000 km / 12 maanden",
 				"tire": "maandelijkse controle",
 				"chain_lube": "elke 500 km",
 				"chain_tension": "elke 500 km",
-				"brake": "elke 10.000 km / 2 jaar"
+				"brake": "elke 10.000 km / 2 jaar",
+				"belt": "elke 10.000 km / 12 maanden",
+				"air_filter": "elke 6.000–15.000 km / 12–24 maanden",
+				"cable_check": "jaarlijks",
+				"battery": "jaarlijks"
 			},
 			"descriptions": {
 				"chain_lube": "Ketting reinigen en smeren",

@@ -25,13 +25,32 @@
 	let lastServiceDate = $state('');
 	let lastServiceOdo = $state('');
 
-	const presets = [
-		{ id: 'oil', icon: '🛢' },
-		{ id: 'tire', icon: '⭕' },
-		{ id: 'chain_lube', icon: '⛓️' },
-		{ id: 'chain_tension', icon: '🔧' },
-		{ id: 'brake', icon: '🔴' }
-	];
+	const PRESET_ICONS: Record<string, string> = {
+		oil: '🛢',
+		tire: '⭕',
+		chain_lube: '⛓️',
+		chain_tension: '🔧',
+		brake: '🔴',
+		belt: '🔄',
+		air_filter: '💨',
+		cable_check: '🔧',
+		battery: '🔋'
+	};
+
+	const PRESETS_BY_TYPE: Record<string, string[]> = {
+		motorcycle: ['oil', 'tire', 'chain_lube', 'chain_tension', 'brake'],
+		scooter: ['oil', 'tire', 'belt', 'brake', 'air_filter'],
+		bike: ['tire', 'chain_lube', 'brake', 'cable_check'],
+		other: ['oil', 'tire', 'brake', 'air_filter', 'battery']
+	};
+
+	const presetKeys = $derived(PRESETS_BY_TYPE[vehicleType] ?? PRESETS_BY_TYPE.motorcycle);
+	const presets = $derived(presetKeys.map((id) => ({ id, icon: PRESET_ICONS[id] ?? '🔧' })));
+
+	// Reset selection when vehicle type changes
+	$effect(() => {
+		selectedCategories = [...presetKeys];
+	});
 
 	const typeIcons: Record<string, string> = {
 		motorcycle: '🏍',

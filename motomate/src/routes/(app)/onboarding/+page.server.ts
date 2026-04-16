@@ -20,14 +20,8 @@ type LocaleMessages = {
 	onboarding: {
 		lastService: { setupNote: string };
 		presets: {
-			tasks: {
-				oil: string;
-				tire: string;
-				chain_lube: string;
-				chain_tension: string;
-				brake: string;
-			};
-			descriptions: { chain_lube: string; chain_tension: string };
+			tasks: Record<string, string>;
+			descriptions: Record<string, string>;
 		};
 	};
 };
@@ -48,16 +42,10 @@ export const actions: Actions = {
 		const setupNote = messages.onboarding.lastService.setupNote;
 		const tasks = messages.onboarding.presets.tasks;
 		const descs = messages.onboarding.presets.descriptions;
-		const nameMap = {
-			oil: { name: tasks.oil },
-			tire: { name: tasks.tire },
-			chain_lube: { name: tasks.chain_lube, description: descs.chain_lube },
-			chain_tension: { name: tasks.chain_tension, description: descs.chain_tension },
-			brake: { name: tasks.brake }
-		};
 
+		const vehicleType = String(data.vehicle_type ?? 'motorcycle');
 		const vehicleInput = {
-			type: data.vehicle_type ?? 'motorcycle',
+			type: vehicleType,
 			name: String(data.name),
 			make: String(data.make),
 			model: String(data.model),
@@ -78,7 +66,20 @@ export const actions: Actions = {
 		const categories = String(data.categories ?? 'oil,tire,chain_lube,chain_tension,brake')
 			.split(',')
 			.filter(Boolean);
-		const seeded = await seedPresetsForVehicle(userId, vehicle.id, categories, 0, nameMap);
+
+		const nameMap: Record<string, { name: string; description?: string }> = {};
+		for (const key of categories) {
+			nameMap[key] = { name: tasks[key] ?? key, description: descs[key] };
+		}
+
+		const seeded = await seedPresetsForVehicle(
+			userId,
+			vehicle.id,
+			categories,
+			0,
+			nameMap,
+			vehicleType
+		);
 
 		const lastServiceDate = String(data.last_service_date ?? '').trim();
 		// Clamp to current odometer — a service cannot have happened beyond what the vehicle shows

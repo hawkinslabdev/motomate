@@ -183,7 +183,13 @@ export const actions: Actions = {
 			const logs = await getServiceLogsByVehicle(params.id, locals.user!.id);
 			const vehicle = await getVehicleById(params.id, locals.user!.id);
 			const userLocale = (locals.user as any)?.settings?.locale ?? 'en';
-			await applyDefaultTrackersFromHistory(params.id, locals.user!.id, logs, userLocale);
+			await applyDefaultTrackersFromHistory(
+				params.id,
+				locals.user!.id,
+				logs,
+				userLocale,
+				vehicle?.type ?? 'motorcycle'
+			);
 			await recomputeTrackerStatuses(params.id, vehicle?.current_odometer ?? 0);
 			return { defaultsApplied: true };
 		} catch (err) {

@@ -115,14 +115,22 @@
 				"tire": "Pression et usure des pneus",
 				"chain_lube": "Nettoyage & graissage chaîne",
 				"chain_tension": "Tension de la chaîne",
-				"brake": "Plaquettes et liquide de frein"
+				"brake": "Plaquettes et liquide de frein",
+				"belt": "Courroie d'entraînement",
+				"air_filter": "Filtre à air",
+				"cable_check": "Câbles et dérailleurs",
+				"battery": "Vérification batterie"
 			},
 			"intervals": {
 				"oil": "tous les 5 000 km / 12 mois",
 				"tire": "vérification mensuelle",
 				"chain_lube": "tous les 500 km",
 				"chain_tension": "tous les 500 km",
-				"brake": "tous les 10 000 km / 2 ans"
+				"brake": "tous les 10 000 km / 2 ans",
+				"belt": "tous les 10 000 km / 12 mois",
+				"air_filter": "tous les 6 000–15 000 km / 12–24 mois",
+				"cable_check": "annuellement",
+				"battery": "annuellement"
 			},
 			"descriptions": {
 				"chain_lube": "Nettoyer et graisser la chaîne",

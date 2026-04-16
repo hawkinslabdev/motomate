@@ -115,14 +115,22 @@
 				"tire": "Reifendruck & -verschleiß",
 				"chain_lube": "Kette reinigen & schmieren",
 				"chain_tension": "Kettenspannung prüfen",
-				"brake": "Bremsbeläge & -flüssigkeit"
+				"brake": "Bremsbeläge & -flüssigkeit",
+				"belt": "Keilriemen prüfen",
+				"air_filter": "Luftfilter",
+				"cable_check": "Kabel & Schaltung prüfen",
+				"battery": "Batterie prüfen"
 			},
 			"intervals": {
 				"oil": "alle 5 000 km / 12 Monate",
 				"tire": "monatliche Prüfung",
 				"chain_lube": "alle 500 km",
 				"chain_tension": "alle 500 km",
-				"brake": "alle 10 000 km / 2 Jahre"
+				"brake": "alle 10 000 km / 2 Jahre",
+				"belt": "alle 10 000 km / 12 Monate",
+				"air_filter": "alle 6 000–15 000 km / 12–24 Monate",
+				"cable_check": "jährlich",
+				"battery": "jährlich"
 			},
 			"descriptions": {
 				"chain_lube": "Kette reinigen und schmieren",

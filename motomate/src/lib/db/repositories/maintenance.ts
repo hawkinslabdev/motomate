@@ -23,13 +23,8 @@ import pt from '$lib/i18n/locales/pt.json';
 type LocaleMessages = {
 	onboarding: {
 		presets: {
-			tasks: {
-				oil: string;
-				tire: string;
-				chain_lube: string;
-				chain_tension: string;
-				brake: string;
-			};
+			tasks: Record<string, string>;
+			descriptions: Record<string, string>;
 		};
 	};
 };
@@ -38,48 +33,178 @@ const localeMessages: Record<string, LocaleMessages> = { en, de, fr, es, it, nl,
 
 // Preset task templates
 
-export const PRESET_TEMPLATES = [
-	{
-		key: 'oil',
-		name: 'Oil & Filter Change',
-		category: 'oil' as const,
-		description: 'Engine oil and oil filter replacement',
-		interval_km: 10000,
-		interval_months: 12
-	},
-	{
-		key: 'tire',
-		name: 'Tire Pressure & Wear Check',
-		category: 'tire' as const,
-		description: 'Check tyre pressure and inspect tread depth',
-		interval_km: null,
-		interval_months: 1
-	},
-	{
-		key: 'chain_lube',
-		name: 'Chain Clean & Lube',
-		category: 'chain' as const,
-		description: 'Clean and lubricate the chain',
-		interval_km: 500,
-		interval_months: null
-	},
-	{
-		key: 'chain_tension',
-		name: 'Chain Tension Check',
-		category: 'chain' as const,
-		description: 'Check and adjust chain tension',
-		interval_km: 1000,
-		interval_months: null
-	},
-	{
-		key: 'brake',
-		name: 'Brake Pads & Fluid',
-		category: 'brake' as const,
-		description: 'Inspect brake pads and replace brake fluid',
-		interval_km: 10000,
-		interval_months: 24
-	}
-];
+export const PRESET_TEMPLATES_BY_TYPE = {
+	motorcycle: [
+		{
+			key: 'oil',
+			name: 'Oil & Filter Change',
+			category: 'oil' as const,
+			description: 'Engine oil and oil filter replacement',
+			interval_km: 10000,
+			interval_months: 12
+		},
+		{
+			key: 'tire',
+			name: 'Tire Pressure & Wear Check',
+			category: 'tire' as const,
+			description: 'Check tyre pressure and inspect tread depth',
+			interval_km: null,
+			interval_months: 1
+		},
+		{
+			key: 'chain_lube',
+			name: 'Chain Clean & Lube',
+			category: 'chain' as const,
+			description: 'Clean and lubricate the chain',
+			interval_km: 500,
+			interval_months: null
+		},
+		{
+			key: 'chain_tension',
+			name: 'Chain Tension Check',
+			category: 'chain' as const,
+			description: 'Check and adjust chain tension',
+			interval_km: 1000,
+			interval_months: null
+		},
+		{
+			key: 'brake',
+			name: 'Brake Pads & Fluid',
+			category: 'brake' as const,
+			description: 'Inspect brake pads and replace brake fluid',
+			interval_km: 10000,
+			interval_months: 24
+		}
+	],
+	scooter: [
+		{
+			key: 'oil',
+			name: 'Oil Change',
+			category: 'oil' as const,
+			description: 'Engine oil replacement',
+			interval_km: 3000,
+			interval_months: 12
+		},
+		{
+			key: 'tire',
+			name: 'Tire Pressure & Wear Check',
+			category: 'tire' as const,
+			description: 'Check tyre pressure and inspect tread depth',
+			interval_km: null,
+			interval_months: 1
+		},
+		{
+			key: 'belt',
+			name: 'Drive Belt Check',
+			category: 'custom' as const,
+			description: 'Inspect and replace the drive belt',
+			interval_km: 10000,
+			interval_months: 12
+		},
+		{
+			key: 'brake',
+			name: 'Brake Pads & Fluid',
+			category: 'brake' as const,
+			description: 'Inspect brake pads and replace brake fluid',
+			interval_km: 8000,
+			interval_months: 24
+		},
+		{
+			key: 'air_filter',
+			name: 'Air Filter',
+			category: 'custom' as const,
+			description: 'Clean or replace the air filter',
+			interval_km: 6000,
+			interval_months: 12
+		}
+	],
+	bike: [
+		{
+			key: 'tire',
+			name: 'Tire Pressure & Wear Check',
+			category: 'tire' as const,
+			description: 'Check tyre pressure and inspect tread depth',
+			interval_km: null,
+			interval_months: 1
+		},
+		{
+			key: 'chain_lube',
+			name: 'Chain Lubrication',
+			category: 'chain' as const,
+			description: 'Clean and lubricate the chain',
+			interval_km: 500,
+			interval_months: 1
+		},
+		{
+			key: 'brake',
+			name: 'Brake Adjustment',
+			category: 'brake' as const,
+			description: 'Inspect and adjust brake pads and cables',
+			interval_km: 2000,
+			interval_months: 12
+		},
+		{
+			key: 'cable_check',
+			name: 'Cable & Gear Check',
+			category: 'custom' as const,
+			description: 'Inspect cables, housing, and gear shifting',
+			interval_km: null,
+			interval_months: 12
+		}
+	],
+	other: [
+		{
+			key: 'oil',
+			name: 'Oil & Filter Change',
+			category: 'oil' as const,
+			description: 'Engine oil and oil filter replacement',
+			interval_km: 10000,
+			interval_months: 12
+		},
+		{
+			key: 'tire',
+			name: 'Tire Pressure & Wear Check',
+			category: 'tire' as const,
+			description: 'Check tyre pressure and inspect tread depth',
+			interval_km: null,
+			interval_months: 1
+		},
+		{
+			key: 'brake',
+			name: 'Brake Pads & Fluid',
+			category: 'brake' as const,
+			description: 'Inspect brake pads and replace brake fluid',
+			interval_km: 20000,
+			interval_months: 24
+		},
+		{
+			key: 'air_filter',
+			name: 'Air Filter',
+			category: 'custom' as const,
+			description: 'Clean or replace the air filter',
+			interval_km: 15000,
+			interval_months: 24
+		},
+		{
+			key: 'battery',
+			name: 'Battery Check',
+			category: 'custom' as const,
+			description: 'Inspect battery terminals and charge level',
+			interval_km: null,
+			interval_months: 12
+		}
+	]
+};
+
+// Backwards compat
+export const PRESET_TEMPLATES = PRESET_TEMPLATES_BY_TYPE.motorcycle;
+
+export function getPresetsForType(type: string) {
+	return (
+		PRESET_TEMPLATES_BY_TYPE[type as keyof typeof PRESET_TEMPLATES_BY_TYPE] ??
+		PRESET_TEMPLATES_BY_TYPE.motorcycle
+	);
+}
 
 // Task templates
 export async function createTaskTemplate(userId: string, input: unknown): Promise<TaskTemplate> {
@@ -103,10 +228,11 @@ export async function seedPresetsForVehicle(
 	vehicleId: string,
 	selectedKeys: string[] = ['oil', 'tire', 'chain_lube', 'chain_tension', 'brake'],
 	currentOdometer: number = 0,
-	nameMap: Record<string, { name: string; description?: string }> = {}
+	nameMap: Record<string, { name: string; description?: string }> = {},
+	vehicleType: string = 'motorcycle'
 ): Promise<{ template: TaskTemplate; tracker: ActiveTracker }[]> {
 	const results = [];
-	for (const preset of PRESET_TEMPLATES) {
+	for (const preset of getPresetsForType(vehicleType)) {
 		if (!selectedKeys.includes(preset.key)) continue;
 		const override = nameMap[preset.key];
 		const template = await createTaskTemplate(userId, {
@@ -187,22 +313,32 @@ export async function applyDefaultTrackersFromHistory(
 	vehicleId: string,
 	userId: string,
 	serviceLogs: { performed_at: string; odometer_at_service: number }[],
-	locale?: string
+	locale?: string,
+	vehicleType: string = 'motorcycle'
 ): Promise<void> {
 	const userLocale = locale ?? 'en';
 	const messages = localeMessages[userLocale] ?? localeMessages['en'];
-	const tasks = messages.onboarding.presets.tasks;
+	const tasks = messages.onboarding.presets.tasks as Record<string, string>;
+	const descs = messages.onboarding.presets.descriptions as Record<string, string>;
 
-	const nameMap: Record<string, { name: string; description?: string }> = {
-		oil: { name: tasks.oil },
-		tire: { name: tasks.tire },
-		chain_lube: { name: tasks.chain_lube, description: 'Clean and lubricate the chain' },
-		chain_tension: { name: tasks.chain_tension, description: 'Check and adjust chain tension' },
-		brake: { name: tasks.brake }
-	};
+	const vehiclePresets = getPresetsForType(vehicleType);
+	const nameMap: Record<string, { name: string; description?: string }> = {};
+	for (const p of vehiclePresets) {
+		nameMap[p.key] = {
+			name: tasks[p.key] ?? p.name,
+			description: descs[p.key] ?? p.description
+		};
+	}
 
 	if (serviceLogs.length === 0) {
-		await seedPresetsForVehicle(userId, vehicleId, undefined, 0, nameMap);
+		await seedPresetsForVehicle(
+			userId,
+			vehicleId,
+			vehiclePresets.map((p) => p.key),
+			0,
+			nameMap,
+			vehicleType
+		);
 		return;
 	}
 
@@ -223,13 +359,10 @@ export async function applyDefaultTrackersFromHistory(
 		return range > 0 ? range : null;
 	})();
 
-	const presetIntervals: Record<string, { km: number | null; months: number | null }> = {
-		oil: { km: 10000, months: 12 },
-		brake: { km: 10000, months: 24 },
-		chain_lube: { km: 500, months: null },
-		chain_tension: { km: 1000, months: null },
-		tire: { km: null, months: 1 }
-	};
+	const presetIntervals: Record<string, { km: number | null; months: number | null }> = {};
+	for (const p of vehiclePresets) {
+		presetIntervals[p.key] = { km: p.interval_km ?? null, months: p.interval_months ?? null };
+	}
 
 	const derivedIntervals: Record<string, { km: number | null; months: number | null }> = {};
 	for (const [key, stats] of kmStats) {
@@ -265,11 +398,11 @@ export async function applyDefaultTrackersFromHistory(
 	}
 
 	const results = [];
-	for (const preset of PRESET_TEMPLATES) {
+	for (const preset of vehiclePresets) {
 		const template = await createTaskTemplate(userId, {
 			...preset,
-			name: nameMap[preset.key].name,
-			description: nameMap[preset.key].description,
+			name: nameMap[preset.key]?.name ?? preset.name,
+			description: nameMap[preset.key]?.description ?? preset.description,
 			vehicle_id: vehicleId,
 			interval_km: presetIntervals[preset.key].km,
 			interval_months: presetIntervals[preset.key].months,

@@ -115,14 +115,22 @@
 				"tire": "Pressione e usura pneumatici",
 				"chain_lube": "Pulizia & lubrificazione catena",
 				"chain_tension": "Tensione della catena",
-				"brake": "Pastiglie e liquido freni"
+				"brake": "Pastiglie e liquido freni",
+				"belt": "Cinghia di trasmissione",
+				"air_filter": "Filtro dell'aria",
+				"cable_check": "Cavi e deragliatori",
+				"battery": "Controllo batteria"
 			},
 			"intervals": {
 				"oil": "ogni 5.000 km / 12 mesi",
 				"tire": "controllo mensile",
 				"chain_lube": "ogni 500 km",
 				"chain_tension": "ogni 500 km",
-				"brake": "ogni 10.000 km / 2 anni"
+				"brake": "ogni 10.000 km / 2 anni",
+				"belt": "ogni 10.000 km / 12 mesi",
+				"air_filter": "ogni 6.000–15.000 km / 12–24 mesi",
+				"cable_check": "annualmente",
+				"battery": "annualmente"
 			},
 			"descriptions": {
 				"chain_lube": "Pulire e lubrificare la catena",

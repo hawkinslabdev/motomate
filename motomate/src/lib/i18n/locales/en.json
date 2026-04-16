@@ -116,14 +116,22 @@
 				"tire": "Tire pressure & wear",
 				"chain_lube": "Chain clean & lube",
 				"chain_tension": "Chain tension check",
-				"brake": "Brake pads & fluid"
+				"brake": "Brake pads & fluid",
+				"belt": "Drive belt check",
+				"air_filter": "Air filter",
+				"cable_check": "Cable & gear check",
+				"battery": "Battery check"
 			},
 			"intervals": {
 				"oil": "every 5 000 km / 12 months",
 				"tire": "monthly check",
 				"chain_lube": "every 500 km",
 				"chain_tension": "every 500 km",
-				"brake": "every 10 000 km / 2 years"
+				"brake": "every 10 000 km / 2 years",
+				"belt": "every 10 000 km / 12 months",
+				"air_filter": "every 6 000–15 000 km / 12–24 months",
+				"cable_check": "annually",
+				"battery": "annually"
 			},
 			"descriptions": {
 				"chain_lube": "Clean and lubricate the chain",
