@@ -390,9 +390,7 @@
 								return data.trackers.find((t) => t.id === log.tracker_id)?.template.name ?? '';
 							}
 							const first = (log.serviced_tracker_ids ?? [])[0];
-							return first
-								? (data.trackers.find((t) => t.id === first)?.template.name ?? '')
-								: '';
+							return first ? (data.trackers.find((t) => t.id === first)?.template.name ?? '') : '';
 						};
 						return getName(a).localeCompare(getName(b));
 					});
@@ -928,7 +926,7 @@
 									/>
 								</label>
 							</div>
-								{#if otherTrackers.length > 0}
+							{#if otherTrackers.length > 0}
 								<fieldset class="tracker-select">
 									<legend class="field-label"
 										>{$_('vehicle.forms.fields.resetCycle', {
@@ -938,11 +936,7 @@
 									<div class="tracker-checkboxes">
 										{#each otherTrackers as ot}
 											<label class="tracker-checkbox">
-												<input
-													type="checkbox"
-													name="additional_tracker_ids"
-													value={ot.id}
-												/>
+												<input type="checkbox" name="additional_tracker_ids" value={ot.id} />
 												<span class="tracker-check-label">
 													<span class="tracker-check-name">{ot.template.name}</span>
 													{#if ot.status === 'due'}

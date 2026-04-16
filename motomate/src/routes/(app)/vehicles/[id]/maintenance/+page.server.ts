@@ -39,7 +39,10 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const raw = Object.fromEntries(formData);
 		const currency = (locals.user as any)?.settings?.currency ?? 'EUR';
-		const additionalTrackerIds = formData.getAll('additional_tracker_ids').map(String).filter(Boolean);
+		const additionalTrackerIds = formData
+			.getAll('additional_tracker_ids')
+			.map(String)
+			.filter(Boolean);
 		const input = {
 			vehicle_id: params.id,
 			tracker_id: raw.tracker_id || undefined,
