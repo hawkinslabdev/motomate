@@ -15,6 +15,7 @@ import es from '$lib/i18n/locales/es.json';
 import it from '$lib/i18n/locales/it.json';
 import nl from '$lib/i18n/locales/nl.json';
 import pt from '$lib/i18n/locales/pt.json';
+import { DEFAULT_ODOMETER_UNIT, type OdometerUnit } from '$lib/utils/measurement.js';
 
 type LocaleMessages = {
 	onboarding: {
@@ -53,7 +54,7 @@ export const actions: Actions = {
 			vin: String(data.vin ?? '').trim() || undefined,
 			license_plate: String(data.license_plate ?? '').trim() || undefined,
 			current_odometer: Number(data.odometer ?? 0),
-			odometer_unit: data.odometer_unit ?? 'km'
+			odometer_unit: (data.odometer_unit ?? DEFAULT_ODOMETER_UNIT) as OdometerUnit
 		};
 
 		let vehicle;

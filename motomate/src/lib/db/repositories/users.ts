@@ -4,6 +4,7 @@ import { users } from '../schema.js';
 import { CreateUserSchema, UserSettingsSchema } from '../../validators/schemas.js';
 import type { InsertUser, User, UserSettings } from '../schema.js';
 import { generateId } from '../../utils/id.js';
+import { DEFAULT_ODOMETER_UNIT } from '../../utils/measurement.js';
 
 export async function createUser(input: {
 	email: string;
@@ -15,7 +16,7 @@ export async function createUser(input: {
 	const defaultSettings: UserSettings = {
 		theme: 'system',
 		currency: 'EUR',
-		odometer_unit: 'km',
+		odometer_unit: DEFAULT_ODOMETER_UNIT,
 		locale: 'en',
 		avatar_seed: generateId()
 	};

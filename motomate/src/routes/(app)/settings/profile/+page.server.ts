@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { updateUserSettings } from '$lib/db/repositories/users.js';
 import { getStorage } from '$lib/storage/index.js';
+import type { OdometerUnit } from '$lib/utils/measurement.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_AVATAR_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -34,7 +35,7 @@ export const actions: Actions = {
 		await updateUserSettings(locals.user!.id, {
 			theme: data.theme as 'system' | 'light' | 'dark',
 			currency: String(data.currency ?? 'EUR'),
-			odometer_unit: data.odometer_unit as 'km' | 'mi',
+			odometer_unit: data.odometer_unit as OdometerUnit,
 			locale: String(data.locale ?? 'en')
 		});
 		return { savedPrefs: true };
