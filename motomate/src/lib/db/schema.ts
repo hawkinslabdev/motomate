@@ -228,6 +228,10 @@ export const service_logs = sqliteTable(
 			.notNull()
 			.references(() => vehicles.id, { onDelete: 'cascade' }),
 		tracker_id: text('tracker_id').references(() => active_trackers.id, { onDelete: 'set null' }),
+		serviced_tracker_ids: text('serviced_tracker_ids', { mode: 'json' })
+			.$type<string[]>()
+			.notNull()
+			.default(sql`'[]'`),
 		performed_at: text('performed_at').notNull(), // ISO date string
 		odometer_at_service: integer('odometer_at_service').notNull(),
 		cost_cents: integer('cost_cents'), // null = not tracked
