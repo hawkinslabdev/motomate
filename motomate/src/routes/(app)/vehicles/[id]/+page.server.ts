@@ -68,14 +68,9 @@ export const actions: Actions = {
 		const raw = Object.fromEntries(formData);
 		const currency = (locals.user as any)?.settings?.currency ?? 'EUR';
 
-		// Handle multiple tracker resets (checkbox array)
-		const resetTrackerIds = raw.reset_trackers
-			? Array.isArray(raw.reset_trackers)
-				? raw.reset_trackers
-				: [raw.reset_trackers]
-			: [];
-		const trackerId =
-			raw.tracker_id || (resetTrackerIds.length === 1 ? resetTrackerIds[0] : undefined);
+		// getAll() required — Object.fromEntries drops duplicate keys for multi-checkboxes
+		const resetTrackerIds = formData.getAll('reset_trackers').map(String).filter(Boolean);
+		const trackerId = (raw.tracker_id as string) || resetTrackerIds[0] || undefined;
 
 		const input = {
 			vehicle_id: params.id,
@@ -86,7 +81,8 @@ export const actions: Actions = {
 			currency,
 			notes: raw.notes || undefined,
 			remark: raw.remark ? String(raw.remark).trim() : undefined,
-			parts_used: []
+			parts_used: [],
+			serviced_tracker_ids: resetTrackerIds.slice(1)
 		};
 
 		const parsed = CreateServiceLogSchema.safeParse(input);
@@ -139,15 +135,6 @@ export const actions: Actions = {
 			...parsed.data,
 			attachments: [...attachmentDocIds, ...linkedDocIds]
 		});
-
-		// Reset all selected trackers
-		for (const tid of resetTrackerIds) {
-			await updateTrackerAfterService(
-				tid,
-				parsed.data.performed_at,
-				parsed.data.odometer_at_service
-			);
-		}
 
 		await recomputeTrackerStatuses(params.id, maxOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
