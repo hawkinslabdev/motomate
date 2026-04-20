@@ -54,7 +54,12 @@ function nextCalendarOccurrence(month: number, day: number): Date {
 }
 
 async function computeNextFireInfo(
-	rule: { id: string; vehicle_id: string | null; trigger: RuleTrigger; last_triggered_at: string | null },
+	rule: {
+		id: string;
+		vehicle_id: string | null;
+		trigger: RuleTrigger;
+		last_triggered_at: string | null;
+	},
 	vehicles: Awaited<ReturnType<typeof getVehiclesByUser>>,
 	trackersByVehicle: Map<string, Awaited<ReturnType<typeof recomputeTrackerStatuses>>>
 ): Promise<NextFireInfo> {
@@ -85,7 +90,8 @@ async function computeNextFireInfo(
 
 				for (const tracker of trackers) {
 					hasAnyTracker = true;
-					const notifiedBy = ((tracker.state as Record<string, unknown>)?.notified_by ?? {}) as Record<string, string>;
+					const notifiedBy = ((tracker.state as Record<string, unknown>)?.notified_by ??
+						{}) as Record<string, string>;
 					const alreadyFired = Object.keys(notifiedBy).length > 0;
 
 					if (!alreadyFired) allWaiting = false;
@@ -114,7 +120,9 @@ async function computeNextFireInfo(
 						const dueDate = new Date(tracker.next_due_at);
 						const fireDate =
 							trigger.type === 'date_upcoming'
-								? new Date(dueDate.getTime() - dayWindow(tracker.template?.interval_months ?? 1) * 86400000)
+								? new Date(
+										dueDate.getTime() - dayWindow(tracker.template?.interval_months ?? 1) * 86400000
+									)
 								: dueDate;
 
 						if (now >= fireDate.getTime()) {
@@ -188,7 +196,9 @@ async function computeNextFireInfo(
 				});
 				for (const doc of docs) {
 					if (!doc.expires_at) continue;
-					const fireTime = new Date(new Date(doc.expires_at).getTime() - trigger.days_before * 86400000);
+					const fireTime = new Date(
+						new Date(doc.expires_at).getTime() - trigger.days_before * 86400000
+					);
 					if (!soonestFire || fireTime < soonestFire) soonestFire = fireTime;
 				}
 			}
@@ -219,7 +229,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 	// Fresh tracker statuses for nextFire computation
 	const trackersByVehicle = new Map<string, Awaited<ReturnType<typeof recomputeTrackerStatuses>>>();
 	for (const vehicle of userVehicles) {
-		trackersByVehicle.set(vehicle.id, await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer));
+		trackersByVehicle.set(
+			vehicle.id,
+			await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer)
+		);
 	}
 
 	const rulesWithNextFire = await Promise.all(

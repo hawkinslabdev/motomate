@@ -180,23 +180,26 @@
 						<span>{$_('settings.workflows.allChannels')}</span>
 					</div>
 					<div class="rule-last">
-						{#if rule.last_triggered_at}
-							{$_('settings.workflows.lastFired', {
-								values: {
-									date: formatDateTime(
-										rule.last_triggered_at,
-										data.user?.settings?.locale ?? 'en',
-										data.user?.timezone
-									)
-								}
-							})}
-						{:else}
-							{$_('settings.workflows.neverFired')}
-						{/if}
+						<span class="rule-last-fired">
+							{#if rule.last_triggered_at}
+								{$_('settings.workflows.lastFired', {
+									values: {
+										date: formatDateTime(
+											rule.last_triggered_at,
+											data.user?.settings?.locale ?? 'en',
+											data.user?.timezone
+										)
+									}
+								})}
+							{:else}
+								{$_('settings.workflows.neverFired')}
+							{/if}
+						</span>
 						<span class="sep">·</span>
 						<span
 							class="rule-next-fire"
 							class:rule-next-fire--ready={rule.nextFire.kind === 'ready'}
+							title={nextFireLabel(rule.nextFire)}
 						>{$_('settings.workflows.nextFire')}: {nextFireLabel(rule.nextFire)}</span>
 					</div>
 
@@ -553,16 +556,24 @@
 		margin: 0 0.125rem;
 	}
 	.rule-last {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 		margin-top: 0.25rem;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.25rem;
+		overflow: hidden;
+	}
+	.rule-last-fired {
+		white-space: nowrap;
+		flex-shrink: 0;
 	}
 	.rule-next-fire {
-		color: var(--text-subtle);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		min-width: 0;
+		flex: 1;
 	}
 	.rule-next-fire--ready {
 		color: var(--accent);
