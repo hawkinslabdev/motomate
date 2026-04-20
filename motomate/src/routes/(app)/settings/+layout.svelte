@@ -7,12 +7,8 @@
 		waitLocale();
 	});
 
-	const appVersion = (() => {
-		// @ts-ignore - Vite injects this global
-		const v = __APP_VERSION__;
-		const parts = v.split('.');
-		return `${parts[0]}.${parts[1]}.${parts[2]}`;
-	})();
+	// @ts-ignore - Vite injects this global
+	const appVersion: string = __APP_VERSION__;
 
 	const tabs = [
 		{ href: '/settings/profile', labelKey: 'settings.nav.preferences' },
