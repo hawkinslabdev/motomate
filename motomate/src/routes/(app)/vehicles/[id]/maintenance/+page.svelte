@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { invalidateAll, beforeNavigate } from '$app/navigation';
+	import { invalidateAll, beforeNavigate, replaceState } from '$app/navigation';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import TrackerCard from '$lib/components/ui/TrackerCard.svelte';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -30,6 +31,22 @@
 
 	let loggingTracker = $state<string | null>(null);
 	let recentlyLoggedId = $state<string | null>(null);
+
+	$effect(() => {
+		const logId = $page.url.searchParams.get('log');
+		if (logId && data.trackers.some((t) => t.id === logId)) {
+			loggingTracker = logId;
+			const url = new URL($page.url);
+			url.searchParams.delete('log');
+			replaceState(url, $page.state);
+			setTimeout(() => {
+				document.querySelector(`[data-log-form="${logId}"]`)?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'center'
+				});
+			}, 50);
+		}
+	});
 	let showAddTask = $state(false);
 	let trackerMenu = $state<string | null>(null);
 	let editingTracker = $state<string | null>(null);
@@ -938,7 +955,12 @@
 									<div class="tracker-checkboxes">
 										{#each otherTrackers as ot}
 											<label class="tracker-checkbox">
-												<input type="checkbox" name="additional_tracker_ids" value={ot.id} />
+												<input
+												type="checkbox"
+												name="additional_tracker_ids"
+												value={ot.id}
+												checked={ot.status === 'due' || ot.status === 'overdue'}
+											/>
 												<span class="tracker-check-label">
 													<span class="tracker-check-name">{ot.template.name}</span>
 													{#if ot.status === 'due'}

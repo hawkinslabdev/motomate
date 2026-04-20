@@ -59,7 +59,7 @@
 		const num = Number(inputVal);
 		if (!Number.isInteger(num) || num < 0) return undefined;
 		if (num === currentVal)
-			return `Je hebt al een stand van ${num} km. Opgeslagen voor je administratie.`;
+			return `Je hebt al een stand van ${num} km opslagen in jouw administratie.`;
 		if (num < currentVal)
 			return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
 		return undefined;
@@ -174,14 +174,12 @@
 
 	beforeNavigate(() => flushTimelinePrefs());
 
-	// Also flush on hard refresh / browser close (beforeNavigate doesn't fire for those)
 	$effect(() => {
 		window.addEventListener('beforeunload', flushTimelinePrefs);
 		return () => window.removeEventListener('beforeunload', flushTimelinePrefs);
 	});
 
 	$effect(() => {
-		// Read each property explicitly so Svelte 5 tracks them individually
 		const service = filters.service;
 		const odometer = filters.odometer;
 		const note = filters.note;
@@ -346,7 +344,7 @@
 		return data.odoLogs.find((l: (typeof data.odoLogs)[number]) => l.id === id);
 	}
 
-	// Attachment state — new service log form
+	// Attachment state
 	let attachFile = $state<File | null>(null);
 	let attachType = $state('service');
 	let showLinkNew = $state(false);
@@ -1020,7 +1018,9 @@
 								</div>
 							{/if}
 						</div>
-						<a href="/vehicles/{data.vehicle.id}/maintenance" class="upcoming-log-link"
+						<a
+							href="/vehicles/{data.vehicle.id}/maintenance?log={t.id}"
+							class="upcoming-log-link"
 							>{$_('vehicle.detail.logLink')}</a
 						>
 					</div>
