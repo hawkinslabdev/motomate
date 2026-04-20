@@ -779,6 +779,35 @@
 
 									<div class="edit-section">
 										<span class="edit-section-label"
+											>{$_('maintenance.editTracker.sections.identity')}</span
+										>
+										<div class="edit-row">
+											<label class="field">
+												<span class="field-label">{$_('maintenance.editTracker.fields.name')}</span>
+												<input
+													type="text"
+													name="name"
+													required
+													value={et.template.name}
+													class="input"
+												/>
+											</label>
+											<label class="field">
+												<span class="field-label"
+													>{$_('maintenance.editTracker.fields.description')}</span
+												>
+												<input
+													type="text"
+													name="description"
+													value={et.template.description ?? ''}
+													class="input"
+												/>
+											</label>
+										</div>
+									</div>
+
+									<div class="edit-section">
+										<span class="edit-section-label"
 											>{$_('maintenance.editTracker.sections.interval')}</span
 										>
 										<div class="edit-row">

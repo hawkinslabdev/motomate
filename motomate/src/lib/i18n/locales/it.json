@@ -488,11 +488,14 @@
 		},
 		"editTracker": {
 			"sections": {
+				"identity": "Nome",
 				"interval": "Intervallo",
 				"lastServiced": "Ultimo servizio",
 				"nextDue": "Prossima scadenza"
 			},
 			"fields": {
+				"name": "Nome",
+				"description": "Descrizione (opzionale)",
 				"everyKm": "Ogni ({unit})",
 				"everyMonths": "Ogni (mesi)",
 				"date": "Data",

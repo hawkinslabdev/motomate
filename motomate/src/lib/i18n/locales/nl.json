@@ -489,11 +489,14 @@
 		},
 		"editTracker": {
 			"sections": {
+				"identity": "Naam",
 				"interval": "Interval",
 				"lastServiced": "Laatste onderhoud",
 				"nextDue": "Volgende verwacht"
 			},
 			"fields": {
+				"name": "Naam",
+				"description": "Omschrijving (optioneel)",
 				"everyKm": "Elke ({unit})",
 				"everyMonths": "Elke (maanden)",
 				"date": "Datum",
