@@ -55,15 +55,17 @@
 		}
 	}
 
-	function getOdoWarning(inputVal: string, currentVal: number): string | undefined {
-		const num = Number(inputVal);
+	const odoWarning = $derived.by((): string | undefined => {
+		if (!odoDirty) return undefined;
+		const num = Number(odoValue);
 		if (!Number.isInteger(num) || num < 0) return undefined;
-		if (num === currentVal)
-			return `Je hebt al een stand van ${num} km opslagen in jouw administratie.`;
-		if (num < currentVal)
-			return `Lager dan de hoogste opgenomen stand (${currentVal} km). Opgeslagen als historisch record.`;
+		const current = data.vehicle.current_odometer;
+		if (num === current)
+			return $_('vehicle.forms.warnings.odoSame', { values: { num, unit } });
+		if (num < current)
+			return $_('vehicle.forms.warnings.odoLower', { values: { current, unit } });
 		return undefined;
-	}
+	});
 
 	// Handle ?quick= param from the mobile FAB quick-add flow
 	$effect(() => {
@@ -865,8 +867,8 @@
 			{#if (form as any)?.odoError}
 				<div class="form-err">{(form as any).odoError}</div>
 			{/if}
-			{#if activeForm === 'odometer' && odoDirty && getOdoWarning(odoValue, data.vehicle.current_odometer)}
-				<div class="form-warning">{getOdoWarning(odoValue, data.vehicle.current_odometer)}</div>
+			{#if activeForm === 'odometer' && odoWarning}
+				<div class="form-warning">{odoWarning}</div>
 			{/if}
 			<div class="form-row">
 				<label class="field">

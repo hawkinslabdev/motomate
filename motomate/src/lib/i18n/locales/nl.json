@@ -300,6 +300,10 @@
 				"pickerTitle": "Koppel een document",
 				"noDocuments": "Geen documenten beschikbaar.",
 				"uploading": "Uploaden..."
+			},
+			"warnings": {
+				"odoSame": "Je hebt al een stand van {num} {unit} opgeslagen in jouw administratie.",
+				"odoLower": "Lager dan de hoogste opgenomen stand ({current} {unit}), wordt opgeslagen als historisch record."
 			}
 		},
 		"add": {

@@ -300,6 +300,10 @@
 				"pickerTitle": "Vincular um documento",
 				"noDocuments": "Nenhum documento disponível.",
 				"uploading": "Enviando..."
+			},
+			"warnings": {
+				"odoSame": "Já tens uma leitura de {num} {unit} guardada.",
+				"odoLower": "Inferior à leitura mais alta registada ({current} {unit}), será guardado como registo histórico."
 			}
 		},
 		"add": {

@@ -300,6 +300,10 @@
 				"pickerTitle": "Collega un documento",
 				"noDocuments": "Nessun documento disponibile.",
 				"uploading": "Caricamento..."
+			},
+			"warnings": {
+				"odoSame": "Hai già una lettura di {num} {unit} salvata.",
+				"odoLower": "Inferiore alla lettura più alta registrata ({current} {unit}), sarà salvato come record storico."
 			}
 		},
 		"add": {

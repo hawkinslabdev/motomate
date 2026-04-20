@@ -300,6 +300,10 @@
 				"pickerTitle": "Dokument verknüpfen",
 				"noDocuments": "Keine Dokumente verfügbar.",
 				"uploading": "Hochladen..."
+			},
+			"warnings": {
+				"odoSame": "Du hast bereits einen Stand von {num} {unit} gespeichert.",
+				"odoLower": "Niedriger als der höchste aufgezeichnete Stand ({current} {unit}), wird als historischer Eintrag gespeichert."
 			}
 		},
 		"add": {

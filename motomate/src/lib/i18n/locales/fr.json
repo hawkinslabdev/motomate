@@ -300,6 +300,10 @@
 				"pickerTitle": "Lier un document",
 				"noDocuments": "Aucun document disponible.",
 				"uploading": "Envoi en cours..."
+			},
+			"warnings": {
+				"odoSame": "Vous avez déjà un relevé de {num} {unit} enregistré.",
+				"odoLower": "Inférieur au relevé le plus élevé enregistré ({current} {unit}), sauvegardé comme entrée historique."
 			}
 		},
 		"add": {

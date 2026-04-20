@@ -320,6 +320,10 @@
 				"pickerTitle": "Link a document",
 				"noDocuments": "No documents available.",
 				"uploading": "Uploading..."
+			},
+			"warnings": {
+				"odoSame": "You already have a reading of {num} {unit} saved.",
+				"odoLower": "Lower than the highest recorded reading ({current} {unit}), will be saved as a historical record."
 			}
 		},
 		"edit": {
