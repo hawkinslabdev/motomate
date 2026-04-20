@@ -1,13 +1,13 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import {
-	getTrackersByVehicle,
 	createTaskTemplate,
 	createTracker,
 	recomputeTrackerStatuses,
 	updateTrackerState,
 	deleteTracker,
-	applyDefaultTrackersFromHistory
+	applyDefaultTrackersFromHistory,
+	getTrackersByVehicle
 } from '$lib/db/repositories/maintenance.js';
 import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
 import {
@@ -22,10 +22,12 @@ import { addMonths, parseISO, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
-	await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
-	const trackers = await getTrackersByVehicle(vehicle.id, locals.user!.id);
-	const odometerLogs = await getOdometerLogs(vehicle.id, locals.user!.id);
-	const allServiceLogs = await getServiceLogsByVehicle(vehicle.id, locals.user!.id);
+	const currentOdometer = await recomputeCurrentOdometer(vehicle.id, locals.user!.id);
+	const trackers = await recomputeTrackerStatuses(vehicle.id, currentOdometer);
+	const [odometerLogs, allServiceLogs] = await Promise.all([
+		getOdometerLogs(vehicle.id, locals.user!.id),
+		getServiceLogsByVehicle(vehicle.id, locals.user!.id)
+	]);
 	return {
 		trackers,
 		odometerLogs,
