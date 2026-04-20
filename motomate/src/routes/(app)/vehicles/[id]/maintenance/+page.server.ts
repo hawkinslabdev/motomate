@@ -135,6 +135,11 @@ export const actions: Actions = {
 		const raw = Object.fromEntries(await request.formData());
 		const id = String(raw.id);
 
+		const name = String(raw.name || '').trim();
+		const description = String(raw.description || '').trim() || null;
+
+		if (!name) return fail(400, { trackerError: 'Name is required' });
+
 		const intervalKm = raw.interval_km !== '' ? Number(raw.interval_km) : null;
 		const intervalMonths = raw.interval_months !== '' ? Number(raw.interval_months) : null;
 		const lastDoneAt = String(raw.last_done_at || '').trim() || null;
@@ -153,6 +158,8 @@ export const actions: Actions = {
 			return fail(400, { trackerError: 'Invalid next due date' });
 
 		await updateTrackerState(id, params.id, {
+			name,
+			description,
 			interval_km: intervalKm,
 			interval_months: intervalMonths,
 			last_done_at: lastDoneAt,

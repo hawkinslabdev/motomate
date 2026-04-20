@@ -507,6 +507,8 @@ export async function updateTrackerState(
 	trackerId: string,
 	vehicleId: string,
 	data: {
+		name?: string;
+		description?: string | null;
 		interval_km?: number | null;
 		interval_months?: number | null;
 		last_done_at?: string | null;
@@ -521,8 +523,15 @@ export async function updateTrackerState(
 	});
 	if (!tracker) return;
 
-	// Update template interval if provided
-	const templatePatch: Partial<{ interval_km: number | null; interval_months: number | null }> = {};
+	// Update template fields if provided
+	const templatePatch: Partial<{
+		name: string;
+		description: string | null;
+		interval_km: number | null;
+		interval_months: number | null;
+	}> = {};
+	if (data.name !== undefined) templatePatch.name = data.name;
+	if (data.description !== undefined) templatePatch.description = data.description;
 	if (data.interval_km !== undefined) templatePatch.interval_km = data.interval_km;
 	if (data.interval_months !== undefined) templatePatch.interval_months = data.interval_months;
 	if (Object.keys(templatePatch).length > 0) {
