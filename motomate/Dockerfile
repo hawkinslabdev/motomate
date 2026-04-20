@@ -1,6 +1,9 @@
 # Build stage
 FROM node:20-slim AS build
 
+ARG BUILD_VERSION
+ENV VITE_APP_VERSION=${BUILD_VERSION}
+
 WORKDIR /app
 
 # Copy package files

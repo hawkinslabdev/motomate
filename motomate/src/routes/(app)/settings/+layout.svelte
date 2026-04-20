@@ -11,7 +11,7 @@
 		// @ts-ignore - Vite injects this global
 		const v = __APP_VERSION__;
 		const parts = v.split('.');
-		return `${parts[0]}.${parts[1]}`;
+		return `${parts[0]}.${parts[1]}.${parts[2]}`;
 	})();
 
 	const tabs = [

@@ -200,7 +200,8 @@
 							class="rule-next-fire"
 							class:rule-next-fire--ready={rule.nextFire.kind === 'ready'}
 							title={nextFireLabel(rule.nextFire)}
-						>{$_('settings.workflows.nextFire')}: {nextFireLabel(rule.nextFire)}</span>
+							>{$_('settings.workflows.nextFire')}: {nextFireLabel(rule.nextFire)}</span
+						>
 					</div>
 
 					<!-- Inline trigger edit form -->
