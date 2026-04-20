@@ -60,10 +60,8 @@
 		const num = Number(odoValue);
 		if (!Number.isInteger(num) || num < 0) return undefined;
 		const current = data.vehicle.current_odometer;
-		if (num === current)
-			return $_('vehicle.forms.warnings.odoSame', { values: { num, unit } });
-		if (num < current)
-			return $_('vehicle.forms.warnings.odoLower', { values: { current, unit } });
+		if (num === current) return $_('vehicle.forms.warnings.odoSame', { values: { num, unit } });
+		if (num < current) return $_('vehicle.forms.warnings.odoLower', { values: { current, unit } });
 		return undefined;
 	});
 
