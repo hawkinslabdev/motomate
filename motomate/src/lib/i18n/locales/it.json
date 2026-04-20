@@ -514,6 +514,13 @@
 			"description": "Questo tracciatore di manutenzione sarà rimosso permanentemente. Questa azione non può essere annullata.",
 			"confirm": "Elimina",
 			"cancel": "Mantieni"
+		},
+		"skip": {
+			"button": "Salta",
+			"title": "Saltare {name}?",
+			"description": "Questo posticipa il tracker di un intervallo. Non verrà registrato alcun servizio.",
+			"confirm": "Salta",
+			"cancel": "Annulla"
 		}
 	},
 	"finance": {

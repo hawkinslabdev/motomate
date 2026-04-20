@@ -515,6 +515,13 @@
 			"description": "Dieser Wartungstracker wird dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
 			"confirm": "Löschen",
 			"cancel": "Behalten"
+		},
+		"skip": {
+			"button": "Überspringen",
+			"title": "{name} überspringen?",
+			"description": "Dies verschiebt den Tracker um ein Intervall. Es wird kein Serviceeintrag gespeichert.",
+			"confirm": "Überspringen",
+			"cancel": "Abbrechen"
 		}
 	},
 	"finance": {

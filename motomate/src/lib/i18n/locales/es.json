@@ -514,6 +514,13 @@
 			"description": "Este rastreador de mantenimiento se eliminará permanentemente. Esta acción no se puede deshacer.",
 			"confirm": "Eliminar",
 			"cancel": "Mantener"
+		},
+		"skip": {
+			"button": "Omitir",
+			"title": "¿Omitir {name}?",
+			"description": "Esto aplaza el rastreador un intervalo. No se registrará ningún servicio.",
+			"confirm": "Omitir",
+			"cancel": "Cancelar"
 		}
 	},
 	"finance": {

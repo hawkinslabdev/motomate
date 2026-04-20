@@ -516,6 +516,13 @@
 			"description": "This maintenance tracker will be permanently removed. This action cannot be undone.",
 			"confirm": "Delete",
 			"cancel": "Keep"
+		},
+		"skip": {
+			"button": "Skip",
+			"title": "Skip {name}?",
+			"description": "This defers the tracker by one interval. No service will be logged.",
+			"confirm": "Skip",
+			"cancel": "Cancel"
 		}
 	},
 	"finance": {

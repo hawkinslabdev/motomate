@@ -514,6 +514,13 @@
 			"description": "Este rastreador de manutenção será removido permanentemente. Esta ação não pode ser desfeita.",
 			"confirm": "Eliminar",
 			"cancel": "Manter"
+		},
+		"skip": {
+			"button": "Ignorar",
+			"title": "Ignorar {name}?",
+			"description": "Isto adia o rastreador por um intervalo. Nenhum serviço será registado.",
+			"confirm": "Ignorar",
+			"cancel": "Cancelar"
 		}
 	},
 	"finance": {

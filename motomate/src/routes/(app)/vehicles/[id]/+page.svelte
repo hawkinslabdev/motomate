@@ -1018,9 +1018,7 @@
 								</div>
 							{/if}
 						</div>
-						<a
-							href="/vehicles/{data.vehicle.id}/maintenance?log={t.id}"
-							class="upcoming-log-link"
+						<a href="/vehicles/{data.vehicle.id}/maintenance?log={t.id}" class="upcoming-log-link"
 							>{$_('vehicle.detail.logLink')}</a
 						>
 					</div>
