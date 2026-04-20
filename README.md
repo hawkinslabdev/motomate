@@ -6,6 +6,9 @@
 
 MotoMate is a self-hosted maintenance tracker for vehicles. Manage your own maintenance journals easily, in a web interface available from your (mobile) device. You can log custom maintenance tasks directly from the garage. All service history and data remain strictly on your own hardware.
 
+> [!WARNING]
+> MotoMate is under active development. Please read the release notes before updating, as changes to environment variables or the database may be required.
+
 <img width="100%" alt="MotoMate screenshot" src="https://github.com/hawkinslabdev/motomate/blob/main/.github/images/example.webp" />
 
 We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
