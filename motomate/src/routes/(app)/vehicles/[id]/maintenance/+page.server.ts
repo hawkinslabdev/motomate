@@ -18,6 +18,7 @@ import {
 import { getOdometerLogs } from '$lib/db/repositories/vehicles.js';
 import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
+import { addMonths, parseISO, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
@@ -65,6 +66,38 @@ export const actions: Actions = {
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
 		return { logged: true };
+	},
+
+	skipTracker: async ({ request, locals, params }) => {
+		const raw = Object.fromEntries(await request.formData());
+		const trackerId = String(raw.tracker_id);
+
+		const trackers = await getTrackersByVehicle(params.id, locals.user!.id);
+		const tracker = trackers.find((t) => t.id === trackerId);
+		if (!tracker) return fail(404, { error: 'Tracker not found' });
+
+		const tmpl = tracker.template;
+		const nextDueOdometer =
+			tracker.next_due_odometer !== null && tmpl.interval_km
+				? tracker.next_due_odometer + tmpl.interval_km
+				: tracker.next_due_odometer;
+		const nextDueAt =
+			tracker.next_due_at && tmpl.interval_months
+				? formatISO(addMonths(parseISO(tracker.next_due_at), tmpl.interval_months), {
+						representation: 'date'
+					})
+				: tracker.next_due_at;
+
+		await updateTrackerState(trackerId, params.id, {
+			next_due_odometer: nextDueOdometer,
+			next_due_at: nextDueAt
+		});
+
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		await recomputeTrackerStatuses(params.id, vehicle?.current_odometer ?? 0);
+		runWorkflowChecks(locals.user!.id).catch(() => {});
+
+		return { skipped: true };
 	},
 
 	// Add a custom maintenance task

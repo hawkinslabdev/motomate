@@ -320,6 +320,10 @@
 				"pickerTitle": "Link a document",
 				"noDocuments": "No documents available.",
 				"uploading": "Uploading..."
+			},
+			"warnings": {
+				"odoSame": "You already have a reading of {num} {unit} saved.",
+				"odoLower": "Lower than the highest recorded reading ({current} {unit}), will be saved as a historical record."
 			}
 		},
 		"edit": {
@@ -516,6 +520,13 @@
 			"description": "This maintenance tracker will be permanently removed. This action cannot be undone.",
 			"confirm": "Delete",
 			"cancel": "Keep"
+		},
+		"skip": {
+			"button": "Skip",
+			"title": "Skip {name}?",
+			"description": "This defers the tracker by one interval. No service will be logged.",
+			"confirm": "Skip",
+			"cancel": "Cancel"
 		}
 	},
 	"finance": {

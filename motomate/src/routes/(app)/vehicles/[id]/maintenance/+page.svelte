@@ -52,6 +52,7 @@
 	let editingTracker = $state<string | null>(null);
 	let editSubmitting = $state(false);
 	let deletingTracker = $state<{ id: string; name: string } | null>(null);
+	let skippingTracker = $state<{ id: string; name: string } | null>(null);
 	let historyTracker = $state<string | null>(null);
 	let viewMode = $state<'current' | 'forecast' | 'history'>('current');
 	let searchQuery = $state('');
@@ -216,6 +217,9 @@
 			toasts.success($_('maintenance.toasts.trackerDeleted'));
 			editingTracker = null;
 			trackerMenu = null;
+		}
+		if (form?.skipped) {
+			skippingTracker = null;
 		}
 		if (form?.added) {
 			toasts.success($_('maintenance.toasts.taskAdded'));
@@ -833,6 +837,7 @@
 													type="number"
 													name="last_done_odometer"
 													min="0"
+													placeholder="e.g. 0"
 													value={et.last_done_odometer ?? ''}
 													class="input mono"
 												/>
@@ -956,11 +961,11 @@
 										{#each otherTrackers as ot}
 											<label class="tracker-checkbox">
 												<input
-												type="checkbox"
-												name="additional_tracker_ids"
-												value={ot.id}
-												checked={ot.status === 'due' || ot.status === 'overdue'}
-											/>
+													type="checkbox"
+													name="additional_tracker_ids"
+													value={ot.id}
+													checked={ot.status === 'due' || ot.status === 'overdue'}
+												/>
 												<span class="tracker-check-label">
 													<span class="tracker-check-name">{ot.template.name}</span>
 													{#if ot.status === 'due'}
@@ -990,6 +995,14 @@
 							<div class="log-actions">
 								<button type="submit" class="btn-primary"
 									>{$_('vehicle.forms.submit.service')}</button
+								>
+								<button
+									type="button"
+									class="btn-ghost"
+									onclick={() => {
+										loggingTracker = null;
+										skippingTracker = { id: t.id, name: t.template.name };
+									}}>{$_('maintenance.skip.button')}</button
 								>
 								<button type="button" class="btn-ghost" onclick={() => (loggingTracker = null)}
 									>{$_('common.cancel')}</button
@@ -1025,6 +1038,31 @@
 			form.submit();
 		}}
 		onclose={() => (deletingTracker = null)}
+	/>
+{/if}
+
+{#if skippingTracker}
+	<ConfirmDialog
+		open={true}
+		title={$_('maintenance.skip.title', { values: { name: skippingTracker.name } })}
+		description={$_('maintenance.skip.description')}
+		confirmLabel={$_('maintenance.skip.confirm')}
+		cancelLabel={$_('maintenance.skip.cancel')}
+		danger={false}
+		loading={false}
+		onconfirm={() => {
+			const form = document.createElement('form');
+			form.method = 'POST';
+			form.action = '?/skipTracker';
+			const input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'tracker_id';
+			input.value = skippingTracker!.id;
+			form.appendChild(input);
+			document.body.appendChild(form);
+			form.submit();
+		}}
+		onclose={() => (skippingTracker = null)}
 	/>
 {/if}
 

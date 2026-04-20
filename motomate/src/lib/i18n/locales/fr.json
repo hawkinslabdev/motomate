@@ -300,6 +300,10 @@
 				"pickerTitle": "Lier un document",
 				"noDocuments": "Aucun document disponible.",
 				"uploading": "Envoi en cours..."
+			},
+			"warnings": {
+				"odoSame": "Vous avez déjà un relevé de {num} {unit} enregistré.",
+				"odoLower": "Inférieur au relevé le plus élevé enregistré ({current} {unit}), sauvegardé comme entrée historique."
 			}
 		},
 		"add": {
@@ -515,6 +519,13 @@
 			"description": "Ce traceur d'entretien sera définitivement supprimé. Cette action est irréversible.",
 			"confirm": "Supprimer",
 			"cancel": "Garder"
+		},
+		"skip": {
+			"button": "Ignorer",
+			"title": "Ignorer {name} ?",
+			"description": "Cela reporte le tracker d'un intervalle. Aucune entrée de service ne sera enregistrée.",
+			"confirm": "Ignorer",
+			"cancel": "Annuler"
 		}
 	},
 	"finance": {

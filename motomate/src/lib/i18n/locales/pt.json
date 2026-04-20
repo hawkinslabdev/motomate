@@ -300,6 +300,10 @@
 				"pickerTitle": "Vincular um documento",
 				"noDocuments": "Nenhum documento disponível.",
 				"uploading": "Enviando..."
+			},
+			"warnings": {
+				"odoSame": "Já tens uma leitura de {num} {unit} guardada.",
+				"odoLower": "Inferior à leitura mais alta registada ({current} {unit}), será guardado como registo histórico."
 			}
 		},
 		"add": {
@@ -514,6 +518,13 @@
 			"description": "Este rastreador de manutenção será removido permanentemente. Esta ação não pode ser desfeita.",
 			"confirm": "Eliminar",
 			"cancel": "Manter"
+		},
+		"skip": {
+			"button": "Ignorar",
+			"title": "Ignorar {name}?",
+			"description": "Isto adia o rastreador por um intervalo. Nenhum serviço será registado.",
+			"confirm": "Ignorar",
+			"cancel": "Cancelar"
 		}
 	},
 	"finance": {

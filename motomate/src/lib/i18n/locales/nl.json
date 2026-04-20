@@ -300,6 +300,10 @@
 				"pickerTitle": "Koppel een document",
 				"noDocuments": "Geen documenten beschikbaar.",
 				"uploading": "Uploaden..."
+			},
+			"warnings": {
+				"odoSame": "Je hebt al een stand van {num} {unit} opgeslagen in jouw administratie.",
+				"odoLower": "Lager dan de hoogste opgenomen stand ({current} {unit}), wordt opgeslagen als historisch record."
 			}
 		},
 		"add": {
@@ -515,6 +519,13 @@
 			"description": "Deze onderhouds tracker wordt permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
 			"confirm": "Verwijderen",
 			"cancel": "Behouden"
+		},
+		"skip": {
+			"button": "Overslaan",
+			"title": "{name} overslaan?",
+			"description": "Dit stelt de tracker één interval uit. Er wordt geen onderhoudsbeurt geregistreerd.",
+			"confirm": "Overslaan",
+			"cancel": "Annuleren"
 		}
 	},
 	"finance": {

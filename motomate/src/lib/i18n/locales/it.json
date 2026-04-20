@@ -300,6 +300,10 @@
 				"pickerTitle": "Collega un documento",
 				"noDocuments": "Nessun documento disponibile.",
 				"uploading": "Caricamento..."
+			},
+			"warnings": {
+				"odoSame": "Hai già una lettura di {num} {unit} salvata.",
+				"odoLower": "Inferiore alla lettura più alta registrata ({current} {unit}), sarà salvato come record storico."
 			}
 		},
 		"add": {
@@ -514,6 +518,13 @@
 			"description": "Questo tracciatore di manutenzione sarà rimosso permanentemente. Questa azione non può essere annullata.",
 			"confirm": "Elimina",
 			"cancel": "Mantieni"
+		},
+		"skip": {
+			"button": "Salta",
+			"title": "Saltare {name}?",
+			"description": "Questo posticipa il tracker di un intervallo. Non verrà registrato alcun servizio.",
+			"confirm": "Salta",
+			"cancel": "Annulla"
 		}
 	},
 	"finance": {
