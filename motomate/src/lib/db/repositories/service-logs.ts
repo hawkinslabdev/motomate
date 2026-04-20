@@ -8,10 +8,23 @@ import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 
+function hydrateServiceLog(log: ServiceLog): ServiceLog {
+	return {
+		...log,
+		odometer_at_service: log.measurement_at_service ?? log.odometer_at_service
+	};
+}
+
 export async function createServiceLog(userId: string, input: unknown): Promise<ServiceLog> {
 	const parsed = CreateServiceLogSchema.parse(input);
+	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
 	const id = generateId();
-	const row: InsertServiceLog = { ...parsed, id };
+	const row: InsertServiceLog = {
+		...parsed,
+		id,
+		measurement_at_service: parsed.odometer_at_service,
+		measurement_unit: vehicle?.odometer_unit
+	};
 
 	// Insert the log (sync — better-sqlite3)
 	db.insert(service_logs).values(row).run();
@@ -35,12 +48,13 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	// Only advance the vehicle odometer — never move it backwards.
 	// Logging historical entries (e.g. "oil change 400 km ago") must not
 	// overwrite a higher current reading.
-	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
 	if (vehicle && parsed.odometer_at_service > vehicle.current_odometer) {
 		await updateOdometer(parsed.vehicle_id, userId, parsed.odometer_at_service);
 	}
 
-	return db.query.service_logs.findFirst({ where: eq(service_logs.id, id) }) as Promise<ServiceLog>;
+	return hydrateServiceLog(
+		(await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) })) as ServiceLog
+	);
 }
 
 export async function getServiceLogsByVehicle(
@@ -49,10 +63,11 @@ export async function getServiceLogsByVehicle(
 ): Promise<ServiceLog[]> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return [];
-	return db.query.service_logs.findMany({
+	const rows = await db.query.service_logs.findMany({
 		where: eq(service_logs.vehicle_id, vehicleId),
 		orderBy: (s, { desc }) => [desc(s.performed_at)]
 	});
+	return rows.map(hydrateServiceLog);
 }
 
 export async function getRecentLogsAcrossVehicles(
@@ -72,11 +87,15 @@ export async function getRecentLogsAcrossVehicles(
 		.orderBy(desc(service_logs.performed_at))
 		.limit(limit)
 		.all();
-	return rows.map(({ log, trackerName }) => ({ ...log, trackerName: trackerName ?? null }));
+	return rows.map(({ log, trackerName }) => ({
+		...hydrateServiceLog(log),
+		trackerName: trackerName ?? null
+	}));
 }
 
 export async function getServiceLogById(id: string): Promise<ServiceLog | undefined> {
-	return db.query.service_logs.findFirst({ where: eq(service_logs.id, id) });
+	const log = await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) });
+	return log ? hydrateServiceLog(log) : undefined;
 }
 
 export async function getServiceLogsByTracker(
@@ -87,11 +106,12 @@ export async function getServiceLogsByTracker(
 ): Promise<ServiceLog[]> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return [];
-	return db.query.service_logs.findMany({
+	const rows = await db.query.service_logs.findMany({
 		where: and(eq(service_logs.vehicle_id, vehicleId), eq(service_logs.tracker_id, trackerId)),
 		orderBy: (s, { desc }) => [desc(s.performed_at)],
 		limit
 	});
+	return rows.map(hydrateServiceLog);
 }
 
 export async function updateServiceLog(
@@ -109,8 +129,13 @@ export async function updateServiceLog(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const patch: Partial<InsertServiceLog> = { ...data };
+	if (data.odometer_at_service !== undefined) {
+		patch.measurement_at_service = data.odometer_at_service;
+		patch.measurement_unit = vehicle.odometer_unit;
+	}
 	db.update(service_logs)
-		.set(data)
+		.set(patch)
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
 }

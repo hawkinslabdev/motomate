@@ -1,6 +1,12 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 import { sql, relations } from 'drizzle-orm';
-import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, type OdometerUnit } from '../utils/measurement.js';
+import {
+	DEFAULT_ODOMETER_UNIT,
+	DISTANCE_UNITS,
+	MEASUREMENT_UNITS,
+	type MeasurementUnit,
+	type OdometerUnit
+} from '../utils/measurement.js';
 
 // State types (I'm defining these in JSON)
 
@@ -138,6 +144,11 @@ export const vehicles = sqliteTable(
 		vin: text('vin'),
 		license_plate: text('license_plate'),
 		current_odometer: integer('current_odometer').notNull().default(0),
+		current_measurement: integer('current_measurement').notNull().default(0),
+		current_measurement_unit: text('current_measurement_unit', { enum: MEASUREMENT_UNITS })
+			.$type<MeasurementUnit>()
+			.notNull()
+			.default(DEFAULT_ODOMETER_UNIT),
 		odometer_unit: text('odometer_unit', { enum: DISTANCE_UNITS })
 			.notNull()
 			.default(DEFAULT_ODOMETER_UNIT),
@@ -176,6 +187,8 @@ export const task_templates = sqliteTable('task_templates', {
 		.default('custom'),
 	description: text('description'),
 	interval_km: integer('interval_km'), // null = time-only
+	interval_measurement: integer('interval_measurement'),
+	interval_unit: text('interval_unit', { enum: MEASUREMENT_UNITS }).$type<MeasurementUnit>(),
 	interval_months: integer('interval_months'), // null = km-only
 	part_numbers: text('part_numbers', { mode: 'json' })
 		.$type<PartNumbers>()
@@ -200,8 +213,13 @@ export const active_trackers = sqliteTable(
 			.references(() => task_templates.id, { onDelete: 'cascade' }),
 		last_done_at: text('last_done_at'),
 		last_done_odometer: integer('last_done_odometer'),
+		last_done_measurement: integer('last_done_measurement'),
 		next_due_at: text('next_due_at'), // computed on service log
 		next_due_odometer: integer('next_due_odometer'), // computed on service log
+		next_due_measurement: integer('next_due_measurement'),
+		measurement_unit: text('measurement_unit', {
+			enum: MEASUREMENT_UNITS
+		}).$type<MeasurementUnit>(),
 		status: text('status', { enum: ['ok', 'due', 'overdue'] })
 			.notNull()
 			.default('ok'),
@@ -235,6 +253,10 @@ export const service_logs = sqliteTable(
 			.default(sql`'[]'`),
 		performed_at: text('performed_at').notNull(), // ISO date string
 		odometer_at_service: integer('odometer_at_service').notNull(),
+		measurement_at_service: integer('measurement_at_service'),
+		measurement_unit: text('measurement_unit', {
+			enum: MEASUREMENT_UNITS
+		}).$type<MeasurementUnit>(),
 		cost_cents: integer('cost_cents'), // null = not tracked
 		currency: text('currency').notNull().default('EUR'),
 		notes: text('notes'),
@@ -279,6 +301,10 @@ export const finance_transactions = sqliteTable(
 		notes: text('notes'),
 		performed_at: text('performed_at').notNull(), // ISO date string
 		odometer_at_transaction: integer('odometer_at_transaction'), // optional odometer reading
+		measurement_at_transaction: integer('measurement_at_transaction'),
+		measurement_unit: text('measurement_unit', {
+			enum: MEASUREMENT_UNITS
+		}).$type<MeasurementUnit>(),
 		attachments: text('attachments', { mode: 'json' })
 			.$type<Attachments>()
 			.notNull()
@@ -422,6 +448,10 @@ export const odometer_logs = sqliteTable(
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		odometer: integer('odometer').notNull(),
+		measurement: integer('measurement'),
+		measurement_unit: text('measurement_unit', {
+			enum: MEASUREMENT_UNITS
+		}).$type<MeasurementUnit>(),
 		remark: text('remark'),
 		kind: text('kind').notNull().default('odometer'),
 		recorded_at: text('recorded_at').notNull(), // ISO date YYYY-MM-DD
