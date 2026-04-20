@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
-	import type { WorkflowRule, RuleTrigger } from '$lib/db/schema.js';
+	import type { RuleTrigger } from '$lib/db/schema.js';
+	import type { NextFireInfo } from './+page.server.js';
 	import { _, waitLocale } from '$lib/i18n';
-	import { formatDateTime } from '$lib/utils/format';
+	import { formatDateTime, formatDateLong } from '$lib/utils/format';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 
@@ -16,11 +17,11 @@
 	// Optimistic toggle state
 	let optimistic = $state<Record<string, boolean>>({});
 
-	function isEnabled(rule: WorkflowRule): boolean {
+	function isEnabled(rule: PageData['rules'][number]): boolean {
 		return optimistic[rule.id] ?? rule.enabled;
 	}
 
-	function triggerSummary(rule: WorkflowRule): string {
+	function triggerSummary(rule: PageData['rules'][number]): string {
 		const t = rule.trigger;
 		switch (t.type) {
 			case 'odometer_upcoming':
@@ -50,7 +51,7 @@
 	// Local copy of the trigger being edited
 	let editTrigger = $state<RuleTrigger | null>(null);
 
-	function startEdit(rule: WorkflowRule) {
+	function startEdit(rule: PageData['rules'][number]) {
 		editingRuleId = rule.id;
 		editTrigger = structuredClone(rule.trigger);
 	}
@@ -71,8 +72,42 @@
 		(editTrigger as Record<string, unknown>)[field] = value;
 	}
 
+	function nextFireLabel(info: NextFireInfo): string {
+		const locale = data.user?.settings?.locale ?? 'en';
+		const tz = data.user?.timezone;
+		switch (info.kind) {
+			case 'ready':
+				return $_('settings.notifications.scheduledRules.ready');
+			case 'cooldown':
+				return $_('settings.notifications.scheduledRules.cooldown', {
+					values: { date: formatDateTime(info.until, locale, tz) }
+				});
+			case 'waiting':
+				return $_('settings.notifications.scheduledRules.waiting');
+			case 'km': {
+				const base = $_('settings.notifications.scheduledRules.inKm', {
+					values: { km: info.kmRemaining }
+				});
+				return info.trackerName
+					? `${base} ${$_('settings.notifications.scheduledRules.trackerLabel', { values: { tracker: info.trackerName } })}`
+					: base;
+			}
+			case 'date': {
+				const base = $_('settings.notifications.scheduledRules.onDate', {
+					values: { date: formatDateLong(info.fireAt.slice(0, 10), locale) }
+				});
+				return info.trackerName
+					? `${base} ${$_('settings.notifications.scheduledRules.trackerLabel', { values: { tracker: info.trackerName } })}`
+					: base;
+			}
+			case 'none':
+			default:
+				return $_('settings.notifications.scheduledRules.noData');
+		}
+	}
+
 	// Delete confirmation
-	let deletingRule = $state<WorkflowRule | null>(null);
+	let deletingRule = $state<PageData['rules'][number] | null>(null);
 	let deleteLoading = $state(false);
 
 	// Run check now
@@ -158,6 +193,11 @@
 						{:else}
 							{$_('settings.workflows.neverFired')}
 						{/if}
+						<span class="sep">·</span>
+						<span
+							class="rule-next-fire"
+							class:rule-next-fire--ready={rule.nextFire.kind === 'ready'}
+						>{$_('settings.workflows.nextFire')}: {nextFireLabel(rule.nextFire)}</span>
 					</div>
 
 					<!-- Inline trigger edit form -->
@@ -516,6 +556,16 @@
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 		margin-top: 0.25rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.25rem;
+	}
+	.rule-next-fire {
+		color: var(--text-subtle);
+	}
+	.rule-next-fire--ready {
+		color: var(--accent);
 	}
 
 	/* Inline edit form */

@@ -3,6 +3,7 @@ import { db } from '$lib/db/index.js';
 import { workflow_rules, active_trackers, vehicles, documents } from '$lib/db/schema.js';
 import { renderTemplate } from './rules.js';
 import { serverT } from '$lib/i18n/server.js';
+import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
 import type { RuleTrigger, RuleNotification, Vehicle } from '$lib/db/schema.js';
 
 // Each fired result carries the template vars and, for tracker-based triggers,
@@ -166,9 +167,8 @@ async function evalTrigger(
 					trackerStatus: tracker.status
 				};
 
-				// Use tracker.status as the single source of truth — the same field the UI
-				// renders. This prevents boundary collisions and keeps notification logic
-				// consistent with what the rider sees on the maintenance page.
+				// Use tracker.status as the single source of truth, same field the UI uses. This prevents boundary collisions and keeps notification logic
+				// consistent with what the user sees on the maintenance page.
 
 				if (
 					trigger.type === 'odometer_upcoming' &&
@@ -260,6 +260,10 @@ export async function runWorkflowChecks(
 	});
 
 	const vehicleMap = new Map(vehicleList.map((v) => [v.id, v]));
+
+	for (const vehicle of vehicleList) {
+		await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
+	}
 
 	let evaluated = 0;
 	let fired = 0;
