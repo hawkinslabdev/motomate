@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
 	import { _, setUserLocale } from '$lib/i18n';
+	import { DEFAULT_ODOMETER_UNIT } from '$lib/utils/measurement.js';
 	import NotificationBell from '$lib/components/ui/NotificationBell.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import ShortcutsModal from '$lib/components/ui/ShortcutsModal.svelte';
@@ -158,7 +159,7 @@
 		const fd = new FormData();
 		fd.set('theme', next);
 		fd.set('currency', data.user.settings.currency ?? 'EUR');
-		fd.set('odometer_unit', data.user.settings.odometer_unit ?? 'km');
+		fd.set('odometer_unit', data.user.settings.odometer_unit ?? DEFAULT_ODOMETER_UNIT);
 		fd.set('locale', data.user.settings.locale ?? 'en');
 
 		await fetch('/settings/profile?/savePrefs', {

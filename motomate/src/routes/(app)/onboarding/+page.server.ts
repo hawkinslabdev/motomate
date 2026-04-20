@@ -15,7 +15,7 @@ import es from '$lib/i18n/locales/es.json';
 import it from '$lib/i18n/locales/it.json';
 import nl from '$lib/i18n/locales/nl.json';
 import pt from '$lib/i18n/locales/pt.json';
-import { DEFAULT_ODOMETER_UNIT, type OdometerUnit } from '$lib/utils/measurement.js';
+import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '$lib/utils/measurement.js';
 
 type LocaleMessages = {
 	onboarding: {
@@ -45,6 +45,8 @@ export const actions: Actions = {
 		const descs = messages.onboarding.presets.descriptions;
 
 		const vehicleType = String(data.vehicle_type ?? 'motorcycle');
+		const rawOdometerUnit = data.odometer_unit;
+		const odometerUnit = isDistanceUnit(rawOdometerUnit) ? rawOdometerUnit : DEFAULT_ODOMETER_UNIT;
 		const vehicleInput = {
 			type: vehicleType,
 			name: String(data.name),
@@ -54,7 +56,7 @@ export const actions: Actions = {
 			vin: String(data.vin ?? '').trim() || undefined,
 			license_plate: String(data.license_plate ?? '').trim() || undefined,
 			current_odometer: Number(data.odometer ?? 0),
-			odometer_unit: (data.odometer_unit ?? DEFAULT_ODOMETER_UNIT) as OdometerUnit
+			odometer_unit: odometerUnit
 		};
 
 		let vehicle;

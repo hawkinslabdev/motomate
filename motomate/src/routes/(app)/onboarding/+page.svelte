@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { _ } from '$lib/i18n';
+	import {
+		DEFAULT_ODOMETER_UNIT,
+		DISTANCE_UNITS,
+		type DistanceUnit
+	} from '$lib/utils/measurement.js';
 
 	let { data, form } = $props<{
 		data: Record<string, never>;
@@ -20,7 +25,7 @@
 	let vin = $state('');
 	let licensePlate = $state('');
 	let odometer = $state(0);
-	let odometerUnit = $state<'km' | 'mi'>('km');
+	let odometerUnit = $state<DistanceUnit>(DEFAULT_ODOMETER_UNIT);
 	let selectedCategories = $state(['oil', 'tire', 'chain_lube', 'chain_tension', 'brake']);
 	let lastServiceDate = $state('');
 	let lastServiceOdo = $state('');
@@ -220,16 +225,15 @@
 					placeholder={$_('onboarding.odometer.placeholder')}
 				/>
 				<div class="unit-toggle">
-					<button
-						class="unit-btn"
-						class:unit-btn--active={odometerUnit === 'km'}
-						onclick={() => (odometerUnit = 'km')}>{$_('units.km')}</button
-					>
-					<button
-						class="unit-btn"
-						class:unit-btn--active={odometerUnit === 'mi'}
-						onclick={() => (odometerUnit = 'mi')}>{$_('units.mi')}</button
-					>
+					{#each DISTANCE_UNITS as unit}
+						<button
+							class="unit-btn"
+							class:unit-btn--active={odometerUnit === unit}
+							onclick={() => (odometerUnit = unit)}
+						>
+							{unit === 'km' ? $_('units.km') : $_('units.mi')}
+						</button>
+					{/each}
 				</div>
 			</div>
 
