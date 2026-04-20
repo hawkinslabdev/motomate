@@ -7,7 +7,9 @@ import fs from 'fs';
 function resolveVersion(): string {
 	if (process.env.VITE_APP_VERSION) return process.env.VITE_APP_VERSION.replace(/^v/, '');
 	try {
-		return execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim().replace(/^v/, '');
+		return execSync('git describe --tags --abbrev=0', { encoding: 'utf8' })
+			.trim()
+			.replace(/^v/, '');
 	} catch {
 		const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 		return pkg.version;
