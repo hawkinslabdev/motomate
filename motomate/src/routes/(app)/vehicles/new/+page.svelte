@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { _ } from '$lib/i18n';
-	import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS } from '$lib/utils/measurement.js';
+	import {
+		DEFAULT_ODOMETER_UNIT,
+		DISTANCE_UNITS,
+		getDistanceUnitTranslationKey
+	} from '$lib/utils/measurement.js';
 
 	let { form } = $props<{
 		form: { errors?: Record<string, string[]>; values?: Record<string, string> } | null;
 	}>();
 
-	const selectedOdometerUnit = $derived(
-		form?.values?.odometer_unit ?? DEFAULT_ODOMETER_UNIT
-	);
+	const selectedOdometerUnit = $derived(form?.values?.odometer_unit ?? DEFAULT_ODOMETER_UNIT);
 </script>
 
 <svelte:head><title>{$_('vehicle.add.title')} &middot; MotoMate</title></svelte:head>
@@ -140,7 +142,7 @@
 					<select name="odometer_unit" class="input">
 						{#each DISTANCE_UNITS as unit}
 							<option value={unit} selected={selectedOdometerUnit === unit}>
-								{unit === 'km' ? $_('units.km') : $_('units.mi')}
+								{$_(getDistanceUnitTranslationKey(unit))}
 							</option>
 						{/each}
 					</select>

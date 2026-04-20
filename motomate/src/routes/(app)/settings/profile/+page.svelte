@@ -3,7 +3,12 @@
 	import { invalidateAll } from '$app/navigation';
 	import type { User } from '$lib/db/schema.js';
 	import { _ } from '$lib/i18n';
-	import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS } from '$lib/utils/measurement.js';
+	import {
+		DEFAULT_ODOMETER_UNIT,
+		DISTANCE_UNITS,
+		getDistanceUnitTranslationKey,
+		isDistanceUnit
+	} from '$lib/utils/measurement.js';
 	import { untrack } from 'svelte';
 	import { dicebearUri, randomSeed } from '$lib/utils/dicebear.js';
 
@@ -67,7 +72,9 @@
 	}
 
 	const selectedOdometerUnit = $derived(
-		data.user.settings.odometer_unit ?? DEFAULT_ODOMETER_UNIT
+		isDistanceUnit(data.user.settings.odometer_unit)
+			? data.user.settings.odometer_unit
+			: DEFAULT_ODOMETER_UNIT
 	);
 </script>
 
@@ -144,10 +151,7 @@
 			<span class="field-label">{$_('settings.profile.odometerUnit')}</span>
 			<div class="toggle-row">
 				{#each DISTANCE_UNITS as unit}
-					<label
-						class="toggle-opt"
-						class:toggle-opt--active={selectedOdometerUnit === unit}
-					>
+					<label class="toggle-opt" class:toggle-opt--active={selectedOdometerUnit === unit}>
 						<input
 							type="radio"
 							name="odometer_unit"
@@ -155,7 +159,7 @@
 							checked={selectedOdometerUnit === unit}
 							class="sr-only"
 						/>
-						{unit === 'km' ? $_('units.km') : $_('units.mi')}
+						{$_(getDistanceUnitTranslationKey(unit))}
 					</label>
 				{/each}
 			</div>

@@ -39,3 +39,7 @@ export function isDistanceMeasurementBasis(unit: MeasurementUnit): unit is Dista
 export function isDurationMeasurementBasis(unit: MeasurementUnit): unit is DurationUnit {
 	return getMeasurementBasis(unit) === 'duration';
 }
+
+export function getDistanceUnitTranslationKey(unit: DistanceUnit): 'units.km' | 'units.mi' {
+	return unit === 'km' ? 'units.km' : 'units.mi';
+}

@@ -4,6 +4,7 @@
 	import {
 		DEFAULT_ODOMETER_UNIT,
 		DISTANCE_UNITS,
+		getDistanceUnitTranslationKey,
 		type DistanceUnit
 	} from '$lib/utils/measurement.js';
 
@@ -231,7 +232,7 @@
 							class:unit-btn--active={odometerUnit === unit}
 							onclick={() => (odometerUnit = unit)}
 						>
-							{unit === 'km' ? $_('units.km') : $_('units.mi')}
+							{$_(getDistanceUnitTranslationKey(unit))}
 						</button>
 					{/each}
 				</div>
