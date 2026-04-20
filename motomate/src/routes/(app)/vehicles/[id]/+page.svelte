@@ -1168,12 +1168,12 @@
 												/>
 											</label>
 										</div>
-										{#if editLog?.tracker_id}
+										{#if editLog?.tracker_id || (editLog?.serviced_tracker_ids ?? []).length > 0}
 											<fieldset class="tracker-select">
 												<legend class="field-label">{$_('vehicle.forms.fields.usedTracker')}</legend
 												>
 												<div class="tracker-checkboxes">
-													{#each data.trackers.filter((t) => editLog?.tracker_id === t.id) as t}
+													{#each data.trackers.filter((t) => editLog?.tracker_id === t.id || (editLog?.serviced_tracker_ids ?? []).includes(t.id)) as t}
 														<label class="tracker-checkbox">
 															<input
 																type="checkbox"
