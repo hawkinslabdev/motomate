@@ -1,5 +1,6 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 import { sql, relations } from 'drizzle-orm';
+import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, type OdometerUnit } from '../utils/measurement.js';
 
 // State types (I'm defining these in JSON)
 
@@ -27,7 +28,7 @@ export type PagePrefs = {
 export type UserSettings = {
 	theme: 'system' | 'light' | 'dark';
 	currency: string; // 'EUR', 'GBP', etc.
-	odometer_unit: 'km' | 'mi';
+	odometer_unit: OdometerUnit;
 	locale: string;
 	notification_channels?: NotificationChannels;
 	favorite_vehicle?: string | null;
@@ -137,9 +138,9 @@ export const vehicles = sqliteTable(
 		vin: text('vin'),
 		license_plate: text('license_plate'),
 		current_odometer: integer('current_odometer').notNull().default(0),
-		odometer_unit: text('odometer_unit', { enum: ['km', 'mi'] })
+		odometer_unit: text('odometer_unit', { enum: DISTANCE_UNITS })
 			.notNull()
-			.default('km'),
+			.default(DEFAULT_ODOMETER_UNIT),
 		cover_image_key: text('cover_image_key'),
 		archived_at: text('archived_at'), // null = active; timestamp = archived
 		purchase_price_cents: integer('purchase_price_cents'), // null = not tracked

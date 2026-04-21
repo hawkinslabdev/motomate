@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS } from '../utils/measurement.js';
 
 // Coercion helpers
 // Form data and preset objects can both produce null, undefined, or "" for
@@ -96,7 +97,7 @@ const PagePrefsSchema = z.object({
 export const UserSettingsSchema = z.object({
 	theme: z.enum(['system', 'light', 'dark']).default('system'),
 	currency: z.string().length(3).default('EUR'),
-	odometer_unit: z.enum(['km', 'mi']).default('km'),
+	odometer_unit: z.enum(DISTANCE_UNITS).default(DEFAULT_ODOMETER_UNIT),
 	locale: z.string().default('en'),
 	notification_channels: NotificationChannelsSchema,
 	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),
@@ -147,7 +148,7 @@ export const CreateVehicleSchema = z.object({
 		(v) => (v === '' || v === null || v === undefined ? 0 : Number(v)),
 		z.number().int().min(0)
 	),
-	odometer_unit: z.enum(['km', 'mi']).default('km'),
+	odometer_unit: z.enum(DISTANCE_UNITS).default(DEFAULT_ODOMETER_UNIT),
 	meta: VehicleMetaSchema.default({})
 });
 
