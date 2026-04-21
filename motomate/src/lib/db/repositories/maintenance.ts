@@ -1,17 +1,28 @@
 import { eq, and } from 'drizzle-orm';
 import { addMonths, parseISO, formatISO } from 'date-fns';
 import { db, sqlite } from '../index.js';
-import { task_templates, active_trackers } from '../schema.js';
+import { task_templates, active_trackers, vehicles } from '../schema.js';
 import { CreateTaskTemplateSchema } from '../../validators/schemas.js';
 import { getVehicleById } from './vehicles.js';
 import type {
 	InsertTaskTemplate,
 	InsertActiveTracker,
 	TaskTemplate,
-	ActiveTracker
+	ActiveTracker,
+	Vehicle
 } from '../schema.js';
 import { generateId } from '../../utils/id.js';
-import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '../../utils/measurement.js';
+import {
+	DEFAULT_ODOMETER_UNIT,
+	areMeasurementsComparable,
+	compareMeasurements,
+	isDistanceMeasurementValue,
+	isDistanceUnit,
+	resolveMeasurementValue,
+	type MeasurementBasis,
+	type MeasurementUnit,
+	type MeasurementValue
+} from '../../utils/measurement.js';
 
 import en from '$lib/i18n/locales/en.json';
 import de from '$lib/i18n/locales/de.json';
@@ -32,26 +43,73 @@ type LocaleMessages = {
 
 const localeMessages: Record<string, LocaleMessages> = { en, de, fr, es, it, nl, pt };
 
-function resolveTemplateDistanceInterval(
+type ResolvedTemplateInterval = {
+	interval_measurement: number | null;
+	interval_unit: MeasurementUnit | null;
+	basis: MeasurementBasis | null;
+	interval_km: number | null;
+};
+
+type ResolvedTrackerFields = {
+	last_done_measurement: number | null;
+	next_due_measurement: number | null;
+	measurement_unit: MeasurementUnit | null;
+	basis: MeasurementBasis | null;
+	last_done_odometer: number | null;
+	next_due_odometer: number | null;
+};
+
+function resolveDistanceMeasurementFromLegacy(
+	value: number | null | undefined,
+	unit: MeasurementUnit | null | undefined
+): MeasurementValue | null {
+	if (value == null) return null;
+	const distanceUnit = isDistanceUnit(unit) ? unit : DEFAULT_ODOMETER_UNIT;
+	return resolveMeasurementValue(value, distanceUnit);
+}
+
+function resolveTemplateMeasurementInterval(
 	template: Pick<TaskTemplate, 'interval_measurement' | 'interval_unit' | 'interval_km'>
-) {
-	const unit = isDistanceUnit(template.interval_unit)
-		? template.interval_unit
-		: DEFAULT_ODOMETER_UNIT;
+): ResolvedTemplateInterval {
+	const canonical = resolveMeasurementValue(template.interval_measurement, template.interval_unit);
+	if (canonical) {
+		return {
+			interval_measurement: canonical.value,
+			interval_unit: canonical.unit,
+			basis: canonical.basis,
+			interval_km: canonical.basis === 'distance' ? canonical.value : null
+		};
+	}
+
+	const legacy = resolveDistanceMeasurementFromLegacy(template.interval_km, template.interval_unit);
+	if (legacy) {
+		return {
+			interval_measurement: legacy.value,
+			interval_unit: legacy.unit,
+			basis: legacy.basis,
+			interval_km: legacy.value
+		};
+	}
+
 	return {
-		interval_km: template.interval_measurement ?? template.interval_km,
-		interval_unit: unit
+		interval_measurement: null,
+		interval_unit: null,
+		basis: null,
+		interval_km: null
 	};
 }
 
 function hydrateTaskTemplate(template: TaskTemplate): TaskTemplate {
+	const interval = resolveTemplateMeasurementInterval(template);
 	return {
 		...template,
-		interval_km: resolveTemplateDistanceInterval(template).interval_km
+		interval_measurement: interval.interval_measurement,
+		interval_unit: interval.interval_unit,
+		interval_km: interval.interval_km
 	};
 }
 
-function resolveTrackerDistanceFields(
+function resolveTrackerMeasurementFields(
 	tracker: Pick<
 		ActiveTracker,
 		| 'last_done_measurement'
@@ -60,21 +118,93 @@ function resolveTrackerDistanceFields(
 		| 'next_due_odometer'
 		| 'measurement_unit'
 	>
-) {
+): ResolvedTrackerFields {
+	const lastDoneCanonical = resolveMeasurementValue(
+		tracker.last_done_measurement,
+		tracker.measurement_unit
+	);
+	const nextDueCanonical = resolveMeasurementValue(
+		tracker.next_due_measurement,
+		tracker.measurement_unit
+	);
+	const canUseLegacyDistance =
+		tracker.measurement_unit == null || isDistanceUnit(tracker.measurement_unit);
+	const lastDoneLegacy = canUseLegacyDistance
+		? resolveDistanceMeasurementFromLegacy(tracker.last_done_odometer, tracker.measurement_unit)
+		: null;
+	const nextDueLegacy = canUseLegacyDistance
+		? resolveDistanceMeasurementFromLegacy(tracker.next_due_odometer, tracker.measurement_unit)
+		: null;
+	const lastDone = lastDoneCanonical ?? lastDoneLegacy;
+	const nextDue = nextDueCanonical ?? nextDueLegacy;
+	const basis = lastDone?.basis ?? nextDue?.basis ?? null;
+	const measurementUnit = lastDone?.unit ?? nextDue?.unit ?? tracker.measurement_unit ?? null;
+
 	return {
-		last_done_odometer: tracker.last_done_measurement ?? tracker.last_done_odometer,
-		next_due_odometer: tracker.next_due_measurement ?? tracker.next_due_odometer,
-		measurement_unit: isDistanceUnit(tracker.measurement_unit)
-			? tracker.measurement_unit
-			: DEFAULT_ODOMETER_UNIT
+		last_done_measurement: lastDone?.value ?? null,
+		next_due_measurement: nextDue?.value ?? null,
+		measurement_unit: measurementUnit,
+		basis,
+		last_done_odometer: basis === 'distance' ? (lastDone?.value ?? null) : null,
+		next_due_odometer: basis === 'distance' ? (nextDue?.value ?? null) : null
 	};
 }
 
 function hydrateTracker<T extends ActiveTracker>(tracker: T): T {
+	const resolved = resolveTrackerMeasurementFields(tracker);
 	return {
 		...tracker,
-		...resolveTrackerDistanceFields(tracker)
+		last_done_measurement: resolved.last_done_measurement,
+		next_due_measurement: resolved.next_due_measurement,
+		measurement_unit: resolved.measurement_unit,
+		last_done_odometer: resolved.last_done_odometer,
+		next_due_odometer: resolved.next_due_odometer
 	};
+}
+
+function resolveVehicleDistanceMeasurement(
+	vehicle: Pick<
+		Vehicle,
+		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
+	>
+): MeasurementValue {
+	const canonical = resolveMeasurementValue(
+		vehicle.current_measurement,
+		vehicle.current_measurement_unit
+	);
+	if (isDistanceMeasurementValue(canonical)) {
+		return canonical;
+	}
+
+	const fallbackUnit = isDistanceUnit(vehicle.odometer_unit)
+		? vehicle.odometer_unit
+		: DEFAULT_ODOMETER_UNIT;
+	return (
+		resolveMeasurementValue(vehicle.current_odometer, fallbackUnit) ?? {
+			value: vehicle.current_odometer,
+			unit: fallbackUnit,
+			basis: 'distance'
+		}
+	);
+}
+
+function getTrackerComparableMeasurementUnit(
+	tracker: Pick<
+		ActiveTracker,
+		| 'last_done_measurement'
+		| 'last_done_odometer'
+		| 'next_due_measurement'
+		| 'next_due_odometer'
+		| 'measurement_unit'
+	>,
+	template: Pick<TaskTemplate, 'interval_measurement' | 'interval_unit' | 'interval_km'>
+): MeasurementUnit | null {
+	const resolvedTracker = resolveTrackerMeasurementFields(tracker);
+	if (resolvedTracker.measurement_unit) {
+		return resolvedTracker.measurement_unit;
+	}
+
+	return resolveTemplateMeasurementInterval(template).interval_unit;
 }
 
 // Preset task templates
@@ -328,14 +458,16 @@ export async function createTracker(
 	const template = await db.query.task_templates.findFirst({
 		where: eq(task_templates.id, templateId)
 	});
-	const interval = template ? resolveTemplateDistanceInterval(template) : null;
+	const interval = template ? resolveTemplateMeasurementInterval(template) : null;
 
 	const today = new Date().toISOString().slice(0, 10);
+	let next_due_measurement: number | null = null;
 	let next_due_odometer: number | null = null;
 	let next_due_at: string | null = null;
 
-	if (interval?.interval_km) {
-		next_due_odometer = interval.interval_km;
+	if (interval?.basis === 'distance' && interval.interval_measurement != null) {
+		next_due_measurement = interval.interval_measurement;
+		next_due_odometer = interval.interval_measurement;
 	}
 	if (template?.interval_months) {
 		next_due_at = formatISO(addMonths(parseISO(today), template.interval_months), {
@@ -348,7 +480,7 @@ export async function createTracker(
 		id,
 		vehicle_id: vehicleId,
 		template_id: templateId,
-		next_due_measurement: next_due_odometer,
+		next_due_measurement,
 		next_due_odometer,
 		measurement_unit: interval?.interval_unit ?? null,
 		next_due_at
@@ -493,13 +625,17 @@ async function createTrackerWithHistory(
 	const template = await db.query.task_templates.findFirst({
 		where: eq(task_templates.id, templateId)
 	});
-	const interval = template ? resolveTemplateDistanceInterval(template) : null;
+	const interval = template ? resolveTemplateMeasurementInterval(template) : null;
 
+	let last_done_measurement: number | null = null;
+	let next_due_measurement: number | null = null;
 	let next_due_odometer: number | null = null;
 	let next_due_at: string | null = null;
 
-	if (interval?.interval_km) {
-		next_due_odometer = currentOdometer + interval.interval_km;
+	if (interval?.basis === 'distance' && interval.interval_measurement != null) {
+		last_done_measurement = currentOdometer;
+		next_due_measurement = currentOdometer + interval.interval_measurement;
+		next_due_odometer = next_due_measurement;
 	}
 	if (template?.interval_months) {
 		next_due_at = formatISO(addMonths(parseISO(lastServiceDate), template.interval_months), {
@@ -512,13 +648,13 @@ async function createTrackerWithHistory(
 		id,
 		vehicle_id: vehicleId,
 		template_id: templateId,
-		last_done_measurement: currentOdometer,
-		next_due_measurement: next_due_odometer,
+		last_done_measurement,
+		next_due_measurement,
 		measurement_unit: interval?.interval_unit ?? null,
 		next_due_odometer,
 		next_due_at,
 		last_done_at: lastServiceDate,
-		last_done_odometer: currentOdometer
+		last_done_odometer: interval?.basis === 'distance' ? currentOdometer : null
 	};
 	await db.insert(active_trackers).values(row);
 	return hydrateTracker(
@@ -540,8 +676,10 @@ export async function updateTrackerAfterService(
 	if (!tracker) return;
 
 	const tmpl = tracker.template;
-	const interval = resolveTemplateDistanceInterval(tmpl);
+	const interval = resolveTemplateMeasurementInterval(tmpl);
 	let next_due_at: string | null = null;
+	let last_done_measurement: number | null = null;
+	let next_due_measurement: number | null = null;
 	let next_due_odometer: number | null = null;
 
 	if (tmpl.interval_months) {
@@ -549,8 +687,10 @@ export async function updateTrackerAfterService(
 			representation: 'date'
 		});
 	}
-	if (interval.interval_km) {
-		next_due_odometer = odometerAtService + interval.interval_km;
+	if (interval.basis === 'distance' && interval.interval_measurement != null) {
+		last_done_measurement = odometerAtService;
+		next_due_measurement = odometerAtService + interval.interval_measurement;
+		next_due_odometer = next_due_measurement;
 	}
 
 	// Clear per-rule notification cooldown on service — the tracker is being reset,
@@ -560,10 +700,10 @@ export async function updateTrackerAfterService(
 		.update(active_trackers)
 		.set({
 			last_done_at: performedAt,
-			last_done_measurement: odometerAtService,
-			last_done_odometer: odometerAtService,
+			last_done_measurement,
+			last_done_odometer: interval.basis === 'distance' ? odometerAtService : null,
 			next_due_at,
-			next_due_measurement: next_due_odometer,
+			next_due_measurement,
 			next_due_odometer,
 			measurement_unit: interval.interval_unit,
 			status: 'ok',
@@ -597,6 +737,8 @@ export async function updateTrackerState(
 		with: { template: true }
 	});
 	if (!tracker) return;
+	const vehicle = await db.query.vehicles.findFirst({ where: eq(vehicles.id, vehicleId) });
+	const vehicleDistanceUnit = vehicle?.odometer_unit ?? DEFAULT_ODOMETER_UNIT;
 
 	// Update template interval if provided
 	const templatePatch: Partial<typeof task_templates.$inferInsert> = {};
@@ -605,9 +747,7 @@ export async function updateTrackerState(
 	if (data.interval_km !== undefined) {
 		templatePatch.interval_km = data.interval_km;
 		templatePatch.interval_measurement = data.interval_km;
-		templatePatch.interval_unit = data.interval_km
-			? resolveTemplateDistanceInterval(tracker.template).interval_unit
-			: null;
+		templatePatch.interval_unit = data.interval_km != null ? vehicleDistanceUnit : null;
 	}
 	if (data.interval_months !== undefined) templatePatch.interval_months = data.interval_months;
 	if (Object.keys(templatePatch).length > 0) {
@@ -621,23 +761,30 @@ export async function updateTrackerState(
 		...tracker.template,
 		...templatePatch
 	} as TaskTemplate);
-	const effectiveIntervalKm = effectiveTemplate.interval_km;
+	const effectiveInterval = resolveTemplateMeasurementInterval(effectiveTemplate);
 	const effectiveIntervalMonths =
 		data.interval_months !== undefined ? data.interval_months : tracker.template.interval_months;
 	const lastDoneAt = data.last_done_at !== undefined ? data.last_done_at : tracker.last_done_at;
-	const lastDoneOdo =
+	const existingTrackerFields = resolveTrackerMeasurementFields(tracker);
+	const lastDoneMeasurement =
 		data.last_done_odometer !== undefined
 			? data.last_done_odometer
-			: resolveTrackerDistanceFields(tracker).last_done_odometer;
+			: existingTrackerFields.last_done_measurement;
 
 	// Compute next_due from interval + last_done when caller didn't override
-	let nextDueOdo: number | null;
+	let nextDueMeasurement: number | null;
 	if (data.next_due_odometer !== undefined) {
-		nextDueOdo = data.next_due_odometer;
-	} else if (effectiveIntervalKm) {
-		nextDueOdo = lastDoneOdo != null ? lastDoneOdo + effectiveIntervalKm : effectiveIntervalKm;
+		nextDueMeasurement = data.next_due_odometer;
+	} else if (
+		effectiveInterval.basis === 'distance' &&
+		effectiveInterval.interval_measurement != null
+	) {
+		nextDueMeasurement =
+			lastDoneMeasurement != null
+				? lastDoneMeasurement + effectiveInterval.interval_measurement
+				: effectiveInterval.interval_measurement;
 	} else {
-		nextDueOdo = null;
+		nextDueMeasurement = null;
 	}
 
 	let nextDueAt: string | null;
@@ -655,15 +802,12 @@ export async function updateTrackerState(
 		.update(active_trackers)
 		.set({
 			last_done_at: lastDoneAt,
-			last_done_measurement: lastDoneOdo,
-			last_done_odometer: lastDoneOdo,
-			next_due_measurement: nextDueOdo,
-			next_due_odometer: nextDueOdo,
+			last_done_measurement: lastDoneMeasurement,
+			last_done_odometer: effectiveInterval.basis === 'distance' ? lastDoneMeasurement : null,
+			next_due_measurement: nextDueMeasurement,
+			next_due_odometer: effectiveInterval.basis === 'distance' ? nextDueMeasurement : null,
 			next_due_at: nextDueAt,
-			measurement_unit:
-				effectiveIntervalKm !== null
-					? resolveTemplateDistanceInterval(effectiveTemplate).interval_unit
-					: tracker.measurement_unit,
+			measurement_unit: effectiveInterval.interval_unit,
 			updated_at: new Date().toISOString()
 		})
 		.where(and(eq(active_trackers.id, trackerId), eq(active_trackers.vehicle_id, vehicleId)));
@@ -684,6 +828,14 @@ export async function recomputeTrackerStatuses(
 	vehicleId: string,
 	currentOdometer: number
 ): Promise<(ActiveTracker & { template: TaskTemplate })[]> {
+	const vehicle = await db.query.vehicles.findFirst({ where: eq(vehicles.id, vehicleId) });
+	const vehicleMeasurement = vehicle
+		? resolveVehicleDistanceMeasurement(vehicle)
+		: (resolveMeasurementValue(currentOdometer, DEFAULT_ODOMETER_UNIT) ?? {
+				value: currentOdometer,
+				unit: DEFAULT_ODOMETER_UNIT,
+				basis: 'distance'
+			});
 	const trackers = await db.query.active_trackers.findMany({
 		where: eq(active_trackers.vehicle_id, vehicleId),
 		with: { template: true }
@@ -698,17 +850,24 @@ export async function recomputeTrackerStatuses(
 
 	for (const t of trackers) {
 		const template = hydrateTaskTemplate(t.template);
-		const effectiveMeasurementUnit = resolveTemplateDistanceInterval(template).interval_unit;
-		let nextDueOdo = t.next_due_measurement ?? t.next_due_odometer;
+		const interval = resolveTemplateMeasurementInterval(template);
+		const resolvedTracker = resolveTrackerMeasurementFields(t);
+		const effectiveMeasurementUnit = interval.interval_unit;
+		let nextDueMeasurement = resolvedTracker.next_due_measurement;
 		let nextDueAt = t.next_due_at;
-		const lastDoneOdo = t.last_done_measurement ?? t.last_done_odometer;
-		const needsInit = lastDoneOdo === null && t.last_done_at === null;
+		const lastDoneMeasurement = resolvedTracker.last_done_measurement;
+		const needsInit = lastDoneMeasurement === null && t.last_done_at === null;
 		const fields: Partial<typeof active_trackers.$inferInsert> = {};
 
-		if (needsInit && nextDueOdo === null && template.interval_km) {
-			nextDueOdo = template.interval_km;
-			fields.next_due_measurement = nextDueOdo;
-			fields.next_due_odometer = nextDueOdo;
+		if (
+			needsInit &&
+			nextDueMeasurement === null &&
+			interval.basis === 'distance' &&
+			interval.interval_measurement != null
+		) {
+			nextDueMeasurement = interval.interval_measurement;
+			fields.next_due_measurement = nextDueMeasurement;
+			fields.next_due_odometer = nextDueMeasurement;
 		}
 		if (needsInit && nextDueAt === null && template.interval_months) {
 			nextDueAt = formatISO(addMonths(parseISO(today), template.interval_months), {
@@ -716,13 +875,34 @@ export async function recomputeTrackerStatuses(
 			});
 			fields.next_due_at = nextDueAt;
 		}
-		if (nextDueOdo !== null) {
-			fields.measurement_unit = effectiveMeasurementUnit;
+		if (t.measurement_unit !== interval.interval_unit) {
+			fields.measurement_unit = interval.interval_unit;
+		}
+		if (resolvedTracker.last_done_odometer !== t.last_done_odometer) {
+			fields.last_done_odometer = resolvedTracker.last_done_odometer;
+		}
+		if (resolvedTracker.next_due_odometer !== t.next_due_odometer) {
+			fields.next_due_odometer = resolvedTracker.next_due_odometer;
 		}
 
 		// Compute status
 		let status: 'ok' | 'due' | 'overdue' = 'ok';
-		const kmOverdue = nextDueOdo !== null && currentOdometer > nextDueOdo;
+		const nextDueMeasurementValue = resolveMeasurementValue(
+			nextDueMeasurement,
+			getTrackerComparableMeasurementUnit(
+				{
+					last_done_measurement: lastDoneMeasurement,
+					last_done_odometer: resolvedTracker.last_done_odometer,
+					next_due_measurement: nextDueMeasurement,
+					next_due_odometer: resolvedTracker.next_due_odometer,
+					measurement_unit: interval.interval_unit
+				},
+				template
+			)
+		);
+		const kmOverdue =
+			(compareMeasurements(vehicleMeasurement, nextDueMeasurementValue) ??
+				Number.NEGATIVE_INFINITY) > 0;
 		const dateOverdue = nextDueAt !== null && today > nextDueAt;
 
 		if (kmOverdue || dateOverdue) {
@@ -733,7 +913,10 @@ export async function recomputeTrackerStatuses(
 			const kmWindow = template.interval_km
 				? Math.min(500, Math.max(50, Math.round(template.interval_km * DUE_SOON_FACTOR)))
 				: 500;
-			const kmDueSoon = nextDueOdo !== null && currentOdometer >= nextDueOdo - kmWindow;
+			const kmDueSoon =
+				nextDueMeasurementValue != null &&
+				areMeasurementsComparable(vehicleMeasurement, nextDueMeasurementValue) &&
+				vehicleMeasurement.value >= nextDueMeasurementValue.value - kmWindow;
 			const dayWindow = template.interval_months
 				? Math.min(14, Math.max(3, Math.round(template.interval_months * 30 * DUE_SOON_FACTOR)))
 				: 7;
@@ -763,8 +946,8 @@ export async function recomputeTrackerStatuses(
 			measurement_unit:
 				nextDueOdo !== null ? effectiveMeasurementUnit : hydrateTracker(t).measurement_unit,
 			template,
-			next_due_measurement: nextDueOdo,
-			next_due_odometer: nextDueOdo,
+			next_due_measurement: nextDueMeasurement,
+			next_due_odometer: interval.basis === 'distance' ? nextDueMeasurement : null,
 			next_due_at: nextDueAt,
 			status
 		});

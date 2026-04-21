@@ -1,10 +1,18 @@
-import { eq, and, isNull, sql } from 'drizzle-orm';
+import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicles, odometer_logs, service_logs } from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
 import type { InsertVehicle, Vehicle, OdometerLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
-import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '../../utils/measurement.js';
+import {
+	DEFAULT_ODOMETER_UNIT,
+	isDistanceMeasurementValue,
+	isDistanceUnit,
+	maxComparableMeasurement,
+	resolveMeasurementValue,
+	type DistanceUnit,
+	type MeasurementValue
+} from '../../utils/measurement.js';
 
 function resolveVehicleOdometerFields(
 	vehicle: Pick<
@@ -12,13 +20,42 @@ function resolveVehicleOdometerFields(
 		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
 	>
 ) {
-	const unit = isDistanceUnit(vehicle.current_measurement_unit)
-		? vehicle.current_measurement_unit
-		: vehicle.odometer_unit;
+	const canonicalMeasurement = resolveMeasurementValue(
+		vehicle.current_measurement,
+		vehicle.current_measurement_unit
+	);
+	const unit: DistanceUnit = isDistanceMeasurementValue(canonicalMeasurement)
+		? canonicalMeasurement.unit
+		: (vehicle.odometer_unit ?? DEFAULT_ODOMETER_UNIT);
 	return {
-		current_odometer: vehicle.current_measurement,
+		current_odometer: isDistanceMeasurementValue(canonicalMeasurement)
+			? canonicalMeasurement.value
+			: vehicle.current_odometer,
 		odometer_unit: unit ?? DEFAULT_ODOMETER_UNIT
 	};
+}
+
+function resolveVehicleDistanceMeasurement(
+	vehicle: Pick<
+		Vehicle,
+		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
+	>
+): MeasurementValue {
+	const canonicalMeasurement = resolveMeasurementValue(
+		vehicle.current_measurement,
+		vehicle.current_measurement_unit
+	);
+	if (isDistanceMeasurementValue(canonicalMeasurement)) {
+		return canonicalMeasurement;
+	}
+
+	return (
+		resolveMeasurementValue(vehicle.current_odometer, vehicle.odometer_unit) ?? {
+			value: vehicle.current_odometer,
+			unit: vehicle.odometer_unit ?? DEFAULT_ODOMETER_UNIT,
+			basis: 'distance'
+		}
+	);
 }
 
 function hydrateVehicle(vehicle: Vehicle | undefined): Vehicle | undefined {
@@ -161,14 +198,23 @@ export async function getOdometerLogs(vehicleId: string, userId: string): Promis
 }
 
 export async function getMaxOdometer(vehicleId: string, userId: string): Promise<number> {
-	const [result] = await db
-		.select({
-			maxOdometer: sql<number>`max(coalesce(${odometer_logs.measurement}, ${odometer_logs.odometer}))`
-		})
-		.from(odometer_logs)
-		.where(and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId)));
-
-	return result?.maxOdometer ?? 0;
+	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) return 0;
+	const logs = await db.query.odometer_logs.findMany({
+		where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId)),
+		columns: { odometer: true, measurement: true, measurement_unit: true }
+	});
+	const vehicleMeasurement = resolveVehicleDistanceMeasurement(vehicle);
+	const maxMeasurement = maxComparableMeasurement(
+		logs.map((log) =>
+			resolveMeasurementValue(
+				log.measurement ?? log.odometer,
+				log.measurement_unit ?? vehicleMeasurement.unit
+			)
+		),
+		vehicleMeasurement
+	);
+	return maxMeasurement?.value ?? 0;
 }
 
 export async function updateOdometerLog(
@@ -213,6 +259,15 @@ export async function recomputeCurrentOdometer(
 	userId: string,
 	odometerUnit?: Vehicle['odometer_unit']
 ): Promise<number> {
+	const vehicle = await getVehicleById(vehicleId, userId);
+	const vehicleMeasurement = vehicle
+		? resolveVehicleDistanceMeasurement(vehicle)
+		: {
+				value: 0,
+				unit: odometerUnit ?? DEFAULT_ODOMETER_UNIT,
+				basis: 'distance' as const
+			};
+
 	const [odoLogs, svcLogs] = await Promise.all([
 		db.query.odometer_logs.findMany({
 			where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId))
@@ -222,21 +277,32 @@ export async function recomputeCurrentOdometer(
 		})
 	]);
 
-	const readings = [
-		...odoLogs.map((l) => l.measurement ?? l.odometer),
-		...svcLogs.map((l) => l.measurement_at_service ?? l.odometer_at_service)
-	];
+	const maxMeasurement = maxComparableMeasurement(
+		[
+			...odoLogs.map((log) =>
+				resolveMeasurementValue(
+					log.measurement ?? log.odometer,
+					log.measurement_unit ?? vehicleMeasurement.unit
+				)
+			),
+			...svcLogs.map((log) =>
+				resolveMeasurementValue(
+					log.measurement_at_service ?? log.odometer_at_service,
+					log.measurement_unit ?? vehicleMeasurement.unit
+				)
+			)
+		],
+		vehicleMeasurement
+	);
 
-	const newOdo = readings.length === 0 ? 0 : Math.max(...readings);
-	const resolvedOdometerUnit =
-		odometerUnit ?? (await getVehicleById(vehicleId, userId))?.odometer_unit;
-	if (!resolvedOdometerUnit) return newOdo;
+	const newOdo = maxMeasurement?.value ?? 0;
+	if (!vehicle) return newOdo;
 	await db
 		.update(vehicles)
 		.set({
 			current_odometer: newOdo,
 			current_measurement: newOdo,
-			current_measurement_unit: resolvedOdometerUnit,
+			current_measurement_unit: vehicleMeasurement.unit,
 			updated_at: new Date().toISOString()
 		})
 		.where(and(eq(vehicles.id, vehicleId), eq(vehicles.user_id, userId)));

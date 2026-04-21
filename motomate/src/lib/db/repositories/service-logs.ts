@@ -7,6 +7,7 @@ import { updateOdometer, getVehicleById } from './vehicles.js';
 import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
+import { compareMeasurements, resolveMeasurementValue } from '../../utils/measurement.js';
 
 function hydrateServiceLog(log: ServiceLog): ServiceLog {
 	return {
@@ -48,12 +49,19 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	// Only advance the vehicle odometer — never move it backwards.
 	// Logging historical entries (e.g. "oil change 400 km ago") must not
 	// overwrite a higher current reading.
-	if (vehicle && parsed.odometer_at_service > vehicle.current_odometer) {
+	const serviceMeasurement = resolveMeasurementValue(
+		row.measurement_at_service,
+		row.measurement_unit ?? null
+	);
+	const vehicleMeasurement = vehicle
+		? resolveMeasurementValue(vehicle.current_measurement, vehicle.current_measurement_unit)
+		: null;
+	if ((compareMeasurements(serviceMeasurement, vehicleMeasurement) ?? 0) > 0) {
 		await updateOdometer(
 			parsed.vehicle_id,
 			userId,
 			parsed.odometer_at_service,
-			vehicle.odometer_unit
+			serviceMeasurement?.unit ?? vehicle?.odometer_unit
 		);
 	}
 
