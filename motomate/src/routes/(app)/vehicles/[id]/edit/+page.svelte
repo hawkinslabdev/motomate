@@ -272,6 +272,21 @@
 	<!-- Settings -->
 	<section class="edit-section">
 		<h2 class="section-label">{$_('vehicle.edit.settings.title')}</h2>
+
+		<!-- Maintenance report -->
+		<div class="settings-box">
+			<div>
+				<div class="settings-title">{$_('vehicle.edit.settings.report.title')}</div>
+				<div class="settings-desc">{$_('vehicle.edit.settings.report.desc')}</div>
+			</div>
+			<a href="/api/vehicles/{data.vehicle.id}/report" class="btn-ghost" download
+				>{$_('vehicle.edit.settings.report.btn')}</a
+			>
+		</div>
+
+		<div class="settings-divider"></div>
+
+		<!-- Archive / restore -->
 		<div class="settings-box">
 			<div>
 				<div class="settings-title">
@@ -452,6 +467,11 @@
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin-top: var(--space-1);
+	}
+	.settings-divider {
+		height: 1px;
+		background: var(--border);
+		margin: var(--space-2) 0;
 	}
 	.inline-form {
 		display: flex;
