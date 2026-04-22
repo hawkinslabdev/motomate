@@ -50,7 +50,7 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 		}
 	}
 
-	// Only advance the vehicle odometer — never move it backwards.
+	// Only advance the vehicle odometer/hours — never move it backwards.
 	// Logging historical entries (e.g. "oil change 400 km ago") must not
 	// overwrite a higher current reading.
 	const serviceMeasurement = resolveMeasurementValue(
