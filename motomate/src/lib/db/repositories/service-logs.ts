@@ -49,7 +49,12 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	// Logging historical entries (e.g. "oil change 400 km ago") must not
 	// overwrite a higher current reading.
 	if (vehicle && parsed.odometer_at_service > vehicle.current_odometer) {
-		await updateOdometer(parsed.vehicle_id, userId, parsed.odometer_at_service);
+		await updateOdometer(
+			parsed.vehicle_id,
+			userId,
+			parsed.odometer_at_service,
+			vehicle.odometer_unit
+		);
 	}
 
 	return hydrateServiceLog(

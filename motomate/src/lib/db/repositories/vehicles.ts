@@ -1,4 +1,4 @@
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and, isNull, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicles, odometer_logs, service_logs } from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
@@ -105,16 +105,21 @@ export async function unarchiveVehicle(id: string, userId: string): Promise<void
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
-export async function updateOdometer(id: string, userId: string, odometer: number): Promise<void> {
+export async function updateOdometer(
+	id: string,
+	userId: string,
+	odometer: number,
+	odometerUnit?: Vehicle['odometer_unit']
+): Promise<void> {
 	if (odometer < 0) throw new Error('Odometer cannot be negative');
-	const vehicle = await getVehicleById(id, userId);
-	if (!vehicle) return;
+	const resolvedOdometerUnit = odometerUnit ?? (await getVehicleById(id, userId))?.odometer_unit;
+	if (!resolvedOdometerUnit) return;
 	await db
 		.update(vehicles)
 		.set({
 			current_odometer: odometer,
 			current_measurement: odometer,
-			current_measurement_unit: vehicle.odometer_unit,
+			current_measurement_unit: resolvedOdometerUnit,
 			updated_at: new Date().toISOString()
 		})
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
@@ -156,14 +161,14 @@ export async function getOdometerLogs(vehicleId: string, userId: string): Promis
 }
 
 export async function getMaxOdometer(vehicleId: string, userId: string): Promise<number> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return 0;
-	const logs = await db.query.odometer_logs.findMany({
-		where: eq(odometer_logs.vehicle_id, vehicleId),
-		columns: { odometer: true, measurement: true }
-	});
-	const readings = logs.map((log) => log.measurement ?? log.odometer);
-	return readings.length === 0 ? 0 : Math.max(...readings);
+	const [result] = await db
+		.select({
+			maxOdometer: sql<number>`max(coalesce(${odometer_logs.measurement}, ${odometer_logs.odometer}))`
+		})
+		.from(odometer_logs)
+		.where(and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId)));
+
+	return result?.maxOdometer ?? 0;
 }
 
 export async function updateOdometerLog(
@@ -203,10 +208,18 @@ export async function deleteOdometerLog(
  * If no logs remain, resets to 0 so the vehicle can accept any new reading.
  * Returns the new odometer value.
  */
-export async function recomputeCurrentOdometer(vehicleId: string, userId: string): Promise<number> {
+export async function recomputeCurrentOdometer(
+	vehicleId: string,
+	userId: string,
+	odometerUnit?: Vehicle['odometer_unit']
+): Promise<number> {
 	const [odoLogs, svcLogs] = await Promise.all([
-		db.query.odometer_logs.findMany({ where: eq(odometer_logs.vehicle_id, vehicleId) }),
-		db.query.service_logs.findMany({ where: eq(service_logs.vehicle_id, vehicleId) })
+		db.query.odometer_logs.findMany({
+			where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId))
+		}),
+		db.query.service_logs.findMany({
+			where: eq(service_logs.vehicle_id, vehicleId)
+		})
 	]);
 
 	const readings = [
@@ -215,14 +228,14 @@ export async function recomputeCurrentOdometer(vehicleId: string, userId: string
 	];
 
 	const newOdo = readings.length === 0 ? 0 : Math.max(...readings);
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return newOdo;
+	const resolvedOdometerUnit = odometerUnit ?? (await getVehicleById(vehicleId, userId))?.odometer_unit;
+	if (!resolvedOdometerUnit) return newOdo;
 	await db
 		.update(vehicles)
 		.set({
 			current_odometer: newOdo,
 			current_measurement: newOdo,
-			current_measurement_unit: vehicle.odometer_unit,
+			current_measurement_unit: resolvedOdometerUnit,
 			updated_at: new Date().toISOString()
 		})
 		.where(and(eq(vehicles.id, vehicleId), eq(vehicles.user_id, userId)));

@@ -698,6 +698,7 @@ export async function recomputeTrackerStatuses(
 
 	for (const t of trackers) {
 		const template = hydrateTaskTemplate(t.template);
+		const effectiveMeasurementUnit = resolveTemplateDistanceInterval(template).interval_unit;
 		let nextDueOdo = t.next_due_measurement ?? t.next_due_odometer;
 		let nextDueAt = t.next_due_at;
 		const lastDoneOdo = t.last_done_measurement ?? t.last_done_odometer;
@@ -716,7 +717,7 @@ export async function recomputeTrackerStatuses(
 			fields.next_due_at = nextDueAt;
 		}
 		if (nextDueOdo !== null) {
-			fields.measurement_unit = resolveTemplateDistanceInterval(template).interval_unit;
+			fields.measurement_unit = effectiveMeasurementUnit;
 		}
 
 		// Compute status
@@ -759,6 +760,7 @@ export async function recomputeTrackerStatuses(
 		// Return tracker with locally computed values — no second DB read needed
 		results.push({
 			...hydrateTracker(t),
+			measurement_unit: nextDueOdo !== null ? effectiveMeasurementUnit : hydrateTracker(t).measurement_unit,
 			template,
 			next_due_measurement: nextDueOdo,
 			next_due_odometer: nextDueOdo,
