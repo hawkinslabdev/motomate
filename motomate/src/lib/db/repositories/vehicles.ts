@@ -228,7 +228,8 @@ export async function recomputeCurrentOdometer(
 	];
 
 	const newOdo = readings.length === 0 ? 0 : Math.max(...readings);
-	const resolvedOdometerUnit = odometerUnit ?? (await getVehicleById(vehicleId, userId))?.odometer_unit;
+	const resolvedOdometerUnit =
+		odometerUnit ?? (await getVehicleById(vehicleId, userId))?.odometer_unit;
 	if (!resolvedOdometerUnit) return newOdo;
 	await db
 		.update(vehicles)

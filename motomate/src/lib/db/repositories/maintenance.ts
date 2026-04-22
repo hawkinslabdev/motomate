@@ -760,7 +760,8 @@ export async function recomputeTrackerStatuses(
 		// Return tracker with locally computed values — no second DB read needed
 		results.push({
 			...hydrateTracker(t),
-			measurement_unit: nextDueOdo !== null ? effectiveMeasurementUnit : hydrateTracker(t).measurement_unit,
+			measurement_unit:
+				nextDueOdo !== null ? effectiveMeasurementUnit : hydrateTracker(t).measurement_unit,
 			template,
 			next_due_measurement: nextDueOdo,
 			next_due_odometer: nextDueOdo,
