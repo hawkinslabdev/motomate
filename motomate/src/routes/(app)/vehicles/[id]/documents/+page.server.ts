@@ -31,13 +31,17 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	const { vehicle } = await parent();
 	const highlight = url.searchParams.get('highlight') ?? null;
 	const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
-	// When highlighting a specific doc, load all docs so it's always in the DOM
+	const search = url.searchParams.get('search') ?? '';
+	const docType = url.searchParams.get('type') ?? 'all';
+	const prefSort = locals.user!.settings?.page_prefs?.documents?.sortBy ?? 'newest';
+	const sortBy = (url.searchParams.get('sort') ?? prefSort) as 'newest' | 'oldest' | 'name';
 	const offset = highlight ? undefined : (page - 1) * PER_PAGE;
 	const limit = highlight ? undefined : PER_PAGE;
+	const filterOpts = { search: search || undefined, docType, sortBy };
 
 	const [docs, total, serviceLogs, travelEntries] = await Promise.all([
-		getDocumentsByVehicle(vehicle.id, locals.user!.id, limit, offset),
-		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id),
+		getDocumentsByVehicle(vehicle.id, locals.user!.id, { limit, offset, ...filterOpts }),
+		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id, filterOpts),
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
 		getTravelsByVehicle(vehicle.id, locals.user!.id)
 	]);

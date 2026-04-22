@@ -1,4 +1,4 @@
-import { eq, and, sql, inArray } from 'drizzle-orm';
+import { eq, and, sql, inArray, or, like } from 'drizzle-orm';
 import { db } from '../index.js';
 import { documents } from '../schema.js';
 import { CreateDocumentSchema } from '../../validators/schemas.js';
@@ -14,17 +14,41 @@ export async function createDocument(userId: string, input: unknown): Promise<Do
 	return db.query.documents.findFirst({ where: eq(documents.id, id) }) as Promise<Document>;
 }
 
+type DocFilterOptions = {
+	limit?: number;
+	offset?: number;
+	search?: string;
+	docType?: string;
+	sortBy?: 'newest' | 'oldest' | 'name';
+};
+
+function buildDocWhere(vehicleId: string, search?: string, docType?: string) {
+	const clauses = [eq(documents.vehicle_id, vehicleId)];
+	if (search) {
+		const s = `%${search}%`;
+		const clause = or(like(documents.name, s), like(documents.title, s));
+		if (clause) clauses.push(clause);
+	}
+	if (docType && docType !== 'all')
+		clauses.push(eq(documents.doc_type, docType as Document['doc_type']));
+	return and(...clauses);
+}
+
 export async function getDocumentsByVehicle(
 	vehicleId: string,
 	userId: string,
-	limit?: number,
-	offset?: number
+	options: DocFilterOptions = {}
 ): Promise<Document[]> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return [];
+	const { limit, offset, search, docType, sortBy = 'newest' } = options;
 	return db.query.documents.findMany({
-		where: eq(documents.vehicle_id, vehicleId),
-		orderBy: (d, { desc }) => [desc(d.created_at)],
+		where: buildDocWhere(vehicleId, search, docType),
+		orderBy: (d, { desc, asc }) => {
+			if (sortBy === 'oldest') return [asc(d.created_at)];
+			if (sortBy === 'name') return [asc(d.name)];
+			return [desc(d.created_at)];
+		},
 		limit,
 		offset
 	});
@@ -32,14 +56,16 @@ export async function getDocumentsByVehicle(
 
 export async function getDocumentsByVehicleTotal(
 	vehicleId: string,
-	userId: string
+	userId: string,
+	options: { search?: string; docType?: string } = {}
 ): Promise<number> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return 0;
+	const { search, docType } = options;
 	const [{ count }] = await db
 		.select({ count: sql<number>`count(*)` })
 		.from(documents)
-		.where(eq(documents.vehicle_id, vehicleId));
+		.where(buildDocWhere(vehicleId, search, docType));
 	return count;
 }
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { goto, beforeNavigate } from '$app/navigation';
+	import { goto, beforeNavigate, afterNavigate } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
@@ -32,14 +32,19 @@
 
 	let deletingDoc = $state<{ id: string; name: string; storage_key: string } | null>(null);
 
-	let searchQuery = $state('');
-	let categoryFilter = $state<string>('all');
+	let searchQuery = $state($page.url.searchParams.get('search') ?? '');
+	let categoryFilter = $state<string>($page.url.searchParams.get('type') ?? 'all');
 	let sortBy = $state<'newest' | 'oldest' | 'name'>(
-		untrack(() => data.page_prefs?.sortBy ?? 'newest')
+		untrack(
+			() =>
+				($page.url.searchParams.get('sort') as 'newest' | 'oldest' | 'name') ??
+				data.page_prefs?.sortBy ??
+				'newest'
+		)
 	);
 	let viewMode = $state<'list' | 'timeline'>(untrack(() => data.page_prefs?.viewMode ?? 'list'));
 
-	// Persist sort + view preferences
+	// Persist view preferences
 	let _prefTimer: ReturnType<typeof setTimeout>;
 	let _pendingPrefs: object | null = null;
 	let _firstRun = true;
@@ -70,6 +75,46 @@
 		clearTimeout(_prefTimer);
 		_prefTimer = setTimeout(flushPrefs, 600);
 	});
+
+	let _restoreFocusEl: HTMLElement | null = null;
+	let _restoreCursorPos: number | null = null;
+
+	afterNavigate(() => {
+		if (_restoreFocusEl) {
+			(_restoreFocusEl as HTMLInputElement).focus();
+			if (_restoreCursorPos !== null) {
+				(_restoreFocusEl as HTMLInputElement).setSelectionRange?.(
+					_restoreCursorPos,
+					_restoreCursorPos
+				);
+			}
+			_restoreFocusEl = null;
+			_restoreCursorPos = null;
+		}
+	});
+
+	function applyFilters() {
+		const focused = document.activeElement as HTMLInputElement | null;
+		if (focused) {
+			_restoreFocusEl = focused;
+			_restoreCursorPos = focused.selectionStart ?? null;
+		}
+		const u = new URL($page.url);
+		u.searchParams.set('page', '1');
+		if (searchQuery.trim()) u.searchParams.set('search', searchQuery.trim());
+		else u.searchParams.delete('search');
+		if (categoryFilter !== 'all') u.searchParams.set('type', categoryFilter);
+		else u.searchParams.delete('type');
+		u.searchParams.set('sort', sortBy);
+		goto(u.toString(), { replaceState: true, noScroll: true });
+	}
+
+	let _searchTimer: ReturnType<typeof setTimeout>;
+	function onSearchInput() {
+		clearTimeout(_searchTimer);
+		_searchTimer = setTimeout(applyFilters, 300);
+	}
+
 	let editingDocId = $state<string | null>(null);
 	let editingName = $state('');
 
@@ -178,33 +223,9 @@
 		}
 	});
 
-	const filteredDocs = $derived(() => {
-		let docs = [...data.docs];
-
-		if (searchQuery) {
-			const q = searchQuery.toLowerCase();
-			docs = docs.filter((d) => d.name.toLowerCase().includes(q));
-		}
-
-		if (categoryFilter !== 'all') {
-			docs = docs.filter((d) => d.doc_type === categoryFilter);
-		}
-
-		docs.sort((a, b) => {
-			if (sortBy === 'newest')
-				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-			if (sortBy === 'oldest')
-				return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-			return a.name.localeCompare(b.name);
-		});
-
-		return docs;
-	});
-
 	const timelineDocs = $derived(() => {
-		const docs = filteredDocs();
-		const grouped: Record<string, typeof docs> = {};
-		for (const doc of docs) {
+		const grouped: Record<string, typeof data.docs> = {};
+		for (const doc of data.docs) {
 			const month = formatYearMonth(doc.created_at);
 			if (!grouped[month]) grouped[month] = [];
 			grouped[month].push(doc);
@@ -369,6 +390,7 @@
 			type="text"
 			placeholder={$_('documents.searchPlaceholder')}
 			bind:value={searchQuery}
+			oninput={onSearchInput}
 			class="search-input"
 		/>
 	</div>
@@ -377,7 +399,7 @@
 			<option value={val}>{label}</option>
 		{/snippet}
 
-		<select bind:value={categoryFilter} class="filter-select">
+		<select bind:value={categoryFilter} onchange={applyFilters} class="filter-select">
 			{@render optionItem('all', $_('documents.allTypes'))}
 
 			<optgroup label="──────────"></optgroup>
@@ -387,7 +409,7 @@
 			{/each}
 		</select>
 
-		<select bind:value={sortBy} class="filter-select">
+		<select bind:value={sortBy} onchange={applyFilters} class="filter-select">
 			<option value="newest">{$_('documents.sort.newest')}</option>
 			<option value="oldest">{$_('documents.sort.oldest')}</option>
 			<option value="name">{$_('documents.sort.name')}</option>
@@ -408,7 +430,7 @@
 </div>
 
 <!-- Document list -->
-{#if filteredDocs().length === 0}
+{#if data.docs.length === 0}
 	<div class="empty">
 		<span class="empty-icon"
 			>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span
@@ -418,7 +440,7 @@
 	</div>
 {:else if viewMode === 'list'}
 	<div class="doc-list">
-		{#each filteredDocs() as doc}
+		{#each data.docs as doc}
 			<div
 				id="doc-{doc.id}"
 				class="doc-row"
