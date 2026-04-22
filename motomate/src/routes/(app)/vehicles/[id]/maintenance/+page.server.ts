@@ -22,7 +22,11 @@ import { addMonths, parseISO, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
-	const currentOdometer = await recomputeCurrentOdometer(vehicle.id, locals.user!.id);
+	const currentOdometer = await recomputeCurrentOdometer(
+		vehicle.id,
+		locals.user!.id,
+		vehicle.odometer_unit
+	);
 	const trackers = await recomputeTrackerStatuses(vehicle.id, currentOdometer);
 	const [odometerLogs, allServiceLogs] = await Promise.all([
 		getOdometerLogs(vehicle.id, locals.user!.id),
@@ -64,7 +68,13 @@ export const actions: Actions = {
 		}
 
 		await createServiceLog(locals.user!.id, parsed.data);
-		await recomputeTrackerStatuses(params.id, parsed.data.odometer_at_service);
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		const trueOdo = await recomputeCurrentOdometer(
+			params.id,
+			locals.user!.id,
+			vehicle?.odometer_unit
+		);
+		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
 		return { logged: true };
@@ -210,7 +220,6 @@ export const actions: Actions = {
 					last_done_odometer: odometer
 				});
 			}
-			await recomputeTrackerStatuses(params.id, odometer);
 		}
 
 		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);

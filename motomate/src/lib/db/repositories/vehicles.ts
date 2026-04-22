@@ -1,16 +1,50 @@
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and, isNull, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicles, odometer_logs, service_logs } from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
 import type { InsertVehicle, Vehicle, OdometerLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
+import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '../../utils/measurement.js';
+
+function resolveVehicleOdometerFields(
+	vehicle: Pick<
+		Vehicle,
+		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
+	>
+) {
+	const unit = isDistanceUnit(vehicle.current_measurement_unit)
+		? vehicle.current_measurement_unit
+		: vehicle.odometer_unit;
+	return {
+		current_odometer: vehicle.current_measurement,
+		odometer_unit: unit ?? DEFAULT_ODOMETER_UNIT
+	};
+}
+
+function hydrateVehicle(vehicle: Vehicle | undefined): Vehicle | undefined {
+	if (!vehicle) return undefined;
+	return { ...vehicle, ...resolveVehicleOdometerFields(vehicle) };
+}
+
+function hydrateOdometerLog(log: OdometerLog): OdometerLog {
+	const odometer = log.measurement ?? log.odometer;
+	return { ...log, odometer };
+}
 
 export async function createVehicle(userId: string, input: unknown): Promise<Vehicle> {
 	const parsed = CreateVehicleSchema.parse(input);
 	const id = generateId();
-	const row: InsertVehicle = { ...parsed, id, user_id: userId };
+	const row: InsertVehicle = {
+		...parsed,
+		id,
+		user_id: userId,
+		current_measurement: parsed.current_odometer,
+		current_measurement_unit: parsed.odometer_unit
+	};
 	await db.insert(vehicles).values(row);
-	return db.query.vehicles.findFirst({ where: eq(vehicles.id, id) }) as Promise<Vehicle>;
+	return hydrateVehicle(
+		await db.query.vehicles.findFirst({ where: eq(vehicles.id, id) })
+	) as Vehicle;
 }
 
 export async function getVehiclesByUser(
@@ -18,28 +52,42 @@ export async function getVehiclesByUser(
 	includeArchived = false
 ): Promise<Vehicle[]> {
 	if (includeArchived) {
-		return db.query.vehicles.findMany({
+		const rows = await db.query.vehicles.findMany({
 			where: eq(vehicles.user_id, userId),
 			orderBy: (v, { asc }) => [asc(v.sort_order), asc(v.created_at)]
 		});
+		return rows.map((row) => hydrateVehicle(row) as Vehicle);
 	}
-	return db.query.vehicles.findMany({
+	const rows = await db.query.vehicles.findMany({
 		where: and(eq(vehicles.user_id, userId), isNull(vehicles.archived_at)),
 		orderBy: (v, { asc }) => [asc(v.sort_order), asc(v.created_at)]
 	});
+	return rows.map((row) => hydrateVehicle(row) as Vehicle);
 }
 
 export async function getVehicleById(id: string, userId: string): Promise<Vehicle | undefined> {
-	return db.query.vehicles.findFirst({
-		where: and(eq(vehicles.id, id), eq(vehicles.user_id, userId))
-	});
+	return hydrateVehicle(
+		await db.query.vehicles.findFirst({
+			where: and(eq(vehicles.id, id), eq(vehicles.user_id, userId))
+		})
+	);
 }
 
 export async function updateVehicle(id: string, userId: string, input: unknown): Promise<void> {
 	const parsed = UpdateVehicleSchema.parse(input);
+	const patch: Partial<InsertVehicle> & { updated_at: string } = {
+		...parsed,
+		updated_at: new Date().toISOString()
+	};
+	if (parsed.current_odometer !== undefined) {
+		patch.current_measurement = parsed.current_odometer;
+	}
+	if (parsed.odometer_unit !== undefined) {
+		patch.current_measurement_unit = parsed.odometer_unit;
+	}
 	await db
 		.update(vehicles)
-		.set({ ...parsed, updated_at: new Date().toISOString() })
+		.set(patch)
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
@@ -57,11 +105,23 @@ export async function unarchiveVehicle(id: string, userId: string): Promise<void
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
-export async function updateOdometer(id: string, userId: string, odometer: number): Promise<void> {
+export async function updateOdometer(
+	id: string,
+	userId: string,
+	odometer: number,
+	odometerUnit?: Vehicle['odometer_unit']
+): Promise<void> {
 	if (odometer < 0) throw new Error('Odometer cannot be negative');
+	const resolvedOdometerUnit = odometerUnit ?? (await getVehicleById(id, userId))?.odometer_unit;
+	if (!resolvedOdometerUnit) return;
 	await db
 		.update(vehicles)
-		.set({ current_odometer: odometer, updated_at: new Date().toISOString() })
+		.set({
+			current_odometer: odometer,
+			current_measurement: odometer,
+			current_measurement_unit: resolvedOdometerUnit,
+			updated_at: new Date().toISOString()
+		})
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
@@ -76,11 +136,14 @@ export async function insertOdometerLog(
 	if (odometer < 0) {
 		throw new Error('Odometer cannot be negative');
 	}
+	const vehicle = await getVehicleById(vehicleId, userId);
 	await db.insert(odometer_logs).values({
 		id: generateId(),
 		vehicle_id: vehicleId,
 		user_id: userId,
 		odometer,
+		measurement: odometer,
+		measurement_unit: vehicle?.odometer_unit ?? DEFAULT_ODOMETER_UNIT,
 		remark: remark || null,
 		kind,
 		recorded_at: recordedAt ?? new Date().toISOString().slice(0, 10)
@@ -90,21 +153,22 @@ export async function insertOdometerLog(
 export async function getOdometerLogs(vehicleId: string, userId: string): Promise<OdometerLog[]> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return [];
-	return db.query.odometer_logs.findMany({
+	const rows = await db.query.odometer_logs.findMany({
 		where: eq(odometer_logs.vehicle_id, vehicleId),
 		orderBy: (o, { desc }) => [desc(o.recorded_at), desc(o.created_at)]
 	});
+	return rows.map(hydrateOdometerLog);
 }
 
 export async function getMaxOdometer(vehicleId: string, userId: string): Promise<number> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return 0;
-	const result = await db.query.odometer_logs.findFirst({
-		where: eq(odometer_logs.vehicle_id, vehicleId),
-		orderBy: (o, { desc }) => [desc(o.odometer)],
-		columns: { odometer: true }
-	});
-	return result?.odometer ?? 0;
+	const [result] = await db
+		.select({
+			maxOdometer: sql<number>`max(coalesce(${odometer_logs.measurement}, ${odometer_logs.odometer}))`
+		})
+		.from(odometer_logs)
+		.where(and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId)));
+
+	return result?.maxOdometer ?? 0;
 }
 
 export async function updateOdometerLog(
@@ -115,9 +179,14 @@ export async function updateOdometerLog(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const patch: Partial<typeof odometer_logs.$inferInsert> = { ...data };
+	if (data.odometer !== undefined) {
+		patch.measurement = data.odometer;
+		patch.measurement_unit = vehicle.odometer_unit;
+	}
 	await db
 		.update(odometer_logs)
-		.set(data)
+		.set(patch)
 		.where(and(eq(odometer_logs.id, id), eq(odometer_logs.vehicle_id, vehicleId)));
 }
 
@@ -139,21 +208,37 @@ export async function deleteOdometerLog(
  * If no logs remain, resets to 0 so the vehicle can accept any new reading.
  * Returns the new odometer value.
  */
-export async function recomputeCurrentOdometer(vehicleId: string, userId: string): Promise<number> {
+export async function recomputeCurrentOdometer(
+	vehicleId: string,
+	userId: string,
+	odometerUnit?: Vehicle['odometer_unit']
+): Promise<number> {
 	const [odoLogs, svcLogs] = await Promise.all([
-		db.query.odometer_logs.findMany({ where: eq(odometer_logs.vehicle_id, vehicleId) }),
-		db.query.service_logs.findMany({ where: eq(service_logs.vehicle_id, vehicleId) })
+		db.query.odometer_logs.findMany({
+			where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId))
+		}),
+		db.query.service_logs.findMany({
+			where: eq(service_logs.vehicle_id, vehicleId)
+		})
 	]);
 
 	const readings = [
-		...odoLogs.map((l) => l.odometer),
-		...svcLogs.map((l) => l.odometer_at_service)
+		...odoLogs.map((l) => l.measurement ?? l.odometer),
+		...svcLogs.map((l) => l.measurement_at_service ?? l.odometer_at_service)
 	];
 
 	const newOdo = readings.length === 0 ? 0 : Math.max(...readings);
+	const resolvedOdometerUnit =
+		odometerUnit ?? (await getVehicleById(vehicleId, userId))?.odometer_unit;
+	if (!resolvedOdometerUnit) return newOdo;
 	await db
 		.update(vehicles)
-		.set({ current_odometer: newOdo, updated_at: new Date().toISOString() })
+		.set({
+			current_odometer: newOdo,
+			current_measurement: newOdo,
+			current_measurement_unit: resolvedOdometerUnit,
+			updated_at: new Date().toISOString()
+		})
 		.where(and(eq(vehicles.id, vehicleId), eq(vehicles.user_id, userId)));
 
 	return newOdo;
@@ -166,7 +251,9 @@ export async function deleteVehicle(id: string, userId: string): Promise<void> {
 export async function getVehicleByCoverImageKey(
 	coverImageKey: string
 ): Promise<Vehicle | undefined> {
-	return db.query.vehicles.findFirst({
-		where: eq(vehicles.cover_image_key, coverImageKey)
-	});
+	return hydrateVehicle(
+		await db.query.vehicles.findFirst({
+			where: eq(vehicles.cover_image_key, coverImageKey)
+		})
+	);
 }

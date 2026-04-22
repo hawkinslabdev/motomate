@@ -107,7 +107,7 @@ export const actions: Actions = {
 			return fail(400, { error: await serverT('vehicle.edit.errors.odometerTooLow', locale) });
 		}
 
-		await updateOdometer(params.id, locals.user!.id, odometer);
+		await updateOdometer(params.id, locals.user!.id, odometer, vehicle.odometer_unit);
 		await insertOdometerLog(params.id, locals.user!.id, odometer);
 		await recomputeTrackerStatuses(params.id, odometer);
 

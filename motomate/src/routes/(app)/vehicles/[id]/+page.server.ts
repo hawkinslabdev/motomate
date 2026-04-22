@@ -136,7 +136,12 @@ export const actions: Actions = {
 			attachments: [...attachmentDocIds, ...linkedDocIds]
 		});
 
-		await recomputeTrackerStatuses(params.id, maxOdo);
+		const trueOdo = await recomputeCurrentOdometer(
+			params.id,
+			locals.user!.id,
+			vehicle?.odometer_unit
+		);
+		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
 		return { logged: true, warning };
@@ -206,7 +211,7 @@ export const actions: Actions = {
 		} else if (raw < maxOdo) {
 			warning = `Lower than the highest recorded reading (${maxOdo} km). Saved as a historical record.`;
 		} else {
-			await updateOdometer(params.id, locals.user!.id, raw);
+			await updateOdometer(params.id, locals.user!.id, raw, vehicle?.odometer_unit);
 		}
 
 		await insertOdometerLog(params.id, locals.user!.id, raw, remark, recordedAt);
@@ -231,7 +236,7 @@ export const actions: Actions = {
 		const vehicle = await getVehicleById(params.id, locals.user!.id);
 		const prevMaxOdo = vehicle?.current_odometer ?? 0;
 
-		updateServiceLog(id, params.id, locals.user!.id, {
+		await updateServiceLog(id, params.id, locals.user!.id, {
 			performed_at: performedAt,
 			odometer_at_service: odoAtService,
 			cost_cents: costCents,
@@ -239,7 +244,11 @@ export const actions: Actions = {
 			remark
 		});
 
-		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
+		const trueOdo = await recomputeCurrentOdometer(
+			params.id,
+			locals.user!.id,
+			vehicle?.odometer_unit
+		);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
@@ -293,7 +302,11 @@ export const actions: Actions = {
 			recorded_at: recordedAt,
 			remark
 		});
-		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
+		const trueOdo = await recomputeCurrentOdometer(
+			params.id,
+			locals.user!.id,
+			vehicle?.odometer_unit
+		);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
