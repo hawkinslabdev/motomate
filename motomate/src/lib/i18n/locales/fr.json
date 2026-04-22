@@ -399,6 +399,37 @@
 					"desc": "Ce véhicule sera remis dans votre garage actif. Le prix de vente sera effacé afin que vous puissiez modifier les détails du véhicule à nouveau.",
 					"confirm": "Restaurer",
 					"cancel": "Garder archivé"
+				},
+				"report": {
+					"title": "Carnet d'entretien",
+					"desc": "Téléchargez une copie physique de votre historique d'entretien complet.",
+					"btn": "Télécharger",
+					"modal": {
+						"title": "Rapport d'entretien",
+						"desc": "Sélectionne ce que tu veux inclure dans le rapport. Tes préférences sont sauvegardées pour la prochaine fois.",
+						"download": "Télécharger le PDF",
+						"downloading": "Chargement...",
+						"cancel": "Annuler"
+					},
+					"pdf": {
+						"generatedOn": "Généré le",
+						"currentOdometer": "Kilométrage actuel",
+						"serviceHistory": "Historique d'entretien",
+						"addendum": "Annexe: Documents",
+						"cost": "Coût",
+						"parts": "Pièces utilisées",
+						"notes": "Notes",
+						"remark": "Remarque",
+						"noLogs": "Aucun enregistrement de service trouvé.",
+						"attachmentPage": "page",
+						"notEmbeddable": "non incorporable",
+						"trackers": "Effectué",
+						"period": "Periode",
+						"attached": "Joint",
+						"seeFollowingPage": "Voir page suivante",
+						"seeFollowingPages": "Voir les {count} pages suivantes",
+						"fileNotEmbeddable": "Fichier non incorporable dans le PDF"
+					}
 				}
 			},
 			"errors": {

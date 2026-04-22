@@ -94,7 +94,8 @@ const PagePrefsSchema = z.object({
 			showTravel: z.boolean().optional(),
 			showFinance: z.boolean().optional()
 		})
-		.optional()
+		.optional(),
+	maintenance_report_pdf: z.record(z.string(), z.array(z.string())).optional()
 });
 
 export const UserSettingsSchema = z.object({

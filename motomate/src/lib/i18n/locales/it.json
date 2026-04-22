@@ -399,6 +399,37 @@
 					"desc": "Questo veicolo sarà riportato nel tuo garage attivo. Il prezzo di vendita sarà cancellato così potrai modificare nuovamente i dettagli del veicolo.",
 					"confirm": "Ripristina",
 					"cancel": "Mantieni archiviato"
+				},
+				"report": {
+					"title": "Libretto di manutenzione",
+					"desc": "Scarica una copia fisica della tua storia manutentiva completa.",
+					"btn": "Scarica",
+					"modal": {
+						"title": "Rapporto di manutenzione",
+						"desc": "Seleziona cosa vuoi includere nel rapporto. Le tue preferenze vengono salvate per la prossima volta.",
+						"download": "Scarica PDF",
+						"downloading": "Download...",
+						"cancel": "Annulla"
+					},
+					"pdf": {
+						"generatedOn": "Generato il",
+						"currentOdometer": "Chilometraggio attuale",
+						"serviceHistory": "Storico manutenzione",
+						"addendum": "Allegato: Documenti",
+						"cost": "Costo",
+						"parts": "Parti usate",
+						"notes": "Note",
+						"remark": "Osservazione",
+						"noLogs": "Nessun record di servizio trovato.",
+						"attachmentPage": "pagina",
+						"notEmbeddable": "non incorporabile",
+						"trackers": "Eseguito",
+						"period": "Periodo",
+						"attached": "Allegato",
+						"seeFollowingPage": "Vedi pagina successiva",
+						"seeFollowingPages": "Vedi le {count} pagine seguenti",
+						"fileNotEmbeddable": "File non incorporabile nel PDF"
+					}
 				}
 			},
 			"errors": {

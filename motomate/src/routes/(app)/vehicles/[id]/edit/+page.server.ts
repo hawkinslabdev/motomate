@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { and, eq } from 'drizzle-orm';
 import {
 	updateVehicle,
@@ -8,7 +8,10 @@ import {
 	updateOdometer,
 	insertOdometerLog
 } from '$lib/db/repositories/vehicles.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
+import {
+	recomputeTrackerStatuses,
+	getTrackersByVehicle
+} from '$lib/db/repositories/maintenance.js';
 import { UpdateVehicleSchema } from '$lib/validators/schemas.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
@@ -42,6 +45,19 @@ async function safeDeleteStorage(key: string | null | undefined): Promise<void> 
 		console.error(`Storage deletion failed for key ${key}:`, e);
 	}
 }
+
+export const load: PageServerLoad = async ({ locals, params, parent }) => {
+	await parent();
+	const trackers = await getTrackersByVehicle(params.id, locals.user!.id);
+	const excluded =
+		(locals.user!.settings?.page_prefs?.maintenance_report_pdf?.[params.id] as
+			| string[]
+			| undefined) ?? [];
+	return {
+		reportTrackers: trackers.map((t) => ({ id: t.id, name: t.template.name })),
+		reportExcludedTrackerIds: excluded
+	};
+};
 
 export const actions: Actions = {
 	update: async ({ request, locals, params }) => {
