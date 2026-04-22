@@ -404,6 +404,13 @@
 					"title": "Libretto di manutenzione",
 					"desc": "Scarica una copia fisica della tua storia manutentiva completa.",
 					"btn": "Scarica",
+					"modal": {
+						"title": "Rapporto di manutenzione",
+						"desc": "Seleziona cosa vuoi includere nel rapporto. Le tue preferenze vengono salvate per la prossima volta.",
+						"download": "Scarica PDF",
+						"downloading": "Download...",
+						"cancel": "Annulla"
+					},
 					"pdf": {
 						"generatedOn": "Generato il",
 						"currentOdometer": "Chilometraggio attuale",

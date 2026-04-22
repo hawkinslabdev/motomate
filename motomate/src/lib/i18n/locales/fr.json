@@ -404,6 +404,13 @@
 					"title": "Carnet d'entretien",
 					"desc": "Téléchargez une copie physique de votre historique d'entretien complet.",
 					"btn": "Télécharger",
+					"modal": {
+						"title": "Rapport d'entretien",
+						"desc": "Sélectionne ce que tu veux inclure dans le rapport. Tes préférences sont sauvegardées pour la prochaine fois.",
+						"download": "Télécharger le PDF",
+						"downloading": "Chargement...",
+						"cancel": "Annuler"
+					},
 					"pdf": {
 						"generatedOn": "Généré le",
 						"currentOdometer": "Kilométrage actuel",

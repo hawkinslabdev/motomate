@@ -37,6 +37,10 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	);
 
 	const locale = locals.user.settings?.locale ?? 'en';
+	const excludedTrackerIds =
+		(locals.user.settings?.page_prefs?.maintenance_report_pdf?.[params.id] as
+			| string[]
+			| undefined) ?? [];
 
 	const pdf = await buildMaintenanceReport({
 		vehicle,
@@ -44,7 +48,8 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		trackerNames,
 		docs,
 		docBuffers,
-		locale
+		locale,
+		excludedTrackerIds
 	});
 
 	const safeName = vehicle.name.replace(/[^a-zA-Z0-9-]/g, '_');

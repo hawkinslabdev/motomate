@@ -3,6 +3,7 @@
 	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import { toasts } from '$lib/stores/toasts.js';
 	import { _, waitLocale } from '$lib/i18n';
 
@@ -23,7 +24,28 @@
 	let deleteLoading = $state(false);
 	let archiveLoading = $state(false);
 
-	// Vehicle details state — seeded once from server data, then managed locally
+	let showReportModal = $state(false);
+	let excludedTrackerIds = $state(
+		untrack(() => new Set<string>(data.reportExcludedTrackerIds ?? []))
+	);
+	let reportDownloading = $state(false);
+
+	async function handleReportDownload() {
+		reportDownloading = true;
+		const excluded = [...excludedTrackerIds];
+		await fetch('/api/prefs', {
+			method: 'PATCH',
+			headers: { 'content-type': 'application/json' },
+			body: JSON.stringify({
+				page_prefs: { maintenance_report_pdf: { [data.vehicle.id]: excluded } }
+			})
+		});
+		window.location.href = `/api/vehicles/${data.vehicle.id}/report`;
+		reportDownloading = false;
+		showReportModal = false;
+	}
+
+	// Vehicle details state
 	let name = $state(untrack(() => data.vehicle.name));
 	let year = $state(untrack(() => data.vehicle.year));
 	let make = $state(untrack(() => data.vehicle.make));
@@ -35,7 +57,6 @@
 	let odometerInput = $state<number>(untrack(() => data.vehicle.current_odometer));
 	const odometerChanged = $derived(odometerInput !== data.vehicle.current_odometer);
 
-	// Purchase/sale form fields — cents→decimal string, seeded once
 	let purchasePrice = $state<string>(
 		untrack(() =>
 			data.vehicle.purchase_price_cents ? (data.vehicle.purchase_price_cents / 100).toFixed(2) : ''
@@ -47,8 +68,6 @@
 		)
 	);
 
-	// Check if any vehicle details have changed — compare directly to server state
-	// Prices are normalised to cents (integer) to avoid string/number type mismatches
 	const detailsChanged = $derived(
 		name !== data.vehicle.name ||
 			Number(year) !== data.vehicle.year ||
@@ -64,7 +83,6 @@
 
 	let showUnarchiveDialog = $state(false);
 
-	// Handle toast for unarchive (full-page-reload action, not enhanced)
 	$effect(() => {
 		if ((form as any)?.unarchived) {
 			toasts.success($_('vehicle.edit.vehicleRestored'));
@@ -279,9 +297,9 @@
 				<div class="settings-title">{$_('vehicle.edit.settings.report.title')}</div>
 				<div class="settings-desc">{$_('vehicle.edit.settings.report.desc')}</div>
 			</div>
-			<a href="/api/vehicles/{data.vehicle.id}/report" class="btn-ghost" download
-				>{$_('vehicle.edit.settings.report.btn')}</a
-			>
+			<button type="button" class="btn-ghost" onclick={() => (showReportModal = true)}>
+				{$_('vehicle.edit.settings.report.btn')}
+			</button>
 		</div>
 
 		<div class="settings-divider"></div>
@@ -392,6 +410,50 @@
 	}}
 	onclose={() => (showUnarchiveDialog = false)}
 />
+
+<Modal
+	open={showReportModal}
+	title={$_('vehicle.edit.settings.report.modal.title')}
+	onclose={() => (showReportModal = false)}
+>
+	{#snippet children()}
+		<p class="report-modal-desc">{$_('vehicle.edit.settings.report.modal.desc')}</p>
+		<ul class="tracker-checklist">
+			{#each data.reportTrackers as tracker}
+				<li>
+					<label class="tracker-check-label">
+						<input
+							type="checkbox"
+							checked={!excludedTrackerIds.has(tracker.id)}
+							onchange={(e) => {
+								const next = new Set(excludedTrackerIds);
+								if (e.currentTarget.checked) next.delete(tracker.id);
+								else next.add(tracker.id);
+								excludedTrackerIds = next;
+							}}
+						/>
+						{tracker.name}
+					</label>
+				</li>
+			{/each}
+		</ul>
+	{/snippet}
+	{#snippet footer()}
+		<button type="button" class="btn-ghost" onclick={() => (showReportModal = false)}>
+			{$_('vehicle.edit.settings.report.modal.cancel')}
+		</button>
+		<button
+			type="button"
+			class="btn-primary"
+			disabled={reportDownloading}
+			onclick={handleReportDownload}
+		>
+			{reportDownloading
+				? $_('vehicle.edit.settings.report.modal.downloading')
+				: $_('vehicle.edit.settings.report.modal.download')}
+		</button>
+	{/snippet}
+</Modal>
 
 <style>
 	.page-header {
@@ -656,5 +718,37 @@
 			flex-direction: column;
 			align-items: flex-start;
 		}
+	}
+
+	.report-modal-desc {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		margin: 0 0 var(--space-4);
+	}
+
+	.tracker-checklist {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.tracker-check-label {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		font-size: var(--text-base);
+		color: var(--text);
+		cursor: pointer;
+	}
+
+	.tracker-check-label input[type='checkbox'] {
+		width: 16px;
+		height: 16px;
+		accent-color: var(--accent);
+		cursor: pointer;
+		flex-shrink: 0;
 	}
 </style>

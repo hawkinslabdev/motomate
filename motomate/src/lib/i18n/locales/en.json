@@ -388,6 +388,13 @@
 					"title": "Maintenance report",
 					"desc": "Download a physical copy of your complete service history.",
 					"btn": "Download",
+					"modal": {
+						"title": "Maintenance Report",
+						"desc": "Select what to include in the report. Your preferences are saved for next time.",
+						"download": "Download PDF",
+						"downloading": "Downloading...",
+						"cancel": "Cancel"
+					},
 					"pdf": {
 						"generatedOn": "Generated on",
 						"currentOdometer": "Current odometer",

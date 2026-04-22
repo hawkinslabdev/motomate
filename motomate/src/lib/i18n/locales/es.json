@@ -404,6 +404,13 @@
 					"title": "Libro de mantenimiento",
 					"desc": "Descarga una copia física de tu historial de mantenimiento completo.",
 					"btn": "Descargar",
+					"modal": {
+						"title": "Informe de mantenimiento",
+						"desc": "Selecciona lo que quieres incluir en el informe. Guardamos tus preferencias para la próxima vez.",
+						"download": "Descargar PDF",
+						"downloading": "Descargando...",
+						"cancel": "Cancelar"
+					},
 					"pdf": {
 						"generatedOn": "Generado el",
 						"currentOdometer": "Kilometraje actual",

@@ -33,6 +33,7 @@ export interface MaintenanceReportOptions {
 	docs: DocRecord[];
 	docBuffers: Map<string, Buffer>;
 	locale: string;
+	excludedTrackerIds?: string[];
 }
 
 const W = 595.28;
@@ -468,12 +469,27 @@ function drawAddendumIndex(doc: PDFDoc, entries: AddendumEntry[], t: ReportTrans
 export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Promise<Uint8Array> {
 	const { vehicle, serviceLogs, trackerNames, docs, docBuffers, locale } = opts;
 	const t = loadTranslations(locale);
+
+	const excludedSet = new Set(opts.excludedTrackerIds ?? []);
+	const filteredLogs =
+		excludedSet.size === 0
+			? serviceLogs
+			: serviceLogs.filter((log) => {
+					const ids: string[] = [];
+					if (log.tracker_id) ids.push(log.tracker_id);
+					for (const id of (log.serviced_tracker_ids as string[]) ?? []) {
+						if (!ids.includes(id)) ids.push(id);
+					}
+					if (ids.length === 0) return true;
+					return !ids.every((id) => excludedSet.has(id));
+				});
+
 	const docMap = new Map(docs.map((d) => [d.id, d]));
 	const attachmentIndex = new Map<string, number>();
 
 	let aidx = 1;
 
-	for (const log of serviceLogs) {
+	for (const log of filteredLogs) {
 		for (const id of (log.attachments as string[] | null) ?? []) {
 			if (!attachmentIndex.has(id) && docMap.has(id)) {
 				attachmentIndex.set(id, aidx++);
@@ -485,7 +501,7 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 		.sort((a, b) => a[1] - b[1])
 		.map(([id, idx]) => ({ id, idx, doc: docMap.get(id)! }));
 
-	const logsSorted = [...serviceLogs].sort(
+	const logsSorted = [...filteredLogs].sort(
 		(a, b) => new Date(a.performed_at).getTime() - new Date(b.performed_at).getTime()
 	);
 
@@ -509,7 +525,7 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 
 	// Please note pdf-lib will handle attachment pages . e.g. separator/content per attachment.
 	drawCover(pdfDoc, vehicle, t, locale, dateRange);
-	drawServiceLogs(pdfDoc, vehicle, serviceLogs, trackerNames, attachmentIndex, t, locale);
+	drawServiceLogs(pdfDoc, vehicle, filteredLogs, trackerNames, attachmentIndex, t, locale);
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	type LoadedAttach = {

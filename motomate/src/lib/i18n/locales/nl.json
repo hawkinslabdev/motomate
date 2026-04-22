@@ -404,6 +404,13 @@
 					"title": "Onderhoudsboekje",
 					"desc": "Download een fysiek kopie van jouw volledige onderhoudshistorie.",
 					"btn": "Downloaden",
+					"modal": {
+						"title": "Onderhoudsrapport",
+						"desc": "Selecteer wat je wil opnemen in het rapport. We slaan jouw voorkeuren op voor de volgende keer.",
+						"download": "PDF downloaden",
+						"downloading": "Bezig...",
+						"cancel": "Annuleren"
+					},
 					"pdf": {
 						"generatedOn": "Gegenereerd op",
 						"currentOdometer": "Huidige kilometerstand",

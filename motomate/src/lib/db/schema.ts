@@ -23,6 +23,7 @@ export type PagePrefs = {
 		showTravel?: boolean;
 		showFinance?: boolean;
 	};
+	maintenance_report_pdf?: Record<string, string[]>; // vehicle_id > array of tracker_ids to exclude from PDF
 };
 
 export type UserSettings = {

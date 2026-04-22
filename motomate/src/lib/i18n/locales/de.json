@@ -404,6 +404,13 @@
 					"title": "Wartungsheft",
 					"desc": "Laden Sie eine physische Kopie Ihrer vollständigen Wartungshistorie herunter.",
 					"btn": "Herunterladen",
+					"modal": {
+						"title": "Wartungsprotokoll",
+						"desc": "Wähle aus, was du in den Bericht aufnehmen möchtest. Wir speichern deine Einstellungen für das nächste Mal.",
+						"download": "PDF herunterladen",
+						"downloading": "Wird geladen...",
+						"cancel": "Abbrechen"
+					},
 					"pdf": {
 						"generatedOn": "Erstellt am",
 						"currentOdometer": "Aktueller Kilometerstand",
