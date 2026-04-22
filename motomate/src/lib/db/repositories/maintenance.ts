@@ -944,7 +944,9 @@ export async function recomputeTrackerStatuses(
 		results.push({
 			...hydrateTracker(t),
 			measurement_unit:
-				nextDueOdo !== null ? effectiveMeasurementUnit : hydrateTracker(t).measurement_unit,
+				nextDueMeasurement !== null
+					? effectiveMeasurementUnit
+					: hydrateTracker(t).measurement_unit,
 			template,
 			next_due_measurement: nextDueMeasurement,
 			next_due_odometer: interval.basis === 'distance' ? nextDueMeasurement : null,
