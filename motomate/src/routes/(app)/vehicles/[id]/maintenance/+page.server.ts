@@ -206,8 +206,9 @@ export const actions: Actions = {
 			remark: raw.remark ? String(raw.remark) : undefined,
 			serviced_tracker_ids: resetTrackerIds.length > 0 ? resetTrackerIds : undefined
 		});
+		let vehicle: Awaited<ReturnType<typeof getVehicleById>>;
 		if (resetTrackerIds.length > 0) {
-			const vehicle = await getVehicleById(params.id, locals.user!.id);
+			vehicle = await getVehicleById(params.id, locals.user!.id);
 			const odometer = raw.odometer_at_service
 				? Number(raw.odometer_at_service)
 				: (vehicle?.current_odometer ?? 0);
@@ -222,7 +223,11 @@ export const actions: Actions = {
 			}
 		}
 
-		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
+		const trueOdo = await recomputeCurrentOdometer(
+			params.id,
+			locals.user!.id,
+			vehicle?.odometer_unit
+		);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 
 		return { logUpdated: true };
