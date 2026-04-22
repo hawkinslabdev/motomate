@@ -770,8 +770,8 @@
 			"loadPresets": "Ripristina regole predefinite",
 			"empty": "Nessuna regola ancora. Ripristina le regole predefinite per iniziare, o creane di tue.",
 			"presets": {
-				"maintenanceDueSoonKm": "Manutenzione imminente (km)",
-				"maintenanceOverdueKm": "Manutenzione scaduta (km)",
+				"maintenanceDueSoonKm": "Manutenzione imminente",
+				"maintenanceOverdueKm": "Manutenzione scaduta",
 				"maintenanceDueSoonDate": "Manutenzione imminente (data)",
 				"maintenanceOverdueDate": "Manutenzione scaduta (data)",
 				"odometerNudge": "Promemoria chilometri"
@@ -872,6 +872,7 @@
 				"cooldown": "In attesa fino al {date}",
 				"waiting": "In attesa del prossimo registro di servizio",
 				"inKm": "Tra {km} km",
+				"inMeasurement": "Tra {value} {unit}",
 				"onDate": "Dal {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "Nessun dato"
@@ -940,11 +941,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Manutenzione in scadenza",
-			"body": "'{{tracker_name}}' su {{vehicle_name}} è in scadenza tra {{km_remaining}} km."
+			"body": "'{{tracker_name}}' su {{vehicle_name}} è in scadenza tra {{measurement_value}} {{measurement_unit}}."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Manutenzione scaduta",
-			"body": "'{{tracker_name}}' su {{vehicle_name}} è scaduta di {{km_over}} km."
+			"body": "'{{tracker_name}}' su {{vehicle_name}} è scaduta di {{measurement_value}} {{measurement_unit}}."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Manutenzione in scadenza",

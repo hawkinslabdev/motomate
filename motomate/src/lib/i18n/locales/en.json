@@ -781,8 +781,8 @@
 			"loadPresets": "Restore preset rules",
 			"empty": "No rules yet. Restore the preset rules to get started, or create your own.",
 			"presets": {
-				"maintenanceDueSoonKm": "Maintenance due soon (km)",
-				"maintenanceOverdueKm": "Maintenance overdue (km)",
+				"maintenanceDueSoonKm": "Maintenance due soon",
+				"maintenanceOverdueKm": "Maintenance overdue",
 				"maintenanceDueSoonDate": "Maintenance due soon (date)",
 				"maintenanceOverdueDate": "Maintenance overdue (date)",
 				"odometerNudge": "Odometer nudge"
@@ -883,6 +883,7 @@
 				"cooldown": "Cooling down until {date}",
 				"waiting": "Waiting for next service log",
 				"inKm": "In {km} km",
+				"inMeasurement": "In {value} {unit}",
 				"onDate": "From {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "No data"
@@ -1005,11 +1006,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Maintenance due soon",
-			"body": "'{{tracker_name}}' on {{vehicle_name}} is due in {{km_remaining}} km."
+			"body": "'{{tracker_name}}' on {{vehicle_name}} is due in {{measurement_value}} {{measurement_unit}}."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Maintenance overdue",
-			"body": "'{{tracker_name}}' on {{vehicle_name}} is {{km_over}} km overdue."
+			"body": "'{{tracker_name}}' on {{vehicle_name}} is {{measurement_value}} {{measurement_unit}} overdue."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Maintenance due soon",

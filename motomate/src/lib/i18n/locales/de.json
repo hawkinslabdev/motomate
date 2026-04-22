@@ -771,8 +771,8 @@
 			"loadPresets": "Voreinstellungen wiederherstellen",
 			"empty": "Noch keine Regeln. Stellen Sie die Voreinstellungen wieder her oder erstellen Sie eigene Regeln.",
 			"presets": {
-				"maintenanceDueSoonKm": "Wartung bald fällig (km)",
-				"maintenanceOverdueKm": "Wartung überfällig (km)",
+				"maintenanceDueSoonKm": "Wartung bald fällig",
+				"maintenanceOverdueKm": "Wartung überfällig",
 				"maintenanceDueSoonDate": "Wartung bald fällig (Datum)",
 				"maintenanceOverdueDate": "Wartung überfällig (Datum)",
 				"odometerNudge": "Kilometerstand-Erinnerung"
@@ -873,6 +873,7 @@
 				"cooldown": "Wartet bis {date}",
 				"waiting": "Wartet auf nächsten Service-Eintrag",
 				"inKm": "In {km} km",
+				"inMeasurement": "In {value} {unit}",
 				"onDate": "Ab {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "Keine Daten"
@@ -941,11 +942,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Wartung bald fällig",
-			"body": "'{{tracker_name}}' bei {{vehicle_name}} ist in {{km_remaining}} km fällig."
+			"body": "'{{tracker_name}}' bei {{vehicle_name}} ist in {{measurement_value}} {{measurement_unit}} fällig."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Wartung überfällig",
-			"body": "'{{tracker_name}}' bei {{vehicle_name}} ist {{km_over}} km überfällig."
+			"body": "'{{tracker_name}}' bei {{vehicle_name}} ist {{measurement_value}} {{measurement_unit}} überfällig."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Wartung bald fällig",

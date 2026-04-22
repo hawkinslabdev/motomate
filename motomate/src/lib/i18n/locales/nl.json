@@ -771,8 +771,8 @@
 			"loadPresets": "Standaardregels herstellen",
 			"empty": "Nog geen regels. Herstel de standaardregels om te beginnen, of maak je eigen.",
 			"presets": {
-				"maintenanceDueSoonKm": "Onderhoud binnenkort (km)",
-				"maintenanceOverdueKm": "Onderhoud achterstallig (km)",
+				"maintenanceDueSoonKm": "Onderhoud binnenkort",
+				"maintenanceOverdueKm": "Onderhoud achterstallig",
 				"maintenanceDueSoonDate": "Onderhoud binnenkort (datum)",
 				"maintenanceOverdueDate": "Onderhoud achterstallig (datum)",
 				"odometerNudge": "Kilometerstand herinnering"
@@ -873,6 +873,7 @@
 				"cooldown": "Wacht tot {date}",
 				"waiting": "Wacht op volgend service-log",
 				"inKm": "Over {km} km",
+				"inMeasurement": "Over {value} {unit}",
 				"onDate": "Vanaf {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "Geen gegevens"
@@ -941,11 +942,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Onderhoud binnenkort vereist",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is over {{km_remaining}} km vereist."
+			"body": "'{{tracker_name}}' op {{vehicle_name}} is over {{measurement_value}} {{measurement_unit}} vereist."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Onderhoud achterstallig",
-			"body": "'{{tracker_name}}' op {{vehicle_name}} is {{km_over}} km achterstallig."
+			"body": "'{{tracker_name}}' op {{vehicle_name}} is {{measurement_value}} {{measurement_unit}} achterstallig."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Onderhoud binnenkort vereist",

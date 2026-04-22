@@ -14,24 +14,19 @@ import { RuleTriggerSchema } from '$lib/validators/schemas.js';
 import type { RuleTrigger } from '$lib/db/schema.js';
 import { db } from '$lib/db/index.js';
 import { documents } from '$lib/db/schema.js';
+import {
+	evaluateDateTrigger,
+	evaluateMaintenanceTrigger,
+	normalizeWorkflowTrigger
+} from '$lib/workflow/triggers.js';
 
 export type NextFireInfo =
 	| { kind: 'ready' }
 	| { kind: 'cooldown'; until: string }
 	| { kind: 'waiting' }
-	| { kind: 'km'; kmRemaining: number; trackerName: string }
+	| { kind: 'measurement'; remaining: number; unit: string; trackerName: string }
 	| { kind: 'date'; fireAt: string; trackerName?: string }
 	| { kind: 'none' };
-
-const DUE_SOON_FACTOR = 0.2;
-
-function kmWindow(intervalKm: number): number {
-	return Math.min(500, Math.max(50, Math.round(intervalKm * DUE_SOON_FACTOR)));
-}
-
-function dayWindow(intervalMonths: number): number {
-	return Math.min(14, Math.max(3, Math.round(intervalMonths * 30 * DUE_SOON_FACTOR)));
-}
 
 function toUtcDate(sqliteStr: string): Date {
 	const iso = sqliteStr.includes('T') ? sqliteStr : sqliteStr.replace(' ', 'T');
@@ -63,7 +58,7 @@ async function computeNextFireInfo(
 	vehicles: Awaited<ReturnType<typeof getVehiclesByUser>>,
 	trackersByVehicle: Map<string, Awaited<ReturnType<typeof recomputeTrackerStatuses>>>
 ): Promise<NextFireInfo> {
-	const trigger = rule.trigger;
+	const normalizedTrigger = normalizeWorkflowTrigger(rule.trigger);
 	const now = Date.now();
 
 	const scopedVehicles = rule.vehicle_id
@@ -72,13 +67,12 @@ async function computeNextFireInfo(
 
 	if (scopedVehicles.length === 0) return { kind: 'none' };
 
-	switch (trigger.type) {
-		case 'odometer_upcoming':
-		case 'odometer_overdue':
-		case 'date_upcoming':
-		case 'date_overdue': {
-			let bestKmRemaining = Infinity;
-			let bestKmTrackerName = '';
+	switch (normalizedTrigger.kind) {
+		case 'maintenance':
+		case 'date': {
+			let bestMeasurementRemaining = Infinity;
+			let bestMeasurementUnit = 'km';
+			let bestMeasurementTrackerName = '';
 			let bestDateFireAt = '';
 			let bestDateTrackerName = '';
 			let hasReady = false;
@@ -99,37 +93,31 @@ async function computeNextFireInfo(
 
 					const trackerName = tracker.template?.name ?? '';
 
-					if (trigger.type === 'odometer_upcoming' || trigger.type === 'odometer_overdue') {
-						if (tracker.next_due_odometer === null) continue;
-						const threshold =
-							trigger.type === 'odometer_upcoming'
-								? tracker.next_due_odometer - kmWindow(tracker.template?.interval_km ?? 500)
-								: tracker.next_due_odometer;
+					if (normalizedTrigger.kind === 'maintenance') {
+						const evaluation = evaluateMaintenanceTrigger(
+							normalizedTrigger,
+							vehicle,
+							tracker,
+							tracker.template
+						);
+						if (!evaluation) continue;
 
-						if (vehicle.current_odometer >= threshold) {
+						if (evaluation.readyAtCurrentMeasurement) {
 							hasReady = true;
-						} else {
-							const remaining = threshold - vehicle.current_odometer;
-							if (remaining < bestKmRemaining) {
-								bestKmRemaining = remaining;
-								bestKmTrackerName = trackerName;
-							}
+						} else if (evaluation.measurementUntilFire < bestMeasurementRemaining) {
+							bestMeasurementRemaining = evaluation.measurementUntilFire;
+							bestMeasurementUnit = evaluation.measurement.unit;
+							bestMeasurementTrackerName = trackerName;
 						}
 					} else {
 						if (tracker.next_due_at === null) continue;
-						const dueDate = new Date(tracker.next_due_at);
-						const fireDate =
-							trigger.type === 'date_upcoming'
-								? new Date(
-										dueDate.getTime() - dayWindow(tracker.template?.interval_months ?? 1) * 86400000
-									)
-								: dueDate;
+						const evaluation = evaluateDateTrigger(normalizedTrigger, tracker.next_due_at);
 
-						if (now >= fireDate.getTime()) {
+						if (evaluation.matches) {
 							hasReady = true;
 						} else {
-							if (!bestDateFireAt || fireDate.toISOString() < bestDateFireAt) {
-								bestDateFireAt = fireDate.toISOString();
+							if (!bestDateFireAt || evaluation.fireAt < bestDateFireAt) {
+								bestDateFireAt = evaluation.fireAt;
 								bestDateTrackerName = trackerName;
 							}
 						}
@@ -141,9 +129,14 @@ async function computeNextFireInfo(
 			if (hasReady) return { kind: 'ready' };
 			if (allWaiting) return { kind: 'waiting' };
 
-			if (trigger.type === 'odometer_upcoming' || trigger.type === 'odometer_overdue') {
-				if (bestKmRemaining < Infinity)
-					return { kind: 'km', kmRemaining: bestKmRemaining, trackerName: bestKmTrackerName };
+			if (normalizedTrigger.kind === 'maintenance') {
+				if (bestMeasurementRemaining < Infinity)
+					return {
+						kind: 'measurement',
+						remaining: bestMeasurementRemaining,
+						unit: bestMeasurementUnit,
+						trackerName: bestMeasurementTrackerName
+					};
 				return { kind: 'waiting' };
 			} else {
 				if (bestDateFireAt)
@@ -156,7 +149,7 @@ async function computeNextFireInfo(
 			let soonestFire: Date | null = null;
 			for (const vehicle of scopedVehicles) {
 				const lastUpdated = toUtcDate(vehicle.updated_at ?? vehicle.created_at);
-				const fireTime = new Date(lastUpdated.getTime() + trigger.days * 86400000);
+				const fireTime = new Date(lastUpdated.getTime() + normalizedTrigger.days * 86400000);
 				if (!soonestFire || fireTime < soonestFire) soonestFire = fireTime;
 			}
 			if (!soonestFire) return { kind: 'none' };
@@ -171,11 +164,11 @@ async function computeNextFireInfo(
 		}
 
 		case 'calendar_date': {
-			const next = nextCalendarOccurrence(trigger.month, trigger.day);
+			const next = nextCalendarOccurrence(normalizedTrigger.month, normalizedTrigger.day);
 			const today = new Date();
 			const isToday =
-				next.getMonth() + 1 === trigger.month &&
-				next.getDate() === trigger.day &&
+				next.getMonth() + 1 === normalizedTrigger.month &&
+				next.getDate() === normalizedTrigger.day &&
 				next.getFullYear() === today.getFullYear();
 
 			if (isToday) {
@@ -197,7 +190,7 @@ async function computeNextFireInfo(
 				for (const doc of docs) {
 					if (!doc.expires_at) continue;
 					const fireTime = new Date(
-						new Date(doc.expires_at).getTime() - trigger.days_before * 86400000
+						new Date(doc.expires_at).getTime() - normalizedTrigger.daysBefore * 86400000
 					);
 					if (!soonestFire || fireTime < soonestFire) soonestFire = fireTime;
 				}

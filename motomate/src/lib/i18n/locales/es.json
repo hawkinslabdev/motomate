@@ -770,8 +770,8 @@
 			"loadPresets": "Restaurar reglas predeterminadas",
 			"empty": "Sin reglas todavía. Restaura las reglas predeterminadas para empezar, o crea las tuyas.",
 			"presets": {
-				"maintenanceDueSoonKm": "Mantenimiento próximo (km)",
-				"maintenanceOverdueKm": "Mantenimiento vencido (km)",
+				"maintenanceDueSoonKm": "Mantenimiento próximo",
+				"maintenanceOverdueKm": "Mantenimiento vencido",
 				"maintenanceDueSoonDate": "Mantenimiento próximo (fecha)",
 				"maintenanceOverdueDate": "Mantenimiento vencido (fecha)",
 				"odometerNudge": "Recordatorio de odómetro"
@@ -872,6 +872,7 @@
 				"cooldown": "En espera hasta {date}",
 				"waiting": "Esperando el próximo registro de servicio",
 				"inKm": "En {km} km",
+				"inMeasurement": "En {value} {unit}",
 				"onDate": "A partir del {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "Sin datos"
@@ -940,11 +941,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Mantenimiento próximo",
-			"body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{km_remaining}} km."
+			"body": "'{{tracker_name}}' en {{vehicle_name}} vence en {{measurement_value}} {{measurement_unit}}."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Mantenimiento vencido",
-			"body": "'{{tracker_name}}' en {{vehicle_name}} está {{km_over}} km vencido."
+			"body": "'{{tracker_name}}' en {{vehicle_name}} está {{measurement_value}} {{measurement_unit}} vencido."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Mantenimiento próximo",

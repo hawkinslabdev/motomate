@@ -84,9 +84,9 @@
 				});
 			case 'waiting':
 				return $_('settings.notifications.scheduledRules.waiting');
-			case 'km': {
-				const base = $_('settings.notifications.scheduledRules.inKm', {
-					values: { km: info.kmRemaining }
+			case 'measurement': {
+				const base = $_('settings.notifications.scheduledRules.inMeasurement', {
+					values: { value: info.remaining, unit: info.unit }
 				});
 				return info.trackerName
 					? `${base} ${$_('settings.notifications.scheduledRules.trackerLabel', { values: { tracker: info.trackerName } })}`
