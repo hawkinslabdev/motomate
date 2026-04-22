@@ -7,7 +7,11 @@ import { updateOdometer, getVehicleById } from './vehicles.js';
 import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
-import { compareMeasurements, resolveMeasurementValue } from '../../utils/measurement.js';
+import {
+	compareMeasurements,
+	isDistanceMeasurementValue,
+	resolveMeasurementValue
+} from '../../utils/measurement.js';
 
 function hydrateServiceLog(log: ServiceLog): ServiceLog {
 	return {
@@ -61,7 +65,9 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 			parsed.vehicle_id,
 			userId,
 			parsed.odometer_at_service,
-			serviceMeasurement?.unit ?? vehicle?.odometer_unit
+			isDistanceMeasurementValue(serviceMeasurement)
+				? serviceMeasurement.unit
+				: vehicle?.odometer_unit
 		);
 	}
 
