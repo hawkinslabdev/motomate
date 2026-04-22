@@ -399,6 +399,30 @@
 					"desc": "Dit voertuig wordt teruggeplaatst in je actieve garage. De verkoopprijs wordt gewist zodat je de voertuigdetails opnieuw kunt bewerken.",
 					"confirm": "Herstellen",
 					"cancel": "Gearchiveerd houden"
+				},
+				"report": {
+					"title": "Onderhoudsboekje",
+					"desc": "Download een fysiek kopie van jouw volledige onderhoudshistorie.",
+					"btn": "Downloaden",
+					"pdf": {
+						"generatedOn": "Gegenereerd op",
+						"currentOdometer": "Huidige kilometerstand",
+						"serviceHistory": "Onderhoudshistorie",
+						"addendum": "Bijlage: Documenten",
+						"cost": "Kosten",
+						"parts": "Gebruikte onderdelen",
+						"notes": "Notities",
+						"remark": "Opmerking",
+						"noLogs": "Geen onderhoudsrecords gevonden.",
+						"attachmentPage": "pagina",
+						"notEmbeddable": "niet instelbaar",
+						"trackers": "Uitgevoerd",
+						"period": "Periode",
+						"attached": "Bijgevoegd",
+						"seeFollowingPage": "Zie volgende pagina",
+						"seeFollowingPages": "Zie volgende {count} paginas",
+						"fileNotEmbeddable": "Bestand niet insluitbaar in PDF"
+					}
 				}
 			},
 			"errors": {

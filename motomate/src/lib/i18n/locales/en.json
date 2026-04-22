@@ -383,6 +383,30 @@
 					"desc": "This vehicle will be moved back to your active garage. The sold price will be cleared so you can edit this vehicle's details again.",
 					"confirm": "Restore",
 					"cancel": "Keep archived"
+				},
+				"report": {
+					"title": "Maintenance report",
+					"desc": "Download a physical copy of your complete service history.",
+					"btn": "Download",
+					"pdf": {
+						"generatedOn": "Generated on",
+						"currentOdometer": "Current odometer",
+						"serviceHistory": "Service History",
+						"addendum": "Addendum: Attachments",
+						"cost": "Cost",
+						"parts": "Parts used",
+						"notes": "Notes",
+						"remark": "Remark",
+						"noLogs": "No service records found.",
+						"attachmentPage": "page",
+						"notEmbeddable": "not embeddable",
+						"trackers": "Serviced",
+						"period": "Period",
+						"attached": "Attached",
+						"seeFollowingPage": "See following page",
+						"seeFollowingPages": "See following {count} pages",
+						"fileNotEmbeddable": "File not embeddable in PDF"
+					}
 				}
 			},
 			"errors": {

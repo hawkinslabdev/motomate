@@ -17,7 +17,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 	const format = url.searchParams.get('format') === 'zip' ? 'zip' : 'json';
 	const dateStr = new Date().toISOString().slice(0, 10);
 
-	// ── Aggregate all user data ───────────────────────────────────────────────
 	const [vehicles, templates, workflowRules, notifications] = await Promise.all([
 		getVehiclesByUser(userId, true),
 		getTemplatesByUser(userId),
@@ -57,7 +56,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		notifications
 	};
 
-	// ── JSON-only export ──────────────────────────────────────────────────────
 	if (format === 'json') {
 		const body = JSON.stringify(exportData, null, 2);
 		return new Response(body, {
@@ -69,7 +67,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		});
 	}
 
-	// ── ZIP export ────────────────────────────────────────────────────────────
 	const storage = getStorage();
 	const now = new Date();
 	const zipFiles: Record<string, [Uint8Array, { mtime: Date }]> = {};

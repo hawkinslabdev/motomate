@@ -399,6 +399,30 @@
 					"desc": "Dieses Fahrzeug wird in Ihre aktive Garage zurückversetzt. Der Verkaufspreis wird gelöscht, damit Sie die Fahrzeugdetails erneut bearbeiten können.",
 					"confirm": "Wiederherstellen",
 					"cancel": "Archiviert lassen"
+				},
+				"report": {
+					"title": "Wartungsheft",
+					"desc": "Laden Sie eine physische Kopie Ihrer vollständigen Wartungshistorie herunter.",
+					"btn": "Herunterladen",
+					"pdf": {
+						"generatedOn": "Erstellt am",
+						"currentOdometer": "Aktueller Kilometerstand",
+						"serviceHistory": "Wartungshistorie",
+						"addendum": "Anhang: Dokumente",
+						"cost": "Kosten",
+						"parts": "Verwendete Teile",
+						"notes": "Notizen",
+						"remark": "Anmerkung",
+						"noLogs": "Keine Serviceeinträge gefunden.",
+						"attachmentPage": "Seite",
+						"notEmbeddable": "nicht einbettbar",
+						"trackers": "Durchgeführt",
+						"period": "Zeitraum",
+						"attached": "Beigefuegt",
+						"seeFollowingPage": "Siehe naechste Seite",
+						"seeFollowingPages": "Siehe naechste {count} Seiten",
+						"fileNotEmbeddable": "Datei nicht in PDF einbettbar"
+					}
 				}
 			},
 			"errors": {

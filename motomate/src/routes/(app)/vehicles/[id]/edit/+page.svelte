@@ -470,7 +470,6 @@
 	}
 	.settings-divider {
 		height: 1px;
-		background: var(--border);
 		margin: var(--space-2) 0;
 	}
 	.inline-form {

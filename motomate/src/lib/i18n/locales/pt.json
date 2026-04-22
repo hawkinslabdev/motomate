@@ -399,6 +399,30 @@
 					"desc": "Este veículo será devolvido à sua garagem ativa. O preço de venda será apagado para que possa editar os detalhes do veículo novamente.",
 					"confirm": "Restaurar",
 					"cancel": "Manter arquivado"
+				},
+				"report": {
+					"title": "Livro de manutenção",
+					"desc": "Descarregue uma cópia física do seu histórico de manutenção completo.",
+					"btn": "Descarregar",
+					"pdf": {
+						"generatedOn": "Gerado em",
+						"currentOdometer": "Quilometragem atual",
+						"serviceHistory": "Histórico de manutenção",
+						"addendum": "Anexo: Documentos",
+						"cost": "Custo",
+						"parts": "Peças usadas",
+						"notes": "Notas",
+						"remark": "Observação",
+						"noLogs": "Nenhum registo de serviço encontrado.",
+						"attachmentPage": "página",
+						"notEmbeddable": "não incorporável",
+						"trackers": "Realizado",
+						"period": "Periodo",
+						"attached": "Anexado",
+						"seeFollowingPage": "Ver pagina seguinte",
+						"seeFollowingPages": "Ver as {count} paginas seguintes",
+						"fileNotEmbeddable": "Ficheiro nao incorporavel no PDF"
+					}
 				}
 			},
 			"errors": {
