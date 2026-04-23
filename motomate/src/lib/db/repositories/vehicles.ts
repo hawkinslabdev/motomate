@@ -198,40 +198,6 @@ export async function getOdometerLogs(vehicleId: string, userId: string): Promis
 	return rows.map(hydrateOdometerLog);
 }
 
-export async function getMaxOdometer(vehicleId: string, userId: string): Promise<number> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return 0;
-	const vehicleMeasurement = resolveVehicleDistanceMeasurement(vehicle);
-	const readingSql = sql<number>`coalesce(${odometer_logs.measurement}, ${odometer_logs.odometer})`;
-	const [row] = await db
-		.select({
-			reading: readingSql,
-			measurementUnit: odometer_logs.measurement_unit
-		})
-		.from(odometer_logs)
-		.where(
-			and(
-				eq(odometer_logs.vehicle_id, vehicleId),
-				eq(odometer_logs.user_id, userId),
-				or(
-					eq(odometer_logs.measurement_unit, vehicleMeasurement.unit),
-					isNull(odometer_logs.measurement_unit)
-				)
-			)
-		)
-		.orderBy(desc(readingSql))
-		.limit(1);
-
-	const maxMeasurement = resolveMeasurementValue(
-		row?.reading ?? null,
-		row?.measurementUnit ?? vehicleMeasurement.unit
-	);
-
-	return maxMeasurement && areMeasurementsComparable(maxMeasurement, vehicleMeasurement)
-		? maxMeasurement.value
-		: 0;
-}
-
 export async function updateOdometerLog(
 	id: string,
 	vehicleId: string,
