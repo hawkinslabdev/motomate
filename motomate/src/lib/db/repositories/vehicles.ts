@@ -1,4 +1,4 @@
-import { eq, and, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull, or, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicles, odometer_logs, service_logs } from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
@@ -6,6 +6,7 @@ import type { InsertVehicle, Vehicle, OdometerLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
+	areMeasurementsComparable,
 	isDistanceMeasurementValue,
 	isDistanceUnit,
 	maxComparableMeasurement,
@@ -200,21 +201,35 @@ export async function getOdometerLogs(vehicleId: string, userId: string): Promis
 export async function getMaxOdometer(vehicleId: string, userId: string): Promise<number> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return 0;
-	const logs = await db.query.odometer_logs.findMany({
-		where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId)),
-		columns: { odometer: true, measurement: true, measurement_unit: true }
-	});
 	const vehicleMeasurement = resolveVehicleDistanceMeasurement(vehicle);
-	const maxMeasurement = maxComparableMeasurement(
-		logs.map((log) =>
-			resolveMeasurementValue(
-				log.measurement ?? log.odometer,
-				log.measurement_unit ?? vehicleMeasurement.unit
+	const readingSql = sql<number>`coalesce(${odometer_logs.measurement}, ${odometer_logs.odometer})`;
+	const [row] = await db
+		.select({
+			reading: readingSql,
+			measurementUnit: odometer_logs.measurement_unit
+		})
+		.from(odometer_logs)
+		.where(
+			and(
+				eq(odometer_logs.vehicle_id, vehicleId),
+				eq(odometer_logs.user_id, userId),
+				or(
+					eq(odometer_logs.measurement_unit, vehicleMeasurement.unit),
+					isNull(odometer_logs.measurement_unit)
+				)
 			)
-		),
-		vehicleMeasurement
+		)
+		.orderBy(desc(readingSql))
+		.limit(1);
+
+	const maxMeasurement = resolveMeasurementValue(
+		row?.reading ?? null,
+		row?.measurementUnit ?? vehicleMeasurement.unit
 	);
-	return maxMeasurement?.value ?? 0;
+
+	return maxMeasurement && areMeasurementsComparable(maxMeasurement, vehicleMeasurement)
+		? maxMeasurement.value
+		: 0;
 }
 
 export async function updateOdometerLog(
