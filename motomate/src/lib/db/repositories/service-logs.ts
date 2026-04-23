@@ -117,22 +117,6 @@ export async function getServiceLogById(id: string): Promise<ServiceLog | undefi
 	return log ? hydrateServiceLog(log) : undefined;
 }
 
-export async function getServiceLogsByTracker(
-	trackerId: string,
-	vehicleId: string,
-	userId: string,
-	limit: number = 12
-): Promise<ServiceLog[]> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return [];
-	const rows = await db.query.service_logs.findMany({
-		where: and(eq(service_logs.vehicle_id, vehicleId), eq(service_logs.tracker_id, trackerId)),
-		orderBy: (s, { desc }) => [desc(s.performed_at)],
-		limit
-	});
-	return rows.map(hydrateServiceLog);
-}
-
 export async function updateServiceLog(
 	id: string,
 	vehicleId: string,
