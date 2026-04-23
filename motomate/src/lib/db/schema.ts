@@ -464,6 +464,12 @@ export const odometer_logs = sqliteTable(
 		vehicleRecorded: index('idx_odometer_logs_vehicle_recorded').on(
 			table.vehicle_id,
 			table.recorded_at
+		),
+		vehicleUserUnitReading: index('idx_odometer_logs_vehicle_user_unit_reading').on(
+			table.vehicle_id,
+			table.user_id,
+			table.measurement_unit,
+			sql`coalesce(${table.measurement}, ${table.odometer})`
 		)
 	})
 );
