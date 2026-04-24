@@ -136,11 +136,7 @@ export const actions: Actions = {
 			attachments: [...attachmentDocIds, ...linkedDocIds]
 		});
 
-		const trueOdo = await recomputeCurrentOdometer(
-			params.id,
-			locals.user!.id,
-			vehicle?.odometer_unit
-		);
+		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
@@ -244,11 +240,7 @@ export const actions: Actions = {
 			remark
 		});
 
-		const trueOdo = await recomputeCurrentOdometer(
-			params.id,
-			locals.user!.id,
-			vehicle?.odometer_unit
-		);
+		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
@@ -302,11 +294,7 @@ export const actions: Actions = {
 			recorded_at: recordedAt,
 			remark
 		});
-		const trueOdo = await recomputeCurrentOdometer(
-			params.id,
-			locals.user!.id,
-			vehicle?.odometer_unit
-		);
+		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 

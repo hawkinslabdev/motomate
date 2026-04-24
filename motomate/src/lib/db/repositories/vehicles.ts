@@ -36,7 +36,7 @@ function resolveVehicleOdometerFields(
 	};
 }
 
-function resolveVehicleDistanceMeasurement(
+export function resolveVehicleDistanceMeasurement(
 	vehicle: Pick<
 		Vehicle,
 		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
@@ -235,21 +235,9 @@ export async function deleteOdometerLog(
  * If no logs remain, resets to 0 so the vehicle can accept any new reading.
  * Returns the new odometer value.
  */
-export async function recomputeCurrentOdometer(
-	vehicleId: string,
-	userId: string,
-	odometerUnit?: Vehicle['odometer_unit']
-): Promise<number> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	const vehicleMeasurement = vehicle
-		? resolveVehicleDistanceMeasurement(vehicle)
-		: {
-				value: 0,
-				unit: odometerUnit ?? DEFAULT_ODOMETER_UNIT,
-				basis: 'distance' as const
-			};
-
-	const [odoLogs, svcLogs] = await Promise.all([
+export async function recomputeCurrentOdometer(vehicleId: string, userId: string): Promise<number> {
+	const [vehicle, odoLogs, svcLogs] = await Promise.all([
+		getVehicleById(vehicleId, userId),
 		db.query.odometer_logs.findMany({
 			where: and(eq(odometer_logs.vehicle_id, vehicleId), eq(odometer_logs.user_id, userId))
 		}),
@@ -257,6 +245,10 @@ export async function recomputeCurrentOdometer(
 			where: eq(service_logs.vehicle_id, vehicleId)
 		})
 	]);
+
+	const vehicleMeasurement = vehicle
+		? resolveVehicleDistanceMeasurement(vehicle)
+		: { value: 0, unit: DEFAULT_ODOMETER_UNIT, basis: 'distance' as const };
 
 	const maxMeasurement = maxComparableMeasurement(
 		[
