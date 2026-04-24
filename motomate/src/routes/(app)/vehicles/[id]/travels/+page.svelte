@@ -49,7 +49,7 @@
 		formOpen = true;
 	}
 
-	async function toggleExcludedDay(travelId: string, dayIndex: number) {
+	async function _toggleExcludedDay(travelId: string, dayIndex: number) {
 		const formData = new FormData();
 		formData.set('id', travelId);
 		formData.set('day_index', String(dayIndex));
@@ -238,7 +238,7 @@
 	);
 
 	// Group GPX files by travelId for the day toggle UI
-	const gpxFilesByTravel = $derived(
+	const _gpxFilesByTravel = $derived(
 		gpxFiles.reduce(
 			(acc, f) => {
 				if (!acc[f.travelId]) acc[f.travelId] = [];
@@ -250,7 +250,7 @@
 	);
 
 	// Get all travels that have GPX (with their excluded days info for toggle UI)
-	const travelsWithGpx = $derived(
+	const _travelsWithGpx = $derived(
 		data.travels
 			.filter((t: Travel) => (t.gpx_document_ids as (string | null)[]).some(Boolean))
 			.map((t: Travel) => ({

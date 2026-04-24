@@ -7,7 +7,8 @@
 		waitLocale();
 	});
 
-	// @ts-ignore - Vite injects this global
+	// @ts-expect-error - Vite injects this global
+	// eslint-disable-next-line no-undef
 	const appVersion: string = __APP_VERSION__;
 
 	const tabs = [

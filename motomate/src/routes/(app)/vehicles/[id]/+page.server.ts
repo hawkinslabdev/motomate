@@ -19,8 +19,7 @@ import {
 } from '$lib/db/repositories/vehicles.js';
 import {
 	getTrackersByVehicle,
-	recomputeTrackerStatuses,
-	updateTrackerAfterService
+	recomputeTrackerStatuses
 } from '$lib/db/repositories/maintenance.js';
 import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
@@ -131,7 +130,7 @@ export const actions: Actions = {
 		// Collect any existing doc IDs linked from the picker in the new form
 		const linkedDocIds = formData.getAll('linked_doc_id').map(String).filter(Boolean);
 
-		const serviceLog = await createServiceLog(locals.user!.id, {
+		await createServiceLog(locals.user!.id, {
 			...parsed.data,
 			attachments: [...attachmentDocIds, ...linkedDocIds]
 		});

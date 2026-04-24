@@ -8,8 +8,7 @@ import type {
 	InsertTaskTemplate,
 	InsertActiveTracker,
 	TaskTemplate,
-	ActiveTracker,
-	Vehicle
+	ActiveTracker
 } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import {

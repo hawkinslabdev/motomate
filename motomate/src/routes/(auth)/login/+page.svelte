@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { _ } from '$lib/i18n';
 
-	let { data, form } = $props<{
+	let { form } = $props<{
 		data: Record<string, never>;
 		form: {
 			error?: string;

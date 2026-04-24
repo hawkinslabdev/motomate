@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
 	import { _ } from '$lib/i18n';
 	import type { Travel } from '$lib/db/schema.js';
 

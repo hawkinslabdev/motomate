@@ -44,29 +44,26 @@
 <a href="/settings/notifications" class="back-link">{$_('settings.notifications.title')}</a>
 
 <PageHeader title={$_('settings.notifications.allTitle')}>
-	{#snippet children()}
-		{#if hasUnread}
-			<form method="POST" action="?/markAllRead" use:enhance>
-				<button type="submit" class="text-action">{$_('settings.notifications.markAllRead')}</button
-				>
-			</form>
-		{/if}
-		{#if data.filter === 'all'}
-			<form
-				method="POST"
-				action="?/deleteRead"
-				use:enhance={() => {
-					return async ({ update }) => {
-						await update({ reset: false });
-					};
-				}}
-			>
-				<button type="submit" class="text-action text-action--danger">
-					{$_('settings.notifications.deleteRead')}
-				</button>
-			</form>
-		{/if}
-	{/snippet}
+	{#if hasUnread}
+		<form method="POST" action="?/markAllRead" use:enhance>
+			<button type="submit" class="text-action">{$_('settings.notifications.markAllRead')}</button>
+		</form>
+	{/if}
+	{#if data.filter === 'all'}
+		<form
+			method="POST"
+			action="?/deleteRead"
+			use:enhance={() => {
+				return async ({ update }) => {
+					await update({ reset: false });
+				};
+			}}
+		>
+			<button type="submit" class="text-action text-action--danger">
+				{$_('settings.notifications.deleteRead')}
+			</button>
+		</form>
+	{/if}
 </PageHeader>
 
 <!-- Filter tabs -->

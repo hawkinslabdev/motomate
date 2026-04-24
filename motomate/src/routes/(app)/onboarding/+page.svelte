@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { _ } from '$lib/i18n';
 	import {
 		DEFAULT_ODOMETER_UNIT,
@@ -7,11 +6,6 @@
 		getDistanceUnitTranslationKey,
 		type DistanceUnit
 	} from '$lib/utils/measurement.js';
-
-	let { data, form } = $props<{
-		data: Record<string, never>;
-		form: { error?: string } | null;
-	}>();
 
 	// Wizard step (1 = Welcome, 2 = Type, 3 = Details, 4 = Odometer, 5 = Presets, 6 = Last service, 7 = Summary)
 	type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
