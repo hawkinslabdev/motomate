@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
 	import VehicleCard from '$lib/components/ui/VehicleCard.svelte';
 	import { _ } from '$lib/i18n';
 
-	let { data, form }: { data: PageData; form: Record<string, unknown> | null } = $props();
+	let { data }: { data: PageData } = $props();
 
 	const locale = $derived((data as any).user?.settings?.locale ?? 'en');
 	const onboardingDone = $derived((data as any).user?.settings?.onboarding_done ?? false);
@@ -26,11 +25,10 @@
 	async function handleFavorite(vehicleId: string) {
 		const formData = new FormData();
 		formData.set('vehicle_id', vehicleId === favoriteVehicleId ? '' : vehicleId);
-		const response = await fetch('?/setFavorite', {
+		await fetch('?/setFavorite', {
 			method: 'POST',
 			body: formData
 		});
-		const result = await response.json();
 		invalidateAll();
 	}
 </script>

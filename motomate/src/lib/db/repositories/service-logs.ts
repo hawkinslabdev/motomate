@@ -1,6 +1,6 @@
 import { eq, and, inArray, desc } from 'drizzle-orm';
 import { db } from '../index.js';
-import { service_logs, vehicles } from '../schema.js';
+import { service_logs } from '../schema.js';
 import { CreateServiceLogSchema } from '../../validators/schemas.js';
 import { updateTrackerAfterService } from './maintenance.js';
 import { updateOdometer, getVehicleById } from './vehicles.js';

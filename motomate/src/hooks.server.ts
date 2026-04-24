@@ -22,7 +22,7 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 	if (!requestOrigin && referer) {
 		try {
 			requestOrigin = new URL(referer).origin;
-		} catch (e) {
+		} catch {
 			// ignore
 		}
 	}
@@ -31,7 +31,7 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 	if (!requestOrigin && url) {
 		try {
 			requestOrigin = new URL(url).origin;
-		} catch (e) {
+		} catch {
 			// ignore
 		}
 	}
@@ -50,7 +50,7 @@ function isOriginTrusted(origin: string | null, referer: string | null, url: str
 				if (originUrl.hostname === trustedUrl.hostname) {
 					return true;
 				}
-			} catch (e) {
+			} catch {
 				// skip
 			}
 		}

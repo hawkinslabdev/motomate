@@ -1,4 +1,4 @@
-import { eq, and, desc, inArray, lte, sql } from 'drizzle-orm';
+import { eq, and, desc, lte, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { travels } from '../schema.js';
 import { getVehicleById } from './vehicles.js';

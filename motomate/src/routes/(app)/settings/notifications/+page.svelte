@@ -54,7 +54,7 @@ triggers:
     allowed_methods:
       - POST
     local_only: true
-    webhook_id: motomate
+    webhook_id: ${webhookId}
 conditions: []
 actions:
   - action: notify.mobile_app_iphone_android

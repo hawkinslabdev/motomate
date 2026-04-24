@@ -64,7 +64,6 @@ export const actions: Actions = {
 		}
 
 		await createServiceLog(locals.user!.id, parsed.data);
-		const vehicle = await getVehicleById(params.id, locals.user!.id);
 		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});

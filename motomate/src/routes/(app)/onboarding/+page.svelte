@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { _ } from '$lib/i18n';
 	import {
 		DEFAULT_ODOMETER_UNIT,
@@ -8,7 +7,7 @@
 		type DistanceUnit
 	} from '$lib/utils/measurement.js';
 
-	let { data, form } = $props<{
+	let { data: _data, form: _form } = $props<{
 		data: Record<string, never>;
 		form: { error?: string } | null;
 	}>();

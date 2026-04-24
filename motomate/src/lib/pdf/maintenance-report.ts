@@ -74,7 +74,6 @@ function loadTranslations(locale: string): ReportTranslations {
 	};
 	try {
 		const raw = readFileSync(resolve('src/lib/i18n/locales', `${lang}.json`), 'utf-8');
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const json = JSON.parse(raw) as any;
 		const loaded = json?.vehicle?.edit?.settings?.report?.pdf as Partial<ReportTranslations>;
 		if (loaded) {
@@ -527,7 +526,6 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 	drawCover(pdfDoc, vehicle, t, locale, dateRange);
 	drawServiceLogs(pdfDoc, vehicle, filteredLogs, trackerNames, attachmentIndex, t, locale);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	type LoadedAttach = {
 		id: string;
 		idx: number;
@@ -536,12 +534,12 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 		src?: any;
 	};
 	const loadedAttachments: LoadedAttach[] = [];
-	let attachmentExtraPages = 0; // pages that pdf-lib will add
+	let _attachmentExtraPages = 0; // pages that pdf-lib will add
 
 	for (const { id, idx, doc: d } of orderedAttachments) {
 		if (isImage(d.mime_type) && docBuffers.has(id)) {
 			loadedAttachments.push({ id, idx, doc: d, kind: 'image' });
-			attachmentExtraPages += 1;
+			_attachmentExtraPages += 1;
 		} else if (isPdf(d.mime_type) && docBuffers.has(id)) {
 			try {
 				const src = await LibPDFDocument.load(docBuffers.get(id)!);
@@ -549,11 +547,11 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 				attachmentExtraPages += 1 + src.getPageCount();
 			} catch {
 				loadedAttachments.push({ id, idx, doc: d, kind: 'other' });
-				attachmentExtraPages += 1;
+				_attachmentExtraPages += 1;
 			}
 		} else {
 			loadedAttachments.push({ id, idx, doc: d, kind: 'other' });
-			attachmentExtraPages += 1;
+			_attachmentExtraPages += 1;
 		}
 	}
 
@@ -649,7 +647,6 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 			});
 
 			// Source PDF pages follow immediately
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const copied = await merged.copyPages(
 				attach.src as any,
 				(attach.src as any).getPageIndices()

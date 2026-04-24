@@ -97,7 +97,7 @@
 
 	// Re-colour routes whenever selection changes
 	$effect(() => {
-		selectedTravelIds; // reactive dependency
+		void selectedTravelIds; // reactive dep — map is not $state so this ensures the effect re-tracks
 		if (map) {
 			// Capture the "all routes" view before zooming into a selection
 			if (selectedTravelIds.length > 0 && initialView === null) {

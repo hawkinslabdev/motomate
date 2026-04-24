@@ -416,28 +416,26 @@
 	title={$_('vehicle.edit.settings.report.modal.title')}
 	onclose={() => (showReportModal = false)}
 >
-	{#snippet children()}
-		<p class="report-modal-desc">{$_('vehicle.edit.settings.report.modal.desc')}</p>
-		<ul class="tracker-checklist">
-			{#each data.reportTrackers as tracker}
-				<li>
-					<label class="tracker-check-label">
-						<input
-							type="checkbox"
-							checked={!excludedTrackerIds.has(tracker.id)}
-							onchange={(e) => {
-								const next = new Set(excludedTrackerIds);
-								if (e.currentTarget.checked) next.delete(tracker.id);
-								else next.add(tracker.id);
-								excludedTrackerIds = next;
-							}}
-						/>
-						{tracker.name}
-					</label>
-				</li>
-			{/each}
-		</ul>
-	{/snippet}
+	<p class="report-modal-desc">{$_('vehicle.edit.settings.report.modal.desc')}</p>
+	<ul class="tracker-checklist">
+		{#each data.reportTrackers as tracker}
+			<li>
+				<label class="tracker-check-label">
+					<input
+						type="checkbox"
+						checked={!excludedTrackerIds.has(tracker.id)}
+						onchange={(e) => {
+							const next = new Set(excludedTrackerIds);
+							if (e.currentTarget.checked) next.delete(tracker.id);
+							else next.add(tracker.id);
+							excludedTrackerIds = next;
+						}}
+					/>
+					{tracker.name}
+				</label>
+			</li>
+		{/each}
+	</ul>
 	{#snippet footer()}
 		<button type="button" class="btn-ghost" onclick={() => (showReportModal = false)}>
 			{$_('vehicle.edit.settings.report.modal.cancel')}

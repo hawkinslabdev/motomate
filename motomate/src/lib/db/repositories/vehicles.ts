@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, or, sql } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicles, odometer_logs, service_logs } from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
@@ -6,9 +6,7 @@ import type { InsertVehicle, Vehicle, OdometerLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
-	areMeasurementsComparable,
 	isDistanceMeasurementValue,
-	isDistanceUnit,
 	maxComparableMeasurement,
 	resolveMeasurementValue,
 	type DistanceUnit,
