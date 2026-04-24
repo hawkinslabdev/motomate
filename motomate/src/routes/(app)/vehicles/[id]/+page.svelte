@@ -2147,11 +2147,17 @@
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.upcoming-detail {
 		font-size: var(--text-sm);
 		margin-top: 0.125rem;
 		color: var(--text-muted);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.upcoming-card--overdue .upcoming-detail {
 		color: var(--status-overdue);
@@ -2447,23 +2453,28 @@
 		color: var(--text);
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 600px) {
 		.form-row {
 			grid-template-columns: 1fr;
 		}
+		.inline-form {
+			padding: 1rem;
+		}
+	}
+	@media (max-width: 480px) {
 		.entry-menu-btn {
 			opacity: 1;
 			width: 44px;
 			height: 44px;
 		}
 	}
-	@media (max-width: 380px) {
-		.form-row {
-			grid-template-columns: 1fr;
+	@media (pointer: coarse) {
+		.entry-menu-btn {
+			opacity: 1;
 		}
 	}
 
-	/* ── Attachment UI (form + timeline) ── */
+	/* Attachment UI (form + timeline) */
 	.form-attachments {
 		display: flex;
 		flex-direction: column;
@@ -2526,7 +2537,7 @@
 		cursor: not-allowed;
 	}
 
-	/* ── Entry attachments (timeline read-only) ── */
+	/* Entry attachments (timeline read-only) */
 	.entry-attachments {
 		display: flex;
 		flex-wrap: wrap;
@@ -2535,7 +2546,7 @@
 		margin-top: 0.375rem;
 	}
 
-	/* ── Edit form attachments (inside entry-edit-card) ── */
+	/* Edit form attachments (inside entry-edit-card) */
 	.edit-attachments {
 		border-top: 1px solid var(--border);
 		margin-top: 0.625rem;
@@ -2607,7 +2618,7 @@
 		color: inherit;
 	}
 
-	/* ── Link picker ── */
+	/* Link picker */
 	.link-picker {
 		margin-top: 0.5rem;
 		border: 1px solid var(--border);

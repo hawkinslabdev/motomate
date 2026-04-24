@@ -539,6 +539,9 @@
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.rule-name--muted {
 		color: var(--text-muted);
@@ -567,7 +570,10 @@
 	}
 	.rule-last-fired {
 		white-space: nowrap;
-		flex-shrink: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		flex-shrink: 1;
+		min-width: 0;
 	}
 	.rule-next-fire {
 		overflow: hidden;
@@ -688,5 +694,22 @@
 	.delete-btn:hover {
 		color: var(--status-overdue);
 		border-color: var(--status-overdue);
+	}
+
+	@media (max-width: 600px) {
+		.rule-row {
+			flex-wrap: wrap;
+			gap: var(--space-3);
+		}
+		.rule-actions {
+			order: 3;
+			flex-direction: row;
+			align-items: center;
+			gap: var(--space-2);
+			width: 100%;
+			justify-content: flex-end;
+			padding-top: var(--space-2);
+			border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+		}
 	}
 </style>
