@@ -544,7 +544,7 @@ export async function buildMaintenanceReport(opts: MaintenanceReportOptions): Pr
 			try {
 				const src = await LibPDFDocument.load(docBuffers.get(id)!);
 				loadedAttachments.push({ id, idx, doc: d, kind: 'pdf', src });
-				attachmentExtraPages += 1 + src.getPageCount();
+				_attachmentExtraPages += 1 + src.getPageCount();
 			} catch {
 				loadedAttachments.push({ id, idx, doc: d, kind: 'other' });
 				_attachmentExtraPages += 1;
