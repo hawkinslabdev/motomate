@@ -7,6 +7,11 @@
 		type DistanceUnit
 	} from '$lib/utils/measurement.js';
 
+	let { data: _data, form: _form } = $props<{
+		data: Record<string, never>;
+		form: { error?: string } | null;
+	}>();
+
 	// Wizard step (1 = Welcome, 2 = Type, 3 = Details, 4 = Odometer, 5 = Presets, 6 = Last service, 7 = Summary)
 	type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 	let step = $state<Step>(1);
