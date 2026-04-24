@@ -3,7 +3,7 @@ import { addMonths, parseISO, formatISO } from 'date-fns';
 import { db, sqlite } from '../index.js';
 import { task_templates, active_trackers, vehicles } from '../schema.js';
 import { CreateTaskTemplateSchema } from '../../validators/schemas.js';
-import { getVehicleById } from './vehicles.js';
+import { getVehicleById, resolveVehicleDistanceMeasurement } from './vehicles.js';
 import type {
 	InsertTaskTemplate,
 	InsertActiveTracker,
@@ -16,7 +16,6 @@ import {
 	DEFAULT_ODOMETER_UNIT,
 	areMeasurementsComparable,
 	compareMeasurements,
-	isDistanceMeasurementValue,
 	isDistanceUnit,
 	resolveMeasurementValue,
 	type MeasurementBasis,
@@ -160,32 +159,6 @@ function hydrateTracker<T extends ActiveTracker>(tracker: T): T {
 		last_done_odometer: resolved.last_done_odometer,
 		next_due_odometer: resolved.next_due_odometer
 	};
-}
-
-function resolveVehicleDistanceMeasurement(
-	vehicle: Pick<
-		Vehicle,
-		'current_measurement' | 'current_measurement_unit' | 'current_odometer' | 'odometer_unit'
-	>
-): MeasurementValue {
-	const canonical = resolveMeasurementValue(
-		vehicle.current_measurement,
-		vehicle.current_measurement_unit
-	);
-	if (isDistanceMeasurementValue(canonical)) {
-		return canonical;
-	}
-
-	const fallbackUnit = isDistanceUnit(vehicle.odometer_unit)
-		? vehicle.odometer_unit
-		: DEFAULT_ODOMETER_UNIT;
-	return (
-		resolveMeasurementValue(vehicle.current_odometer, fallbackUnit) ?? {
-			value: vehicle.current_odometer,
-			unit: fallbackUnit,
-			basis: 'distance'
-		}
-	);
 }
 
 function getTrackerComparableMeasurementUnit(
@@ -910,8 +883,9 @@ export async function recomputeTrackerStatuses(
 		} else {
 			// TODO: expose DUE_SOON_FACTOR as a user setting in profile settings page
 			const DUE_SOON_FACTOR = 0.2;
-			const kmWindow = template.interval_km
-				? Math.min(500, Math.max(50, Math.round(template.interval_km * DUE_SOON_FACTOR)))
+			const intervalMeasurement = interval.interval_measurement ?? template.interval_km;
+			const kmWindow = intervalMeasurement
+				? Math.min(500, Math.max(50, Math.round(intervalMeasurement * DUE_SOON_FACTOR)))
 				: 500;
 			const kmDueSoon =
 				nextDueMeasurementValue != null &&
