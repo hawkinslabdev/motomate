@@ -358,6 +358,8 @@
 		letter-spacing: -0.02em;
 		line-height: var(--leading-tight);
 		margin: 0;
+		overflow-wrap: break-word;
+		word-break: break-word;
 	}
 	.archived-tag {
 		font-size: var(--text-xs);
@@ -374,6 +376,9 @@
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin-top: 0.125rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.odo-display {
 		display: flex;
@@ -468,6 +473,19 @@
 		}
 		.odo-num {
 			font-size: var(--text-2xl);
+		}
+	}
+	@media (max-width: 360px) {
+		.vehicle-avatar {
+			width: 44px;
+			height: 44px;
+			font-size: 1.375rem;
+		}
+		.odo-num {
+			font-size: var(--text-xl);
+		}
+		.vehicle-identity {
+			gap: 0.875rem;
 		}
 	}
 
