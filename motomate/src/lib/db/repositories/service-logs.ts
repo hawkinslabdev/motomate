@@ -7,6 +7,11 @@ import { updateOdometer, getVehicleById } from './vehicles.js';
 import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
+import {
+	compareMeasurements,
+	isDistanceMeasurementValue,
+	resolveMeasurementValue
+} from '../../utils/measurement.js';
 
 function hydrateServiceLog(log: ServiceLog): ServiceLog {
 	return {
@@ -45,15 +50,24 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 		}
 	}
 
-	// Only advance the vehicle odometer — never move it backwards.
+	// Only advance the vehicle odometer/hours — never move it backwards.
 	// Logging historical entries (e.g. "oil change 400 km ago") must not
 	// overwrite a higher current reading.
-	if (vehicle && parsed.odometer_at_service > vehicle.current_odometer) {
+	const serviceMeasurement = resolveMeasurementValue(
+		row.measurement_at_service,
+		row.measurement_unit ?? null
+	);
+	const vehicleMeasurement = vehicle
+		? resolveMeasurementValue(vehicle.current_measurement, vehicle.current_measurement_unit)
+		: null;
+	if ((compareMeasurements(serviceMeasurement, vehicleMeasurement) ?? 0) > 0) {
 		await updateOdometer(
 			parsed.vehicle_id,
 			userId,
 			parsed.odometer_at_service,
-			vehicle.odometer_unit
+			isDistanceMeasurementValue(serviceMeasurement)
+				? serviceMeasurement.unit
+				: vehicle?.odometer_unit
 		);
 	}
 
@@ -101,22 +115,6 @@ export async function getRecentLogsAcrossVehicles(
 export async function getServiceLogById(id: string): Promise<ServiceLog | undefined> {
 	const log = await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) });
 	return log ? hydrateServiceLog(log) : undefined;
-}
-
-export async function getServiceLogsByTracker(
-	trackerId: string,
-	vehicleId: string,
-	userId: string,
-	limit: number = 12
-): Promise<ServiceLog[]> {
-	const vehicle = await getVehicleById(vehicleId, userId);
-	if (!vehicle) return [];
-	const rows = await db.query.service_logs.findMany({
-		where: and(eq(service_logs.vehicle_id, vehicleId), eq(service_logs.tracker_id, trackerId)),
-		orderBy: (s, { desc }) => [desc(s.performed_at)],
-		limit
-	});
-	return rows.map(hydrateServiceLog);
 }
 
 export async function updateServiceLog(

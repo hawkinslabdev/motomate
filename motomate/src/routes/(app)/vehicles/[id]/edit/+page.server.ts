@@ -14,7 +14,6 @@ import {
 } from '$lib/db/repositories/maintenance.js';
 import { UpdateVehicleSchema } from '$lib/validators/schemas.js';
 import { getStorage } from '$lib/storage/index.js';
-import { generateId } from '$lib/utils/id.js';
 import type { VehicleMeta } from '$lib/db/schema.js';
 import { db } from '$lib/db/index.js';
 import { vehicles } from '$lib/db/schema.js';
@@ -28,11 +27,6 @@ const ALLOWED_AVATAR_EXTS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif']);
 
 function validateAvatarMimeType(mime: string): boolean {
 	return ALLOWED_AVATAR_MIMES.has(mime.toLowerCase());
-}
-
-// Appended a unique ID to prevent browser caching when updating an avatar
-function _avatarStorageKey(userId: string, vehicleId: string, ext: string): string {
-	return `avatars/${userId}/${vehicleId}-${generateId()}.${ext}`;
 }
 
 // Helper to clean up repetitive try/catch logic
