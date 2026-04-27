@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import type { RuleTrigger } from '$lib/db/schema.js';
-	import type { NextFireInfo } from './+page.server.js';
+	import type { NextFireInfo } from '$lib/workflow/preview-core.js';
 	import { _, waitLocale } from '$lib/i18n';
 	import { formatDateTime, formatDateLong } from '$lib/utils/format';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
