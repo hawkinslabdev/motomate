@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import type { RuleTrigger } from '$lib/db/schema.js';
-	import type { NextFireInfo } from './+page.server.js';
+	import type { NextFireInfo } from '$lib/workflow/preview-core.js';
 	import { _, waitLocale } from '$lib/i18n';
 	import { formatDateTime, formatDateLong } from '$lib/utils/format';
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
@@ -84,9 +84,9 @@
 				});
 			case 'waiting':
 				return $_('settings.notifications.scheduledRules.waiting');
-			case 'km': {
-				const base = $_('settings.notifications.scheduledRules.inKm', {
-					values: { km: info.kmRemaining }
+			case 'measurement': {
+				const base = $_('settings.notifications.scheduledRules.inMeasurement', {
+					values: { value: info.remaining, unit: info.unit }
 				});
 				return info.trackerName
 					? `${base} ${$_('settings.notifications.scheduledRules.trackerLabel', { values: { tracker: info.trackerName } })}`

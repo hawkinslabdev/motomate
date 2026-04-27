@@ -10,7 +10,7 @@ export interface PresetRule {
 export const PRESET_RULES: PresetRule[] = [
 	{
 		name: 'settings.workflows.presets.maintenanceDueSoonKm',
-		description: 'Notify 500 km before any tracker reaches its odometer threshold',
+		description: 'Notify 500 distance units before any tracker reaches its maintenance threshold',
 		trigger: { type: 'odometer_upcoming', km_before: 500 },
 		actions: {
 			title: 'notifications.maintenanceDueSoonKm.title',
@@ -19,7 +19,7 @@ export const PRESET_RULES: PresetRule[] = [
 	},
 	{
 		name: 'settings.workflows.presets.maintenanceOverdueKm',
-		description: 'Notify when any tracker is past its odometer threshold',
+		description: 'Notify when any tracker is past its maintenance threshold',
 		trigger: { type: 'odometer_overdue', km_past: 0 },
 		actions: {
 			title: 'notifications.maintenanceOverdueKm.title',

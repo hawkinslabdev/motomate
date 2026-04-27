@@ -770,8 +770,8 @@
 			"loadPresets": "Restaurar regras predefinidas",
 			"empty": "Ainda sem regras. Restaure as regras predefinidas para começar, ou crie as suas próprias.",
 			"presets": {
-				"maintenanceDueSoonKm": "Manutenção em breve (km)",
-				"maintenanceOverdueKm": "Manutenção em atraso (km)",
+				"maintenanceDueSoonKm": "Manutenção em breve",
+				"maintenanceOverdueKm": "Manutenção em atraso",
 				"maintenanceDueSoonDate": "Manutenção em breve (data)",
 				"maintenanceOverdueDate": "Manutenção em atraso (data)",
 				"odometerNudge": "Lembrete do odómetro"
@@ -872,6 +872,7 @@
 				"cooldown": "A aguardar até {date}",
 				"waiting": "A aguardar o próximo registo de serviço",
 				"inKm": "Em {km} km",
+				"inMeasurement": "Em {value} {unit}",
 				"onDate": "A partir de {date}",
 				"trackerLabel": "({tracker})",
 				"noData": "Sem dados"
@@ -940,11 +941,11 @@
 	"notifications": {
 		"maintenanceDueSoonKm": {
 			"title": "Manutenção em breve",
-			"body": "'{{tracker_name}}' em {{vehicle_name}} vence em {{km_remaining}} km."
+			"body": "'{{tracker_name}}' em {{vehicle_name}} vence em {{measurement_value}} {{measurement_unit}}."
 		},
 		"maintenanceOverdueKm": {
 			"title": "Manutenção em atraso",
-			"body": "'{{tracker_name}}' em {{vehicle_name}} está {{km_over}} km em atraso."
+			"body": "'{{tracker_name}}' em {{vehicle_name}} está {{measurement_value}} {{measurement_unit}} em atraso."
 		},
 		"maintenanceDueSoonDate": {
 			"title": "Manutenção em breve",

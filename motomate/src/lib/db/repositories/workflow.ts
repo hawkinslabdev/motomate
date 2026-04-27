@@ -5,9 +5,11 @@ import { CreateWorkflowRuleSchema, UpdateWorkflowTriggerSchema } from '../../val
 import type { InsertWorkflowRule, WorkflowRule, RuleTrigger } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import { PRESET_RULES } from '../../workflow/rules.js';
+import { normalizeWorkflowTrigger } from '../../workflow/triggers.js';
 
 export async function createWorkflowRule(userId: string, input: unknown): Promise<WorkflowRule> {
 	const parsed = CreateWorkflowRuleSchema.parse(input);
+	normalizeWorkflowTrigger(parsed.trigger);
 	const id = generateId();
 	const row: InsertWorkflowRule = { ...parsed, id, user_id: userId };
 	await db.insert(workflow_rules).values(row);
@@ -46,6 +48,7 @@ export async function updateWorkflowRuleTrigger(
 	trigger: RuleTrigger
 ): Promise<void> {
 	const { trigger: validatedTrigger } = UpdateWorkflowTriggerSchema.parse({ id, trigger });
+	normalizeWorkflowTrigger(validatedTrigger);
 	await db
 		.update(workflow_rules)
 		.set({ trigger: validatedTrigger, updated_at: new Date().toISOString() })
@@ -58,10 +61,14 @@ export async function seedPresetRulesForUser(userId: string): Promise<void> {
 	for (const preset of PRESET_RULES) {
 		const existingRule = existingByName.get(preset.name);
 		if (existingRule) {
-			// Refresh action template so existing users get updated notification bodies
+			// Refresh action template and description so existing users get updated workflow copy.
 			await db
 				.update(workflow_rules)
-				.set({ actions: preset.actions, updated_at: new Date().toISOString() })
+				.set({
+					description: preset.description,
+					actions: preset.actions,
+					updated_at: new Date().toISOString()
+				})
 				.where(eq(workflow_rules.id, existingRule.id));
 		} else {
 			await createWorkflowRule(userId, {

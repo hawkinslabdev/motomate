@@ -5,6 +5,12 @@ import { renderTemplate } from './rules.js';
 import { serverT } from '$lib/i18n/server.js';
 import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
 import type { RuleTrigger, RuleNotification, Vehicle } from '$lib/db/schema.js';
+import {
+	buildMaintenanceNotificationVars,
+	evaluateDateTrigger,
+	evaluateMaintenanceTrigger,
+	normalizeWorkflowTrigger
+} from './triggers.js';
 
 // Each fired result carries the template vars and, for tracker-based triggers,
 // the tracker id + its current state (so the main loop can do per-tracker cooldown
@@ -109,17 +115,20 @@ async function evalTrigger(
 	_userId: string
 ): Promise<TriggerResult[]> {
 	const today = new Date();
+	const normalizedTrigger = normalizeWorkflowTrigger(trigger);
 
-	switch (trigger.type) {
+	switch (normalizedTrigger.kind) {
 		case 'no_odometer_update': {
-			const cutoff = new Date(today.getTime() - trigger.days * 86400000).toISOString();
+			const cutoff = new Date(today.getTime() - normalizedTrigger.days * 86400000).toISOString();
 			const stale = (vehicle.updated_at ?? vehicle.created_at) < cutoff;
 			if (!stale) return [];
-			return [{ vars: { vehicle_name: vehicle.name, days: trigger.days } }];
+			return [{ vars: { vehicle_name: vehicle.name, days: normalizedTrigger.days } }];
 		}
 
 		case 'calendar_date': {
-			const fired = today.getMonth() + 1 === trigger.month && today.getDate() === trigger.day;
+			const fired =
+				today.getMonth() + 1 === normalizedTrigger.month &&
+				today.getDate() === normalizedTrigger.day;
 			if (!fired) return [];
 			return [{ vars: { vehicle_name: vehicle.name } }];
 		}
@@ -134,7 +143,7 @@ async function evalTrigger(
 				const daysUntil = Math.ceil(
 					(new Date(doc.expires_at).getTime() - today.getTime()) / 86400000
 				);
-				if (daysUntil >= 0 && daysUntil <= trigger.days_before) {
+				if (daysUntil >= 0 && daysUntil <= normalizedTrigger.daysBefore) {
 					results.push({
 						vars: {
 							vehicle_name: vehicle.name,
@@ -148,10 +157,8 @@ async function evalTrigger(
 			return results;
 		}
 
-		case 'odometer_upcoming':
-		case 'odometer_overdue':
-		case 'date_upcoming':
-		case 'date_overdue': {
+		case 'maintenance':
+		case 'date': {
 			const trackers = await db.query.active_trackers.findMany({
 				where: eq(active_trackers.vehicle_id, vehicle.id),
 				with: { template: true }
@@ -167,72 +174,36 @@ async function evalTrigger(
 					trackerStatus: tracker.status
 				};
 
-				// Use tracker.status as the single source of truth, same field the UI uses. This prevents boundary collisions and keeps notification logic
-				// consistent with what the user sees on the maintenance page.
-
-				if (
-					trigger.type === 'odometer_upcoming' &&
-					tracker.status === 'due' &&
-					tracker.next_due_odometer !== null
-				) {
-					const km_remaining = Math.max(0, tracker.next_due_odometer - vehicle.current_odometer);
-					results.push({
-						...base,
-						vars: { vehicle_name: vehicle.name, km_remaining, tracker_id: tracker.id, tracker_name }
-					});
-				}
-
-				if (
-					trigger.type === 'odometer_overdue' &&
-					tracker.status === 'overdue' &&
-					tracker.next_due_odometer !== null
-				) {
-					const km_over = Math.max(0, vehicle.current_odometer - tracker.next_due_odometer);
-					results.push({
-						...base,
-						vars: { vehicle_name: vehicle.name, km_over, tracker_id: tracker.id, tracker_name }
-					});
-				}
-
-				if (
-					trigger.type === 'date_upcoming' &&
-					tracker.status === 'due' &&
-					tracker.next_due_at !== null
-				) {
-					const daysLeft = Math.max(
-						0,
-						Math.ceil((new Date(tracker.next_due_at).getTime() - today.getTime()) / 86400000)
+				if (normalizedTrigger.kind === 'maintenance') {
+					const evaluation = evaluateMaintenanceTrigger(
+						normalizedTrigger,
+						vehicle,
+						tracker,
+						tracker.template
 					);
+					if (!evaluation?.matches) continue;
 					results.push({
 						...base,
-						vars: {
-							vehicle_name: vehicle.name,
-							days_remaining: daysLeft,
-							due_date: tracker.next_due_at,
-							tracker_name
-						}
+						vars: buildMaintenanceNotificationVars(vehicle.name, evaluation, tracker.id)
 					});
+					continue;
 				}
 
-				if (
-					trigger.type === 'date_overdue' &&
-					tracker.status === 'overdue' &&
-					tracker.next_due_at !== null
-				) {
-					const days_over = Math.max(
-						0,
-						Math.ceil((today.getTime() - new Date(tracker.next_due_at).getTime()) / 86400000)
-					);
-					results.push({
-						...base,
-						vars: {
-							vehicle_name: vehicle.name,
-							days_over,
-							due_date: tracker.next_due_at,
-							tracker_name
-						}
-					});
-				}
+				if (tracker.next_due_at === null) continue;
+				const evaluation = evaluateDateTrigger(normalizedTrigger, tracker.next_due_at, today);
+				if (!evaluation.matches) continue;
+				results.push({
+					...base,
+					vars: {
+						vehicle_name: vehicle.name,
+						tracker_name,
+						due_date: tracker.next_due_at,
+						measurement_basis: 'date',
+						measurement_relation: evaluation.relation,
+						days_remaining: evaluation.daysUntilDue,
+						days_over: evaluation.daysOverdue
+					}
+				});
 			}
 
 			return results;
