@@ -4,10 +4,21 @@ import { finance_transactions } from '../schema.js';
 import { getVehicleById } from './vehicles.js';
 import type { InsertFinanceTransaction, FinanceTransaction } from '../schema.js';
 import { generateId } from '../../utils/id.js';
+import {
+	deleteDocumentLinksForTarget,
+	getDocumentIdsForTarget,
+	getDocumentIdsForTargets,
+	replaceDocumentLinks,
+	validateDocumentIds
+} from './document-links.js';
 
-function hydrateFinanceTransaction(transaction: FinanceTransaction): FinanceTransaction {
+function hydrateFinanceTransaction(
+	transaction: FinanceTransaction,
+	attachments: string[] = []
+): FinanceTransaction {
 	return {
 		...transaction,
+		attachments,
 		odometer_at_transaction:
 			transaction.measurement_at_transaction ?? transaction.odometer_at_transaction
 	};
@@ -18,12 +29,14 @@ export async function createFinanceTransaction(
 	input: Omit<InsertFinanceTransaction, 'id' | 'user_id' | 'created_at' | 'updated_at'>
 ): Promise<FinanceTransaction> {
 	const vehicle = await getVehicleById(input.vehicle_id, userId);
+	await validateDocumentIds(userId, input.vehicle_id, input.attachments ?? []);
 	const id = generateId();
 	const now = new Date().toISOString();
 	const row: InsertFinanceTransaction = {
 		...input,
 		id,
 		user_id: userId,
+		attachments: [],
 		measurement_at_transaction: input.odometer_at_transaction,
 		measurement_unit:
 			input.odometer_at_transaction != null ? (vehicle?.odometer_unit ?? null) : null,
@@ -32,12 +45,18 @@ export async function createFinanceTransaction(
 	};
 
 	await db.insert(finance_transactions).values(row);
+	await replaceDocumentLinks({
+		userId,
+		vehicleId: input.vehicle_id,
+		targetType: 'finance_transaction',
+		targetId: id,
+		documentIds: input.attachments ?? []
+	});
 
-	return hydrateFinanceTransaction(
-		(await db.query.finance_transactions.findFirst({
-			where: eq(finance_transactions.id, id)
-		})) as FinanceTransaction
-	);
+	const created = (await db.query.finance_transactions.findFirst({
+		where: eq(finance_transactions.id, id)
+	})) as FinanceTransaction;
+	return hydrateFinanceTransaction(created, input.attachments ?? []);
 }
 
 export async function getFinanceTransactionsByVehicle(
@@ -50,7 +69,11 @@ export async function getFinanceTransactionsByVehicle(
 		where: eq(finance_transactions.vehicle_id, vehicleId),
 		orderBy: (t, { desc }) => [desc(t.performed_at), desc(t.created_at)]
 	});
-	return rows.map(hydrateFinanceTransaction);
+	const attachmentIds = await getDocumentIdsForTargets(
+		'finance_transaction',
+		rows.map((row) => row.id)
+	);
+	return rows.map((row) => hydrateFinanceTransaction(row, attachmentIds.get(row.id) ?? []));
 }
 
 export async function getFinanceTransactionById(
@@ -63,7 +86,9 @@ export async function getFinanceTransactionById(
 	const transaction = await db.query.finance_transactions.findFirst({
 		where: and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId))
 	});
-	return transaction ? hydrateFinanceTransaction(transaction) : undefined;
+	if (!transaction) return undefined;
+	const attachmentIds = await getDocumentIdsForTarget('finance_transaction', id, vehicleId);
+	return hydrateFinanceTransaction(transaction, attachmentIds);
 }
 
 export async function updateFinanceTransaction(
@@ -100,10 +125,16 @@ export async function updateFinanceTransactionAttachments(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
-	const now = new Date().toISOString();
+	await replaceDocumentLinks({
+		userId,
+		vehicleId,
+		targetType: 'finance_transaction',
+		targetId: id,
+		documentIds
+	});
 	await db
 		.update(finance_transactions)
-		.set({ attachments: documentIds, updated_at: now })
+		.set({ updated_at: new Date().toISOString() })
 		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
 }
 
@@ -114,6 +145,7 @@ export async function deleteFinanceTransaction(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	await deleteDocumentLinksForTarget('finance_transaction', id, vehicleId);
 	await db
 		.delete(finance_transactions)
 		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));

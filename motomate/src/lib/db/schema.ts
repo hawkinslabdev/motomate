@@ -99,6 +99,22 @@ export type PartsUsed = Array<{
 
 export type Attachments = string[]; // document IDs
 
+export const DOCUMENT_SOURCES = ['motomate', 'paperless', 'pending_paperless'] as const;
+export type DocumentSource = (typeof DOCUMENT_SOURCES)[number];
+
+export const DOCUMENT_SYNC_STATUSES = ['none', 'queued', 'processing', 'synced', 'failed'] as const;
+export type DocumentSyncStatus = (typeof DOCUMENT_SYNC_STATUSES)[number];
+
+export const DOCUMENT_LINK_TARGET_TYPES = [
+	'service_log',
+	'finance_transaction',
+	'vehicle'
+] as const;
+export type DocumentLinkTargetType = (typeof DOCUMENT_LINK_TARGET_TYPES)[number];
+
+export const DOCUMENT_LINK_RELATIONS = ['attachment', 'purchase', 'sale'] as const;
+export type DocumentLinkRelation = (typeof DOCUMENT_LINK_RELATIONS)[number];
+
 export type RuleTrigger =
 	| { type: 'odometer_upcoming'; km_before: number }
 	| { type: 'odometer_overdue'; km_past: number }
@@ -384,16 +400,119 @@ export const documents = sqliteTable(
 		})
 			.notNull()
 			.default('service'),
-		storage_key: text('storage_key').notNull(),
+		source: text('source', { enum: DOCUMENT_SOURCES }).notNull().default('motomate'),
+		storage_key: text('storage_key'),
 		mime_type: text('mime_type').notNull(),
 		size_bytes: integer('size_bytes').notNull(),
+		paperless_integration_id: text('paperless_integration_id').references(
+			() => paperless_integrations.id,
+			{ onDelete: 'set null' }
+		),
+		paperless_document_id: integer('paperless_document_id'),
+		sync_status: text('sync_status', { enum: DOCUMENT_SYNC_STATUSES }).notNull().default('none'),
+		sync_error: text('sync_error'),
+		last_synced_at: text('last_synced_at'),
 		expires_at: text('expires_at'), // ISO date; null = no expiry
 		created_at: text('created_at')
 			.notNull()
 			.default(sql`(datetime('now'))`)
 	},
 	(table) => ({
-		vehicleCreated: index('idx_documents_vehicle_created').on(table.vehicle_id, table.created_at)
+		vehicleCreated: index('idx_documents_vehicle_created').on(table.vehicle_id, table.created_at),
+		paperlessDocument: uniqueIndex('idx_documents_paperless_document')
+			.on(table.paperless_integration_id, table.paperless_document_id)
+			.where(sql`${table.paperless_document_id} IS NOT NULL`)
+	})
+);
+
+export const paperless_integrations = sqliteTable(
+	'paperless_integrations',
+	{
+		id: text('id').primaryKey(),
+		user_id: text('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		name: text('name').notNull().default('Paperless-ngx'),
+		base_url: text('base_url').notNull(),
+		encrypted_token: text('encrypted_token').notNull(),
+		enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+		last_tested_at: text('last_tested_at'),
+		last_error: text('last_error'),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`)
+	},
+	(table) => ({
+		userBaseUrl: uniqueIndex('idx_paperless_integrations_user_url').on(
+			table.user_id,
+			table.base_url
+		)
+	})
+);
+
+export const document_links = sqliteTable(
+	'document_links',
+	{
+		id: text('id').primaryKey(),
+		vehicle_id: text('vehicle_id')
+			.notNull()
+			.references(() => vehicles.id, { onDelete: 'cascade' }),
+		document_id: text('document_id')
+			.notNull()
+			.references(() => documents.id, { onDelete: 'cascade' }),
+		target_type: text('target_type', { enum: DOCUMENT_LINK_TARGET_TYPES }).notNull(),
+		target_id: text('target_id').notNull(),
+		relation: text('relation', { enum: DOCUMENT_LINK_RELATIONS }).notNull().default('attachment'),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`)
+	},
+	(table) => ({
+		target: index('idx_document_links_target').on(table.target_type, table.target_id),
+		vehicle: index('idx_document_links_vehicle').on(table.vehicle_id),
+		document: index('idx_document_links_document').on(table.document_id),
+		uniqueLink: uniqueIndex('idx_document_links_unique').on(
+			table.target_type,
+			table.target_id,
+			table.document_id,
+			table.relation
+		)
+	})
+);
+
+export const document_sync_jobs = sqliteTable(
+	'document_sync_jobs',
+	{
+		id: text('id').primaryKey(),
+		document_id: text('document_id')
+			.notNull()
+			.references(() => documents.id, { onDelete: 'cascade' }),
+		user_id: text('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		mode: text('mode', { enum: ['mirror', 'move'] }).notNull(),
+		state: text('state', {
+			enum: ['queued', 'uploading', 'processing', 'complete', 'failed']
+		})
+			.notNull()
+			.default('queued'),
+		paperless_task_id: text('paperless_task_id'),
+		attempt_count: integer('attempt_count').notNull().default(0),
+		next_attempt_at: text('next_attempt_at'),
+		last_error: text('last_error'),
+		created_at: text('created_at')
+			.notNull()
+			.default(sql`(datetime('now'))`),
+		updated_at: text('updated_at')
+			.notNull()
+			.default(sql`(datetime('now'))`)
+	},
+	(table) => ({
+		document: index('idx_document_sync_jobs_document').on(table.document_id),
+		due: index('idx_document_sync_jobs_due').on(table.state, table.next_attempt_at)
 	})
 );
 
@@ -595,7 +714,9 @@ export const usersRelations = relations(users, ({ many }) => ({
 	workflow_rules: many(workflow_rules),
 	notifications: many(notifications),
 	push_subscriptions: many(push_subscriptions),
-	api_keys: many(api_keys)
+	api_keys: many(api_keys),
+	paperless_integrations: many(paperless_integrations),
+	document_sync_jobs: many(document_sync_jobs)
 }));
 
 export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
@@ -605,6 +726,7 @@ export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
 	service_logs: many(service_logs),
 	odometer_logs: many(odometer_logs),
 	documents: many(documents),
+	document_links: many(document_links),
 	travels: many(travels),
 	vehicle_notes: many(vehicle_notes)
 }));
@@ -637,9 +759,39 @@ export const serviceLogsRelations = relations(service_logs, ({ one }) => ({
 	})
 }));
 
-export const documentsRelations = relations(documents, ({ one }) => ({
+export const documentsRelations = relations(documents, ({ one, many }) => ({
 	vehicle: one(vehicles, { fields: [documents.vehicle_id], references: [vehicles.id] }),
-	user: one(users, { fields: [documents.user_id], references: [users.id] })
+	user: one(users, { fields: [documents.user_id], references: [users.id] }),
+	paperless_integration: one(paperless_integrations, {
+		fields: [documents.paperless_integration_id],
+		references: [paperless_integrations.id]
+	}),
+	document_links: many(document_links),
+	sync_jobs: many(document_sync_jobs)
+}));
+
+export const paperlessIntegrationsRelations = relations(
+	paperless_integrations,
+	({ one, many }) => ({
+		user: one(users, { fields: [paperless_integrations.user_id], references: [users.id] }),
+		documents: many(documents)
+	})
+);
+
+export const documentLinksRelations = relations(document_links, ({ one }) => ({
+	vehicle: one(vehicles, { fields: [document_links.vehicle_id], references: [vehicles.id] }),
+	document: one(documents, {
+		fields: [document_links.document_id],
+		references: [documents.id]
+	})
+}));
+
+export const documentSyncJobsRelations = relations(document_sync_jobs, ({ one }) => ({
+	document: one(documents, {
+		fields: [document_sync_jobs.document_id],
+		references: [documents.id]
+	}),
+	user: one(users, { fields: [document_sync_jobs.user_id], references: [users.id] })
 }));
 
 export const workflowRulesRelations = relations(workflow_rules, ({ one }) => ({
@@ -688,6 +840,12 @@ export type OdometerLog = typeof odometer_logs.$inferSelect;
 export type InsertOdometerLog = typeof odometer_logs.$inferInsert;
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
+export type PaperlessIntegration = typeof paperless_integrations.$inferSelect;
+export type InsertPaperlessIntegration = typeof paperless_integrations.$inferInsert;
+export type DocumentLink = typeof document_links.$inferSelect;
+export type InsertDocumentLink = typeof document_links.$inferInsert;
+export type DocumentSyncJob = typeof document_sync_jobs.$inferSelect;
+export type InsertDocumentSyncJob = typeof document_sync_jobs.$inferInsert;
 export type WorkflowRule = typeof workflow_rules.$inferSelect;
 export type InsertWorkflowRule = typeof workflow_rules.$inferInsert;
 export type Notification = typeof notifications.$inferSelect;

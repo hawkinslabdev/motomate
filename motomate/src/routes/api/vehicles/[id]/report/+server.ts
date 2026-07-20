@@ -6,7 +6,7 @@ import { getTrackersByVehicle } from '$lib/db/repositories/maintenance.js';
 import { getDocumentsByIds } from '$lib/db/repositories/documents.js';
 import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
 import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
-import { getStorage } from '$lib/storage/index.js';
+import { getDocumentContent } from '$lib/server/document-content.js';
 import { buildMaintenanceReport } from '$lib/pdf/maintenance-report.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
@@ -39,11 +39,10 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 		const fetched = allDocIds.length ? await getDocumentsByIds(allDocIds, locals.user.id) : [];
 		docs.push(...fetched);
 
-		const storage = getStorage();
 		await Promise.all(
 			fetched.map(async (doc) => {
 				try {
-					const buf = await storage.getBuffer(doc.storage_key);
+					const { data: buf } = await getDocumentContent(doc, locals.user!.id);
 					docBuffers.set(doc.id, buf);
 				} catch {
 					// skip missing files

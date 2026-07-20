@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Added a Paperless-ngx integration for linking or copying existing archive documents to vehicles
+- Added explicit copy and move workflows for sending MotoMate uploads to Paperless-ngx without deleting remote documents
+- Added authenticated inline document previews, downloads, Paperless thumbnails, and generated/cached thumbnails for local PDFs and raster images
+- Added reusable document relationships for maintenance and spending events, including sale/purchase relationships and migration of existing attachment arrays
+- Added encrypted storage for Paperless API tokens and background sync jobs with retry/error state
+- Clarified storage ownership and removal behavior throughout the document UI
+
 ## 0.4.0
 
 - Added an 'Insights' view showing how far you've ridden and what you've spent. You can filter by vehicle and time range, toggle between monthly and cumulative costs, and see service events directly on your mileage chart

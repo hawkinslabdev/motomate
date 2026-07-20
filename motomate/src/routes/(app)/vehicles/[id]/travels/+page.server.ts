@@ -33,25 +33,22 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 
 	const travelList = await getTravelsByVehicle(vehicle.id, userId);
 
-	// Resolve all GPX documents so the map has storage keys + presigned URLs
+	// Resolve all GPX documents so the map can load their authenticated content URLs.
 	const allDocIds = [
 		...new Set(travelList.flatMap((t) => t.gpx_document_ids).filter(Boolean))
 	] as string[];
 	const gpxDocs = await getDocumentsByIds(allDocIds, userId);
 
-	// Generate presigned URLs for GPX files (valid 1 hour)
-	const storage = getStorage();
 	const gpxUrls: Record<string, string> = {};
 	for (const doc of gpxDocs) {
-		gpxUrls[doc.id] = await storage.presignedUrl(doc.storage_key, 3600);
+		gpxUrls[doc.id] = `/api/documents/${doc.id}/content`;
 	}
 
 	// All route documents for this vehicle (for the "pick from library" selector)
 	const routeDocs = await getRouteDocumentsByVehicle(vehicle.id, userId);
 	const routeDocUrls: Record<string, string> = {};
 	for (const doc of routeDocs) {
-		// Reuse already-generated URL if available, otherwise generate
-		routeDocUrls[doc.id] = gpxUrls[doc.id] ?? (await storage.presignedUrl(doc.storage_key, 3600));
+		routeDocUrls[doc.id] = gpxUrls[doc.id] ?? `/api/documents/${doc.id}/content`;
 	}
 
 	return {
@@ -195,7 +192,7 @@ export const actions: Actions = {
 				if (!isShared) {
 					const docs = await getDocumentsByIds([docId], userId);
 					if (docs[0]) {
-						await storage.delete(docs[0].storage_key).catch(() => {});
+						if (docs[0].storage_key) await storage.delete(docs[0].storage_key).catch(() => {});
 						await deleteDocument(docId, userId);
 					}
 				}
@@ -264,7 +261,7 @@ export const actions: Actions = {
 			for (const doc of docs) {
 				const isShared = await isDocumentReferencedByOtherTravels(doc.id, id, vehicleId);
 				if (!isShared) {
-					await storage.delete(doc.storage_key).catch(() => {});
+					if (doc.storage_key) await storage.delete(doc.storage_key).catch(() => {});
 					await deleteDocument(doc.id, userId);
 				}
 			}

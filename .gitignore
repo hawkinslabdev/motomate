@@ -7,5 +7,7 @@ uploads/*
 !README.md
 !CONTRIBUTING.md
 !CHANGELOG.md
+!docs/
+!docs/**/*.md
 *.db
 *.db*

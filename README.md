@@ -14,7 +14,7 @@ View our [**demo-instance here**](https://motomate.mijnmotorparkeren.nl) (hosted
 
 <img width="100%" alt="MotoMate screenshot" src=".github/images/example.webp" />
 
-We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
+We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials.
 
 ## Getting Started
 
@@ -43,10 +43,25 @@ services:
 
 After downloading the image and starting the container, the application will be ready in a few seconds once database migrations complete.
 
+### Paperless-ngx integration
+
+MotoMate can connect to an existing Paperless-ngx library so documents can be linked or copied to a vehicle, and local uploads can be copied or moved into Paperless. Browser previews and document thumbnails are available without exposing the Paperless API token to the browser.
+
+Set a separate 32-byte encryption key before creating the connection:
+
+```yaml
+environment:
+  - INTEGRATION_ENCRYPTION_KEY=replace-with-output-from-openssl-rand-hex-32
+```
+
+Then open **Settings > Developer > Paperless-ngx** and enter the Paperless base URL and an API token. The MotoMate container must be able to reach that URL.
+
+See the [Paperless-ngx integration guide](docs/paperless-integration.md) for action semantics, deployment notes, security details, and troubleshooting.
+
 ## Donate
 
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy_me_a_coffee-fdd734?\&logo=buy-me-a-coffee\&logoColor=black\&style=for-the-badge)](https://coff.ee/hawkinslabdev)
-[![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-30363d?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/sponsors/hawkinslabdev)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy_me_a_coffee-fdd734?&logo=buy-me-a-coffee&logoColor=black&style=for-the-badge)](https://coff.ee/hawkinslabdev)
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-30363d?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/hawkinslabdev)
 
 Want to support MotoMate? Drop a star on GitHub, or consider supporting development via GitHub Sponsors or Buy Me a Coffee.
 
@@ -57,6 +72,7 @@ This project is licensed under the **AGPL 3.0** license. See [LICENSE](LICENSE) 
 ## Contributors
 
 Made possible thanks to the following people:
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->

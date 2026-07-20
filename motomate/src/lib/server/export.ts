@@ -7,7 +7,7 @@ import { getDocumentsByVehicle } from '$lib/db/repositories/documents.js';
 import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
 import { getWorkflowRulesByUser } from '$lib/db/repositories/workflow.js';
 import { getNotifications } from '$lib/workflow/channels/inapp.js';
-import { getStorage } from '$lib/storage/index.js';
+import { getDocumentContent } from '$lib/server/document-content.js';
 
 export async function buildExportData(userId: string) {
 	const [vehicles, templates, workflowRules, notifications] = await Promise.all([
@@ -72,7 +72,6 @@ export async function generateZipExport(
 ): Promise<{ buffer: Uint8Array; filename: string }> {
 	const { vehicleData, templates, workflowRules, notifications } = await buildExportData(userId);
 	const dateStr = new Date().toISOString().slice(0, 10);
-	const storage = getStorage();
 	const now = new Date();
 
 	const exportData = {
@@ -90,8 +89,8 @@ export async function generateZipExport(
 	for (const { vehicle, documents } of vehicleData) {
 		for (const doc of documents) {
 			try {
-				const buf = await storage.getBuffer(doc.storage_key);
-				const ext = doc.storage_key.split('.').pop() ?? 'bin';
+				const { data: buf } = await getDocumentContent(doc, userId);
+				const ext = doc.name.split('.').pop() ?? 'bin';
 				const safeName = doc.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 80);
 				const path = `documents/${vehicle.id}/${doc.doc_type}/${doc.id}-${safeName}.${ext}`;
 				zipFiles[path] = [new Uint8Array(buf), { mtime: new Date(doc.created_at) }];

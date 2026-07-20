@@ -4,6 +4,13 @@ import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, MEASUREMENT_UNITS } from '../uti
 export const MeasurementUnitSchema = z.enum(MEASUREMENT_UNITS);
 const DistanceUnitSchema = z.enum(DISTANCE_UNITS);
 
+export const PaperlessIntegrationInputSchema = z.object({
+	name: z.string().trim().min(1).max(100).default('Paperless-ngx'),
+	base_url: z.string().trim().url().max(2048),
+	token: z.string().trim().min(1).max(500),
+	enabled: z.boolean().default(true)
+});
+
 // Coercion helpers
 // Form data and preset objects can both produce null, undefined, or "" for
 // optional number fields. These preprocessors normalise that before validation.

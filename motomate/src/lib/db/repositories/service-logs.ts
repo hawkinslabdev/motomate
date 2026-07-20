@@ -8,14 +8,22 @@ import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import {
+	deleteDocumentLinksForTarget,
+	getDocumentIdsForTarget,
+	getDocumentIdsForTargets,
+	replaceDocumentLinks,
+	validateDocumentIds
+} from './document-links.js';
+import {
 	compareMeasurements,
 	isDistanceMeasurementValue,
 	resolveMeasurementValue
 } from '../../utils/measurement.js';
 
-function hydrateServiceLog(log: ServiceLog): ServiceLog {
+function hydrateServiceLog(log: ServiceLog, attachments: string[] = []): ServiceLog {
 	return {
 		...log,
+		attachments,
 		odometer_at_service: log.measurement_at_service ?? log.odometer_at_service
 	};
 }
@@ -23,14 +31,23 @@ function hydrateServiceLog(log: ServiceLog): ServiceLog {
 export async function createServiceLog(userId: string, input: unknown): Promise<ServiceLog> {
 	const parsed = CreateServiceLogSchema.parse(input);
 	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
+	await validateDocumentIds(userId, parsed.vehicle_id, parsed.attachments);
 	const id = generateId();
 	const row: InsertServiceLog = {
 		...parsed,
 		id,
+		attachments: [],
 		measurement_at_service: parsed.odometer_at_service,
 		measurement_unit: vehicle?.odometer_unit
 	};
 	db.insert(service_logs).values(row).run();
+	await replaceDocumentLinks({
+		userId,
+		vehicleId: parsed.vehicle_id,
+		targetType: 'service_log',
+		targetId: id,
+		documentIds: parsed.attachments
+	});
 
 	// Reset primary tracker
 	if (parsed.tracker_id) {
@@ -73,9 +90,10 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 		);
 	}
 
-	return hydrateServiceLog(
-		(await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) })) as ServiceLog
-	);
+	const created = (await db.query.service_logs.findFirst({
+		where: eq(service_logs.id, id)
+	})) as ServiceLog;
+	return hydrateServiceLog(created, parsed.attachments);
 }
 
 export async function getServiceLogsByVehicle(
@@ -88,7 +106,11 @@ export async function getServiceLogsByVehicle(
 		where: eq(service_logs.vehicle_id, vehicleId),
 		orderBy: (s, { desc }) => [desc(s.performed_at)]
 	});
-	return rows.map(hydrateServiceLog);
+	const attachmentIds = await getDocumentIdsForTargets(
+		'service_log',
+		rows.map((row) => row.id)
+	);
+	return rows.map((row) => hydrateServiceLog(row, attachmentIds.get(row.id) ?? []));
 }
 
 export async function getRecentLogsAcrossVehicles(
@@ -108,15 +130,21 @@ export async function getRecentLogsAcrossVehicles(
 		.orderBy(desc(service_logs.performed_at))
 		.limit(limit)
 		.all();
+	const attachmentIds = await getDocumentIdsForTargets(
+		'service_log',
+		rows.map(({ log }) => log.id)
+	);
 	return rows.map(({ log, trackerName }) => ({
-		...hydrateServiceLog(log),
+		...hydrateServiceLog(log, attachmentIds.get(log.id) ?? []),
 		trackerName: trackerName ?? null
 	}));
 }
 
 export async function getServiceLogById(id: string): Promise<ServiceLog | undefined> {
 	const log = await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) });
-	return log ? hydrateServiceLog(log) : undefined;
+	if (!log) return undefined;
+	const attachmentIds = await getDocumentIdsForTarget('service_log', id, log.vehicle_id);
+	return hydrateServiceLog(log, attachmentIds);
 }
 
 export async function updateServiceLog(
@@ -152,6 +180,7 @@ export async function deleteServiceLog(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	await deleteDocumentLinksForTarget('service_log', id, vehicleId);
 	db.delete(service_logs)
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
@@ -165,8 +194,11 @@ export async function updateServiceLogAttachments(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
-	db.update(service_logs)
-		.set({ attachments: documentIds })
-		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
-		.run();
+	await replaceDocumentLinks({
+		userId,
+		vehicleId,
+		targetType: 'service_log',
+		targetId: id,
+		documentIds
+	});
 }

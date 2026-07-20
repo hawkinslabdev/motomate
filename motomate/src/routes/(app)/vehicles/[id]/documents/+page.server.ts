@@ -7,12 +7,15 @@ import {
 	getDocumentsByVehicle,
 	getDocumentsByVehicleTotal,
 	createDocument,
-	deleteDocument
+	deleteDocument,
+	getDocumentById
 } from '$lib/db/repositories/documents.js';
 import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import { getTravelsByVehicle } from '$lib/db/repositories/travels.js';
 import { getStorage } from '$lib/storage/index.js';
 import { generateId } from '$lib/utils/id.js';
+import { listPaperlessIntegrations } from '$lib/db/repositories/paperless-integrations.js';
+import { thumbnailCacheKey } from '$lib/documents/thumbnail.js';
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const PER_PAGE = 10;
@@ -39,11 +42,12 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	const limit = highlight ? undefined : PER_PAGE;
 	const filterOpts = { search: search || undefined, docType, sortBy };
 
-	const [docs, total, serviceLogs, travelEntries] = await Promise.all([
+	const [docs, total, serviceLogs, travelEntries, paperlessIntegrations] = await Promise.all([
 		getDocumentsByVehicle(vehicle.id, locals.user!.id, { limit, offset, ...filterOpts }),
 		getDocumentsByVehicleTotal(vehicle.id, locals.user!.id, filterOpts),
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),
-		getTravelsByVehicle(vehicle.id, locals.user!.id)
+		getTravelsByVehicle(vehicle.id, locals.user!.id),
+		listPaperlessIntegrations(locals.user!.id)
 	]);
 
 	// Build reverse map: document ID > service log { id, performed_at }
@@ -71,6 +75,7 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		perPage: highlight ? total : PER_PAGE,
 		serviceLogMap,
 		travelMap,
+		paperlessIntegrations,
 		page_prefs: locals.user!.settings?.page_prefs?.documents ?? null
 	};
 };
@@ -118,14 +123,20 @@ export const actions: Actions = {
 	delete: async ({ request, locals }) => {
 		const data = await request.formData();
 		const id = String(data.get('id') ?? '');
-		const storageKeyVal = String(data.get('storage_key') ?? '');
 		if (!id) return fail(400, { error: 'Missing id' });
-		try {
-			const storage = getStorage();
-			await storage.delete(storageKeyVal);
-		} catch {
-			/* ignore storage errors */
+		const document = await getDocumentById(id, locals.user!.id);
+		if (!document) return fail(404, { error: 'Document not found' });
+		if (document.storage_key) {
+			try {
+				const storage = getStorage();
+				await storage.delete(document.storage_key);
+			} catch {
+				/* ignore storage errors */
+			}
 		}
+		await getStorage()
+			.delete(thumbnailCacheKey(locals.user!.id, document.id))
+			.catch(() => {});
 		await deleteDocument(id, locals.user!.id);
 		return { deleted: true };
 	},

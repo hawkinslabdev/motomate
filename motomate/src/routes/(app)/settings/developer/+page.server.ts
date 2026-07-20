@@ -9,16 +9,67 @@ import {
 	deleteApiKey
 } from '$lib/db/repositories/api-keys.js';
 import { CreateApiKeySchema } from '$lib/validators/schemas.js';
+import {
+	createPaperlessIntegration,
+	deletePaperlessIntegration,
+	listPaperlessIntegrations,
+	testPaperlessIntegration
+} from '$lib/db/repositories/paperless-integrations.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const keys = await listApiKeys(locals.user!.id);
+	const [keys, paperlessIntegrations] = await Promise.all([
+		listApiKeys(locals.user!.id),
+		listPaperlessIntegrations(locals.user!.id)
+	]);
 	return {
 		keys,
+		paperlessIntegrations,
 		locale: locals.user!.settings.locale ?? 'en'
 	};
 };
 
 export const actions: Actions = {
+	createPaperless: async ({ request, locals }) => {
+		const data = await request.formData();
+		try {
+			await createPaperlessIntegration(locals.user!.id, {
+				name: String(data.get('name') ?? '').trim() || undefined,
+				base_url: String(data.get('base_url') ?? ''),
+				token: String(data.get('token') ?? ''),
+				enabled: true
+			});
+			return { paperlessCreated: true };
+		} catch (err) {
+			return fail(400, {
+				paperlessError: err instanceof Error ? err.message : 'Unable to connect to Paperless-ngx'
+			});
+		}
+	},
+
+	testPaperless: async ({ request, locals }) => {
+		const data = await request.formData();
+		try {
+			await testPaperlessIntegration(String(data.get('integration_id') ?? ''), locals.user!.id);
+			return { paperlessTested: true };
+		} catch (err) {
+			return fail(400, {
+				paperlessError: err instanceof Error ? err.message : 'Paperless-ngx connection failed'
+			});
+		}
+	},
+
+	deletePaperless: async ({ request, locals }) => {
+		const data = await request.formData();
+		try {
+			await deletePaperlessIntegration(String(data.get('integration_id') ?? ''), locals.user!.id);
+			return { paperlessDeleted: true };
+		} catch (err) {
+			return fail(409, {
+				paperlessError: err instanceof Error ? err.message : 'Unable to remove Paperless-ngx'
+			});
+		}
+	},
+
 	createApiKey: async ({ request, locals }) => {
 		const formData = await request.formData();
 		const raw = Object.fromEntries(formData);

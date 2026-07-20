@@ -10,6 +10,9 @@
 	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
 	import ColumnPicker from '$lib/components/ui/ColumnPicker.svelte';
 	import DocumentUploadForm from '$lib/components/documents/DocumentUploadForm.svelte';
+	import PaperlessDocumentPicker from '$lib/components/documents/PaperlessDocumentPicker.svelte';
+	import DocumentThumbnail from '$lib/components/documents/DocumentThumbnail.svelte';
+	import { isBrowserPreviewable } from '$lib/documents/content.js';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 	import { _, waitLocale } from '$lib/i18n';
 	import { sheet } from '$lib/stores/sheet.svelte.js';
@@ -28,10 +31,13 @@
 
 	const locale = $derived(data.user?.settings?.locale ?? 'en');
 	const totalPages = $derived(Math.max(1, Math.ceil((data.total ?? 0) / data.perPage)));
+	type DocumentRow = PageData['docs'][number];
 
 	let isDragging = $state(false);
 
-	let deletingDoc = $state<{ id: string; name: string; storage_key: string } | null>(null);
+	let deletingDoc = $state<DocumentRow | null>(null);
+	let paperlessAction = $state<{ document: DocumentRow; mode: 'mirror' | 'move' } | null>(null);
+	let syncingDocId = $state<string | null>(null);
 
 	let searchQuery = $state(page.url.searchParams.get('search') ?? '');
 	let categoryFilter = $state<string>(page.url.searchParams.get('type') ?? 'all');
@@ -187,19 +193,91 @@
 		return new Date(dateStr) < new Date();
 	}
 
-	const fileIconSvg = (mimeType: string) => {
-		if (mimeType.startsWith('image/'))
-			return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
-		if (mimeType === 'application/pdf')
-			return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M10 12h4"/><path d="M10 16h4"/></svg>`;
-		return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`;
-	};
-
 	function openUploadSheet(file?: File) {
 		sheet.openSheet(DocumentUploadForm, $_('documents.upload'), {
 			vehicleId: data.vehicle.id,
 			file
 		});
+	}
+
+	function openPaperlessPicker() {
+		sheet.openSheet(
+			PaperlessDocumentPicker,
+			'Add from Paperless-ngx',
+			{ vehicleId: data.vehicle.id, integrations: data.paperlessIntegrations },
+			true
+		);
+	}
+
+	function documentStorageState(document: DocumentRow): {
+		label: string;
+		detail?: string;
+		tone: 'local' | 'paperless' | 'both' | 'progress' | 'error';
+	} {
+		if (document.sync_status === 'queued' || document.sync_status === 'processing') {
+			return {
+				label:
+					document.sync_status === 'queued'
+						? 'Waiting to send to Paperless-ngx'
+						: 'Sending to Paperless-ngx',
+				tone: 'progress'
+			};
+		}
+		if (document.sync_status === 'failed') {
+			return {
+				label: 'Paperless-ngx copy failed',
+				detail: document.sync_error ?? 'Try copying or moving the document again.',
+				tone: 'error'
+			};
+		}
+		if (document.paperless_document_id != null && document.storage_key) {
+			return { label: 'Stored in MotoMate + Paperless-ngx', tone: 'both' };
+		}
+		if (document.paperless_document_id != null) {
+			return { label: 'Stored in Paperless-ngx · linked to MotoMate', tone: 'paperless' };
+		}
+		return { label: 'Stored in MotoMate only', tone: 'local' };
+	}
+
+	function requestPaperlessAction(document: DocumentRow, mode: 'mirror' | 'move') {
+		paperlessAction = { document, mode };
+	}
+
+	async function confirmPaperlessAction() {
+		if (!paperlessAction) return;
+		const integration = data.paperlessIntegrations[0];
+		if (!integration) return;
+		const { document, mode } = paperlessAction;
+		syncingDocId = document.id;
+		try {
+			const response = await fetch(`/api/documents/${document.id}/paperless-sync`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ integration_id: integration.id, mode })
+			});
+			if (!response.ok) throw new Error(await response.text());
+			toasts.success(
+				mode === 'mirror'
+					? 'Copy queued. The original will stay in MotoMate.'
+					: 'Move queued. MotoMate will remove its local file only after Paperless confirms the upload.'
+			);
+			paperlessAction = null;
+			await goto(page.url.toString(), { invalidateAll: true, noScroll: true });
+		} catch (cause) {
+			toasts.error(cause instanceof Error ? cause.message : 'Paperless transfer failed');
+		} finally {
+			syncingDocId = null;
+		}
+	}
+
+	function deleteDescription(document: DocumentRow): string {
+		if (document.paperless_document_id != null && document.storage_key) {
+			return 'MotoMate will remove this record and its local copy. The copy already stored in Paperless-ngx will not be deleted.';
+		}
+		if (document.paperless_document_id != null) {
+			return 'MotoMate will remove this link. The original document in Paperless-ngx will not be deleted.';
+		}
+		return 'This file is stored only in MotoMate. Deleting it will permanently remove the file and cannot be undone.';
 	}
 
 	function handleDrop(e: DragEvent) {
@@ -288,6 +366,11 @@
 		<button type="button" class="btn-primary" onclick={() => openUploadSheet()}>
 			{$_('documents.upload')}
 		</button>
+		{#if data.paperlessIntegrations.length > 0}
+			<button type="button" class="btn-primary" onclick={openPaperlessPicker}
+				>Add from Paperless-ngx</button
+			>
+		{/if}
 	</div>
 </div>
 
@@ -387,6 +470,7 @@
 {:else if viewMode === 'table'}
 	<div class="doc-list">
 		{#each data.docs as doc}
+			{@const storageState = documentStorageState(doc)}
 			<div
 				id="doc-{doc.id}"
 				class="doc-row"
@@ -394,7 +478,11 @@
 				class:doc-row--expired={isExpired(doc.expires_at)}
 				class:doc-row--highlight={highlightId === doc.id}
 			>
-				<div class="doc-icon">{@html fileIconSvg(doc.mime_type)}</div>
+				<DocumentThumbnail
+					documentId={doc.id}
+					name={displayName(doc)}
+					previewable={isBrowserPreviewable(doc.mime_type)}
+				/>
 				<div class="doc-info">
 					{#if editingDocId === doc.id}
 						<form method="POST" action="?/rename" use:enhance class="edit-name-form">
@@ -452,14 +540,40 @@
 									: $_('documents.expiryValid')} · {formatDate(doc.expires_at)}
 						</div>
 					{/if}
+					<div class="doc-storage-state doc-storage-state--{storageState.tone}">
+						<span>{storageState.label}</span>
+						{#if storageState.detail}<small>{storageState.detail}</small>{/if}
+					</div>
 				</div>
 				<div class="doc-actions">
+					{#if isBrowserPreviewable(doc.mime_type)}
+						<a
+							href="/api/documents/{doc.id}/content"
+							target="_blank"
+							rel="noopener"
+							aria-label="Preview {displayName(doc)} in a new browser tab"
+							class="action-btn">Preview</a
+						>
+					{/if}
 					<a
-						href="/api/files?key={doc.storage_key}"
-						target="_blank"
-						rel="noopener"
-						class="action-btn">{$_('documents.actions.view')}</a
+						href="/api/documents/{doc.id}/content?download=1"
+						aria-label="Download {displayName(doc)}"
+						class="action-btn">Download</a
 					>
+					{#if data.paperlessIntegrations.length > 0 && doc.storage_key && (doc.sync_status === 'none' || doc.sync_status === 'failed')}
+						<button
+							type="button"
+							class="action-btn"
+							disabled={syncingDocId === doc.id}
+							onclick={() => requestPaperlessAction(doc, 'mirror')}>Copy to Paperless</button
+						>
+						<button
+							type="button"
+							class="action-btn"
+							disabled={syncingDocId === doc.id}
+							onclick={() => requestPaperlessAction(doc, 'move')}>Move to Paperless</button
+						>
+					{/if}
 					<button
 						type="button"
 						class="action-btn"
@@ -469,9 +583,13 @@
 					<button
 						type="button"
 						class="action-btn action-btn--danger"
+						disabled={doc.sync_status === 'queued' || doc.sync_status === 'processing'}
+						title={doc.sync_status === 'queued' || doc.sync_status === 'processing'
+							? 'Wait for the Paperless transfer to finish before removing this document.'
+							: 'Remove this document from MotoMate. Paperless files are never deleted.'}
 						onclick={() => {
-							deletingDoc = { id: doc.id, name: doc.name, storage_key: doc.storage_key };
-						}}>{$_('documents.actions.delete')}</button
+							deletingDoc = doc;
+						}}>Remove from MotoMate</button
 					>
 				</div>
 			</div>
@@ -484,12 +602,19 @@
 				<div class="month-label">{month}</div>
 				<div class="month-divider"></div>
 				{#each docs as doc}
+					{@const storageState = documentStorageState(doc)}
 					<div
 						class="timeline-entry"
 						class:timeline-entry--expiring={isExpiringSoon(doc.expires_at)}
 						class:timeline-entry--expired={isExpired(doc.expires_at)}
 					>
 						<span class="entry-dot"></span>
+						<DocumentThumbnail
+							documentId={doc.id}
+							name={displayName(doc)}
+							previewable={isBrowserPreviewable(doc.mime_type)}
+							compact
+						/>
 						<div class="entry-content">
 							<div class="entry-title">{displayName(doc)}</div>
 							<div class="entry-meta">
@@ -497,20 +622,52 @@
 									doc.created_at
 								)}
 							</div>
+							<div class="doc-storage-state doc-storage-state--{storageState.tone}">
+								<span>{storageState.label}</span>
+								{#if storageState.detail}<small>{storageState.detail}</small>{/if}
+							</div>
 						</div>
 						<div class="entry-actions">
+							{#if isBrowserPreviewable(doc.mime_type)}
+								<a
+									href="/api/documents/{doc.id}/content"
+									target="_blank"
+									rel="noopener"
+									aria-label="Preview {displayName(doc)} in a new browser tab"
+									class="action-btn">Preview</a
+								>
+							{/if}
 							<a
-								href="/api/files?key={doc.storage_key}"
-								target="_blank"
-								rel="noopener"
-								class="action-btn">{$_('documents.actions.view')}</a
+								href="/api/documents/{doc.id}/content?download=1"
+								aria-label="Download {displayName(doc)}"
+								class="action-btn">Download</a
+							>
+							{#if data.paperlessIntegrations.length > 0 && doc.storage_key && (doc.sync_status === 'none' || doc.sync_status === 'failed')}
+								<button
+									type="button"
+									class="action-btn"
+									disabled={syncingDocId === doc.id}
+									onclick={() => requestPaperlessAction(doc, 'mirror')}>Copy to Paperless</button
+								>
+								<button
+									type="button"
+									class="action-btn"
+									disabled={syncingDocId === doc.id}
+									onclick={() => requestPaperlessAction(doc, 'move')}>Move to Paperless</button
+								>
+							{/if}
+							<button
+								type="button"
+								class="action-btn"
+								onclick={() => startEditName(doc.id, displayName(doc))}>Rename</button
 							>
 							<button
 								type="button"
 								class="action-btn action-btn--danger"
+								disabled={doc.sync_status === 'queued' || doc.sync_status === 'processing'}
 								onclick={() => {
-									deletingDoc = { id: doc.id, name: doc.name, storage_key: doc.storage_key };
-								}}>{$_('documents.actions.delete')}</button
+									deletingDoc = doc;
+								}}>Remove from MotoMate</button
 							>
 						</div>
 					</div>
@@ -549,10 +706,12 @@
 {#if deletingDoc}
 	<ConfirmDialog
 		open={true}
-		title={$_('documents.deleteDialog.title', { values: { name: deletingDoc.name } })}
-		description={$_('documents.deleteDialog.description')}
-		confirmLabel={$_('documents.deleteDialog.confirm')}
-		cancelLabel={$_('documents.deleteDialog.cancel')}
+		title={`${deletingDoc.paperless_document_id != null ? 'Remove' : 'Delete'} ${displayName(deletingDoc)} from MotoMate?`}
+		description={deleteDescription(deletingDoc)}
+		confirmLabel={deletingDoc.paperless_document_id != null
+			? 'Remove from MotoMate'
+			: 'Delete from MotoMate'}
+		cancelLabel="Keep document"
 		danger={true}
 		loading={false}
 		onconfirm={() => {
@@ -563,16 +722,29 @@
 			idInput.type = 'hidden';
 			idInput.name = 'id';
 			idInput.value = deletingDoc!.id;
-			const keyInput = document.createElement('input');
-			keyInput.type = 'hidden';
-			keyInput.name = 'storage_key';
-			keyInput.value = deletingDoc!.storage_key;
 			form.appendChild(idInput);
-			form.appendChild(keyInput);
 			document.body.appendChild(form);
 			form.submit();
 		}}
 		onclose={() => (deletingDoc = null)}
+	/>
+{/if}
+
+{#if paperlessAction}
+	<ConfirmDialog
+		open={true}
+		title={paperlessAction.mode === 'mirror'
+			? 'Copy this document to Paperless-ngx?'
+			: 'Move this document to Paperless-ngx?'}
+		description={paperlessAction.mode === 'mirror'
+			? 'MotoMate will upload a one-time copy to Paperless-ngx. The original file will stay in MotoMate; later changes are not automatically synchronized.'
+			: 'MotoMate will upload the file to Paperless-ngx. Only after Paperless confirms it was saved will MotoMate delete its local file. The document will stay linked here and can still be opened from Paperless.'}
+		confirmLabel={paperlessAction.mode === 'mirror' ? 'Copy to Paperless' : 'Move to Paperless'}
+		cancelLabel="Cancel"
+		danger={paperlessAction.mode === 'move'}
+		loading={syncingDocId === paperlessAction.document.id}
+		onconfirm={confirmPaperlessAction}
+		onclose={() => (paperlessAction = null)}
 	/>
 {/if}
 
@@ -781,11 +953,6 @@
 		}
 	}
 
-	.doc-icon {
-		font-size: 1.25rem;
-		flex-shrink: 0;
-		margin-top: 0.125rem;
-	}
 	.doc-info {
 		flex: 1;
 		min-width: 0;
@@ -839,6 +1006,43 @@
 		margin-top: 0.25rem;
 		color: var(--status-ok);
 	}
+	.doc-storage-state {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.125rem;
+		width: fit-content;
+		max-width: 100%;
+		margin-top: 0.45rem;
+		padding: 0.2rem 0.5rem;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		font-size: var(--text-xs);
+		line-height: 1.35;
+		color: var(--text-muted);
+		background: var(--bg-subtle);
+	}
+	.doc-storage-state small {
+		font-size: inherit;
+		color: inherit;
+		white-space: normal;
+	}
+	.doc-storage-state:has(small) {
+		border-radius: 8px;
+	}
+	.doc-storage-state--both,
+	.doc-storage-state--paperless {
+		color: var(--status-ok);
+		border-color: color-mix(in srgb, var(--status-ok) 35%, var(--border));
+	}
+	.doc-storage-state--progress {
+		color: var(--accent);
+		border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+	}
+	.doc-storage-state--error {
+		color: var(--status-overdue);
+		border-color: color-mix(in srgb, var(--status-overdue) 40%, var(--border));
+	}
 	.doc-row--expiring .doc-expiry {
 		color: var(--status-due);
 	}
@@ -850,6 +1054,9 @@
 		display: flex;
 		gap: 0.375rem;
 		flex-shrink: 0;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		max-width: 28rem;
 	}
 	.action-btn {
 		font-size: var(--text-xs);
@@ -867,6 +1074,10 @@
 	}
 	.action-btn:hover {
 		background: var(--bg-muted);
+	}
+	.action-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 	.action-btn--danger:hover {
 		color: var(--status-overdue);
@@ -1119,6 +1330,8 @@
 		.doc-actions {
 			flex-basis: 100%;
 			margin-top: 0.5rem;
+			justify-content: flex-start;
+			max-width: none;
 		}
 		.action-btn {
 			padding: 0.5rem 0.75rem;

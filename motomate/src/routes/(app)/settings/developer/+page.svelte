@@ -4,9 +4,14 @@
 	import { _ } from '$lib/i18n';
 	import { formatDateShort } from '$lib/utils/format.js';
 	import type { ApiKey } from '$lib/db/schema.js';
+	import type { SafePaperlessIntegration } from '$lib/db/repositories/paperless-integrations.js';
 
 	let { data, form } = $props<{
-		data: { keys: Omit<ApiKey, 'key_hash'>[]; locale: string };
+		data: {
+			keys: Omit<ApiKey, 'key_hash'>[];
+			paperlessIntegrations: SafePaperlessIntegration[];
+			locale: string;
+		};
 		form: {
 			created?: boolean;
 			revoked?: boolean;
@@ -16,6 +21,10 @@
 			newToken?: string;
 			error?: string;
 			errorKey?: string;
+			paperlessCreated?: boolean;
+			paperlessTested?: boolean;
+			paperlessDeleted?: boolean;
+			paperlessError?: string;
 		} | null;
 	}>();
 
@@ -25,6 +34,7 @@
 	let confirmingRevoke = $state<string | null>(null);
 	let confirmingRotate = $state<string | null>(null);
 	let confirmingDelete = $state<string | null>(null);
+	let confirmingPaperlessDelete = $state<string | null>(null);
 
 	$effect(() => {
 		if (form?.newToken) {
@@ -36,6 +46,7 @@
 			confirmingRotate = null;
 			confirmingDelete = null;
 		}
+		if (form?.paperlessDeleted) confirmingPaperlessDelete = null;
 	});
 
 	function dismissToken() {
@@ -95,6 +106,95 @@
 {:else if form?.error}
 	<div class="banner banner--err">{form.error}</div>
 {/if}
+
+<section class="setting-section">
+	<h3 class="sub-title">Paperless-ngx</h3>
+	<p class="desc">
+		Add existing Paperless documents to a vehicle, or copy and move MotoMate uploads into your
+		Paperless archive.
+	</p>
+
+	{#if form?.paperlessError}
+		<div class="banner banner--err">{form.paperlessError}</div>
+	{:else if form?.paperlessCreated}
+		<div class="banner">Paperless-ngx connected successfully.</div>
+	{:else if form?.paperlessTested}
+		<div class="banner">Paperless-ngx connection is healthy.</div>
+	{:else if form?.paperlessDeleted}
+		<div class="banner">Paperless-ngx connection removed.</div>
+	{/if}
+
+	{#if data.paperlessIntegrations.length > 0}
+		<div class="key-list">
+			{#each data.paperlessIntegrations as integration (integration.id)}
+				<div class="key-entry">
+					<div class="key-row">
+						<span class="key-name">{integration.name}</span>
+						<span class="key-prefix">{integration.base_url}</span>
+					</div>
+					<p class="key-meta-line">
+						{integration.last_error
+							? `Last check failed: ${integration.last_error}`
+							: integration.last_tested_at
+								? `Last checked ${formatDateShort(integration.last_tested_at.slice(0, 10), data.locale)}`
+								: 'Not tested'}
+					</p>
+					<div class="key-actions">
+						<form method="POST" action="?/testPaperless" use:enhance>
+							<input type="hidden" name="integration_id" value={integration.id} />
+							<button type="submit" class="btn-ghost">Test connection</button>
+						</form>
+						{#if confirmingPaperlessDelete === integration.id}
+							<p class="confirm-warning">
+								Disconnecting removes the saved connection from MotoMate. It never deletes files in
+								Paperless-ngx. Linked MotoMate document records must be removed first.
+							</p>
+							<div class="confirm-row">
+								<form method="POST" action="?/deletePaperless" use:enhance>
+									<input type="hidden" name="integration_id" value={integration.id} />
+									<button type="submit" class="btn-danger">Disconnect Paperless-ngx</button>
+								</form>
+								<button
+									type="button"
+									class="btn-ghost"
+									onclick={() => (confirmingPaperlessDelete = null)}>Keep connected</button
+								>
+							</div>
+						{:else}
+							<button
+								type="button"
+								class="btn-ghost btn-ghost--danger"
+								onclick={() => (confirmingPaperlessDelete = integration.id)}>Disconnect</button
+							>
+						{/if}
+					</div>
+				</div>
+			{/each}
+		</div>
+	{:else}
+		<form method="POST" action="?/createPaperless" class="pref-form" use:enhance>
+			<label class="field">
+				<span class="field-label">Connection name</span>
+				<input class="input" name="name" value="Paperless-ngx" maxlength="100" required />
+			</label>
+			<label class="field">
+				<span class="field-label">Paperless URL</span>
+				<input
+					class="input"
+					name="base_url"
+					type="url"
+					placeholder="https://documents.example.com"
+					required
+				/>
+			</label>
+			<label class="field">
+				<span class="field-label">API token</span>
+				<input class="input" name="token" type="password" autocomplete="off" required />
+			</label>
+			<button type="submit" class="btn-secondary">Connect and test</button>
+		</form>
+	{/if}
+</section>
 
 <section class="setting-section">
 	<h3 class="sub-title">{$_('settings.developer.apiKeys.title')}</h3>
