@@ -184,6 +184,18 @@
 			{/if}
 		</div>
 		<div class="tracker-actions">
+			{#if tracker.status !== 'ok'}
+				<button
+					class="log-btn"
+					class:log-btn--active={isLogging}
+					onclick={(e) => {
+						e.stopPropagation();
+						onlogclick?.(tracker.id);
+					}}
+				>
+					{isLogging ? $_('common.cancel') : $_('maintenance.tracker.logNow')}
+				</button>
+			{/if}
 			{#if serviceLogs.length > 0}
 				<button
 					class="history-btn"
@@ -204,18 +216,6 @@
 						<polyline points="12,6 12,12 16,14" />
 					</svg>
 					{serviceLogs.length}
-				</button>
-			{/if}
-			{#if tracker.status !== 'ok'}
-				<button
-					class="log-btn"
-					class:log-btn--active={isLogging}
-					onclick={(e) => {
-						e.stopPropagation();
-						onlogclick?.(tracker.id);
-					}}
-				>
-					{isLogging ? $_('common.cancel') : $_('maintenance.tracker.logNow')}
 				</button>
 			{/if}
 			{#if onoptionsclick}

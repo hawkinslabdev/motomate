@@ -1,12 +1,22 @@
 import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '../index.js';
-import { vehicles, odometer_logs, service_logs } from '../schema.js';
+import {
+	active_trackers,
+	finance_transactions,
+	odometer_logs,
+	service_logs,
+	task_templates,
+	vehicles,
+	workflow_rules
+} from '../schema.js';
 import { CreateVehicleSchema, UpdateVehicleSchema } from '../../validators/schemas.js';
 import type { InsertVehicle, Vehicle, OdometerLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
+	convertDistanceValue,
 	getMeasurementBasis,
+	isDistanceUnit,
 	isDistanceMeasurementValue,
 	isMeasurementUnit,
 	maxComparableMeasurement,
@@ -134,6 +144,157 @@ export async function updateVehicle(id: string, userId: string, input: unknown):
 		.update(vehicles)
 		.set(patch)
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
+}
+
+/**
+ * Convert all distance data attached to one vehicle. This intentionally excludes hour-based
+ * vehicles and runs as a single database transaction so labels and values cannot diverge.
+ *
+ * better-sqlite3 transactions require a synchronous callback. Drizzle's SQLite update builders
+ * are lazy, so every update inside this callback must finish with `.run()` to execute before the
+ * transaction commits.
+ */
+export async function convertVehicleDistanceUnit(
+	id: string,
+	userId: string,
+	targetUnit: 'km' | 'mi'
+): Promise<boolean> {
+	const vehicle = await getVehicleById(id, userId);
+	if (!vehicle || !isDistanceUnit(vehicle.odometer_unit)) return false;
+
+	const sourceUnit = vehicle.odometer_unit;
+	if (sourceUnit === targetUnit) return true;
+	const convert = (value: number | null) =>
+		value == null ? null : convertDistanceValue(value, sourceUnit, targetUnit);
+	const updatedAt = new Date().toISOString();
+
+	db.transaction((tx) => {
+		tx.update(vehicles)
+			.set({
+				current_odometer: convert(vehicle.current_odometer)!,
+				current_measurement: convert(vehicle.current_measurement)!,
+				current_measurement_unit: targetUnit,
+				odometer_unit: targetUnit,
+				updated_at: updatedAt
+			})
+			.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)))
+			.run();
+
+		const odometerRows = tx
+			.select()
+			.from(odometer_logs)
+			.where(eq(odometer_logs.vehicle_id, id))
+			.all();
+		for (const row of odometerRows) {
+			tx.update(odometer_logs)
+				.set({
+					odometer: convert(row.odometer)!,
+					measurement: convert(row.measurement),
+					measurement_unit: targetUnit
+				})
+				.where(eq(odometer_logs.id, row.id))
+				.run();
+		}
+
+		const serviceRows = tx.select().from(service_logs).where(eq(service_logs.vehicle_id, id)).all();
+		for (const row of serviceRows) {
+			tx.update(service_logs)
+				.set({
+					odometer_at_service: convert(row.odometer_at_service)!,
+					measurement_at_service: convert(row.measurement_at_service),
+					measurement_unit: targetUnit
+				})
+				.where(eq(service_logs.id, row.id))
+				.run();
+		}
+
+		const financeRows = tx
+			.select()
+			.from(finance_transactions)
+			.where(eq(finance_transactions.vehicle_id, id))
+			.all();
+		for (const row of financeRows) {
+			tx.update(finance_transactions)
+				.set({
+					odometer_at_transaction: convert(row.odometer_at_transaction),
+					measurement_at_transaction: convert(row.measurement_at_transaction),
+					measurement_unit: targetUnit,
+					updated_at: updatedAt
+				})
+				.where(eq(finance_transactions.id, row.id))
+				.run();
+		}
+
+		const trackerRows = tx
+			.select()
+			.from(active_trackers)
+			.where(eq(active_trackers.vehicle_id, id))
+			.all();
+		for (const row of trackerRows) {
+			tx.update(active_trackers)
+				.set({
+					last_done_odometer: convert(row.last_done_odometer),
+					last_done_measurement: convert(row.last_done_measurement),
+					next_due_odometer: convert(row.next_due_odometer),
+					next_due_measurement: convert(row.next_due_measurement),
+					measurement_unit: targetUnit,
+					updated_at: updatedAt
+				})
+				.where(eq(active_trackers.id, row.id))
+				.run();
+		}
+
+		const templateRows = tx
+			.select()
+			.from(task_templates)
+			.where(eq(task_templates.vehicle_id, id))
+			.all();
+		for (const row of templateRows) {
+			tx.update(task_templates)
+				.set({
+					interval_km: convert(row.interval_km),
+					interval_measurement: convert(row.interval_measurement),
+					interval_unit: targetUnit
+				})
+				.where(eq(task_templates.id, row.id))
+				.run();
+		}
+
+		const ruleRows = tx
+			.select()
+			.from(workflow_rules)
+			.where(and(eq(workflow_rules.vehicle_id, id), eq(workflow_rules.user_id, userId)))
+			.all();
+		for (const row of ruleRows) {
+			const trigger = row.trigger as Record<string, unknown>;
+			if (trigger.type === 'odometer_upcoming' && typeof trigger.km_before === 'number') {
+				tx.update(workflow_rules)
+					.set({
+						trigger: {
+							...trigger,
+							km_before: convertDistanceValue(trigger.km_before, sourceUnit, targetUnit)
+						} as any,
+						updated_at: updatedAt
+					})
+					.where(eq(workflow_rules.id, row.id))
+					.run();
+			}
+			if (trigger.type === 'odometer_overdue' && typeof trigger.km_past === 'number') {
+				tx.update(workflow_rules)
+					.set({
+						trigger: {
+							...trigger,
+							km_past: convertDistanceValue(trigger.km_past, sourceUnit, targetUnit)
+						} as any,
+						updated_at: updatedAt
+					})
+					.where(eq(workflow_rules.id, row.id))
+					.run();
+			}
+		}
+	});
+
+	return true;
 }
 
 export async function archiveVehicle(id: string, userId: string): Promise<void> {

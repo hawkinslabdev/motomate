@@ -386,7 +386,14 @@
 			},
 			"measurementUnit": {
 				"title": "Unitate de măsură",
-				"locked": "Unitatea de măsură nu mai poate fi schimbată după crearea vehiculului."
+				"locked": "Unitatea de măsură nu mai poate fi schimbată după crearea vehiculului.",
+				"eyebrow": "Citire curentă",
+				"summary": "Convertește împreună toate datele salvate.",
+				"review": "Verifică conversia",
+				"converted": "Valori de distanță convertite",
+				"dialogTitle": "Convertești {from} în {to}?",
+				"dialogDescription": "Citirea curentă va deveni {value} {unit}. Istoricul kilometrajului, înregistrările de service, intervalele de întreținere și memento-urile bazate pe distanță vor rămâne aliniate.",
+				"confirm": "Convertește distanțele"
 			},
 			"vehicleDetails": "Detalii vehicul",
 			"fields": {
@@ -489,7 +496,9 @@
 				"imageTooLarge": "Imaginea este prea mare (max. 2 MB)",
 				"invalidImageFormat": "Format de imagine nevalid. Formate acceptate: JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Extensie de fișier nevalidă. Extensii acceptate: .jpg, .jpeg, .png, .webp, .gif",
-				"uploadFailed": "Încărcarea a eșuat: eroare de stocare"
+				"uploadFailed": "Încărcarea a eșuat: eroare de stocare",
+				"chooseDistanceUnit": "Alege kilometri sau mile.",
+				"notDistanceConvertible": "Acest vehicul nu poate fi convertit într-o unitate de distanță."
 			}
 		},
 		"layout": {
@@ -723,7 +732,8 @@
 			"transactions": "{count, plural, =1 {1 tranzacție} other {# tranzacții}}",
 			"transactions_plural": "{count, plural, =1 {1 tranzacție} other {# tranzacții}}",
 			"totalInvested": "Total investit",
-			"soldFor": "Vândut pentru"
+			"soldFor": "Vândut pentru",
+			"currencyCount": "{count, plural, one {# valută} other {# valute}}"
 		},
 		"form": {
 			"addTitle": "Adaugă",
@@ -1254,7 +1264,9 @@
 			"modCumulative": "Cumulativ",
 			"modMonthly": "Lunar",
 			"title": "Cheltuieli",
-			"viewDetails": "Vezi cheltuielile"
+			"viewDetails": "Vezi cheltuielile",
+			"mixedTitle": "Mai multe valute",
+			"mixedDesc": "Acest grafic este ascuns deoarece tranzacțiile selectate folosesc mai multe valute. Totalurile sunt afișate pe valută mai sus."
 		},
 		"empty": {
 			"costs": "Adaugă cheltuieli pentru a vedea ce ai cheltuit.",

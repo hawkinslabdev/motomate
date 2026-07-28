@@ -2,6 +2,7 @@ import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { updateUserSettings } from '$lib/db/repositories/users.js';
 import { getStorage } from '$lib/storage/index.js';
+import type { UserSettings } from '$lib/db/schema.js';
 import type { OdometerUnit } from '$lib/utils/measurement.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -32,14 +33,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	savePrefs: async ({ request, locals }) => {
 		const data = Object.fromEntries(await request.formData());
-		const rawName = String(data.display_name ?? '').trim();
-		await updateUserSettings(locals.user!.id, {
-			theme: data.theme as 'system' | 'light' | 'dark',
-			currency: String(data.currency ?? 'EUR'),
-			odometer_unit: data.odometer_unit as OdometerUnit,
-			locale: String(data.locale ?? 'en'),
-			display_name: rawName || null
-		});
+		const patch: Partial<UserSettings> = {};
+		if ('theme' in data) patch.theme = data.theme as 'system' | 'light' | 'dark';
+		if ('currency' in data) patch.currency = String(data.currency);
+		if ('odometer_unit' in data) patch.odometer_unit = data.odometer_unit as OdometerUnit;
+		if ('locale' in data) patch.locale = String(data.locale);
+		if ('display_name' in data) patch.display_name = String(data.display_name).trim() || null;
+		await updateUserSettings(locals.user!.id, patch);
 		return { savedPrefs: true };
 	},
 

@@ -300,8 +300,8 @@
 
 <div class="page-header">
 	<div class="page-header-text">
-		<h1 class="page-title">{$_('maintenance.title')}</h1>
-		<p class="page-sub">{$_('maintenance.subtitle')}</p>
+		<h2 class="section-title">{$_('maintenance.title')}</h2>
+		<p class="section-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
 		{#if data.trackers.length > 0}
@@ -1114,14 +1114,13 @@
 		align-items: center;
 		flex-shrink: 0;
 	}
-	.page-title {
-		font-size: var(--text-2xl);
+	.section-title {
+		font-size: var(--text-lg);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0;
-		line-height: var(--leading-tight);
 	}
-	.page-sub {
+	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin: 0;

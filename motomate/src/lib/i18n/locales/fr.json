@@ -516,11 +516,20 @@
 				"imageTooLarge": "Image trop grande (max 2 Mo)",
 				"invalidImageFormat": "Format d'image invalide. Pris en charge : JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Extension de fichier invalide. Prise en charge : .jpg, .jpeg, .png, .webp, .gif",
-				"uploadFailed": "Échec du téléchargement : erreur de stockage"
+				"uploadFailed": "Échec du téléchargement : erreur de stockage",
+				"chooseDistanceUnit": "Choisissez les kilomètres ou les miles.",
+				"notDistanceConvertible": "Ce véhicule ne peut pas être converti en unité de distance."
 			},
 			"measurementUnit": {
 				"title": "Unité de mesure",
-				"locked": "Verrouillée après création"
+				"locked": "Verrouillée après création",
+				"eyebrow": "Relevé actuel",
+				"summary": "Convertir toutes les données enregistrées ensemble.",
+				"review": "Vérifier la conversion",
+				"converted": "Valeurs de distance converties",
+				"dialogTitle": "Convertir {from} en {to} ?",
+				"dialogDescription": "Votre relevé actuel deviendra {value} {unit}. L'historique du compteur, les entretiens, les intervalles d'entretien et les rappels basés sur la distance resteront cohérents.",
+				"confirm": "Convertir les distances"
 			},
 			"usageUpdated": "Usage mis à jour"
 		},
@@ -719,10 +728,11 @@
 			"notSet": "Non défini",
 			"addHint": "Ajouter dans Paramètres → Achat & Vente",
 			"expenses": "Dépenses",
-			"transactions": "{count} transaction",
+			"transactions": "{count, plural, one {# transaction} other {# transactions}}",
 			"transactions_plural": "{count} transactions",
 			"totalInvested": "Total investi",
-			"soldFor": "Vendu pour"
+			"soldFor": "Vendu pour",
+			"currencyCount": "{count, plural, one {# devise} other {# devises}}"
 		},
 		"form": {
 			"addTitle": "Ajouter",
@@ -1273,7 +1283,9 @@
 			"title": "Dépenses",
 			"modMonthly": "Mensuel",
 			"modCumulative": "Cumulatif",
-			"viewDetails": "Voir les dépenses"
+			"viewDetails": "Voir les dépenses",
+			"mixedTitle": "Plusieurs devises",
+			"mixedDesc": "Ce graphique est masqué car les transactions sélectionnées utilisent plusieurs devises. Les totaux sont affichés par devise ci-dessus."
 		},
 		"empty": {
 			"title": "Pas encore de données",

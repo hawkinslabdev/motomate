@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import type { MoneyTotal } from '$lib/utils/money.js';
 	import { untrack, tick } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
@@ -336,10 +337,8 @@
 		return opt?.label ?? key.charAt(0).toUpperCase() + key.slice(1);
 	}
 
-	function getProfitLossLabel(cents: number | null) {
-		if (cents === null) return '';
-		if (cents >= 0) return $_('finance.gain');
-		return $_('finance.loss');
+	function getProfitLossLabel(cents: number) {
+		return cents >= 0 ? $_('finance.gain') : $_('finance.loss');
 	}
 
 	function getTransactionTitle(tx: (typeof data.allTransactions)[number]) {
@@ -355,27 +354,27 @@
 	// Compute grouped data based on selection
 	const groupedData = $derived.by(() => {
 		if (groupBy === 'category') {
-			const items = (data.byCategory || []).map(([key, cents]) => ({
+			const items = (data.byCategory || []).map(([key, total]) => ({
 				label: getCategoryLabel(key),
-				cents,
+				total,
 				key
 			}));
 			return { label: $_('finance.byCategory'), items };
 		}
 		if (groupBy === 'year') {
 			const items = (data.byYear || [])
-				.map(([year, cents]) => ({
+				.map(([year, total]) => ({
 					label: formatYear(year),
-					cents,
+					total,
 					key: year.toString()
 				}))
 				.sort((a, b) => b.key.localeCompare(a.key));
 			return { label: $_('finance.byYear'), items };
 		}
 		if (groupBy === 'description') {
-			const items = (data.byDescription || []).map(([desc, cents]) => ({
+			const items = (data.byDescription || []).map(([desc, total]) => ({
 				label: desc,
-				cents,
+				total,
 				key: desc
 			}));
 			return { label: $_('finance.byDescription'), items };
@@ -436,6 +435,25 @@
 			</button>
 		</div>
 	{:else}
+		{#snippet moneyStat(total: MoneyTotal, showCount = false)}
+			{#if total.mixed}
+				{#if showCount}
+					<span class="money-eyebrow"
+						>{$_('finance.investment.currencyCount', {
+							values: { count: total.subtotals.length }
+						})}</span
+					>
+				{/if}
+				<span class="money-stack">
+					{#each total.subtotals as s (s.currency)}
+						<span>{formatCurrency(s.cents, s.currency, locale)}</span>
+					{/each}
+				</span>
+			{:else}
+				{formatCurrency(total.cents, total.currency, locale)}
+			{/if}
+		{/snippet}
+
 		<!-- Investment summary -->
 		<div class="investment-grid">
 			{#if hasPurchasePrice}
@@ -458,7 +476,7 @@
 			<div class="invest-card">
 				<div class="invest-label select-none">{$_('finance.investment.expenses')}</div>
 				<div class="invest-amount invest-amount--neutral mono">
-					{formatCurrency(data.totalCents, currency, locale)}
+					{@render moneyStat(data.total, true)}
 				</div>
 				<div class="invest-meta">
 					{$_('finance.investment.transactions', { values: { count: data.totalEntries } })}
@@ -469,7 +487,7 @@
 				<div class="invest-card">
 					<div class="invest-label select-none">{$_('finance.investment.totalInvested')}</div>
 					<div class="invest-amount invest-amount--total mono">
-						{formatCurrency(data.totalInvestmentCents, currency, locale)}
+						{@render moneyStat(data.totalInvestment, true)}
 					</div>
 				</div>
 			{/if}
@@ -482,22 +500,24 @@
 					</div>
 				</div>
 
-				<div class="invest-card invest-card--profit-loss">
-					<div class="invest-label">
-						{getProfitLossLabel(data.profitLossCents)}
+				{#if data.profitLoss}
+					<div class="invest-card invest-card--profit-loss">
+						<div class="invest-label">
+							{getProfitLossLabel(data.profitLoss.cents)}
+						</div>
+						<div
+							class="invest-amount mono"
+							class:invest-amount--profit={data.profitLoss.cents >= 0}
+							class:invest-amount--loss={data.profitLoss.cents < 0}
+						>
+							{data.profitLoss.cents >= 0 ? '+' : ''}{formatCurrency(
+								data.profitLoss.cents,
+								data.profitLoss.currency,
+								locale
+							)}
+						</div>
 					</div>
-					<div
-						class="invest-amount mono"
-						class:invest-amount--profit={data.profitLossCents! >= 0}
-						class:invest-amount--loss={data.profitLossCents! < 0}
-					>
-						{data.profitLossCents! >= 0 ? '+' : ''}{formatCurrency(
-							data.profitLossCents!,
-							currency,
-							locale
-						)}
-					</div>
-				</div>
+				{/if}
 			{/if}
 		</div>
 
@@ -573,7 +593,7 @@
 						<div class="grouped-row">
 							<span class="grouped-label">{item.label}</span>
 							<span class="grouped-amount mono">
-								{formatCurrency(item.cents, currency, locale)}
+								{@render moneyStat(item.total)}
 							</span>
 						</div>
 					{/each}
@@ -648,7 +668,7 @@
 											</td>
 										{:else if col.key === 'amount'}
 											<td class="tx-td mono tx-td--right"
-												>{formatCurrency(tx.amountCents, currency, locale)}</td
+												>{formatCurrency(tx.amountCents, tx.currency, locale)}</td
 											>
 										{:else if col.key === 'attachments'}
 											<td class="tx-td tx-td--center">
@@ -896,7 +916,7 @@
 								{/if}
 							</div>
 							<div class="transaction-amount mono">
-								{formatCurrency(tx.amountCents, currency, locale)}
+								{formatCurrency(tx.amountCents, tx.currency, locale)}
 							</div>
 							{#if tx.type === 'finance'}
 								<div class="entry-actions" class:entry-actions--open={entryMenu === tx.id}>
@@ -1419,6 +1439,8 @@
 		gap: 1rem;
 	}
 	.invest-card {
+		display: flex;
+		flex-direction: column;
 		background: var(--bg-subtle);
 		border: 1px solid var(--border);
 		border-radius: 10px;
@@ -1440,12 +1462,38 @@
 		letter-spacing: 0.05em;
 	}
 	.invest-amount {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: var(--space-2);
 		font-size: var(--text-2xl);
 		font-weight: 600;
 		font-family: var(--font-mono);
 		font-variant-numeric: tabular-nums;
 		color: var(--status-ok);
 		line-height: 1;
+	}
+	.money-stack {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.1rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--text-muted);
+		line-height: 1.35;
+	}
+	.invest-amount .money-stack {
+		align-items: center;
+	}
+	.money-eyebrow {
+		display: block;
+		font-size: var(--text-xs);
+		font-weight: 500;
+		color: var(--text-subtle);
+		margin-bottom: var(--space-1);
 	}
 	.invest-amount--neutral {
 		color: var(--text);

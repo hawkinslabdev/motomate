@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { _, locale } from '$lib/i18n';
+	import { untrack } from 'svelte';
 	import { formatNumber } from '$lib/utils/format.js';
 	import {
 		DEFAULT_ODOMETER_UNIT,
@@ -8,8 +9,8 @@
 		type MeasurementUnit
 	} from '$lib/utils/measurement.js';
 
-	let { data: _data, form: _form } = $props<{
-		data: Record<string, never>;
+	let { data, form: _form } = $props<{
+		data: { defaultOdometerUnit: 'km' | 'mi' };
 		form: { error?: string } | null;
 	}>();
 
@@ -29,7 +30,9 @@
 	let vin = $state('');
 	let licensePlate = $state('');
 	let odometer = $state(0);
-	let odometerUnit = $state<MeasurementUnit>(DEFAULT_ODOMETER_UNIT);
+	let odometerUnit = $state<MeasurementUnit>(
+		untrack(() => data.defaultOdometerUnit ?? DEFAULT_ODOMETER_UNIT)
+	);
 	let selectedCategories = $state(['oil', 'tire', 'chain_lube', 'chain_tension', 'brake']);
 	let lastServiceDate = $state('');
 	let lastServiceOdo = $state('');

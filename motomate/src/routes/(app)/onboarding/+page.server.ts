@@ -12,7 +12,8 @@ import { locales as localeMap } from '$lib/i18n/locales.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
 	getMeasurementBasis,
-	isMeasurementUnit
+	isMeasurementUnit,
+	resolveDistanceUnitPreference
 } from '$lib/utils/measurement.js';
 
 type LocaleMessages = {
@@ -29,7 +30,9 @@ const localeMessages: Record<string, LocaleMessages> = localeMap;
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user?.onboarding_done) redirect(302, '/dashboard');
-	return {};
+	return {
+		defaultOdometerUnit: resolveDistanceUnitPreference(locals.user?.settings?.odometer_unit)
+	};
 };
 
 export const actions: Actions = {

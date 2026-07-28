@@ -2,8 +2,11 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { createVehicle } from '$lib/db/repositories/vehicles.js';
 import { CreateVehicleSchema } from '$lib/validators/schemas.js';
+import { resolveDistanceUnitPreference } from '$lib/utils/measurement.js';
 
-export const load: PageServerLoad = async () => ({});
+export const load: PageServerLoad = async ({ locals }) => ({
+	defaultOdometerUnit: resolveDistanceUnitPreference(locals.user?.settings?.odometer_unit)
+});
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {

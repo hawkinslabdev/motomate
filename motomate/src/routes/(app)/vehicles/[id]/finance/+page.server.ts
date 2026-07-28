@@ -10,6 +10,7 @@ import {
 	deleteFinanceTransaction
 } from '$lib/db/repositories/finance-transactions.js';
 import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
+import { totalByCurrency, type CurrencyAmount, type MoneyTotal } from '$lib/utils/money.js';
 import { getStorage } from '$lib/storage/index.js';
 import { attachmentStorageKey } from '$lib/utils/storage.js';
 import { updateUserSettings } from '$lib/db/repositories/users.js';
@@ -63,14 +64,14 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		}))
 	].sort((a, b) => b.date.localeCompare(a.date));
 
-	// Calculate totals
-	const totalCents = allTransactions.reduce((sum, tx) => sum + tx.amountCents, 0);
+	const account = locals.user!.settings?.currency ?? 'EUR';
+
+	const total = totalByCurrency(allTransactions, account);
 	const totalEntries = allTransactions.length;
 
-	// Group by year, category, and description
-	const byYear = new Map<number, number>();
-	const byCategory = new Map<string, number>();
-	const byDescription = new Map<string, number>();
+	const byYear = new Map<number, CurrencyAmount[]>();
+	const byCategory = new Map<string, CurrencyAmount[]>();
+	const byDescription = new Map<string, CurrencyAmount[]>();
 
 	const categoryLabels: Record<string, string> = {
 		maintenance: 'Maintenance',
@@ -80,50 +81,70 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		other: 'Other expenses'
 	};
 
-	for (const tx of allTransactions) {
-		// Year breakdown
-		const year = new Date(tx.date).getFullYear();
-		byYear.set(year, (byYear.get(year) || 0) + tx.amountCents);
+	const pushAmount = <K>(map: Map<K, CurrencyAmount[]>, key: K, item: CurrencyAmount) => {
+		const bucket = map.get(key);
+		if (bucket) bucket.push(item);
+		else map.set(key, [item]);
+	};
 
-		// Category breakdown. Note finance transactions use their category field; service logs (category: null) are grouped under 'service'
+	for (const tx of allTransactions) {
+		const item: CurrencyAmount = { amountCents: tx.amountCents, currency: tx.currency };
+
+		const year = new Date(tx.date).getFullYear();
+		pushAmount(byYear, year, item);
+
+		// Note finance transactions use their category field; service logs (category: null) are grouped under 'service'
 		const catKey = tx.category ?? (tx.type === 'service' ? 'service' : 'other');
-		byCategory.set(catKey, (byCategory.get(catKey) || 0) + tx.amountCents);
+		pushAmount(byCategory, catKey, item);
 
 		// Description breakdown; first line of notes, fallback to category label or type
 		const descKey =
 			tx.notes?.split('\n')[0]?.trim() ||
 			(tx.category ? (categoryLabels[tx.category] ?? tx.category) : 'Service entry');
-		byDescription.set(descKey, (byDescription.get(descKey) || 0) + tx.amountCents);
+		pushAmount(byDescription, descKey, item);
 	}
 
-	// Sort years descending
-	const sortedYears = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
+	const magnitude = (t: MoneyTotal) =>
+		t.mixed ? t.subtotals.reduce((s, x) => s + Math.abs(x.cents), 0) : Math.abs(t.cents);
 
-	// Sort categories and descriptions by amount descending
-	const sortedCategories = [...byCategory.entries()].sort((a, b) => b[1] - a[1]);
-	const sortedDescriptions = [...byDescription.entries()].sort((a, b) => b[1] - a[1]);
+	const sortedYears = [...byYear.entries()]
+		.map(([year, items]) => [year, totalByCurrency(items, account)] as const)
+		.sort((a, b) => b[0] - a[0]);
+	const sortedCategories = [...byCategory.entries()]
+		.map(([key, items]) => [key, totalByCurrency(items, account)] as const)
+		.sort((a, b) => magnitude(b[1]) - magnitude(a[1]));
+	const sortedDescriptions = [...byDescription.entries()]
+		.map(([key, items]) => [key, totalByCurrency(items, account)] as const)
+		.sort((a, b) => magnitude(b[1]) - magnitude(a[1]));
 
-	// Calculate total investment (purchase + maintenance)
+	// Purchase and sold prices carry no stored currency, so they are treated as the account currency
 	const purchasePriceCents = vehicle.purchase_price_cents || 0;
-	const totalInvestmentCents = purchasePriceCents + totalCents;
+	const investmentItems: CurrencyAmount[] = [
+		...(purchasePriceCents > 0 ? [{ amountCents: purchasePriceCents, currency: account }] : []),
+		...allTransactions.map((tx) => ({ amountCents: tx.amountCents, currency: tx.currency }))
+	];
+	const totalInvestment = totalByCurrency(investmentItems, account);
 
-	// Calculate profit/loss if sold
+	// Profit/loss only computes when sold price and investment share one currency
 	const soldPriceCents = vehicle.sold_price_cents || null;
-	const profitLossCents = soldPriceCents !== null ? soldPriceCents - totalInvestmentCents : null;
+	const profitLoss =
+		soldPriceCents !== null && !totalInvestment.mixed && totalInvestment.currency === account
+			? { cents: soldPriceCents - totalInvestment.cents, currency: account }
+			: null;
 
 	return {
 		vehicle,
-		totalCents,
+		total,
 		totalEntries,
 		byYear: sortedYears,
 		byCategory: sortedCategories,
 		byDescription: sortedDescriptions,
 		allTransactions,
-		currency: (vehicle as any).currency || 'EUR',
+		currency: account,
 		purchasePriceCents,
 		soldPriceCents,
-		totalInvestmentCents,
-		profitLossCents,
+		totalInvestment,
+		profitLoss,
 		page_prefs: locals.user!.settings?.page_prefs?.finance ?? null,
 		allDocs
 	};

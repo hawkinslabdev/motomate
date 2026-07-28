@@ -517,11 +517,20 @@
 				"imageTooLarge": "Immagine troppo grande (max 2 MB)",
 				"invalidImageFormat": "Formato immagine non valido. Supportati: JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Estensione file non valida. Supportate: .jpg, .jpeg, .png, .webp, .gif",
-				"uploadFailed": "Caricamento fallito: errore di archiviazione"
+				"uploadFailed": "Caricamento fallito: errore di archiviazione",
+				"chooseDistanceUnit": "Scegli chilometri o miglia.",
+				"notDistanceConvertible": "Questo veicolo non può essere convertito in un'unità di distanza."
 			},
 			"measurementUnit": {
 				"title": "Unità di misura",
-				"locked": "Bloccata dopo la creazione"
+				"locked": "Bloccata dopo la creazione",
+				"eyebrow": "Lettura attuale",
+				"summary": "Converti insieme tutti i dati salvati.",
+				"review": "Rivedi la conversione",
+				"converted": "Valori di distanza convertiti",
+				"dialogTitle": "Convertire {from} in {to}?",
+				"dialogDescription": "La tua lettura attuale diventerà {value} {unit}. Cronologia del contachilometri, interventi, intervalli di manutenzione e promemoria basati sulla distanza resteranno allineati.",
+				"confirm": "Converti distanze"
 			},
 			"usageUpdated": "Utilizzo aggiornato"
 		},
@@ -720,10 +729,11 @@
 			"notSet": "Non impostato",
 			"addHint": "Aggiungi in Impostazioni → Acquisto & Vendita",
 			"expenses": "Spese",
-			"transactions": "{count} transazione",
+			"transactions": "{count, plural, one {# transazione} other {# transazioni}}",
 			"transactions_plural": "{count} transazioni",
 			"totalInvested": "Totale investito",
-			"soldFor": "Venduto per"
+			"soldFor": "Venduto per",
+			"currencyCount": "{count, plural, one {# valuta} other {# valute}}"
 		},
 		"form": {
 			"addTitle": "Aggiungi",
@@ -1274,7 +1284,9 @@
 			"title": "Spese",
 			"modMonthly": "Mensile",
 			"modCumulative": "Cumulativo",
-			"viewDetails": "Vedi le spese"
+			"viewDetails": "Vedi le spese",
+			"mixedTitle": "Più valute",
+			"mixedDesc": "Questo grafico è nascosto perché le transazioni selezionate usano più di una valuta. I totali sono mostrati per valuta sopra."
 		},
 		"empty": {
 			"title": "Nessun dato ancora",

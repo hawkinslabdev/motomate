@@ -5,6 +5,7 @@
 		formatCurrency,
 		formatDateShort,
 		formatMeasurement,
+		formatMoneyTotal,
 		formatNumber
 	} from '$lib/utils/format.js';
 	import { _ } from '$lib/i18n';
@@ -219,7 +220,7 @@
 								{vehicle.name}</span
 							>
 							<span class="year-cost mono">
-								{formatCurrency(yearCost.totalCents, yearCost.currency, currentLocale)}
+								{formatMoneyTotal(yearCost.total, currentLocale)}
 							</span>
 							<svg
 								class="year-arrow"

@@ -3,7 +3,8 @@
 	import { untrack } from 'svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { formatCurrency, formatNumber } from '$lib/utils/format.js';
+	import { formatCurrency, formatMoneyTotal, formatNumber } from '$lib/utils/format.js';
+	import { totalByCurrency } from '$lib/utils/money.js';
 	import { _ } from '$lib/i18n';
 	import LineChart from '$lib/components/charts/LineChart.svelte';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
@@ -114,6 +115,14 @@
 	});
 
 	const totalCost = $derived(filteredFinance.reduce((s, t) => s + t.amount_cents, 0));
+	const totalCostMoney = $derived(
+		totalByCurrency(
+			filteredFinance.map((t) => ({ amountCents: t.amount_cents, currency: t.currency })),
+			currency
+		)
+	);
+	const costMixed = $derived(totalCostMoney.mixed);
+	const costCurrency = $derived(totalCostMoney.mixed ? currency : totalCostMoney.currency);
 
 	const serviceEventMarkers = $derived.by(() => {
 		if (!showServiceEvents) return [];
@@ -134,7 +143,7 @@
 	});
 
 	const costFormatter = $derived.by(
-		() => (v: number) => formatCurrency(Math.round(v * 100), currency, locale)
+		() => (v: number) => formatCurrency(Math.round(v * 100), costCurrency, locale)
 	);
 
 	function drillDownCost(label: string) {
@@ -296,22 +305,29 @@
 			<div class="chart-card-title-group">
 				<h2 class="chart-title">{$_('insights.costs.title')}</h2>
 				{#if totalCost > 0}
-					<span class="chart-stat mono">{formatCurrency(totalCost, currency, locale)}</span>
+					<span class="chart-stat mono">{formatMoneyTotal(totalCostMoney, locale)}</span>
 				{/if}
 			</div>
-			<ViewToggle
-				options={[
-					{ value: 'monthly', label: $_('insights.costs.modMonthly') },
-					{ value: 'cumulative', label: $_('insights.costs.modCumulative') }
-				]}
-				value={costMode}
-				onchange={(v) => (costMode = v as typeof costMode)}
-			/>
+			{#if !costMixed}
+				<ViewToggle
+					options={[
+						{ value: 'monthly', label: $_('insights.costs.modMonthly') },
+						{ value: 'cumulative', label: $_('insights.costs.modCumulative') }
+					]}
+					value={costMode}
+					onchange={(v) => (costMode = v as typeof costMode)}
+				/>
+			{/if}
 		</div>
 		{#if costPoints.length === 0}
 			<div class="chart-empty">
 				<p class="chart-empty-title">{$_('insights.empty.title')}</p>
 				<p class="chart-empty-desc">{$_('insights.empty.costs')}</p>
+			</div>
+		{:else if costMixed}
+			<div class="chart-empty">
+				<p class="chart-empty-title">{$_('insights.costs.mixedTitle')}</p>
+				<p class="chart-empty-desc">{$_('insights.costs.mixedDesc')}</p>
 			</div>
 		{:else if costMode === 'monthly'}
 			<div class="chart-wrap">

@@ -6,7 +6,14 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 	import { _, waitLocale } from '$lib/i18n';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
+	import { formatNumber } from '$lib/utils/format.js';
+	import {
+		convertDistanceValue,
+		DISTANCE_UNITS,
+		getDistanceUnitTranslationKey,
+		getMeasurementUnitTranslationKey,
+		type DistanceUnit
+	} from '$lib/utils/measurement.js';
 
 	let {
 		data,
@@ -22,8 +29,11 @@
 
 	let showDeleteDialog = $state(false);
 	let showArchiveDialog = $state(false);
+	let showUnitConversionDialog = $state(false);
 	let deleteLoading = $state(false);
 	let archiveLoading = $state(false);
+	let unitConverting = $state(false);
+	let unitConversionForm = $state<HTMLFormElement | null>(null);
 
 	let showReportModal = $state(false);
 	let excludedTrackerIds = $state(
@@ -70,6 +80,22 @@
 	const odometerChanged = $derived(odometerInput !== data.vehicle.current_odometer);
 	const vehicleMeasurementUnitLabel = $derived(
 		$_(getMeasurementUnitTranslationKey(data.vehicle.odometer_unit))
+	);
+	let selectedDistanceUnit = $state<DistanceUnit>(
+		untrack(() => (data.vehicle.odometer_unit === 'mi' ? 'mi' : 'km'))
+	);
+	const canConvertDistanceUnit = $derived(data.vehicle.odometer_unit !== 'h');
+	const distanceUnitChanged = $derived(selectedDistanceUnit !== data.vehicle.odometer_unit);
+	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const currency = $derived(data.user?.settings?.currency ?? 'EUR');
+	const convertedCurrentReading = $derived(
+		canConvertDistanceUnit
+			? convertDistanceValue(
+					data.vehicle.current_odometer,
+					data.vehicle.odometer_unit as DistanceUnit,
+					selectedDistanceUnit
+				)
+			: data.vehicle.current_odometer
 	);
 	const isHoursVehicle = $derived(data.vehicle.odometer_unit === 'h');
 	const vehicleUnitTitle = $derived(
@@ -136,7 +162,9 @@
 <div class="page-header">
 	<div class="page-header-text">
 		<h2 class="section-title">{$_('vehicle.edit.title')}</h2>
-		<p class="page-sub">{$_('vehicle.edit.subtitle', { values: { name: data.vehicle.name } })}</p>
+		<p class="section-sub">
+			{$_('vehicle.edit.subtitle', { values: { name: data.vehicle.name } })}
+		</p>
 	</div>
 </div>
 
@@ -291,7 +319,7 @@
 					<label class="field">
 						<span class="field-label">{$_('vehicle.edit.purchasePrice')}</span>
 						<div class="field-input-group">
-							<span class="input-prefix">€</span>
+							<span class="input-prefix">{currency}</span>
 							<input
 								name="purchase_price"
 								type="number"
@@ -306,7 +334,7 @@
 					<label class="field">
 						<span class="field-label">{$_('vehicle.edit.soldPrice')}</span>
 						<div class="field-input-group">
-							<span class="input-prefix">€</span>
+							<span class="input-prefix">{currency}</span>
 							<input
 								name="sold_price"
 								type="number"
@@ -326,6 +354,77 @@
 			>
 		</form>
 	</section>
+
+	<div class="divider"></div>
+
+	{#if canConvertDistanceUnit}
+		<details class="edit-section unit-section">
+			<summary class="section-label unit-section__summary"
+				>{$_('vehicle.edit.measurementUnit.title')}</summary
+			>
+			<form
+				method="POST"
+				action="?/convertUnit"
+				bind:this={unitConversionForm}
+				use:enhance={() => {
+					unitConverting = true;
+					return async ({ result, update }) => {
+						await update({ reset: false });
+						unitConverting = false;
+						showUnitConversionDialog = false;
+						if (result.type === 'success') {
+							odometerInput = data.vehicle.current_odometer;
+							selectedDistanceUnit = data.vehicle.odometer_unit as DistanceUnit;
+							toasts.success($_('vehicle.edit.measurementUnit.converted'));
+						} else if (result.type === 'failure' && (result.data as any)?.error) {
+							toasts.error((result.data as any).error);
+						}
+					};
+				}}
+			>
+				<div class="unit-converter">
+					<div class="unit-converter__context">
+						<div class="unit-converter__eyebrow">{$_('vehicle.edit.measurementUnit.eyebrow')}</div>
+						<div class="unit-converter__reading">
+							{formatNumber(data.vehicle.current_odometer, locale)}
+							{data.vehicle.odometer_unit}
+							<span aria-hidden="true">→</span>
+							<strong>{formatNumber(convertedCurrentReading, locale)} {selectedDistanceUnit}</strong
+							>
+						</div>
+						<p>{$_('vehicle.edit.measurementUnit.summary')}</p>
+					</div>
+					<div class="unit-converter__controls">
+						<div class="unit-toggle" aria-label={$_('vehicle.edit.measurementUnit.title')}>
+							{#each DISTANCE_UNITS as unit}
+								<label
+									class:unit-toggle__option--active={selectedDistanceUnit === unit}
+									class="unit-toggle__option"
+								>
+									<input
+										type="radio"
+										name="odometer_unit"
+										value={unit}
+										bind:group={selectedDistanceUnit}
+										class="sr-only"
+									/>
+									{$_(getDistanceUnitTranslationKey(unit))}
+								</label>
+							{/each}
+						</div>
+						<button
+							type="button"
+							class="btn-primary"
+							disabled={!distanceUnitChanged || unitConverting}
+							onclick={() => (showUnitConversionDialog = true)}
+						>
+							{$_('vehicle.edit.measurementUnit.review')}
+						</button>
+					</div>
+				</div>
+			</form>
+		</details>
+	{/if}
 
 	<div class="divider"></div>
 
@@ -390,6 +489,22 @@
 		</div>
 	</section>
 </div>
+
+<ConfirmDialog
+	open={showUnitConversionDialog}
+	title={$_('vehicle.edit.measurementUnit.dialogTitle', {
+		values: { from: data.vehicle.odometer_unit, to: selectedDistanceUnit }
+	})}
+	description={$_('vehicle.edit.measurementUnit.dialogDescription', {
+		values: { value: formatNumber(convertedCurrentReading, locale), unit: selectedDistanceUnit }
+	})}
+	confirmLabel={$_('vehicle.edit.measurementUnit.confirm')}
+	cancelLabel={$_('common.cancel')}
+	danger={false}
+	loading={unitConverting}
+	onconfirm={() => unitConversionForm?.requestSubmit()}
+	onclose={() => (showUnitConversionDialog = false)}
+/>
 
 <ConfirmDialog
 	open={showDeleteDialog}
@@ -528,7 +643,7 @@
 		color: var(--text);
 		margin: 0;
 	}
-	.page-sub {
+	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin: 0;
@@ -564,6 +679,34 @@
 		color: var(--status-overdue);
 	}
 
+	.unit-section__summary {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin: 0;
+		cursor: pointer;
+		list-style: none;
+	}
+	.unit-section__summary::-webkit-details-marker {
+		display: none;
+	}
+	.unit-section__summary::after {
+		content: '';
+		width: 6px;
+		height: 6px;
+		margin-left: auto;
+		border-right: 1.5px solid var(--text-subtle);
+		border-bottom: 1.5px solid var(--text-subtle);
+		transform: rotate(-45deg);
+		transition: transform 150ms ease;
+	}
+	.unit-section[open] .unit-section__summary {
+		margin-bottom: var(--space-4);
+	}
+	.unit-section[open] .unit-section__summary::after {
+		transform: rotate(45deg);
+	}
+
 	.settings-box {
 		border: 1px solid var(--border);
 		border-radius: 10px;
@@ -586,6 +729,77 @@
 	.settings-divider {
 		height: 1px;
 		margin: var(--space-2) 0;
+	}
+	.unit-converter {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-6);
+		padding: var(--space-4) 0;
+	}
+	.unit-converter__context {
+		min-width: 0;
+	}
+	.unit-converter__eyebrow {
+		font-size: var(--text-xs);
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+	}
+	.unit-converter__reading {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-2);
+		margin-top: var(--space-1);
+		font-family: var(--font-mono);
+		font-size: var(--text-lg);
+		color: var(--text-muted);
+	}
+	.unit-converter__reading strong {
+		color: var(--text);
+		font-weight: 650;
+	}
+	.unit-converter__context p {
+		margin: var(--space-1) 0 0;
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+	}
+	.unit-converter__controls {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		flex-shrink: 0;
+	}
+	.unit-toggle {
+		display: inline-flex;
+		padding: 3px;
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		background: var(--bg-muted);
+	}
+	.unit-toggle__option {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 48px;
+		min-height: 38px;
+		padding: 0 var(--space-3);
+		border-radius: 7px;
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--text-muted);
+		cursor: pointer;
+		transition:
+			background 120ms ease,
+			color 120ms ease,
+			box-shadow 120ms ease;
+	}
+	.unit-toggle__option--active {
+		background: var(--bg);
+		color: var(--text);
+		box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 12%, transparent);
 	}
 	.inline-form {
 		display: flex;
@@ -797,9 +1011,14 @@
 			align-items: stretch;
 		}
 		.settings-box,
+		.unit-converter,
 		.danger-box {
 			flex-direction: column;
 			align-items: flex-start;
+		}
+		.unit-converter__controls {
+			width: 100%;
+			justify-content: space-between;
 		}
 	}
 

@@ -7,11 +7,14 @@
 		getMeasurementUnitTranslationKey
 	} from '$lib/utils/measurement.js';
 
-	let { form } = $props<{
+	let { data, form } = $props<{
+		data: { defaultOdometerUnit: 'km' | 'mi' };
 		form: { errors?: Record<string, string[]>; values?: Record<string, string> } | null;
 	}>();
 
-	const selectedOdometerUnit = $derived(form?.values?.odometer_unit ?? DEFAULT_ODOMETER_UNIT);
+	const selectedOdometerUnit = $derived(
+		form?.values?.odometer_unit ?? data.defaultOdometerUnit ?? DEFAULT_ODOMETER_UNIT
+	);
 </script>
 
 <svelte:head><title>{$_('vehicle.add.title')} &middot; MotoMate</title></svelte:head>

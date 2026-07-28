@@ -517,11 +517,20 @@
 				"imageTooLarge": "Imagem demasiado grande (máx. 2 MB)",
 				"invalidImageFormat": "Formato de imagem inválido. Suportado: JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Extensão de ficheiro inválida. Suportado: .jpg, .jpeg, .png, .webp, .gif",
-				"uploadFailed": "Falha no upload: erro de armazenamento"
+				"uploadFailed": "Falha no upload: erro de armazenamento",
+				"chooseDistanceUnit": "Escolha quilómetros ou milhas.",
+				"notDistanceConvertible": "Este veículo não pode ser convertido para uma unidade de distância."
 			},
 			"measurementUnit": {
 				"title": "Unidade de medida",
-				"locked": "Bloqueada após criação"
+				"locked": "Bloqueada após criação",
+				"eyebrow": "Leitura atual",
+				"summary": "Converta juntos todos os dados guardados.",
+				"review": "Rever conversão",
+				"converted": "Valores de distância convertidos",
+				"dialogTitle": "Converter {from} para {to}?",
+				"dialogDescription": "A sua leitura atual passará a ser {value} {unit}. O histórico do odómetro, os registos de serviço, os intervalos de manutenção e os lembretes por distância permanecerão alinhados.",
+				"confirm": "Converter distâncias"
 			},
 			"usageUpdated": "Uso atualizado"
 		},
@@ -720,10 +729,11 @@
 			"notSet": "Não definido",
 			"addHint": "Adicionar em Definições → Compra & Venda",
 			"expenses": "Despesas",
-			"transactions": "{count} transação",
+			"transactions": "{count, plural, one {# transação} other {# transações}}",
 			"transactions_plural": "{count} transações",
 			"totalInvested": "Total investido",
-			"soldFor": "Vendido por"
+			"soldFor": "Vendido por",
+			"currencyCount": "{count, plural, one {# moeda} other {# moedas}}"
 		},
 		"form": {
 			"addTitle": "Adicionar",
@@ -1274,7 +1284,9 @@
 			"title": "Despesas",
 			"modMonthly": "Mensal",
 			"modCumulative": "Cumulativo",
-			"viewDetails": "Ver detalhes das despesas"
+			"viewDetails": "Ver detalhes das despesas",
+			"mixedTitle": "Várias moedas",
+			"mixedDesc": "Este gráfico está oculto porque as transações selecionadas usam mais de uma moeda. Os totais são mostrados por moeda acima."
 		},
 		"empty": {
 			"title": "Sem dados ainda",

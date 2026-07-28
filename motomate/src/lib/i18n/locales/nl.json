@@ -300,7 +300,7 @@
 			},
 			"upcoming": "Aankomende",
 			"nextDue": "Volgende: {date}",
-			"logLink": "Loggen",
+			"logLink": "Bijwerken",
 			"overdueByKm": "{km} {unit} achterstallig",
 			"overdueSince": "Achterstallig sinds {date}",
 			"overdue": "Achterstallig",
@@ -516,11 +516,20 @@
 				"imageTooLarge": "Afbeelding te groot (max. 2 MB)",
 				"invalidImageFormat": "Ongeldig afbeeldingsformaat. Ondersteund: JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Ongeldige bestandsextensie. Ondersteund: .jpg, .jpeg, .png, .webp, .gif",
-				"uploadFailed": "Upload mislukt: opslagfout"
+				"uploadFailed": "Upload mislukt: opslagfout",
+				"chooseDistanceUnit": "Kies kilometers of mijlen.",
+				"notDistanceConvertible": "Dit voertuig kan niet naar een afstandseenheid worden omgerekend."
 			},
 			"measurementUnit": {
 				"title": "Meeteenheid",
-				"locked": "Eenheid kan je niet meer aanpassen na het aanmaken van je voertuig."
+				"locked": "Eenheid kan je niet meer aanpassen na het aanmaken van je voertuig.",
+				"eyebrow": "Huidige stand",
+				"summary": "Reken alle opgeslagen gegevens samen om.",
+				"review": "Omrekening controleren",
+				"converted": "Afstandswaarden omgerekend",
+				"dialogTitle": "{from} omrekenen naar {to}?",
+				"dialogDescription": "Je huidige stand wordt {value} {unit}. Kilometerstandgeschiedenis, servicebeurten, onderhoudsintervallen en afstandsherinneringen blijven op elkaar afgestemd.",
+				"confirm": "Afstanden omrekenen"
 			},
 			"usageUpdated": "Draaiuren bijgewerkt"
 		},
@@ -634,7 +643,7 @@
 				"due": "verwacht",
 				"overdue": "achterstallig"
 			},
-			"logNow": "Nu loggen →",
+			"logNow": "Nu bijwerken →",
 			"edit": "Bewerken",
 			"delete": "Verwijderen",
 			"reminderBadge": "herinnering"
@@ -719,10 +728,11 @@
 			"notSet": "Niet ingesteld",
 			"addHint": "Toevoegen in Instellingen → Koop & Verkoop",
 			"expenses": "Uitgaven",
-			"transactions": "{count} transactie",
+			"transactions": "{count, plural, one {# transactie} other {# transacties}}",
 			"transactions_plural": "{count} transacties",
 			"totalInvested": "Totaal geïnvesteerd",
-			"soldFor": "Verkocht voor"
+			"soldFor": "Verkocht voor",
+			"currencyCount": "{count, plural, one {# valuta} other {# valuta's}}"
 		},
 		"form": {
 			"addTitle": "Toevoegen",
@@ -1273,7 +1283,9 @@
 			"title": "Uitgaven",
 			"modMonthly": "Maandelijks",
 			"modCumulative": "Cumulatief",
-			"viewDetails": "Uitgaven bekijken"
+			"viewDetails": "Uitgaven bekijken",
+			"mixedTitle": "Meerdere valuta's",
+			"mixedDesc": "Deze grafiek is verborgen omdat de geselecteerde transacties meerdere valuta's gebruiken. De totalen staan hierboven per valuta."
 		},
 		"empty": {
 			"title": "Nog geen gegevens",

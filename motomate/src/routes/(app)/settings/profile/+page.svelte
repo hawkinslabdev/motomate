@@ -8,7 +8,8 @@
 		DEFAULT_ODOMETER_UNIT,
 		DISTANCE_UNITS,
 		getDistanceUnitTranslationKey,
-		isDistanceUnit
+		isDistanceUnit,
+		type DistanceUnit
 	} from '$lib/utils/measurement.js';
 	import { untrack } from 'svelte';
 	import { browser } from '$app/environment';
@@ -72,10 +73,12 @@
 		gridSeeds = [gridSeeds[0], ...Array.from({ length: 8 }, randomSeed)];
 	}
 
-	const selectedOdometerUnit = $derived(
-		isDistanceUnit(data.user.settings.odometer_unit)
-			? data.user.settings.odometer_unit
-			: DEFAULT_ODOMETER_UNIT
+	let selectedOdometerUnit = $state<DistanceUnit>(
+		untrack(() =>
+			isDistanceUnit(data.user.settings.odometer_unit)
+				? data.user.settings.odometer_unit
+				: DEFAULT_ODOMETER_UNIT
+		)
 	);
 
 	const themeOptions = [
@@ -83,16 +86,21 @@
 		{ id: 'dark' as const, labelKey: 'layout.theme.dark' },
 		{ id: 'system' as const, labelKey: 'layout.theme.system' }
 	];
-	let selectedTheme = $state<'light' | 'dark' | 'system'>('system');
+	let selectedTheme = $state<'light' | 'dark' | 'system'>(
+		untrack(() => {
+			const db = (data.user.settings.theme ?? 'system') as 'light' | 'dark' | 'system';
+			if (db !== 'system') return db;
+			return browser ? readStoredTheme() : 'system';
+		})
+	);
 
-	$effect(() => {
-		if (browser) selectedTheme = readStoredTheme();
-	});
-
-	function setTheme(t: 'light' | 'dark' | 'system') {
+	async function setTheme(t: 'light' | 'dark' | 'system') {
 		selectedTheme = t;
 		localStorage.setItem('theme', t);
 		document.documentElement.dataset.theme = resolveTheme(t);
+		const fd = new FormData();
+		fd.set('theme', t);
+		await fetch('?/savePrefs', { method: 'POST', body: fd });
 	}
 </script>
 
@@ -143,7 +151,7 @@
 		use:enhance={() => {
 			saving = true;
 			return async ({ update }) => {
-				await update();
+				await update({ reset: false });
 				saving = false;
 			};
 		}}
@@ -192,7 +200,7 @@
 							type="radio"
 							name="odometer_unit"
 							value={unit}
-							checked={selectedOdometerUnit === unit}
+							bind:group={selectedOdometerUnit}
 							class="sr-only"
 						/>
 						{$_(getDistanceUnitTranslationKey(unit))}

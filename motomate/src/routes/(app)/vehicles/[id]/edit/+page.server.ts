@@ -4,6 +4,7 @@ import { and, eq } from 'drizzle-orm';
 import {
 	updateVehicle,
 	deleteVehicle,
+	convertVehicleDistanceUnit,
 	getVehicleById,
 	updateOdometer,
 	insertOdometerLog
@@ -19,7 +20,7 @@ import type { VehicleMeta } from '$lib/db/schema.js';
 import { db } from '$lib/db/index.js';
 import { vehicles } from '$lib/db/schema.js';
 import { serverT } from '$lib/i18n/server.js';
-import { getMeasurementBasis, isMeasurementUnit } from '$lib/utils/measurement.js';
+import { getMeasurementBasis, isDistanceUnit, isMeasurementUnit } from '$lib/utils/measurement.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 
@@ -114,6 +115,23 @@ export const actions: Actions = {
 
 		await updateVehicle(params.id, locals.user!.id, parsed.data);
 		return { success: true };
+	},
+
+	convertUnit: async ({ request, locals, params }) => {
+		const locale = locals.user!.settings.locale;
+		const targetUnit = String((await request.formData()).get('odometer_unit') ?? '');
+		if (!isDistanceUnit(targetUnit)) {
+			return fail(400, { error: await serverT('vehicle.edit.errors.chooseDistanceUnit', locale) });
+		}
+
+		const converted = await convertVehicleDistanceUnit(params.id, locals.user!.id, targetUnit);
+		if (!converted) {
+			return fail(400, {
+				error: await serverT('vehicle.edit.errors.notDistanceConvertible', locale)
+			});
+		}
+
+		return { unitConverted: true };
 	},
 
 	delete: async ({ locals, params }) => {

@@ -1,4 +1,6 @@
 /* Utility functions for formatting numbers, dates, currencies, etc. in a locale-aware way */
+import type { MoneyTotal } from './money.js';
+
 const _numFmtCache = new Map<string, Intl.NumberFormat>();
 const _currFmtCache = new Map<string, Intl.NumberFormat>();
 
@@ -31,6 +33,12 @@ export function formatCurrency(cents: number, currency = 'EUR', locale = 'en'): 
 		_currFmtCache.set(key, fmt);
 	}
 	return fmt.format(cents / 100);
+}
+
+/* Format a currency-grouped total; mixed currencies render as subtotals joined by a middot */
+export function formatMoneyTotal(total: MoneyTotal, locale = 'en'): string {
+	if (!total.mixed) return formatCurrency(total.cents, total.currency, locale);
+	return total.subtotals.map((s) => formatCurrency(s.cents, s.currency, locale)).join(' · ');
 }
 
 /* Format a date string as "5 Jan 2026", omitting the year if its the current yearr */

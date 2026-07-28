@@ -4,6 +4,7 @@ import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
 import { getRecentLogsAcrossVehicles } from '$lib/db/repositories/service-logs.js';
 import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
 import { getUnreadCount } from '$lib/workflow/channels/inapp.js';
+import { totalByCurrency } from '$lib/utils/money.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;
@@ -25,9 +26,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 			vehicles.map(async (v) => {
 				const txns = await getFinanceTransactionsByVehicle(v.id, user.id);
 				const yearTxns = txns.filter((t) => t.performed_at >= yearStart);
-				const totalCents = yearTxns.reduce((s, t) => s + t.amount_cents, 0);
-				const currency = yearTxns[0]?.currency ?? user.settings?.currency ?? 'EUR';
-				return { vehicleId: v.id, totalCents, currency };
+				const total = totalByCurrency(
+					yearTxns.map((t) => ({ amountCents: t.amount_cents, currency: t.currency })),
+					user.settings?.currency ?? 'EUR'
+				);
+				return { vehicleId: v.id, total };
 			})
 		)
 	]);
@@ -60,7 +63,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.map((log) => ({ ...log, vehicle: vehicleMap.get(log.vehicle_id)! }));
 
 	const yearCostByVehicle = Object.fromEntries(
-		yearFinance.map((e) => [e.vehicleId, { totalCents: e.totalCents, currency: e.currency }])
+		yearFinance.map((e) => [e.vehicleId, { total: e.total }])
 	);
 
 	return {
