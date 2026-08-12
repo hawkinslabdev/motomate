@@ -42,9 +42,8 @@ export const actions: Actions = {
 		if ('locale' in data) patch.locale = String(data.locale);
 		if ('display_name' in data) patch.display_name = String(data.display_name).trim() || null;
 
-		const oldCurrency = locals.user!.settings?.currency ?? 'EUR';
-		if (patch.currency && patch.currency !== oldCurrency && data.migrate_currency === 'true') {
-			await migrateUserCurrency(locals.user!.id, oldCurrency, patch.currency);
+		if (patch.currency && patch.currency !== (locals.user!.settings?.currency ?? 'EUR') && data.migrate_currency === 'true') {
+			await migrateUserCurrency(locals.user!.id, patch.currency);
 		}
 
 		await updateUserSettings(locals.user!.id, patch);

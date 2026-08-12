@@ -1,4 +1,4 @@
-import { eq, sql, and, inArray } from 'drizzle-orm';
+import { eq, sql, and, inArray, ne } from 'drizzle-orm';
 import { db } from '../index.js';
 import { users, finance_transactions, service_logs, travels, vehicles } from '../schema.js';
 import { CreateUserSchema, UserSettingsSchema } from '../../validators/schemas.js';
@@ -93,22 +93,16 @@ export async function deleteUser(userId: string): Promise<void> {
 	await db.delete(users).where(eq(users.id, userId));
 }
 
-export async function migrateUserCurrency(
-	userId: string,
-	fromCurrency: string,
-	toCurrency: string
-): Promise<void> {
+export async function migrateUserCurrency(userId: string, toCurrency: string): Promise<void> {
 	await db
 		.update(finance_transactions)
 		.set({ currency: toCurrency })
-		.where(
-			and(eq(finance_transactions.user_id, userId), eq(finance_transactions.currency, fromCurrency))
-		);
+		.where(and(eq(finance_transactions.user_id, userId), ne(finance_transactions.currency, toCurrency)));
 
 	await db
 		.update(travels)
 		.set({ currency: toCurrency })
-		.where(and(eq(travels.user_id, userId), eq(travels.currency, fromCurrency)));
+		.where(and(eq(travels.user_id, userId), ne(travels.currency, toCurrency)));
 
 	const userVehicles = await db
 		.select({ id: vehicles.id })
@@ -125,7 +119,7 @@ export async function migrateUserCurrency(
 						service_logs.vehicle_id,
 						userVehicles.map((v) => v.id)
 					),
-					eq(service_logs.currency, fromCurrency)
+					ne(service_logs.currency, toCurrency)
 				)
 			);
 	}
