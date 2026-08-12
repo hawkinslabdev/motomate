@@ -16,6 +16,7 @@
 	import { dicebearUri, randomSeed } from '$lib/utils/dicebear.js';
 	import { resolveTheme, readStoredTheme } from '$lib/utils/theme.js';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import Modal from '$lib/components/ui/Modal.svelte';
 
 	let { data, form } = $props<{
 		data: { user: User };
@@ -29,6 +30,9 @@
 
 	let saving = $state(false);
 	let avatarUploading = $state(false);
+	let prefForm = $state<HTMLFormElement | null>(null);
+	let currencyDialog = $state<{ from: string; to: string } | null>(null);
+	let pendingMigrate = $state<boolean | null>(null);
 	let showAvatarPopover = $state(false);
 	let avatarCacheBuster = $state(0);
 	let fileInput = $state<HTMLInputElement | null>(null);
@@ -95,6 +99,12 @@
 		})
 	);
 
+	function chooseUpdate(migrate: boolean) {
+		pendingMigrate = migrate;
+		currencyDialog = null;
+		prefForm?.requestSubmit();
+	}
+
 	async function setTheme(t: 'light' | 'dark' | 'system') {
 		selectedTheme = t;
 		localStorage.setItem('theme', t);
@@ -137,10 +147,22 @@
 	<h3 class="sub-title">{$_('settings.profile.display')}</h3>
 
 	<form
+		bind:this={prefForm}
 		method="POST"
 		action="?/savePrefs"
 		class="pref-form"
-		use:enhance={() => {
+		use:enhance={({ formData, cancel }) => {
+			const selectedCurrency = String(formData.get('currency') ?? '');
+			const currentCurrency = data.user.settings.currency ?? 'EUR';
+			if (selectedCurrency !== currentCurrency && pendingMigrate === null) {
+				cancel();
+				currencyDialog = { from: currentCurrency, to: selectedCurrency };
+				return;
+			}
+			if (pendingMigrate !== null) {
+				formData.set('migrate_currency', pendingMigrate ? 'true' : 'false');
+				pendingMigrate = null;
+			}
 			saving = true;
 			return async ({ result, update }) => {
 				await update({ reset: false });
@@ -223,6 +245,29 @@
 		</button>
 	</form>
 </section>
+
+<Modal
+	open={currencyDialog !== null}
+	title={$_('settings.profile.currencyDialog.title')}
+	onclose={() => (currencyDialog = null)}
+>
+	<p class="dialog-body">
+		{$_('settings.profile.currencyDialog.body', {
+			values: { from: currencyDialog?.from ?? '', to: currencyDialog?.to ?? '' }
+		})}
+	</p>
+	{#snippet footer()}
+		<button type="button" class="btn-dialog-cancel" onclick={() => (currencyDialog = null)}>
+			{$_('common.cancel')}
+		</button>
+		<button type="button" class="btn-dialog-secondary" onclick={() => chooseUpdate(false)}>
+			{$_('settings.profile.currencyDialog.newOnly')}
+		</button>
+		<button type="button" class="btn-dialog-primary" onclick={() => chooseUpdate(true)}>
+			{$_('settings.profile.currencyDialog.updateAll')}
+		</button>
+	{/snippet}
+</Modal>
 
 {#if showAvatarPopover}
 	<div
@@ -459,6 +504,49 @@
 	}
 	.btn-secondary:hover:not(:disabled) {
 		background: var(--bg-muted);
+	}
+
+	.dialog-body {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		margin: 0;
+		line-height: var(--leading-base);
+	}
+	.btn-dialog-cancel,
+	.btn-dialog-secondary,
+	.btn-dialog-primary {
+		padding: 0.625rem 1rem;
+		border-radius: 10px;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		min-height: 44px;
+		transition: background 0.1s;
+	}
+	.btn-dialog-cancel {
+		background: none;
+		border: 1px solid var(--border);
+		color: var(--text-muted);
+	}
+	.btn-dialog-cancel:hover {
+		background: var(--bg-muted);
+		color: var(--text);
+	}
+	.btn-dialog-secondary {
+		background: none;
+		border: 1px solid var(--border-strong);
+		color: var(--text);
+	}
+	.btn-dialog-secondary:hover {
+		background: var(--bg-muted);
+	}
+	.btn-dialog-primary {
+		background: var(--accent);
+		border: none;
+		color: #fff;
+	}
+	.btn-dialog-primary:hover {
+		background: var(--accent-hover);
 	}
 
 	/* User avatar button; mirrors .vehicle-avatar */

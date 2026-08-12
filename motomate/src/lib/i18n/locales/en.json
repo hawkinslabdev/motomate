@@ -879,7 +879,13 @@
 			"avatarShuffle": "Shuffle",
 			"subtitle": "Language, currency, and odometer unit.",
 			"displayName": "Display name",
-			"displayNamePlaceholder": "Your name"
+			"displayNamePlaceholder": "Your name",
+			"currencyDialog": {
+				"title": "Update existing expenses?",
+				"body": "You have expenses recorded in {from}. Would you like to update them to {to}? The amounts stay the same — only the currency symbol changes.",
+				"updateAll": "Update all",
+				"newOnly": "New expenses only"
+			}
 		},
 		"account": {
 			"title": "Account",

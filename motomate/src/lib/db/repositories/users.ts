@@ -1,6 +1,6 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, and, inArray } from 'drizzle-orm';
 import { db } from '../index.js';
-import { users } from '../schema.js';
+import { users, finance_transactions, service_logs, travels, vehicles } from '../schema.js';
 import { CreateUserSchema, UserSettingsSchema } from '../../validators/schemas.js';
 import type { InsertUser, User, UserSettings } from '../schema.js';
 import { generateId } from '../../utils/id.js';
@@ -91,4 +91,42 @@ export async function hasAnyUser(): Promise<boolean> {
 
 export async function deleteUser(userId: string): Promise<void> {
 	await db.delete(users).where(eq(users.id, userId));
+}
+
+export async function migrateUserCurrency(
+	userId: string,
+	fromCurrency: string,
+	toCurrency: string
+): Promise<void> {
+	await db
+		.update(finance_transactions)
+		.set({ currency: toCurrency })
+		.where(
+			and(eq(finance_transactions.user_id, userId), eq(finance_transactions.currency, fromCurrency))
+		);
+
+	await db
+		.update(travels)
+		.set({ currency: toCurrency })
+		.where(and(eq(travels.user_id, userId), eq(travels.currency, fromCurrency)));
+
+	const userVehicles = await db
+		.select({ id: vehicles.id })
+		.from(vehicles)
+		.where(eq(vehicles.user_id, userId));
+
+	if (userVehicles.length > 0) {
+		await db
+			.update(service_logs)
+			.set({ currency: toCurrency })
+			.where(
+				and(
+					inArray(
+						service_logs.vehicle_id,
+						userVehicles.map((v) => v.id)
+					),
+					eq(service_logs.currency, fromCurrency)
+				)
+			);
+	}
 }

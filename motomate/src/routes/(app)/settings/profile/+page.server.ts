@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
+import { updateUserSettings, migrateUserCurrency } from '$lib/db/repositories/users.js';
 import { getStorage } from '$lib/storage/index.js';
 import { mirrorPut, mirrorDelete } from '$lib/server/integrations.js';
 import type { UserSettings } from '$lib/db/schema.js';
@@ -33,13 +33,20 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	savePrefs: async ({ request, locals }) => {
-		const data = Object.fromEntries(await request.formData());
+		const formData = await request.formData();
+		const data = Object.fromEntries(formData);
 		const patch: Partial<UserSettings> = {};
 		if ('theme' in data) patch.theme = data.theme as 'system' | 'light' | 'dark';
 		if ('currency' in data) patch.currency = String(data.currency);
 		if ('odometer_unit' in data) patch.odometer_unit = data.odometer_unit as OdometerUnit;
 		if ('locale' in data) patch.locale = String(data.locale);
 		if ('display_name' in data) patch.display_name = String(data.display_name).trim() || null;
+
+		const oldCurrency = locals.user!.settings?.currency ?? 'EUR';
+		if (patch.currency && patch.currency !== oldCurrency && data.migrate_currency === 'true') {
+			await migrateUserCurrency(locals.user!.id, oldCurrency, patch.currency);
+		}
+
 		await updateUserSettings(locals.user!.id, patch);
 		return { savedPrefs: true };
 	},
