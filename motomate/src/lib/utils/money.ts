@@ -1,4 +1,4 @@
-/* Currency-aware aggregation; since amounts carry a per-row currency and are never converted, so distinct codes stay separate(d?) instead of being summed together. */
+/* Currency-aware aggregation: Amounts with different currency codes are tracked separately rather than summed together. */
 
 export interface CurrencyAmount {
 	amountCents: number;
@@ -32,7 +32,7 @@ export function totalByCurrency(items: CurrencyAmount[], fallbackCurrency = 'EUR
 	return { mixed: true, subtotals };
 }
 
-/* Pick the one currency a single-scale view (chart, average) should render: the preferred account currency when it is present, otherwise the largest subtotal. */
+/* Determines the primary display currency: uses the preferred account currency if available, otherwise defaults to the currency with the largest subtotal. */
 export function primaryCurrency(total: MoneyTotal, preferred: string): string {
 	if (!total.mixed) return total.currency;
 	return total.subtotals.some((s) => s.currency === preferred)

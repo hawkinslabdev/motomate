@@ -67,6 +67,9 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const raw = Object.fromEntries(formData);
 
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		if (!vehicle) return fail(404, { error: 'Vehicle not found' });
+
 		const purchasePrice = formData.get('purchase_price') as string;
 		const soldPrice = formData.get('sold_price') as string;
 
@@ -89,28 +92,36 @@ export const actions: Actions = {
 			// If parsed is 0 or negative, leave as null (clearing the price)
 		}
 
-		const input = {
+		const input: Record<string, unknown> = {
 			...raw,
 			year: Number(raw.year),
 			purchase_price_cents: purchasePriceCents,
 			sold_price_cents: soldPriceCents
 		};
 
+		// Only re-stamp the currency when the price actually changed on this save,
+		// so unrelated edits (name, odometer, ...) don't silently relabel an old price
+		// to whatever currency the account happens to be set to today.
+		if (purchasePriceCents !== (vehicle.purchase_price_cents ?? null)) {
+			input.purchase_price_currency =
+				purchasePriceCents !== null ? (locals.user!.settings?.currency ?? 'EUR') : null;
+		}
+		if (soldPriceCents !== (vehicle.sold_price_cents ?? null)) {
+			input.sold_price_currency =
+				soldPriceCents !== null ? (locals.user!.settings?.currency ?? 'EUR') : null;
+		}
+
 		const parsed = UpdateVehicleSchema.safeParse(input);
 		if (!parsed.success) {
 			return fail(400, { errors: parsed.error.flatten().fieldErrors });
 		}
 
-		if (parsed.data.odometer_unit !== undefined) {
-			const vehicle = await getVehicleById(params.id, locals.user!.id);
-			if (!vehicle) return fail(404, { error: 'Vehicle not found' });
-			if (
-				isMeasurementUnit(vehicle.odometer_unit) &&
-				getMeasurementBasis(vehicle.odometer_unit) !==
-					getMeasurementBasis(parsed.data.odometer_unit)
-			) {
-				return fail(400, { error: 'Vehicle measurement basis cannot be changed after creation' });
-			}
+		if (
+			parsed.data.odometer_unit !== undefined &&
+			isMeasurementUnit(vehicle.odometer_unit) &&
+			getMeasurementBasis(vehicle.odometer_unit) !== getMeasurementBasis(parsed.data.odometer_unit)
+		) {
+			return fail(400, { error: 'Vehicle measurement basis cannot be changed after creation' });
 		}
 
 		await updateVehicle(params.id, locals.user!.id, parsed.data);
@@ -180,6 +191,8 @@ export const actions: Actions = {
 			.set({
 				archived_at: new Date().toISOString(),
 				sold_price_cents: soldPriceCents,
+				sold_price_currency:
+					soldPriceCents !== null ? (locals.user!.settings?.currency ?? 'EUR') : null,
 				updated_at: new Date().toISOString()
 			})
 			.where(and(eq(vehicles.id, params.id), eq(vehicles.user_id, locals.user!.id)));
@@ -194,6 +207,7 @@ export const actions: Actions = {
 			.set({
 				archived_at: null,
 				sold_price_cents: null,
+				sold_price_currency: null,
 				updated_at: new Date().toISOString()
 			})
 			.where(and(eq(vehicles.id, params.id), eq(vehicles.user_id, locals.user!.id)));
