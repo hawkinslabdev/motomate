@@ -1,5 +1,4 @@
 import { mkdirSync, existsSync, copyFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 import { hash } from '@node-rs/argon2';
 import { eq, count, and } from 'drizzle-orm';
@@ -22,7 +21,12 @@ import { generateId } from '../utils/id.js';
 
 const ARGON2_OPTS = { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 };
 
-const ASSETS_DIR = join(dirname(fileURLToPath(import.meta.url)), 'demo-assets');
+// `static/` is always copied verbatim to this path relative to the app's cwd: by SvelteKit's
+// build for `npm run preview`/Docker, and it's just the source directory during `npm run dev`.
+// (A path built from this module's own import.meta.url is NOT reliable: bundlers are free to
+// nest SSR chunks arbitrarily deep, so a sibling "demo-assets" folder next to the compiled chunk
+// isn't guaranteed to exist where Docker copies it.)
+const ASSETS_DIR = join(process.cwd(), 'static', 'demo-assets');
 
 function copyAssetToStorage(assetName: string, storageKey: string): boolean {
 	const storagePath = process.env.STORAGE_LOCAL_PATH ?? './uploads';

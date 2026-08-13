@@ -27,7 +27,7 @@ RUN mkdir -p /app/data
 RUN npm rebuild better-sqlite3
 
 # Build the application
-RUN npm run build && cp -r src/lib/db/demo-assets build/server/chunks/demo-assets
+RUN npm run build
 
 # Drop devDependencies now that the build is donee
 RUN npm prune --omit=dev
@@ -49,6 +49,7 @@ COPY --from=build /app/server.js ./
 COPY --from=build /app/migrate.js ./
 COPY --from=build /app/demo-seed.js ./
 COPY --from=build /app/drizzle ./drizzle
+COPY --from=build /app/static/demo-assets ./static/demo-assets
 
 # Set environment variables
 ENV NODE_ENV=production
