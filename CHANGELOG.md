@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2
+
+- Fix: purchase/sold price ignores its recorded currency, causing a mismatch with expenses (reported by @NJBodey) #90
+- Fix: OSM-markers (e.g. Pin for start-location) can now be loaded again
+- Fix: demo instance couldn't load assets since these were not copied in Dockerbuild (#89)
+
 ## 0.5.1
 
 - Fix: downloading GPX travel files could fail with an error
