@@ -404,7 +404,7 @@
 				<div class="invest-card">
 					<div class="invest-label select-none">{$_('finance.investment.purchasePrice')}</div>
 					<div class="invest-amount mono">
-						{formatCurrency(data.purchasePriceCents, currency, locale)}
+						{formatCurrency(data.purchasePriceCents, data.purchasePriceCurrency, locale)}
 					</div>
 				</div>
 			{:else}
@@ -440,7 +440,7 @@
 				<div class="invest-card">
 					<div class="invest-label select-none">{$_('finance.investment.soldFor')}</div>
 					<div class="invest-amount invest-amount--neutral mono">
-						{formatCurrency(data.soldPriceCents!, currency, locale)}
+						{formatCurrency(data.soldPriceCents!, data.soldPriceCurrency, locale)}
 					</div>
 				</div>
 

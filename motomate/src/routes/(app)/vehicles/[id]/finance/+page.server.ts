@@ -106,19 +106,25 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		.map(([key, items]) => [key, totalByCurrency(items, account)] as const)
 		.sort((a, b) => magnitude(b[1]) - magnitude(a[1]));
 
-	// Purchase and sold prices carry no stored currency, so they are treated as the account currency
+	// Older rows predate the purchase/sold price currency columns; fall back to the account currency for those
 	const purchasePriceCents = vehicle.purchase_price_cents || 0;
+	const purchasePriceCurrency = vehicle.purchase_price_currency ?? account;
 	const investmentItems: CurrencyAmount[] = [
-		...(purchasePriceCents > 0 ? [{ amountCents: purchasePriceCents, currency: account }] : []),
+		...(purchasePriceCents > 0
+			? [{ amountCents: purchasePriceCents, currency: purchasePriceCurrency }]
+			: []),
 		...allTransactions.map((tx) => ({ amountCents: tx.amountCents, currency: tx.currency }))
 	];
 	const totalInvestment = totalByCurrency(investmentItems, account);
 
 	// Profit/loss only computes when sold price and investment share one currency
 	const soldPriceCents = vehicle.sold_price_cents || null;
+	const soldPriceCurrency = vehicle.sold_price_currency ?? account;
 	const profitLoss =
-		soldPriceCents !== null && !totalInvestment.mixed && totalInvestment.currency === account
-			? { cents: soldPriceCents - totalInvestment.cents, currency: account }
+		soldPriceCents !== null &&
+		!totalInvestment.mixed &&
+		totalInvestment.currency === soldPriceCurrency
+			? { cents: soldPriceCents - totalInvestment.cents, currency: soldPriceCurrency }
 			: null;
 
 	return {
@@ -131,7 +137,9 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		allTransactions,
 		currency: account,
 		purchasePriceCents,
+		purchasePriceCurrency,
 		soldPriceCents,
+		soldPriceCurrency,
 		totalInvestment,
 		profitLoss,
 		page_prefs: locals.user!.settings?.page_prefs?.finance ?? null,

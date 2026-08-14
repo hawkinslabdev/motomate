@@ -226,7 +226,9 @@ export const UpdateVehicleSchema = CreateVehicleSchema.partial().extend({
 	sort_order: optInt(),
 	cover_image_key: z.string().max(500).nullish(),
 	purchase_price_cents: z.number().int().min(0).nullable().optional(),
-	sold_price_cents: z.number().int().min(0).nullable().optional()
+	purchase_price_currency: z.string().length(3).nullable().optional(),
+	sold_price_cents: z.number().int().min(0).nullable().optional(),
+	sold_price_currency: z.string().length(3).nullable().optional()
 });
 
 export const CreateTaskTemplateSchema = z.object({

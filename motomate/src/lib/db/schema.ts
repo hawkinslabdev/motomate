@@ -217,7 +217,9 @@ export const vehicles = sqliteTable(
 		cover_image_key: text('cover_image_key'),
 		archived_at: text('archived_at'), // null = active; timestamp = archived
 		purchase_price_cents: integer('purchase_price_cents'), // null = not tracked
+		purchase_price_currency: text('purchase_price_currency'), // currency at time of entry; null if purchase_price_cents is null
 		sold_price_cents: integer('sold_price_cents'), // null = not tracked
+		sold_price_currency: text('sold_price_currency'), // currency at time of entry; null if sold_price_cents is null
 		meta: text('meta', { mode: 'json' })
 			.$type<VehicleMeta>()
 			.notNull()
