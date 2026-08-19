@@ -45,6 +45,8 @@ jobs:
           {
             echo "## Changes"
             echo ""
+            cat /tmp/changelog_entry.md
+            echo ""
             echo "See [CHANGELOG.md](https://github.com/hawkinslabdev/motomate/blob/main/CHANGELOG.md) for all details."
             echo ""
             echo "## Install"
@@ -60,10 +62,6 @@ jobs:
             echo '```yaml'
             echo "$PINNED_COMPOSE"
             echo '```'
-            echo ""
-            echo "## What's changed"
-            echo ""
-            cat /tmp/changelog_entry.md
             echo ""
             echo "---"
             echo ""
