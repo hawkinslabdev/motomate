@@ -1,0 +1,1 @@
+ALTER TABLE `workflow_rules` ADD `excluded_vehicle_ids` text DEFAULT '[]' NOT NULL;

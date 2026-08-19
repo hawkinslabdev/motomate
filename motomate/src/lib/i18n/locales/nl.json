@@ -324,7 +324,7 @@
 		"forms": {
 			"logService": "Onderhoudsitem registreren",
 			"updateOdo": "Kilometerstand bijwerken",
-			"writeNote": "Notitie schrijven",
+			"writeNote": "Notitie",
 			"noteDesc": "Schrijf een notitie of opmerking",
 			"editEntry": "Item bewerken",
 			"fields": {
@@ -933,7 +933,7 @@
 				"maintenanceOverdueDate": "Onderhoud achterstallig (datum)",
 				"odometerNudge": "Kilometerstand herinnering"
 			},
-			"lastFired": "Laatst geactiveerd: {date}",
+			"lastFired": "{date}",
 			"neverFired": "Nooit geactiveerd",
 			"nextFire": "Volgende",
 			"delete": "Verwijderen",
@@ -971,7 +971,12 @@
 			"actions": {
 				"title": "Regelacties",
 				"description": "Voer de geplande controle nu uit, of herstel de standaardregels."
-			}
+			},
+			"excludeVehiclesBtn": "Voertuigen",
+			"excludeVehiclesTitle": "Voertuigen voor deze regel",
+			"excludeVehiclesDesc": "Geldt standaard voor alle voertuigen. Zet een voertuig uit om het van deze regel uit te sluiten.",
+			"excludeVehiclesEmpty": "Nog geen voertuigen.",
+			"excludeVehiclesSaved": "Voertuigselectie opgeslagen"
 		},
 		"notifications": {
 			"title": "Meldingen",
@@ -1214,7 +1219,7 @@
 			"mileage": "Kilometerstand",
 			"mileageDesc": "Nummer op je dashboard",
 			"finance": "Uitgaven",
-			"financeDesc": "Brandstof, onderdelen of andere kosten",
+			"financeDesc": "Brandstof of andere kosten",
 			"usage": "Draaiuren",
 			"usageDesc": "Uren of stand op je teller"
 		},

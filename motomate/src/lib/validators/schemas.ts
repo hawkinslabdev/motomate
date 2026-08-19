@@ -316,6 +316,11 @@ export const UpdateWorkflowTriggerSchema = z.object({
 	trigger: RuleTriggerSchema
 });
 
+export const UpdateWorkflowExcludedVehiclesSchema = z.object({
+	id: z.string().min(1),
+	excluded_vehicle_ids: z.array(z.string().min(1))
+});
+
 export const OdometerUpdateSchema = z.object({
 	current_odometer: reqInt(0)
 });

@@ -329,7 +329,7 @@
 			"logService": "Log service entry",
 			"updateOdo": "Update odometer",
 			"updateUsage": "Update usage",
-			"writeNote": "Write a note",
+			"writeNote": "Note",
 			"noteDesc": "Write a note or remark",
 			"editEntry": "Edit entry",
 			"fields": {
@@ -946,7 +946,7 @@
 				"maintenanceOverdueDate": "Maintenance overdue (date)",
 				"odometerNudge": "Odometer nudge"
 			},
-			"lastFired": "Last fired: {date}",
+			"lastFired": "{date}",
 			"neverFired": "Never fired",
 			"nextFire": "Next",
 			"delete": "Delete",
@@ -984,7 +984,12 @@
 			"actions": {
 				"title": "Rule actions",
 				"description": "Run the scheduled check now, or restore the default rules."
-			}
+			},
+			"excludeVehiclesBtn": "Vehicles",
+			"excludeVehiclesTitle": "Vehicles for this rule",
+			"excludeVehiclesDesc": "Applies to all vehicles by default. Turn off any vehicle to exclude it from this rule.",
+			"excludeVehiclesEmpty": "No vehicles yet.",
+			"excludeVehiclesSaved": "Vehicle selection saved"
 		},
 		"notifications": {
 			"title": "Notifications",
@@ -1206,7 +1211,7 @@
 			"usage": "Usage",
 			"usageDesc": "Hours or reading on your meter",
 			"finance": "Spending",
-			"financeDesc": "Fuel, insurance, or parts"
+			"financeDesc": "Fuel or other costs"
 		},
 		"notifications": {
 			"title": "Notifications",

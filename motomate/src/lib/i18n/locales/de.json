@@ -324,7 +324,7 @@
 		"forms": {
 			"logService": "Serviceeintrag protokollieren",
 			"updateOdo": "Kilometerstand aktualisieren",
-			"writeNote": "Notiz schreiben",
+			"writeNote": "Notiz",
 			"noteDesc": "Schreiben Sie eine Notiz oder Bemerkung",
 			"editEntry": "Eintrag bearbeiten",
 			"fields": {
@@ -933,7 +933,7 @@
 				"maintenanceOverdueDate": "Wartung überfällig (Datum)",
 				"odometerNudge": "Kilometerstand-Erinnerung"
 			},
-			"lastFired": "Zuletzt ausgelöst: {date}",
+			"lastFired": "{date}",
 			"neverFired": "Noch nie ausgelöst",
 			"nextFire": "Nächste",
 			"delete": "Löschen",
@@ -971,7 +971,12 @@
 			"actions": {
 				"title": "Regel-Aktionen",
 				"description": "Führe die geplante Prüfung jetzt aus oder stelle die Standardregeln wieder her."
-			}
+			},
+			"excludeVehiclesBtn": "Fahrzeuge",
+			"excludeVehiclesTitle": "Fahrzeuge für diese Regel",
+			"excludeVehiclesDesc": "Gilt standardmäßig für alle Fahrzeuge. Deaktiviere ein Fahrzeug, um es von dieser Regel auszuschließen.",
+			"excludeVehiclesEmpty": "Noch keine Fahrzeuge.",
+			"excludeVehiclesSaved": "Fahrzeugauswahl gespeichert"
 		},
 		"notifications": {
 			"title": "Benachrichtigungen",
@@ -1214,7 +1219,7 @@
 			"mileage": "Kilometerstand",
 			"mileageDesc": "Zahl auf Ihrem Tacho",
 			"finance": "Ausgaben",
-			"financeDesc": "Kraftstoff, Versicherung oder Teile",
+			"financeDesc": "Kraftstoff oder andere Kosten",
 			"usage": "Verbrauch",
 			"usageDesc": "Stunden oder Stand am Zähler"
 		},
