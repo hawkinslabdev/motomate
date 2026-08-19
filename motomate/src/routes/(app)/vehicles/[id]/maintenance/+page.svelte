@@ -14,6 +14,7 @@
 	import { _, waitLocale } from '$lib/i18n';
 	import { sheet } from '$lib/stores/sheet.svelte.js';
 	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
+	import { compareTrackerStatus } from '$lib/utils/tracker-status.js';
 	import ServiceLogEditForm from '$lib/components/vehicle/ServiceLogEditForm.svelte';
 	import {
 		formatMeasurement,
@@ -166,8 +167,7 @@
 	const sortedTrackers = $derived(
 		[...filteredTrackers].sort((a, b) => {
 			if (sortBy === 'status') {
-				const order: Record<string, number> = { overdue: 0, due: 1, ok: 2 };
-				return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+				return compareTrackerStatus(a, b);
 			}
 			if (sortBy === 'name') {
 				return a.template.name.localeCompare(b.template.name);
@@ -662,7 +662,9 @@
 	<div class="tracker-list">
 		{#each sortedTrackers as tracker}
 			{@const t = tracker}
-			{@const otherTrackers = data.trackers.filter((ot) => ot.id !== t.id)}
+			{@const otherTrackers = data.trackers
+				.filter((ot) => ot.id !== t.id)
+				.sort(compareTrackerStatus)}
 			<div class="tracker-item">
 				<div class="tracker-card-row">
 					<TrackerCard
@@ -790,12 +792,7 @@
 									<div class="tracker-checkboxes">
 										{#each otherTrackers as ot}
 											<label class="tracker-checkbox">
-												<input
-													type="checkbox"
-													name="additional_tracker_ids"
-													value={ot.id}
-													checked={ot.status === 'due' || ot.status === 'overdue'}
-												/>
+												<input type="checkbox" name="additional_tracker_ids" value={ot.id} />
 												<span class="tracker-check-label">
 													<span class="tracker-check-name">{ot.template.name}</span>
 													{#if ot.status === 'due'}
