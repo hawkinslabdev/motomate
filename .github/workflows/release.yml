@@ -54,7 +54,7 @@ jobs:
             echo "Copy \`docker-compose.yml\` from the release assets, set \`AUTH_SECRET\` and \`PUBLIC_APP_URL\`, then:"
             echo ""
             echo '```bash'
-            echo "docker compose up -d"
+            echo "docker compose pull && docker compose up -d"
             echo '```'
             echo ""
             echo "Or pin to this exact version:"
