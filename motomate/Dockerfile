@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-slim AS build
+FROM node:24-alpine AS build
 
 ARG BUILD_VERSION
 ENV VITE_APP_VERSION=${BUILD_VERSION}
@@ -7,9 +7,7 @@ ENV VITE_APP_VERSION=${BUILD_VERSION}
 WORKDIR /app
 
 # Install build tools required by better-sqlite3
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
@@ -30,10 +28,10 @@ RUN npm rebuild better-sqlite3
 RUN npm run build
 
 # Drop devDependencies now that the build is donee
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev --omit=optional
 
 # Runtime stage
-FROM node:20-slim AS runtime
+FROM node:24-alpine AS runtime
 
 WORKDIR /app
 
