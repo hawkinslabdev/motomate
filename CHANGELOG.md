@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3
+
+- This release is a performance-focused maintenance release that updates the Docker base image from `node:20-slim` to `node:24-alpine`.
+
 ## 0.5.2
 
 - Fix: purchase/sold price ignores its recorded currency, causing a mismatch with expenses (reported by @NJBodey) #90
