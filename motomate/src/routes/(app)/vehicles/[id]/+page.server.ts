@@ -321,7 +321,12 @@ export const actions: Actions = {
 		await createFinanceTransaction(locals.user!.id, {
 			vehicle_id: params.id,
 			category: category as
-				'maintenance' | 'parts' | 'accessories' | 'administrative' | 'fuel' | 'other',
+				| 'maintenance'
+				| 'parts'
+				| 'accessories'
+				| 'administrative'
+				| 'fuel'
+				| 'other',
 			amount_cents: amountCents,
 			currency: (locals.user as any)?.settings?.currency || 'EUR',
 			notes,
@@ -362,7 +367,12 @@ export const actions: Actions = {
 
 		await updateFinanceTransaction(id, params.id, locals.user!.id, {
 			category: category as
-				'maintenance' | 'parts' | 'accessories' | 'administrative' | 'fuel' | 'other',
+				| 'maintenance'
+				| 'parts'
+				| 'accessories'
+				| 'administrative'
+				| 'fuel'
+				| 'other',
 			amount_cents: amountCents,
 			notes,
 			performed_at: date,

@@ -55,7 +55,8 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const locale = locals.user.settings?.locale ?? 'en';
 	const excludedTrackerIds =
 		(locals.user.settings?.page_prefs?.maintenance_report_pdf?.[params.id] as
-			string[] | undefined) ?? [];
+			| string[]
+			| undefined) ?? [];
 
 	const pdf = await buildMaintenanceReport({
 		vehicle,

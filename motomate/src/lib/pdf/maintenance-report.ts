@@ -111,7 +111,8 @@ function loadTranslations(locale: string): ReportTranslations {
 	const lang = (supportedLocales as string[]).includes(locale) ? locale : 'en';
 	const json = locales[lang as keyof typeof locales] as Record<string, unknown> | undefined;
 	const loaded = (json as any)?.vehicle?.edit?.settings?.report?.pdf as
-		Partial<ReportTranslations> | undefined;
+		| Partial<ReportTranslations>
+		| undefined;
 	return loaded ? { ...FALLBACK_TRANSLATIONS, ...loaded } : FALLBACK_TRANSLATIONS;
 }
 
