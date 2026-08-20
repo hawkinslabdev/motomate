@@ -21,14 +21,14 @@ COPY . .
 # Create data directory for SQLite database
 RUN mkdir -p /app/data
 
-# Rebuild native modules for the container environment
-RUN npm rebuild better-sqlite3
+# Rebuild all native modules for the container environment
+RUN npm rebuild
 
 # Build the application
 RUN npm run build
 
-# Drop devDependencies now that the build is donee
-RUN npm prune --omit=dev --omit=optional
+# Drop devDependencies now that the build is done
+RUN npm prune --omit=dev
 
 # Runtime stage
 FROM node:24-alpine AS runtime
