@@ -1,7 +1,11 @@
 import { eq, and } from 'drizzle-orm';
 import { db } from '../index.js';
 import { workflow_rules } from '../schema.js';
-import { CreateWorkflowRuleSchema, UpdateWorkflowTriggerSchema } from '../../validators/schemas.js';
+import {
+	CreateWorkflowRuleSchema,
+	UpdateWorkflowTriggerSchema,
+	UpdateWorkflowExcludedVehiclesSchema
+} from '../../validators/schemas.js';
 import type { InsertWorkflowRule, WorkflowRule, RuleTrigger } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 import { PRESET_RULES } from '../../workflow/rules.js';
@@ -49,6 +53,21 @@ export async function updateWorkflowRuleTrigger(
 	await db
 		.update(workflow_rules)
 		.set({ trigger: validatedTrigger, updated_at: new Date().toISOString() })
+		.where(and(eq(workflow_rules.id, id), eq(workflow_rules.user_id, userId)));
+}
+
+export async function updateWorkflowRuleExcludedVehicles(
+	id: string,
+	userId: string,
+	excludedVehicleIds: string[]
+): Promise<void> {
+	const { excluded_vehicle_ids } = UpdateWorkflowExcludedVehiclesSchema.parse({
+		id,
+		excluded_vehicle_ids: excludedVehicleIds
+	});
+	await db
+		.update(workflow_rules)
+		.set({ excluded_vehicle_ids, updated_at: new Date().toISOString() })
 		.where(and(eq(workflow_rules.id, id), eq(workflow_rules.user_id, userId)));
 }
 

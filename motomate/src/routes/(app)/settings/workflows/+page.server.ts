@@ -5,6 +5,7 @@ import {
 	getWorkflowRulesByUser,
 	seedPresetRulesForUser,
 	toggleWorkflowRule,
+	updateWorkflowRuleExcludedVehicles,
 	updateWorkflowRuleTrigger
 } from '$lib/db/repositories/workflow.js';
 import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
@@ -35,7 +36,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		}))
 	);
 
-	return { rules: rulesWithNextFire };
+	const vehiclesForExclusion = [...userVehicles].sort((a, b) => a.name.localeCompare(b.name));
+
+	return { rules: rulesWithNextFire, vehicles: vehiclesForExclusion };
 };
 
 export const actions: Actions = {
@@ -71,5 +74,21 @@ export const actions: Actions = {
 
 		await updateWorkflowRuleTrigger(id, locals.user!.id, parsed);
 		return { edited: true };
+	},
+	setExcludedVehicles: async ({ request, locals }) => {
+		const data = await request.formData();
+		const id = String(data.get('id') ?? '');
+		const rawExcluded = String(data.get('excluded_vehicle_ids') ?? '');
+		if (!id) return fail(400, { error: 'Missing fields' });
+
+		let excludedVehicleIds: string[];
+		try {
+			excludedVehicleIds = JSON.parse(rawExcluded);
+		} catch {
+			return fail(400, { error: 'Invalid vehicle selection' });
+		}
+
+		await updateWorkflowRuleExcludedVehicles(id, locals.user!.id, excludedVehicleIds);
+		return { excludedVehiclesUpdated: true };
 	}
 };

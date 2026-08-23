@@ -324,7 +324,7 @@
 		"forms": {
 			"logService": "Registra intervento",
 			"updateOdo": "Aggiorna chilometraggio",
-			"writeNote": "Scrivi una nota",
+			"writeNote": "Nota",
 			"noteDesc": "Scrivi una nota o osservazione",
 			"editEntry": "Modifica voce",
 			"fields": {
@@ -934,7 +934,7 @@
 				"maintenanceOverdueDate": "Manutenzione scaduta (data)",
 				"odometerNudge": "Promemoria chilometri"
 			},
-			"lastFired": "Ultimo attivato: {date}",
+			"lastFired": "{date}",
 			"neverFired": "Mai attivato",
 			"nextFire": "Prossimo",
 			"delete": "Elimina",
@@ -972,7 +972,12 @@
 			"actions": {
 				"title": "Azioni sulle regole",
 				"description": "Esegui subito il controllo pianificato oppure ripristina le regole predefinite."
-			}
+			},
+			"excludeVehiclesBtn": "Veicoli",
+			"excludeVehiclesTitle": "Veicoli per questa regola",
+			"excludeVehiclesDesc": "Si applica a tutti i veicoli per impostazione predefinita. Disattiva un veicolo per escluderlo da questa regola.",
+			"excludeVehiclesEmpty": "Nessun veicolo ancora.",
+			"excludeVehiclesSaved": "Selezione dei veicoli salvata"
 		},
 		"notifications": {
 			"title": "Notifiche",
@@ -1215,7 +1220,7 @@
 			"mileage": "Chilometraggio",
 			"mileageDesc": "Numero sul tuo cruscotto",
 			"finance": "Spese",
-			"financeDesc": "Carburante, assicurazione o ricambi",
+			"financeDesc": "Carburante o altri costi",
 			"usage": "Utilizzo",
 			"usageDesc": "Ore o lettura sul tuo contatore"
 		},

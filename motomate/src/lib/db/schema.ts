@@ -468,6 +468,10 @@ export const workflow_rules = sqliteTable('workflow_rules', {
 	description: text('description'),
 	trigger: text('trigger', { mode: 'json' }).$type<RuleTrigger>().notNull(),
 	actions: text('actions', { mode: 'json' }).$type<RuleNotification>().notNull(),
+	excluded_vehicle_ids: text('excluded_vehicle_ids', { mode: 'json' })
+		.$type<string[]>()
+		.notNull()
+		.default(sql`'[]'`),
 	enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
 	last_triggered_at: text('last_triggered_at'),
 	created_at: text('created_at')

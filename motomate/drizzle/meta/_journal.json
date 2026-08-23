@@ -71,6 +71,13 @@
 			"when": 1786602210431,
 			"tag": "0009_groovy_killraven",
 			"breakpoints": true
+		},
+		{
+			"idx": 10,
+			"version": "6",
+			"when": 1787164482820,
+			"tag": "0010_watery_weapon_omega",
+			"breakpoints": true
 		}
 	]
 }

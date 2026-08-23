@@ -325,7 +325,7 @@
 		"forms": {
 			"logService": "Registar serviço",
 			"updateOdo": "Atualizar quilometragem",
-			"writeNote": "Escrever nota",
+			"writeNote": "Nota",
 			"noteDesc": "Escreva uma nota ou observação",
 			"editEntry": "Editar entrada",
 			"fields": {
@@ -934,7 +934,7 @@
 				"maintenanceOverdueDate": "Manutenção em atraso (data)",
 				"odometerNudge": "Lembrete do odómetro"
 			},
-			"lastFired": "Último acionado: {date}",
+			"lastFired": "{date}",
 			"neverFired": "Nunca acionado",
 			"nextFire": "Próximo",
 			"delete": "Eliminar",
@@ -972,7 +972,12 @@
 			"actions": {
 				"title": "Ações das regras",
 				"description": "Execute a verificação agendada agora ou restaure as regras predefinidas."
-			}
+			},
+			"excludeVehiclesBtn": "Veículos",
+			"excludeVehiclesTitle": "Veículos para esta regra",
+			"excludeVehiclesDesc": "Aplica-se a todos os veículos por padrão. Desative um veículo para excluí-lo desta regra.",
+			"excludeVehiclesEmpty": "Ainda não há veículos.",
+			"excludeVehiclesSaved": "Seleção de veículos guardada"
 		},
 		"notifications": {
 			"title": "Notificacoes",
@@ -1215,7 +1220,7 @@
 			"mileage": "Quilometragem",
 			"mileageDesc": "Número no seu painel",
 			"finance": "Despesas",
-			"financeDesc": "Combustível, seguro ou peças",
+			"financeDesc": "Combustível ou outros custos",
 			"usage": "Uso",
 			"usageDesc": "Horas ou leitura no contador"
 		},

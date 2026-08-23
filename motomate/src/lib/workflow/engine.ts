@@ -250,11 +250,13 @@ export async function runWorkflowChecks(
 	let fired = 0;
 
 	for (const rule of rules) {
-		const ruleVehicles = rule.vehicle_id
+		const scopedVehicles = rule.vehicle_id
 			? vehicleMap.has(rule.vehicle_id)
 				? [vehicleMap.get(rule.vehicle_id)!]
 				: []
 			: vehicleList.filter((v) => v.user_id === rule.user_id);
+		const excludedVehicleIds = new Set(rule.excluded_vehicle_ids);
+		const ruleVehicles = scopedVehicles.filter((v) => !excludedVehicleIds.has(v.id));
 
 		for (const vehicle of ruleVehicles) {
 			evaluated++;

@@ -29,6 +29,7 @@ export async function computeNextFireInfo(
 		vehicle_id: string | null;
 		trigger: RuleTrigger;
 		last_triggered_at: string | null;
+		excluded_vehicle_ids: string[];
 	},
 	vehicles: Awaited<ReturnType<typeof getVehiclesByUser>>,
 	trackersByVehicle: Map<string, Awaited<ReturnType<typeof recomputeTrackerStatuses>>>
@@ -36,9 +37,10 @@ export async function computeNextFireInfo(
 	const normalizedTrigger = normalizeWorkflowTrigger(rule.trigger);
 	const now = Date.now();
 
-	const scopedVehicles = rule.vehicle_id
-		? vehicles.filter((v) => v.id === rule.vehicle_id)
-		: vehicles;
+	const excludedVehicleIds = new Set(rule.excluded_vehicle_ids);
+	const scopedVehicles = (
+		rule.vehicle_id ? vehicles.filter((v) => v.id === rule.vehicle_id) : vehicles
+	).filter((v) => !excludedVehicleIds.has(v.id));
 
 	if (scopedVehicles.length === 0) return { kind: 'none' };
 
