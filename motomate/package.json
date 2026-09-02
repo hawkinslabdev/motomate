@@ -55,7 +55,7 @@
 		"@fontsource/jetbrains-mono": "^5.3.0",
 		"@lucia-auth/adapter-drizzle": "^1.1.0",
 		"@node-rs/argon2": "^2.1.0",
-		"@tiptap/core": "^3.26.1",
+		"@tiptap/core": "^3.30.4",
 		"@tiptap/extension-link": "^3.26.1",
 		"@tiptap/starter-kit": "^3.30.2",
 		"altcha": "^3.2.2",
