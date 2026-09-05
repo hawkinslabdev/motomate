@@ -299,11 +299,10 @@
 		margin-bottom: var(--space-3);
 	}
 	.section-eyebrow {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.01em;
 		margin: 0 0 var(--space-3);
 		line-height: 1;
 	}
