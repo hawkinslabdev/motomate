@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { sheet } from '$lib/stores/sheet.svelte.js';
+	import { _ } from '$lib/i18n';
 
 	function close() {
 		sheet.closeSheet();
@@ -43,7 +44,7 @@
 				<h2 id="sheet-title" class="sheet-title">{sheet.title}</h2>
 				{#if sheet.hint}<span class="sheet-hint">{sheet.hint}</span>{/if}
 			</div>
-			<button class="sheet-close" onclick={close} aria-label="Close">
+			<button class="sheet-close" onclick={close} aria-label={$_('common.close')}>
 				<svg
 					width="16"
 					height="16"

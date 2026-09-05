@@ -84,7 +84,12 @@
 			</span>
 		{/if}
 		<div class="menu-wrap">
-			<button class="menu-btn" onclick={toggleMenu} aria-label="Actions" aria-expanded={menuOpen}>
+			<button
+				class="menu-btn"
+				onclick={toggleMenu}
+				aria-label={$_('common.actions')}
+				aria-expanded={menuOpen}
+			>
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
 					<circle cx="8" cy="3" r="1.25" />
 					<circle cx="8" cy="8" r="1.25" />

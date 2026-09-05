@@ -31,10 +31,12 @@
 <style>
 	.view-toggle {
 		display: flex;
+		flex-wrap: wrap;
 		background: var(--bg-muted);
 		border-radius: 8px;
 		padding: 2px;
 		gap: 2px;
+		min-width: 0;
 	}
 
 	.view-btn {
@@ -49,7 +51,8 @@
 		transition:
 			background 0.15s,
 			color 0.15s;
-		white-space: nowrap;
+		flex: 1 1 auto;
+		min-width: 0;
 	}
 
 	.view-btn:hover {

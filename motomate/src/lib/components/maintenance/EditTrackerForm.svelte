@@ -309,13 +309,7 @@
 	.form-actions {
 		display: flex;
 		gap: var(--space-3);
-		padding: var(--space-3) 0;
-		position: sticky;
-		bottom: calc(-1 * var(--space-5));
-		background: var(--bg);
-		margin: 0 calc(-1 * var(--space-5)) calc(-1 * var(--space-5));
-		padding-inline: var(--space-5);
-		border-top: 1px solid var(--border);
+		padding-top: var(--space-2);
 	}
 
 	.btn-primary {

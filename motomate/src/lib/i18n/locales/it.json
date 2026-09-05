@@ -17,9 +17,18 @@
 		"or": "o",
 		"columns": "Colonne",
 		"timeline": "Cronologia",
-		"table": "Tabella"
+		"table": "Tabella",
+		"remove": "Rimuovi",
+		"removeFile": "Rimuovi file",
+		"removeSelection": "Rimuovi selezione",
+		"entryOptions": "Opzioni voce",
+		"actions": "Azioni"
 	},
 	"auth": {
+		"changeLanguage": "Cambia lingua",
+		"language": "Lingua",
+		"toggleTheme": "Cambia tema",
+		"theme": "Tema",
 		"login": {
 			"title": "Accedi",
 			"subtitle": "Inserisci la tua email per continuare",
@@ -370,6 +379,11 @@
 			},
 			"updateUsage": "Aggiorna utilizzo"
 		},
+		"changeAvatar": "Cambia avatar",
+		"clearSearch": "Cancella ricerca",
+		"sectionsNav": "Sezioni del veicolo",
+		"trackerOptions": "Opzioni attività",
+		"filterEntries": "Filtra voci",
 		"add": {
 			"title": "Aggiungi veicolo",
 			"back": "← Garage",
@@ -778,6 +792,7 @@
 	"documents": {
 		"title": "Documenti",
 		"subtitle": "Archivia documenti di servizio, foto e carta",
+		"uploadFile": "Carica un file",
 		"upload": "+ Carica",
 		"dropHintDesktop": "Trascina un file qui o sfoglia",
 		"dropHintMobile": "Tocca per caricare",
@@ -1054,6 +1069,7 @@
 			"pageOf": "Pagina {page} di {total}",
 			"subtitle": "Canali di notifica e avvisi recenti."
 		},
+		"sectionsNav": "Sezioni impostazioni",
 		"nav": {
 			"preferences": "Preferenze",
 			"account": "Account",
@@ -1204,6 +1220,8 @@
 			"dark": "Scuro",
 			"system": "Sistema"
 		},
+		"closeMenu": "Chiudi menu",
+		"profileMenu": "Menu profilo",
 		"signOut": "Esci",
 		"logoutConfirm": {
 			"title": "Esci",
@@ -1229,7 +1247,8 @@
 			"empty": "Nessuna nuova notifica",
 			"viewAll": "Vedi tutte",
 			"error": "Impossibile caricare le notifiche",
-			"clearAll": "Cancella tutto"
+			"clearAll": "Cancella tutto",
+			"dismiss": "Ignora"
 		}
 	},
 	"notifications": {
@@ -1370,5 +1389,17 @@
 		"unitHour": "h fa",
 		"unitDay": "g fa",
 		"autosaved": "Salvato automaticamente"
+	},
+	"richEditor": {
+		"bold": "Grassetto",
+		"italic": "Corsivo",
+		"heading2": "Titolo 2",
+		"heading3": "Titolo 3",
+		"bulletList": "Elenco puntato",
+		"numberedList": "Elenco numerato",
+		"blockquote": "Citazione",
+		"codeBlock": "Blocco di codice",
+		"link": "Link",
+		"insertDocLink": "Inserisci link al documento"
 	}
 }

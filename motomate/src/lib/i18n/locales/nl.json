@@ -17,9 +17,18 @@
 		"or": "of",
 		"columns": "Kolommen",
 		"timeline": "Tijdlijn",
-		"table": "Tabel"
+		"table": "Tabel",
+		"remove": "Verwijderen",
+		"removeFile": "Bestand verwijderen",
+		"removeSelection": "Selectie verwijderen",
+		"entryOptions": "Opties voor item",
+		"actions": "Acties"
 	},
 	"auth": {
+		"changeLanguage": "Taal wijzigen",
+		"language": "Taal",
+		"toggleTheme": "Thema wisselen",
+		"theme": "Thema",
 		"login": {
 			"title": "Inloggen",
 			"subtitle": "Voer je e-mailadres in om door te gaan",
@@ -370,6 +379,11 @@
 			},
 			"updateUsage": "Draaiuren bijwerken"
 		},
+		"changeAvatar": "Avatar wijzigen",
+		"clearSearch": "Zoekopdracht wissen",
+		"sectionsNav": "Voertuigsecties",
+		"trackerOptions": "Taakopties",
+		"filterEntries": "Items filteren",
 		"add": {
 			"title": "Voertuig toevoegen",
 			"back": "← Garage",
@@ -777,6 +791,7 @@
 	"documents": {
 		"title": "Documenten",
 		"subtitle": "Bewaar facturen, handleidingen, foto's en andere documenten",
+		"uploadFile": "Bestand uploaden",
 		"upload": "+ Uploaden",
 		"dropHintDesktop": "Sleep een bestand hier of browse",
 		"dropHintMobile": "Tik om te uploaden",
@@ -1053,6 +1068,7 @@
 			"pageOf": "Pagina {page} van {total}",
 			"subtitle": "Meldingskanalen en recente meldingen."
 		},
+		"sectionsNav": "Instellingensecties",
 		"nav": {
 			"preferences": "Voorkeuren",
 			"account": "Account",
@@ -1203,6 +1219,8 @@
 			"dark": "Donker",
 			"system": "Systeem"
 		},
+		"closeMenu": "Menu sluiten",
+		"profileMenu": "Profielmenu",
 		"signOut": "Uitloggen",
 		"logoutConfirm": {
 			"title": "Uitloggen",
@@ -1228,7 +1246,8 @@
 			"empty": "Geen nieuwe meldingen",
 			"viewAll": "Alles bekijken",
 			"error": "Meldingen konden niet worden geladen",
-			"clearAll": "Alles wissen"
+			"clearAll": "Alles wissen",
+			"dismiss": "Sluiten"
 		}
 	},
 	"notifications": {
@@ -1369,5 +1388,17 @@
 		"unitHour": "u geleden",
 		"unitDay": "d geleden",
 		"autosaved": "Automatisch opgeslagen"
+	},
+	"richEditor": {
+		"bold": "Vet",
+		"italic": "Cursief",
+		"heading2": "Kop 2",
+		"heading3": "Kop 3",
+		"bulletList": "Opsomming",
+		"numberedList": "Genummerde lijst",
+		"blockquote": "Citaat",
+		"codeBlock": "Codeblok",
+		"link": "Link",
+		"insertDocLink": "Documentlink invoegen"
 	}
 }

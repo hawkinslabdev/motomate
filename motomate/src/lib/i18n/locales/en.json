@@ -17,9 +17,18 @@
 		"or": "or",
 		"columns": "Columns",
 		"timeline": "Timeline",
-		"table": "Table"
+		"table": "Table",
+		"remove": "Remove",
+		"removeFile": "Remove file",
+		"removeSelection": "Remove selection",
+		"entryOptions": "Entry options",
+		"actions": "Actions"
 	},
 	"auth": {
+		"changeLanguage": "Change language",
+		"language": "Language",
+		"toggleTheme": "Toggle theme",
+		"theme": "Theme",
 		"login": {
 			"title": "Log in",
 			"subtitle": "Enter your email to continue",
@@ -239,6 +248,11 @@
 		}
 	},
 	"vehicle": {
+		"changeAvatar": "Change avatar",
+		"clearSearch": "Clear search",
+		"sectionsNav": "Vehicle sections",
+		"trackerOptions": "Tracker options",
+		"filterEntries": "Filter entries",
 		"add": {
 			"title": "Add vehicle",
 			"back": "← Garage",
@@ -778,6 +792,7 @@
 	"documents": {
 		"title": "Documents",
 		"subtitle": "Store service records, photos, and papers",
+		"uploadFile": "Upload a file",
 		"upload": "+ Upload",
 		"dropHintDesktop": "Drop a file here or browse",
 		"dropHintMobile": "Tap to upload a file",
@@ -850,6 +865,7 @@
 	},
 	"settings": {
 		"title": "Settings",
+		"sectionsNav": "Settings sections",
 		"nav": {
 			"preferences": "Preferences",
 			"account": "Account",
@@ -1193,6 +1209,8 @@
 			"dark": "Dark",
 			"system": "System"
 		},
+		"closeMenu": "Close menu",
+		"profileMenu": "Profile menu",
 		"signOut": "Sign out",
 		"logoutConfirm": {
 			"title": "Sign out",
@@ -1218,7 +1236,8 @@
 			"empty": "No new notifications",
 			"viewAll": "View all",
 			"error": "Could not load notifications",
-			"clearAll": "Clear all"
+			"clearAll": "Clear all",
+			"dismiss": "Dismiss"
 		}
 	},
 	"units": {
@@ -1370,5 +1389,17 @@
 		"unitHour": "h ago",
 		"unitDay": "d ago",
 		"autosaved": "Autosaved"
+	},
+	"richEditor": {
+		"bold": "Bold",
+		"italic": "Italic",
+		"heading2": "Heading 2",
+		"heading3": "Heading 3",
+		"bulletList": "Bullet list",
+		"numberedList": "Numbered list",
+		"blockquote": "Blockquote",
+		"codeBlock": "Code block",
+		"link": "Link",
+		"insertDocLink": "Insert document link"
 	}
 }

@@ -17,9 +17,18 @@
 		"or": "sau",
 		"columns": "Coloane",
 		"table": "Tabel",
+		"remove": "Elimină",
+		"removeFile": "Elimină fișierul",
+		"removeSelection": "Elimină selecția",
+		"entryOptions": "Opțiuni intrare",
+		"actions": "Acțiuni",
 		"timeline": "Cronologie"
 	},
 	"auth": {
+		"changeLanguage": "Schimbă limba",
+		"language": "Limbă",
+		"toggleTheme": "Comută tema",
+		"theme": "Temă",
 		"login": {
 			"title": "Autentificare",
 			"subtitle": "Introdu adresa de email pentru a continua",
@@ -239,6 +248,11 @@
 		}
 	},
 	"vehicle": {
+		"changeAvatar": "Schimbă avatarul",
+		"clearSearch": "Șterge căutarea",
+		"sectionsNav": "Secțiuni vehicul",
+		"trackerOptions": "Opțiuni sarcină",
+		"filterEntries": "Filtrează intrările",
 		"add": {
 			"title": "Adaugă vehicul",
 			"back": "← Garaj",
@@ -778,6 +792,7 @@
 	"documents": {
 		"title": "Documente",
 		"subtitle": "Stochează fișe de service, fotografii și acte",
+		"uploadFile": "Încarcă un fișier",
 		"upload": "+ Încarcă",
 		"dropHintDesktop": "Trage un fișier aici sau răsfoiește",
 		"dropHintMobile": "Apasă pentru a încărca un fișier",
@@ -850,6 +865,7 @@
 	},
 	"settings": {
 		"title": "Setări",
+		"sectionsNav": "Secțiuni setări",
 		"nav": {
 			"preferences": "Preferințe",
 			"account": "Cont",
@@ -1193,6 +1209,8 @@
 			"dark": "Întunecată",
 			"system": "Sistem"
 		},
+		"closeMenu": "Închide meniul",
+		"profileMenu": "Meniu de profil",
 		"signOut": "Deconectare",
 		"logoutConfirm": {
 			"title": "Deconectare",
@@ -1218,7 +1236,8 @@
 			"empty": "Nicio notificare nouă",
 			"viewAll": "Vezi toate",
 			"error": "Notificările nu au putut fi încărcate",
-			"clearAll": "Sterge tot"
+			"clearAll": "Sterge tot",
+			"dismiss": "Ignoră"
 		}
 	},
 	"units": {
@@ -1370,5 +1389,17 @@
 		"unitHour": "h în urmă",
 		"unitDay": "z în urmă",
 		"autosaved": "Salvat automat"
+	},
+	"richEditor": {
+		"bold": "Aldin",
+		"italic": "Cursiv",
+		"heading2": "Titlu 2",
+		"heading3": "Titlu 3",
+		"bulletList": "Listă cu marcatori",
+		"numberedList": "Listă numerotată",
+		"blockquote": "Citat",
+		"codeBlock": "Bloc de cod",
+		"link": "Link",
+		"insertDocLink": "Inserează link document"
 	}
 }

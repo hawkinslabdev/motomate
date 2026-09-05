@@ -225,7 +225,7 @@
 						e.stopPropagation();
 						onoptionsclick!(tracker.id);
 					}}
-					aria-label="Tracker options"
+					aria-label={$_('vehicle.trackerOptions')}
 					aria-haspopup="menu"
 					aria-expanded={isMenuOpen ?? false}>⋮</button
 				>

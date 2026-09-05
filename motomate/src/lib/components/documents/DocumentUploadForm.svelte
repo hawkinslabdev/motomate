@@ -48,7 +48,7 @@
 				type="button"
 				class="file-chip-remove"
 				onclick={() => (selectedFile = null)}
-				aria-label="Remove file"
+				aria-label={$_('common.removeFile')}
 			>
 				<svg
 					width="16"

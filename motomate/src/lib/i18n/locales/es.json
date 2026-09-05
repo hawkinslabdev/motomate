@@ -17,9 +17,18 @@
 		"or": "o",
 		"columns": "Columnas",
 		"timeline": "Cronología",
-		"table": "Tabla"
+		"table": "Tabla",
+		"remove": "Eliminar",
+		"removeFile": "Eliminar archivo",
+		"removeSelection": "Eliminar selección",
+		"entryOptions": "Opciones de la entrada",
+		"actions": "Acciones"
 	},
 	"auth": {
+		"changeLanguage": "Cambiar idioma",
+		"language": "Idioma",
+		"toggleTheme": "Cambiar tema",
+		"theme": "Tema",
 		"login": {
 			"title": "Iniciar sesión",
 			"subtitle": "Introduce tu correo electrónico para continuar",
@@ -370,6 +379,11 @@
 			},
 			"updateUsage": "Actualizar uso"
 		},
+		"changeAvatar": "Cambiar avatar",
+		"clearSearch": "Borrar búsqueda",
+		"sectionsNav": "Secciones del vehículo",
+		"trackerOptions": "Opciones de la tarea",
+		"filterEntries": "Filtrar entradas",
 		"add": {
 			"title": "Añadir vehículo",
 			"back": "← Garage",
@@ -777,6 +791,7 @@
 	"documents": {
 		"title": "Documentos",
 		"subtitle": "Almacena registros de servicio, fotos y papeles",
+		"uploadFile": "Subir un archivo",
 		"upload": "+ Subir",
 		"dropHintDesktop": "Suelta un archivo aquí o navega",
 		"dropHintMobile": "Toca para subir",
@@ -1053,6 +1068,7 @@
 			"pageOf": "Página {page} de {total}",
 			"subtitle": "Canales de notificación y alertas recientes."
 		},
+		"sectionsNav": "Secciones de ajustes",
 		"nav": {
 			"preferences": "Preferencias",
 			"account": "Cuenta",
@@ -1203,6 +1219,8 @@
 			"dark": "Oscuro",
 			"system": "Sistema"
 		},
+		"closeMenu": "Cerrar menú",
+		"profileMenu": "Menú de perfil",
 		"signOut": "Cerrar sesión",
 		"logoutConfirm": {
 			"title": "Cerrar sesión",
@@ -1228,7 +1246,8 @@
 			"empty": "Sin nuevas notificaciones",
 			"viewAll": "Ver todas",
 			"error": "No se pudieron cargar las notificaciones",
-			"clearAll": "Borrar todo"
+			"clearAll": "Borrar todo",
+			"dismiss": "Descartar"
 		}
 	},
 	"notifications": {
@@ -1369,5 +1388,17 @@
 		"unitHour": "h",
 		"unitDay": "d",
 		"autosaved": "Guardado automáticamente"
+	},
+	"richEditor": {
+		"bold": "Negrita",
+		"italic": "Cursiva",
+		"heading2": "Encabezado 2",
+		"heading3": "Encabezado 3",
+		"bulletList": "Lista con viñetas",
+		"numberedList": "Lista numerada",
+		"blockquote": "Cita",
+		"codeBlock": "Bloque de código",
+		"link": "Enlace",
+		"insertDocLink": "Insertar enlace a documento"
 	}
 }

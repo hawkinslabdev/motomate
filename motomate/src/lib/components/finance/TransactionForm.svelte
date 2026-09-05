@@ -260,8 +260,11 @@
 			{#if attachFile}
 				<span class="doc-chip">
 					<span class="doc-chip-name">{attachFile.name}</span>
-					<button type="button" class="doc-chip-remove" onclick={clearAttach} aria-label="Remove"
-						>×</button
+					<button
+						type="button"
+						class="doc-chip-remove"
+						onclick={clearAttach}
+						aria-label={$_('common.remove')}>×</button
 					>
 				</span>
 				<select name="attachment_type" class="input attach-type" bind:value={attachType}>
@@ -355,7 +358,7 @@
 								type="button"
 								class="doc-chip-remove"
 								onclick={() => toggleLink(id)}
-								aria-label="Remove">×</button
+								aria-label={$_('common.remove')}>×</button
 							>
 						</span>
 					{/if}
@@ -605,13 +608,7 @@
 	.form-actions {
 		display: flex;
 		gap: var(--space-3);
-		padding: var(--space-3) 0;
-		position: sticky;
-		bottom: calc(-1 * var(--space-5));
-		background: var(--bg);
-		margin: 0 calc(-1 * var(--space-5)) calc(-1 * var(--space-5));
-		padding-inline: var(--space-5);
-		border-top: 1px solid var(--border);
+		padding-top: var(--space-2);
 	}
 
 	.form-actions > * {

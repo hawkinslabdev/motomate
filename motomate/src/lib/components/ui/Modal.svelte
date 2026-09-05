@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { _ } from '$lib/i18n';
 
 	interface Props {
 		open: boolean;
@@ -28,7 +29,7 @@
 	<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
 		<div class="modal-header">
 			<h2 id="modal-title" class="modal-title">{title}</h2>
-			<button class="close-btn" onclick={onclose} aria-label="Close">
+			<button class="close-btn" onclick={onclose} aria-label={$_('common.close')}>
 				<svg
 					width="16"
 					height="16"

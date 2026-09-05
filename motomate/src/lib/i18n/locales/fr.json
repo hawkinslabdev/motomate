@@ -17,9 +17,18 @@
 		"or": "ou",
 		"columns": "Colonnes",
 		"timeline": "Chronologie",
-		"table": "Tableau"
+		"table": "Tableau",
+		"remove": "Supprimer",
+		"removeFile": "Supprimer le fichier",
+		"removeSelection": "Supprimer la sélection",
+		"entryOptions": "Options de l'entrée",
+		"actions": "Actions"
 	},
 	"auth": {
+		"changeLanguage": "Changer de langue",
+		"language": "Langue",
+		"toggleTheme": "Changer de thème",
+		"theme": "Thème",
 		"login": {
 			"title": "Connexion",
 			"subtitle": "Entrez votre adresse e-mail pour continuer",
@@ -370,6 +379,11 @@
 			},
 			"updateUsage": "Mettre à jour l'usage"
 		},
+		"changeAvatar": "Changer l'avatar",
+		"clearSearch": "Effacer la recherche",
+		"sectionsNav": "Sections du véhicule",
+		"trackerOptions": "Options de la tâche",
+		"filterEntries": "Filtrer les entrées",
 		"add": {
 			"title": "Ajouter un véhicule",
 			"back": "← Garage",
@@ -777,6 +791,7 @@
 	"documents": {
 		"title": "Documents",
 		"subtitle": "Stockez les dossiers de service, photos et papeles",
+		"uploadFile": "Téléverser un fichier",
 		"upload": "+ Téléverser",
 		"dropHintDesktop": "Déposez un fichier ici ou parcourir",
 		"dropHintMobile": "Appuyez pour téléverser",
@@ -1053,6 +1068,7 @@
 			"pageOf": "Page {page} sur {total}",
 			"subtitle": "Canaux de notification et alertes récentes."
 		},
+		"sectionsNav": "Sections des paramètres",
 		"nav": {
 			"preferences": "Preferences",
 			"account": "Compte",
@@ -1203,6 +1219,8 @@
 			"dark": "Sombre",
 			"system": "Système"
 		},
+		"closeMenu": "Fermer le menu",
+		"profileMenu": "Menu du profil",
 		"signOut": "Se déconnecter",
 		"logoutConfirm": {
 			"title": "Se déconnecter",
@@ -1228,7 +1246,8 @@
 			"empty": "Aucune nouvelle notification",
 			"viewAll": "Tout afficher",
 			"error": "Impossible de charger les notifications",
-			"clearAll": "Tout effacer"
+			"clearAll": "Tout effacer",
+			"dismiss": "Ignorer"
 		}
 	},
 	"notifications": {
@@ -1369,5 +1388,17 @@
 		"unitHour": "h",
 		"unitDay": "j",
 		"autosaved": "Sauvegardé automatiquement"
+	},
+	"richEditor": {
+		"bold": "Gras",
+		"italic": "Italique",
+		"heading2": "Titre 2",
+		"heading3": "Titre 3",
+		"bulletList": "Liste à puces",
+		"numberedList": "Liste numérotée",
+		"blockquote": "Citation",
+		"codeBlock": "Bloc de code",
+		"link": "Lien",
+		"insertDocLink": "Insérer un lien vers un document"
 	}
 }

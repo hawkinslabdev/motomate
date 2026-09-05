@@ -126,7 +126,7 @@
 			<h2 id="travel-sheet-title" class="sheet-title">
 				{mode === 'create' ? $_('travels.form.createTitle') : $_('travels.form.editTitle')}
 			</h2>
-			<button class="sheet-close" onclick={onclose} aria-label="Close">
+			<button class="sheet-close" onclick={onclose} aria-label={$_('common.close')}>
 				<svg
 					width="16"
 					height="16"
@@ -378,7 +378,7 @@
 												type="button"
 												class="file-chip-remove"
 												onclick={() => clearSlotFile(i)}
-												aria-label="Remove file"
+												aria-label={$_('common.removeFile')}
 											>
 												<svg
 													width="14"
@@ -445,7 +445,7 @@
 												type="button"
 												class="file-chip-remove"
 												onclick={() => clearSelectedExisting(i)}
-												aria-label="Remove selection"
+												aria-label={$_('common.removeSelection')}
 											>
 												<svg
 													width="14"

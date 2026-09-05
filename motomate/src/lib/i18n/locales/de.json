@@ -17,9 +17,18 @@
 		"or": "oder",
 		"columns": "Spalten",
 		"timeline": "Zeitlinie",
-		"table": "Tabelle"
+		"table": "Tabelle",
+		"remove": "Entfernen",
+		"removeFile": "Datei entfernen",
+		"removeSelection": "Auswahl entfernen",
+		"entryOptions": "Eintragsoptionen",
+		"actions": "Aktionen"
 	},
 	"auth": {
+		"changeLanguage": "Sprache ändern",
+		"language": "Sprache",
+		"toggleTheme": "Design umschalten",
+		"theme": "Design",
 		"login": {
 			"title": "Anmelden",
 			"subtitle": "Geben Sie Ihre E-Mail-Adresse ein, um fortzufahren",
@@ -370,6 +379,11 @@
 			},
 			"updateUsage": "Verbrauch aktualisieren"
 		},
+		"changeAvatar": "Avatar ändern",
+		"clearSearch": "Suche löschen",
+		"sectionsNav": "Fahrzeugbereiche",
+		"trackerOptions": "Aufgabenoptionen",
+		"filterEntries": "Einträge filtern",
 		"add": {
 			"title": "Fahrzeug hinzufügen",
 			"back": "← Garage",
@@ -777,6 +791,7 @@
 	"documents": {
 		"title": "Dokumente",
 		"subtitle": "Serviceunterlagen, Fotos und Papiere speichern",
+		"uploadFile": "Datei hochladen",
 		"upload": "+ Hochladen",
 		"dropHintDesktop": "Datei hier ablegen oder durchsuchen",
 		"dropHintMobile": "Tippen zum Hochladen",
@@ -1053,6 +1068,7 @@
 			"pageOf": "Seite {page} von {total}",
 			"subtitle": "Benachrichtigungskanäle und aktuellen Benachrichtigungen."
 		},
+		"sectionsNav": "Einstellungsbereiche",
 		"nav": {
 			"preferences": "Einstellungen",
 			"account": "Konto",
@@ -1203,6 +1219,8 @@
 			"dark": "Dunkel",
 			"system": "System"
 		},
+		"closeMenu": "Menü schließen",
+		"profileMenu": "Profilmenü",
 		"signOut": "Abmelden",
 		"logoutConfirm": {
 			"title": "Abmelden",
@@ -1228,7 +1246,8 @@
 			"empty": "Keine neuen Benachrichtigungen",
 			"viewAll": "Alle anzeigen",
 			"error": "Benachrichtigungen konnten nicht geladen werden",
-			"clearAll": "Alle loeschen"
+			"clearAll": "Alle loeschen",
+			"dismiss": "Verwerfen"
 		}
 	},
 	"notifications": {
@@ -1369,5 +1388,17 @@
 		"unitHour": "Std. zuvor",
 		"unitDay": "Tg. zuvor",
 		"autosaved": "Automatisch gespeichert"
+	},
+	"richEditor": {
+		"bold": "Fett",
+		"italic": "Kursiv",
+		"heading2": "Überschrift 2",
+		"heading3": "Überschrift 3",
+		"bulletList": "Aufzählungsliste",
+		"numberedList": "Nummerierte Liste",
+		"blockquote": "Zitat",
+		"codeBlock": "Codeblock",
+		"link": "Link",
+		"insertDocLink": "Dokumentlink einfügen"
 	}
 }

@@ -4,6 +4,7 @@
 	import StarterKit from '@tiptap/starter-kit';
 	import Link from '@tiptap/extension-link';
 	import { Markdown } from 'tiptap-markdown';
+	import { _ } from '$lib/i18n';
 
 	interface DocRecord {
 		id: string;
@@ -179,16 +180,16 @@
 				class="tb-btn tb-bold"
 				class:tb-btn--active={active.bold}
 				onclick={() => editor?.chain().focus().toggleBold().run()}
-				title="Bold"
-				aria-label="Bold">B</button
+				title={$_('richEditor.bold')}
+				aria-label={$_('richEditor.bold')}>B</button
 			>
 			<button
 				type="button"
 				class="tb-btn tb-italic"
 				class:tb-btn--active={active.italic}
 				onclick={() => editor?.chain().focus().toggleItalic().run()}
-				title="Italic"
-				aria-label="Italic">I</button
+				title={$_('richEditor.italic')}
+				aria-label={$_('richEditor.italic')}>I</button
 			>
 		</div>
 
@@ -200,16 +201,16 @@
 				class="tb-btn"
 				class:tb-btn--active={active.h2}
 				onclick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-				title="Heading 2"
-				aria-label="Heading 2">H2</button
+				title={$_('richEditor.heading2')}
+				aria-label={$_('richEditor.heading2')}>H2</button
 			>
 			<button
 				type="button"
 				class="tb-btn"
 				class:tb-btn--active={active.h3}
 				onclick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-				title="Heading 3"
-				aria-label="Heading 3">H3</button
+				title={$_('richEditor.heading3')}
+				aria-label={$_('richEditor.heading3')}>H3</button
 			>
 		</div>
 
@@ -221,8 +222,8 @@
 				class="tb-btn"
 				class:tb-btn--active={active.bullet}
 				onclick={() => editor?.chain().focus().toggleBulletList().run()}
-				title="Bullet list"
-				aria-label="Bullet list"
+				title={$_('richEditor.bulletList')}
+				aria-label={$_('richEditor.bulletList')}
 			>
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
 					<circle cx="1.5" cy="4" r="1.5" fill="currentColor" />
@@ -236,8 +237,8 @@
 				class="tb-btn"
 				class:tb-btn--active={active.ordered}
 				onclick={() => editor?.chain().focus().toggleOrderedList().run()}
-				title="Numbered list"
-				aria-label="Numbered list"
+				title={$_('richEditor.numberedList')}
+				aria-label={$_('richEditor.numberedList')}
 			>
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
 					<text x="0" y="5" font-size="5" font-family="monospace" fill="currentColor">1.</text>
@@ -251,8 +252,8 @@
 				class="tb-btn"
 				class:tb-btn--active={active.blockquote}
 				onclick={() => editor?.chain().focus().toggleBlockquote().run()}
-				title="Blockquote"
-				aria-label="Blockquote"
+				title={$_('richEditor.blockquote')}
+				aria-label={$_('richEditor.blockquote')}
 			>
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
 					<rect x="1" y="2" width="2" height="10" rx="1" fill="currentColor" />
@@ -265,8 +266,8 @@
 				class="tb-btn tb-mono"
 				class:tb-btn--active={active.codeBlock}
 				onclick={() => editor?.chain().focus().toggleCodeBlock().run()}
-				title="Code block"
-				aria-label="Code block">&lt;/&gt;</button
+				title={$_('richEditor.codeBlock')}
+				aria-label={$_('richEditor.codeBlock')}>&lt;/&gt;</button
 			>
 		</div>
 
@@ -278,8 +279,8 @@
 				class="tb-btn"
 				class:tb-btn--active={active.link || showLinkInput}
 				onclick={openLinkDialog}
-				title="Link"
-				aria-label="Link"
+				title={$_('richEditor.link')}
+				aria-label={$_('richEditor.link')}
 			>
 				<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
 					<path
@@ -313,8 +314,8 @@
 						if (showDocPicker) setTimeout(() => docSearchEl?.focus(), 0);
 						else docSearch = '';
 					}}
-					title="Insert document link"
-					aria-label="Insert document link"
+					title={$_('richEditor.insertDocLink')}
+					aria-label={$_('richEditor.insertDocLink')}
 					aria-expanded={showDocPicker}
 				>
 					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">

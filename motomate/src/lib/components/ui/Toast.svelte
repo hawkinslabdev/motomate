@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import { _ } from '$lib/i18n';
 </script>
 
 <div class="toast-stack" aria-live="polite" aria-atomic="false">
@@ -9,8 +10,10 @@
 				>{toast.type === 'success' ? '✓' : toast.type === 'error' ? '✕' : 'ℹ'}</span
 			>
 			<span class="toast-message">{toast.message}</span>
-			<button onclick={() => toasts.remove(toast.id)} aria-label="Dismiss" class="toast-close"
-				>✕</button
+			<button
+				onclick={() => toasts.remove(toast.id)}
+				aria-label={$_('layout.notifications.dismiss')}
+				class="toast-close">✕</button
 			>
 		</div>
 	{/each}
