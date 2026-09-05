@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.5
+
+- Fix: tracker edit now re-use sheet for consistent UI-experience (#94)
+- Fix: add missing i18n keys to frontend
+- Security: bump various dependencies
+
+## 0.5.4
+
+- Fix: some containers refused to start due to missing dependency (warning).
+
 ## 0.5.3
 
 - This release is a performance-focused maintenance release that updates the Docker base image from `node:20-slim` to `node:24-alpine`.
