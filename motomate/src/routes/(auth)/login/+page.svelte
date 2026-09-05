@@ -13,6 +13,7 @@
 			smtpEnabled: boolean;
 			altchaEnabled: boolean;
 			initialMode: 'password' | 'magic';
+			oidcName: string | null;
 		};
 		form: {
 			error?: string;
@@ -26,6 +27,7 @@
 	let remember = $state(true);
 	let emailValue = $state('');
 	let loading = $state(false);
+	let showPassword = $state(false);
 	let altchaReady = $state(false);
 	let altchaVerified = $state(false);
 	onMount(() => {
@@ -68,7 +70,7 @@
 	</div>
 {:else}
 	{#if form?.error}
-		<div class="form-error">{form.error}</div>
+		<div class="form-error" role="alert">{form.error}</div>
 	{/if}
 
 	{#if !data.demoMode && data.smtpEnabled}
@@ -125,14 +127,57 @@
 			</label>
 			<label class="field">
 				<span class="field-label select-none">{$_('auth.login.password')}</span>
-				<input
-					name="password"
-					type="password"
-					autocomplete="current-password"
-					required
-					class="input"
-					class:input--err={form?.fieldErrors?.password}
-				/>
+				<div class="input-wrap">
+					<input
+						name="password"
+						type={showPassword ? 'text' : 'password'}
+						autocomplete="current-password"
+						required
+						class="input"
+						class:input--err={form?.fieldErrors?.password}
+					/>
+					<button
+						type="button"
+						class="input-suffix-btn"
+						aria-label={showPassword
+							? $_('auth.login.hidePassword')
+							: $_('auth.login.showPassword')}
+						aria-pressed={showPassword}
+						onclick={() => (showPassword = !showPassword)}
+					>
+						{#if showPassword}
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path
+									d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"
+								/>
+								<circle cx="12" cy="12" r="3" />
+							</svg>
+						{:else}
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path
+									d="M9.9 4.24A9.94 9.94 0 0 1 12 4c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.94 3.94M6.5 6.5C3.6 8.28 2 12 2 12s3.5 7 10 7a9.9 9.9 0 0 0 4.15-.9M9.9 14.1a3 3 0 1 0 4.2-4.2"
+								/>
+								<path d="M2 2l20 20" />
+							</svg>
+						{/if}
+					</button>
+				</div>
 				{#if form?.fieldErrors?.password}
 					<span class="field-err">{form.fieldErrors.password}</span>
 				{/if}
@@ -215,6 +260,25 @@
 		</form>
 	{/if}
 
+	{#if data.oidcName}
+		<div class="oidc-divider"><span>{$_('auth.login.orSignInWith')}</span></div>
+		<a href="/oidc/login" class="btn-oidc">
+			<svg
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.75"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<circle cx="8" cy="15" r="4" />
+				<path d="M10.5 12.5 19 4M17 6l2 2M14 9l2 2" />
+			</svg>
+			{data.oidcName}
+		</a>
+	{/if}
+
 	{#if data.registrationEnabled && !data.demoMode}
 		<p class="footer-link">
 			{$_('auth.login.noAccount')} <a href="/register">{$_('auth.login.signUp')}</a>
@@ -270,6 +334,41 @@
 	}
 	.input--err {
 		border-color: var(--status-overdue);
+	}
+	.input-wrap {
+		position: relative;
+		display: flex;
+	}
+	.input-wrap .input {
+		padding-right: 2.5rem;
+	}
+	.input-suffix-btn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: none;
+		border: none;
+		padding: 0;
+		color: var(--text-subtle);
+		cursor: pointer;
+		transition: color 150ms ease;
+	}
+	.input-suffix-btn svg {
+		width: 18px;
+		height: 18px;
+	}
+	.input-suffix-btn:hover {
+		color: var(--text-muted);
+	}
+	.input-suffix-btn:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: -2px;
+		border-radius: 6px;
 	}
 	.field-err {
 		font-size: var(--text-xs);
@@ -394,6 +493,63 @@
 		background: var(--bg);
 		color: var(--text);
 		font-weight: 500;
+	}
+
+	.oidc-divider {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 1.25rem 0 1rem;
+		font-size: var(--text-xs);
+		color: var(--text-subtle);
+	}
+	.oidc-divider::before,
+	.oidc-divider::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: var(--border);
+	}
+	.btn-oidc {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1rem;
+		border: 1px solid var(--border-strong);
+		border-radius: 10px;
+		background: var(--bg-subtle);
+		color: var(--text);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		text-decoration: none;
+		transition:
+			background 150ms cubic-bezier(0.25, 1, 0.5, 1),
+			transform 0.12s cubic-bezier(0.25, 1, 0.5, 1);
+	}
+	.btn-oidc svg {
+		width: 17px;
+		height: 17px;
+		color: var(--text-muted);
+		flex-shrink: 0;
+	}
+	.btn-oidc:hover {
+		background: var(--bg-muted);
+		transform: translateY(-1px);
+	}
+	.btn-oidc:active {
+		transform: scale(0.97);
+		transition-duration: 0.06s;
+	}
+	.btn-oidc:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.btn-oidc:hover,
+		.btn-oidc:active {
+			transform: none;
+		}
 	}
 
 	.footer-link {
