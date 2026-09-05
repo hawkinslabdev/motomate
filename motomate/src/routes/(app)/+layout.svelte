@@ -425,7 +425,7 @@
 							type="button"
 							class="menu-overlay"
 							onclick={() => (themeMenuOpen = false)}
-							aria-label="Close menu"
+							aria-label={$_('layout.closeMenu')}
 						></button>
 
 						<div
@@ -493,7 +493,7 @@
 													type="button"
 													class="notif-dismiss"
 													onclick={() => dismissNotif(item)}
-													aria-label="Dismiss"
+													aria-label={$_('layout.notifications.dismiss')}
 												>
 													<svg
 														viewBox="0 0 24 24"
@@ -566,7 +566,7 @@
 						class="topnav-avatar"
 						class:open={avatarMenuOpen}
 						onclick={() => (avatarMenuOpen = !avatarMenuOpen)}
-						aria-label="Profile menu"
+						aria-label={$_('layout.profileMenu')}
 						aria-expanded={avatarMenuOpen}
 					>
 						{#if data.user.settings?.avatar_key}
@@ -640,7 +640,7 @@
 				class="fab-btn"
 				class:fab-btn--open={quickAddOpen}
 				onclick={openQuickAdd}
-				aria-label="Add entry"
+				aria-label={$_('layout.addEntry.title')}
 			>
 				<svg
 					viewBox="0 0 24 24"
@@ -768,7 +768,7 @@
 					<p id="quickadd-title" class="sheet-title sheet-title--vehicle">
 						{selectedVehicle?.name}
 					</p>
-					<button class="sheet-close" onclick={closeQuickAdd} aria-label="Close">
+					<button class="sheet-close" onclick={closeQuickAdd} aria-label={$_('common.close')}>
 						<svg
 							viewBox="0 0 24 24"
 							fill="none"
@@ -953,7 +953,7 @@
 	.app-shell {
 		display: flex;
 		flex-direction: column;
-		min-height: 100dvh;
+		min-height: 100svh;
 	}
 
 	.notif-backdrop {
@@ -1535,14 +1535,13 @@
 	/* Bottom tabs */
 	.bottom-tabs {
 		display: none;
-		position: fixed;
+		position: sticky;
 		bottom: 0;
-		left: 0;
-		right: 0;
 		padding-bottom: env(safe-area-inset-bottom);
 		z-index: 50;
 		align-items: stretch;
 		overflow: visible;
+		flex-shrink: 0;
 	}
 
 	.bottom-tabs::before {
@@ -1830,9 +1829,6 @@
 		}
 		.bottom-tabs {
 			display: flex;
-		}
-		.app-main {
-			padding-bottom: 5rem;
 		}
 	}
 

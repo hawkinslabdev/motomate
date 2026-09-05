@@ -638,7 +638,7 @@
 													class="entry-menu-btn"
 													class:active={entryMenu === tx.id}
 													onclick={() => toggleEntryMenu(tx.id)}
-													aria-label="Entry options"
+													aria-label={$_('common.entryOptions')}
 													aria-haspopup="true">⋮</button
 												>
 												{#if entryMenu === tx.id}
@@ -774,7 +774,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === tx.id}
 										onclick={() => toggleEntryMenu(tx.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true"
 									>
 										⋮
@@ -1017,6 +1017,7 @@
 	}
 	.page-actions {
 		display: flex;
+		flex-wrap: wrap;
 		gap: var(--space-2);
 		align-items: center;
 		flex-shrink: 0;

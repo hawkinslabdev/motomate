@@ -508,7 +508,7 @@
 											class="entry-menu-btn"
 											class:active={logMenu === log.id}
 											onclick={() => (logMenu = logMenu === log.id ? null : log.id)}
-											aria-label="Entry options"
+											aria-label={$_('common.entryOptions')}
 											aria-haspopup="menu"
 											aria-expanded={logMenu === log.id}>⋮</button
 										>
@@ -622,7 +622,7 @@
 													class="entry-menu-btn"
 													class:active={logMenu === log.id}
 													onclick={() => (logMenu = logMenu === log.id ? null : log.id)}
-													aria-label="Options"
+													aria-label={$_('common.entryOptions')}
 													aria-haspopup="true">⋮</button
 												>
 												{#if logMenu === log.id}
@@ -1518,6 +1518,7 @@
 		}
 		.view-toggle-btn {
 			flex: 1;
+			min-width: 0;
 			text-align: center;
 		}
 	}

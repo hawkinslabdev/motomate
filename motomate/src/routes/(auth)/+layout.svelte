@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { browser } from '$app/environment';
-	import { readStoredLocale, setLocale } from '$lib/i18n';
+	import { readStoredLocale, setLocale, _ } from '$lib/i18n';
 	import { SUPPORTED_LANGUAGES } from '$lib/i18n/locales.js';
 	import { setContext, untrack } from 'svelte';
 	import 'altcha/i18n';
@@ -135,9 +135,9 @@
 					<button
 						class="theme-toggle lang-toggle"
 						onclick={() => (langMenuOpen = !langMenuOpen)}
-						aria-label="Change language"
+						aria-label={$_('auth.changeLanguage')}
 						aria-expanded={langMenuOpen}
-						data-tooltip="Language"
+						data-tooltip={$_('auth.language')}
 					>
 						<svg
 							viewBox="0 0 24 24"
@@ -173,8 +173,8 @@
 				<button
 					class="theme-toggle"
 					onclick={cycleTheme}
-					aria-label="Toggle theme"
-					data-tooltip="Theme"
+					aria-label={$_('auth.toggleTheme')}
+					data-tooltip={$_('auth.theme')}
 				>
 					{#if CurrentThemeIcon}
 						<CurrentThemeIcon />

@@ -215,7 +215,7 @@
 					class="vehicle-avatar"
 					class:vehicle-avatar--image={hasAvatarImage}
 					onclick={() => (showAvatarPopover = true)}
-					aria-label="Change avatar"
+					aria-label={$_('vehicle.changeAvatar')}
 				>
 					{#if hasAvatarImage}
 						<img src={avatarSrc} alt="" class="avatar-img" />
@@ -400,7 +400,7 @@
 											pinSearch = '';
 											pinSearchEl?.focus();
 										}}
-										aria-label="Clear search"
+										aria-label={$_('vehicle.clearSearch')}
 									>
 										<svg
 											width="10"
@@ -496,7 +496,7 @@
 			</div>
 		</div>
 
-		<nav class="vehicle-tabs" bind:this={tabsEl} aria-label="Vehicle sections">
+		<nav class="vehicle-tabs" bind:this={tabsEl} aria-label={$_('vehicle.sectionsNav')}>
 			{#each tabs as tab}
 				<a
 					href={tab.href}

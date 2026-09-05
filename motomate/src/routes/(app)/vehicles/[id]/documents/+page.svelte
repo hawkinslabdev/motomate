@@ -281,7 +281,7 @@
 	class="upload-zone"
 	class:upload-zone--dragging={isDragging}
 	for="file-input"
-	aria-label="Upload a file"
+	aria-label={$_('documents.uploadFile')}
 	ondragover={(e) => {
 		e.preventDefault();
 		isDragging = true;

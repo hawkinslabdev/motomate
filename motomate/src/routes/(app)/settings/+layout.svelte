@@ -54,7 +54,7 @@
 		<h1 class="settings-title">{$_('settings.title')}</h1>
 	</div>
 	<div class="settings-body">
-		<nav class="settings-nav" aria-label="Settings sections">
+		<nav class="settings-nav" aria-label={$_('settings.sectionsNav')}>
 			{#each tabs as tab}
 				<a
 					href={tab.href}

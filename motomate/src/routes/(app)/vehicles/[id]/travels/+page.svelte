@@ -453,6 +453,7 @@
 	}
 	.page-actions {
 		display: flex;
+		flex-wrap: wrap;
 		gap: var(--space-2);
 		align-items: center;
 		flex-shrink: 0;

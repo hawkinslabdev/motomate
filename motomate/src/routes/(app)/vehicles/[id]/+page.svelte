@@ -459,7 +459,7 @@
 				class="btn-ghost btn-icon"
 				class:btn-icon--active={filtersNonDefault}
 				onclick={() => (filterOpen = !filterOpen)}
-				aria-label="Filter entries"
+				aria-label={$_('vehicle.filterEntries')}
 				aria-expanded={filterOpen}
 			>
 				<svg
@@ -822,7 +822,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === log.id}
 										onclick={() => toggleEntryMenu(log.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === log.id}
@@ -872,7 +872,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === log.id}
 										onclick={() => toggleEntryMenu(log.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === log.id}
@@ -937,7 +937,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === t.id}
 										onclick={() => toggleEntryMenu(t.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === t.id}
@@ -984,7 +984,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === tx.id}
 										onclick={() => toggleEntryMenu(tx.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === tx.id}
@@ -1053,7 +1053,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === log.id}
 										onclick={() => toggleEntryMenu(log.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === log.id}
@@ -1086,7 +1086,7 @@
 										class="entry-menu-btn"
 										class:active={entryMenu === log.id}
 										onclick={() => toggleEntryMenu(log.id)}
-										aria-label="Entry options"
+										aria-label={$_('common.entryOptions')}
 										aria-haspopup="true">⋮</button
 									>
 									{#if entryMenu === log.id}
@@ -1213,6 +1213,7 @@
 	}
 	.page-actions {
 		display: flex;
+		flex-wrap: wrap;
 		gap: var(--space-2);
 		flex-shrink: 0;
 		position: relative;
