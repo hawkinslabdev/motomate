@@ -997,54 +997,54 @@
 		"notifications": {
 			"title": "Notifiche",
 			"markAllRead": "Segna tutto come letto",
-			"empty": "No notifications yet.",
+			"empty": "Ancora nessuna notifica.",
 			"markRead": "Segna come letto",
 			"channels": {
-				"title": "Notification channels",
-				"saveBtn": "Save channels",
-				"saved": "Saved",
-				"testBtn": "Send test",
-				"testSent": "Sent",
-				"testError": "Failed",
+				"title": "Canali di notifica",
+				"saveBtn": "Salva canali",
+				"saved": "Salvato",
+				"testBtn": "Invia test",
+				"testSent": "Inviato",
+				"testError": "Non riuscito",
 				"push": {
-					"label": "Browser push",
-					"description": "Push notifications to this browser when a rule fires.",
-					"subscribe": "Subscribe this browser",
-					"subscribed": "Subscribed",
-					"subError": "Subscription failed",
-					"noVapid": "VAPID keys are not configured on this server."
+					"label": "Push del browser",
+					"description": "Invia notifiche push a questo browser all'attivazione di una regola.",
+					"subscribe": "Iscrivi questo browser",
+					"subscribed": "Iscritto",
+					"subError": "Iscrizione non riuscita",
+					"noVapid": "Le chiavi VAPID non sono configurate su questo server."
 				},
 				"email": {
 					"label": "Email",
-					"description": "Send an email notification to the address below.",
-					"addressLabel": "Notification address",
-					"addressPlaceholder": "mijn@e-mailadres.nl",
-					"hint": "Separate from your account login email.",
-					"noSmtp": "SMTP is not configured on this server."
+					"description": "Invia una notifica email all'indirizzo indicato sotto.",
+					"addressLabel": "Indirizzo di notifica",
+					"addressPlaceholder": "mio@indirizzo-email.it",
+					"hint": "Separato dall'email di accesso al tuo account.",
+					"noSmtp": "L'SMTP non è configurato su questo server."
 				},
 				"webhook": {
 					"label": "Webhook",
-					"description": "POST a JSON payload to any URL when a rule fires.",
-					"urlLabel": "Webhook URL",
+					"description": "Invia un payload JSON tramite richiesta POST a qualsiasi URL all'attivazione di una regola.",
+					"urlLabel": "URL del Webhook",
 					"urlPlaceholder": "https://hooks.example.com/...",
-					"authLabel": "Authorization header",
-					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
+					"authLabel": "Intestazione di autorizzazione (Authorization header)",
+					"authPlaceholder": "Bearer token123 (opzionale)",
+					"hint": "Invia una richiesta POST contenente evento, titolo, corpo, nome del veicolo e dati."
 				},
 				"ha": {
 					"label": "Home Assistant",
-					"description": "Trigger a Home Assistant webhook automation.",
-					"urlLabel": "Webhook URL",
+					"description": "Attiva un'automazione webhook di Home Assistant.",
+					"urlLabel": "URL del Webhook",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Paste your HA webhook URL. No token required.",
-					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
-					"configLabel": "Automation config",
-					"copy": "Copy",
-					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+					"hint": "Incolla l'URL del tuo webhook di HA. Nessun token richiesto.",
+					"tip": "Suggerimento: Per un URL esterno di Home Assistant, disattiva “Accessibile solo dalla rete”.",
+					"configLabel": "Configurazione automazione",
+					"copy": "Copia",
+					"invalidUrl": "L'URL deve terminare con /api/webhook/<webhook_id>"
 				}
 			},
 			"inbox": {
-				"title": "Recent notifications"
+				"title": "Notifiche recenti"
 			},
 			"seeMore": "Vedi tutte le {total} notifiche",
 			"viewAll": "Vedi tutte le notifiche",
