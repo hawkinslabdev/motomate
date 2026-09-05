@@ -8,11 +8,11 @@ class SheetStore {
 	hint = $state('');
 	wide = $state(false);
 
-	openSheet(component: Component<any>, title: string, data?: unknown, wide = false) {
+	openSheet(component: Component<any>, title: string, data?: unknown, wide = false, hint = '') {
 		this.formComponent = component;
 		this.formData = data;
 		this.title = title;
-		this.hint = '';
+		this.hint = hint;
 		this.wide = wide;
 		this.open = true;
 	}

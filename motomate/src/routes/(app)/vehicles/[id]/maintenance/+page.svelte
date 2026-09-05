@@ -185,11 +185,17 @@
 		trackerMenu = trackerMenu === id ? null : id;
 	}
 	function startEditTracker(tracker: (typeof data.trackers)[number]) {
-		sheet.openSheet(EditTrackerForm, $_('common.edit'), {
-			tracker,
-			vehicleId: data.vehicle.id,
-			odometerUnit: data.vehicle.odometer_unit
-		});
+		sheet.openSheet(
+			EditTrackerForm,
+			$_('common.edit'),
+			{
+				tracker,
+				vehicleId: data.vehicle.id,
+				odometerUnit: data.vehicle.odometer_unit
+			},
+			true,
+			tracker.template.name
+		);
 		trackerMenu = null;
 		loggingTracker = null;
 		historyTracker = null;
