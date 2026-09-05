@@ -832,12 +832,18 @@
 												class="entry-menu-item"
 												onclick={() => {
 													const editLog = serviceLogById(log.id);
-													sheet.openSheet(ServiceLogEditForm, $_('common.edit'), {
-														editLog,
-														trackers: data.trackers,
-														allDocs: data.allDocs ?? [],
-														odometerUnit: data.vehicle.odometer_unit
-													});
+													sheet.openSheet(
+														ServiceLogEditForm,
+														$_('common.edit'),
+														{
+															editLog,
+															trackers: data.trackers,
+															allDocs: data.allDocs ?? [],
+															odometerUnit: data.vehicle.odometer_unit
+														},
+														false,
+														editLog ? formatDateShort(editLog.performed_at, locale) : ''
+													);
 													entryMenu = null;
 												}}>{$_('common.edit')}</button
 											>
@@ -876,16 +882,22 @@
 												class="entry-menu-item"
 												onclick={() => {
 													const odoLog = odoLogById(log.id);
-													sheet.openSheet(NoteForm, $_('common.edit'), {
-														today,
-														editData: odoLog
-															? {
-																	id: log.id,
-																	recorded_at: odoLog.recorded_at,
-																	remark: odoLog.remark ?? ''
-																}
-															: undefined
-													});
+													sheet.openSheet(
+														NoteForm,
+														$_('common.edit'),
+														{
+															today,
+															editData: odoLog
+																? {
+																		id: log.id,
+																		recorded_at: odoLog.recorded_at,
+																		remark: odoLog.remark ?? ''
+																	}
+																: undefined
+														},
+														false,
+														odoLog ? formatDateShort(odoLog.recorded_at, locale) : ''
+													);
 													entryMenu = null;
 												}}>{$_('common.edit')}</button
 											>
@@ -1084,19 +1096,25 @@
 												class="entry-menu-item"
 												onclick={() => {
 													const odoLog = odoLogById(log.id);
-													sheet.openSheet(OdometerForm, $_('common.edit'), {
-														odometerUnit: data.vehicle.odometer_unit,
-														currentOdometer: data.vehicle.current_odometer,
-														today,
-														editData: odoLog
-															? {
-																	id: log.id,
-																	odometer: odoLog.odometer,
-																	recorded_at: odoLog.recorded_at,
-																	remark: odoLog.remark ?? undefined
-																}
-															: undefined
-													});
+													sheet.openSheet(
+														OdometerForm,
+														$_('common.edit'),
+														{
+															odometerUnit: data.vehicle.odometer_unit,
+															currentOdometer: data.vehicle.current_odometer,
+															today,
+															editData: odoLog
+																? {
+																		id: log.id,
+																		odometer: odoLog.odometer,
+																		recorded_at: odoLog.recorded_at,
+																		remark: odoLog.remark ?? undefined
+																	}
+																: undefined
+														},
+														false,
+														odoLog ? formatDateShort(odoLog.recorded_at, locale) : ''
+													);
 													entryMenu = null;
 												}}>{$_('common.edit')}</button
 											>
