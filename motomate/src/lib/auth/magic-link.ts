@@ -4,6 +4,7 @@ import { magic_link_tokens } from '../db/schema.js';
 import { eq, and, isNull } from 'drizzle-orm';
 import { generateId } from '../utils/id.js';
 import { env } from '$env/dynamic/private';
+import { env as pubEnv } from '$env/dynamic/public';
 
 export function isSmtpConfigured(): boolean {
 	return !!env.SMTP_HOST;
@@ -50,7 +51,7 @@ export async function verifyMagicLinkToken(token: string): Promise<string | null
 }
 
 export async function sendMagicLinkEmail(email: string, token: string): Promise<void> {
-	const appUrl = env.PUBLIC_APP_URL ?? 'http://localhost:5173';
+	const appUrl = pubEnv.PUBLIC_APP_URL ?? 'http://localhost:5173';
 	const link = `${appUrl}/magic-link?token=${token}`;
 
 	// Lazy-import nodemailer so it only loads when needed

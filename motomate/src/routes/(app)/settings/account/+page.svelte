@@ -5,7 +5,7 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 
-	let { data } = $props<{ data: { user: User } }>();
+	let { data } = $props<{ data: { user: User; hasPassword: boolean } }>();
 
 	let savingEmail = $state(false);
 	let savingPassword = $state(false);
@@ -82,69 +82,70 @@
 	</form>
 </section>
 
-<div class="divider"></div>
+{#if data.hasPassword}
+	<div class="divider"></div>
 
-<!-- Password -->
-<section class="setting-section">
-	<h3 class="sub-title">{$_('settings.account.password.title')}</h3>
+	<section class="setting-section">
+		<h3 class="sub-title">{$_('settings.account.password.title')}</h3>
 
-	<form
-		method="POST"
-		action="?/changePassword"
-		class="pref-form"
-		use:enhance={({ formElement }) => {
-			savingPassword = true;
-			return async ({ result, update }) => {
-				await update();
-				savingPassword = false;
-				if (result.type === 'success') {
-					formElement.reset();
-					toasts.success($_('settings.account.password.saved'));
-				} else if (result.type === 'failure') {
-					toasts.error(String(result.data?.passwordError ?? ''));
-				}
-			};
-		}}
-	>
-		<label class="field">
-			<span class="field-label">{$_('settings.account.password.current')}</span>
-			<input
-				name="current_password"
-				type="password"
-				autocomplete="current-password"
-				placeholder={$_('settings.account.password.current')}
-				class="input"
-				required
-			/>
-		</label>
-		<label class="field">
-			<span class="field-label">{$_('settings.account.password.new')}</span>
-			<input
-				name="new_password"
-				type="password"
-				autocomplete="new-password"
-				placeholder={$_('settings.account.password.hint')}
-				minlength="8"
-				class="input"
-				required
-			/>
-		</label>
-		<label class="field">
-			<span class="field-label">{$_('settings.account.password.confirm')}</span>
-			<input
-				name="confirm_password"
-				type="password"
-				autocomplete="new-password"
-				placeholder={$_('settings.account.password.hint')}
-				class="input"
-				required
-			/>
-		</label>
-		<button type="submit" class="btn-secondary" disabled={savingPassword}>
-			{savingPassword ? $_('settings.profile.saving') : $_('settings.account.password.submit')}
-		</button>
-	</form>
-</section>
+		<form
+			method="POST"
+			action="?/changePassword"
+			class="pref-form"
+			use:enhance={({ formElement }) => {
+				savingPassword = true;
+				return async ({ result, update }) => {
+					await update();
+					savingPassword = false;
+					if (result.type === 'success') {
+						formElement.reset();
+						toasts.success($_('settings.account.password.saved'));
+					} else if (result.type === 'failure') {
+						toasts.error(String(result.data?.passwordError ?? ''));
+					}
+				};
+			}}
+		>
+			<label class="field">
+				<span class="field-label">{$_('settings.account.password.current')}</span>
+				<input
+					name="current_password"
+					type="password"
+					autocomplete="current-password"
+					placeholder={$_('settings.account.password.current')}
+					class="input"
+					required
+				/>
+			</label>
+			<label class="field">
+				<span class="field-label">{$_('settings.account.password.new')}</span>
+				<input
+					name="new_password"
+					type="password"
+					autocomplete="new-password"
+					placeholder={$_('settings.account.password.hint')}
+					minlength="8"
+					class="input"
+					required
+				/>
+			</label>
+			<label class="field">
+				<span class="field-label">{$_('settings.account.password.confirm')}</span>
+				<input
+					name="confirm_password"
+					type="password"
+					autocomplete="new-password"
+					placeholder={$_('settings.account.password.hint')}
+					class="input"
+					required
+				/>
+			</label>
+			<button type="submit" class="btn-secondary" disabled={savingPassword}>
+				{savingPassword ? $_('settings.profile.saving') : $_('settings.account.password.submit')}
+			</button>
+		</form>
+	</section>
+{/if}
 
 <div class="divider"></div>
 

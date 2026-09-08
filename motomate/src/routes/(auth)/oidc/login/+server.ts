@@ -1,5 +1,11 @@
 import { redirect, error } from '@sveltejs/kit';
-import { getOidcConfig, discoverOidc, randomToken, pkceChallenge } from '$lib/auth/oidc.js';
+import {
+	getOidcConfig,
+	discoverOidc,
+	randomToken,
+	pkceChallenge,
+	redirectUri
+} from '$lib/auth/oidc.js';
 import { isSecureCookie } from '$lib/auth/index.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
 import type { RequestHandler } from './$types';
@@ -12,7 +18,14 @@ export const GET: RequestHandler = async ({ cookies, url, getClientAddress }) =>
 		error(429, 'Too many requests');
 	}
 
-	const discovery = await discoverOidc(config.issuer);
+	let discovery;
+	try {
+		discovery = await discoverOidc(config.issuer);
+	} catch (e) {
+		console.error('[oidc] discovery failed', e);
+		redirect(302, '/login?error=oidc');
+	}
+
 	const state = randomToken();
 	const verifier = randomToken();
 	const challenge = pkceChallenge(verifier);
@@ -30,7 +43,7 @@ export const GET: RequestHandler = async ({ cookies, url, getClientAddress }) =>
 	const authUrl = new URL(discovery.authorization_endpoint);
 	authUrl.searchParams.set('response_type', 'code');
 	authUrl.searchParams.set('client_id', config.clientId);
-	authUrl.searchParams.set('redirect_uri', `${url.origin}/oidc/callback`);
+	authUrl.searchParams.set('redirect_uri', redirectUri(url));
 	authUrl.searchParams.set('scope', config.scopes);
 	authUrl.searchParams.set('state', state);
 	authUrl.searchParams.set('code_challenge', challenge);

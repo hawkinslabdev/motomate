@@ -4,9 +4,10 @@ import {
 	discoverOidc,
 	exchangeCode,
 	fetchUserinfo,
-	isEmailVerified
+	isEmailVerified,
+	redirectUri
 } from '$lib/auth/oidc.js';
-import { lucia } from '$lib/auth/index.js';
+import { lucia, isSecureCookie } from '$lib/auth/index.js';
 import {
 	getUserByEmail,
 	getUserByOidcSub,
@@ -36,17 +37,18 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 		redirect(302, '/login?error=oidc');
 	}
 
-	const discovery = await discoverOidc(config.issuer);
-	const tokens = await exchangeCode(
-		discovery,
-		config,
-		code,
-		verifier,
-		`${url.origin}/oidc/callback`
-	);
-	const userinfo = await fetchUserinfo(discovery, tokens.access_token);
+	let userinfo = null;
+	let idToken: string | undefined;
+	try {
+		const discovery = await discoverOidc(config.issuer);
+		const tokens = await exchangeCode(discovery, config, code, verifier, redirectUri(url));
+		idToken = tokens.id_token;
+		userinfo = await fetchUserinfo(discovery, tokens.access_token);
+	} catch (e) {
+		console.error('[oidc] token exchange failed', e);
+	}
 
-	if (!userinfo.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
+	if (!userinfo?.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
 		redirect(302, '/login?error=oidc');
 	}
 
@@ -70,6 +72,16 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 	const session = await lucia.createSession(user.id, {});
 	const cookie = lucia.createSessionCookie(session.id);
 	cookies.set(cookie.name, cookie.value, { path: '/', ...cookie.attributes });
+
+	if (idToken && idToken.length <= 3500) {
+		cookies.set('oidc_id_token', idToken, {
+			path: '/',
+			httpOnly: true,
+			secure: isSecureCookie,
+			sameSite: 'lax',
+			maxAge: 30 * 24 * 60 * 60
+		});
+	}
 
 	redirect(302, user.onboarding_done ? '/dashboard' : '/onboarding');
 };

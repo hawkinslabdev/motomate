@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { env } from '$env/dynamic/private';
+import { env as pubEnv } from '$env/dynamic/public';
 
 type OidcConfig = {
 	issuer: string;
@@ -10,12 +11,15 @@ type OidcConfig = {
 };
 
 type OidcDiscovery = {
+	issuer: string;
 	authorization_endpoint: string;
 	token_endpoint: string;
 	userinfo_endpoint: string;
+	end_session_endpoint?: string;
 };
 
-let _discoveryCache: OidcDiscovery | null = null;
+const DISCOVERY_TTL = 60 * 60_000;
+let _discoveryCache: { issuer: string; at: number; doc: OidcDiscovery } | null = null;
 
 export function getOidcConfig(): OidcConfig | null {
 	if (!env.OIDC_ISSUER || !env.OIDC_CLIENT_ID || !env.OIDC_CLIENT_SECRET) return null;
@@ -28,12 +32,36 @@ export function getOidcConfig(): OidcConfig | null {
 	};
 }
 
+export function appOrigin(url: URL): string {
+	return (pubEnv.PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
+}
+
+export function redirectUri(url: URL): string {
+	return `${appOrigin(url)}/oidc/callback`;
+}
+
+export function assertHttpsIssuer(issuer: string): void {
+	const { protocol, hostname } = new URL(issuer);
+	if (protocol === 'https:') return;
+	if (hostname === 'localhost' || hostname === '127.0.0.1') return;
+	throw new Error('OIDC issuer must use https');
+}
+
 export async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
-	if (_discoveryCache) return _discoveryCache;
+	assertHttpsIssuer(issuer);
+	if (_discoveryCache?.issuer === issuer && Date.now() - _discoveryCache.at < DISCOVERY_TTL) {
+		return _discoveryCache.doc;
+	}
 	const res = await fetch(`${issuer}/.well-known/openid-configuration`);
 	if (!res.ok) throw new Error('OIDC discovery failed');
-	_discoveryCache = await res.json();
-	return _discoveryCache as OidcDiscovery;
+	const doc = (await res.json()) as OidcDiscovery;
+	if (doc.issuer?.replace(/\/$/, '') !== issuer) throw new Error('OIDC issuer mismatch');
+	for (const endpoint of [doc.authorization_endpoint, doc.token_endpoint, doc.userinfo_endpoint]) {
+		if (!endpoint) throw new Error('OIDC discovery document is incomplete');
+		assertHttpsIssuer(endpoint);
+	}
+	_discoveryCache = { issuer, at: Date.now(), doc };
+	return doc;
 }
 
 export function isEmailVerified(value: boolean | string | undefined): boolean {
@@ -54,7 +82,7 @@ export async function exchangeCode(
 	code: string,
 	verifier: string,
 	redirectUri: string
-): Promise<{ access_token: string }> {
+): Promise<{ access_token: string; id_token?: string }> {
 	const res = await fetch(discovery.token_endpoint, {
 		method: 'POST',
 		headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -80,4 +108,21 @@ export async function fetchUserinfo(
 	});
 	if (!res.ok) throw new Error('OIDC userinfo failed');
 	return res.json();
+}
+
+export async function endSessionUrl(url: URL, idToken?: string): Promise<string | null> {
+	const config = getOidcConfig();
+	if (!config) return null;
+	try {
+		const discovery = await discoverOidc(config.issuer);
+		if (!discovery.end_session_endpoint) return null;
+		const target = new URL(discovery.end_session_endpoint);
+		target.searchParams.set('post_logout_redirect_uri', `${appOrigin(url)}/login`);
+		if (idToken) target.searchParams.set('id_token_hint', idToken);
+		else target.searchParams.set('client_id', config.clientId);
+		return target.toString();
+	} catch (e) {
+		console.error('[oidc] end_session lookup failed', e);
+		return null;
+	}
 }

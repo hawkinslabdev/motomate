@@ -34,7 +34,8 @@ const localeMessages: Record<string, AccountErrors> = localeMap;
 const ARGON2_OPTS = { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 } as const;
 
 export const load: PageServerLoad = async ({ locals }) => {
-	return { user: locals.user! };
+	const record = await getUserById(locals.user!.id);
+	return { user: locals.user!, hasPassword: !!record?.password_hash };
 };
 
 export const actions: Actions = {

@@ -6,7 +6,11 @@ vi.mock('$lib/server/download-token.js', () => ({
 }));
 
 vi.mock('$env/dynamic/private', () => ({
-	env: { PUBLIC_APP_URL: 'http://localhost:5173', DATABASE_URL: ':memory:' }
+	env: { DATABASE_URL: ':memory:' }
+}));
+
+vi.mock('$env/dynamic/public', () => ({
+	env: { PUBLIC_APP_URL: 'http://localhost:5173' }
 }));
 
 import { GET as getMe } from '../../routes/api/v1/me/+server.js';

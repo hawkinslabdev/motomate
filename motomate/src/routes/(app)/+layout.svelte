@@ -929,8 +929,8 @@
 	confirmLabel={$_('layout.logoutConfirm.confirm')}
 	cancelLabel={$_('layout.logoutConfirm.cancel')}
 	onconfirm={async () => {
-		await fetch('/auth/logout', { method: 'POST', redirect: 'manual' });
-		window.location.href = '/login';
+		const res = await fetch('/auth/logout', { method: 'POST' });
+		window.location.href = (await res.json().catch(() => ({}))).redirect ?? '/login';
 	}}
 	onclose={() => (logoutConfirmOpen = false)}
 />
