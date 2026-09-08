@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.0 
+
+**Breaking change**: The application will refuse to start if your `AUTH_SECRET` variable is not secure enough (< 32 bytes). Generate a new key with: "openssl rand -hex 32", beware that this will invalidate your stored S3 and paperless credentials!
+
+- You can now use your favorite OIDC provider (e.g. Authelia, Authentik, Pocket ID). See examples [here](https://github.com/hawkinslabdev/motomate/blob/main/docker-compose.yml).
+- Your OIDC provider can now create accounts by itself with `OIDC_ALLOW_SIGNUP`, so single sign-on works while public registration stays closed (#101)
+- Changing your password now logs out your other sessions
+- Fix: opening a magic link without a token returned a server error instead of the invalid link page
+- Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
+- Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, needed for rate limiting behind a reverse proxy
+- Security: require a verified email from your OIDC provider, and match accounts on the provider's user id instead of the email address
+- Security: refuse to start on a default `AUTH_SECRET` even when users already exist
+- Security: strip raw HTML and `javascript:` links when rendering notes
+- Security: add rate limiting to the magic link and OIDC routes
+- Security: remove an expensive hash from the magic link page that could be triggered without logging in
+
 ## 0.5.5
 
 - Fix: tracker edit now re-use sheet for consistent UI-experience (#94)

@@ -675,7 +675,7 @@ const spec = {
 				tags: ['Attention'],
 				summary: 'Attention for this vehicle',
 				description:
-					"Scoped to one vehicle. Returns what is overdue, due now, and coming up within 14 days or 500 km (10 h for hour-based vehicles). Each item carries fields like `overdue_by` and `due_in_days` so you know exactly how far past due your chain lube is. Values are in the vehicle's `odometer_unit`. For all vehicles at once, use `GET /vehicles/attention`.",
+					"Scoped to one vehicle. Returns what is overdue, due now, and coming up within 14 days or 500 km (10 h for hour-based vehicles). Each item includes fields like `overdue_by` and `due_in_days` so you know exactly how far past due your chain lube is. Values are in the vehicle's `odometer_unit`. For all vehicles at once, use `GET /vehicles/attention`.",
 				operationId: 'getVehicleAttention',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				responses: {
@@ -942,7 +942,7 @@ const spec = {
 									data: {
 										type: 'object',
 										description:
-											'Template variables for the rule that fired. Always carries `vehicle_name`; the rest depend on the trigger.',
+											'Template variables for the rule that fired. Always includes `vehicle_name`; the rest depend on the trigger.',
 										additionalProperties: { type: ['string', 'number'] }
 									}
 								}
