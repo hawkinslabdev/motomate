@@ -63,7 +63,7 @@ export const actions: Actions = {
 		return { savedEmail: true };
 	},
 
-	changePassword: async ({ request, locals }) => {
+	changePassword: async ({ request, locals, cookies }) => {
 		const userId = locals.user!.id;
 		const userLocale = (locals.user as any)?.settings?.locale ?? 'en';
 		const messages = localeMessages[userLocale] ?? localeMessages['en'];
@@ -100,6 +100,12 @@ export const actions: Actions = {
 
 		const passwordHash = await hash(newPassword, ARGON2_OPTS);
 		await updateUserPassword(userId, passwordHash);
+
+		await lucia.invalidateUserSessions(userId);
+		const session = await lucia.createSession(userId, {});
+		const cookie = lucia.createSessionCookie(session.id);
+		cookies.set(cookie.name, cookie.value, { path: '/', ...cookie.attributes });
+
 		return { savedPassword: true };
 	},
 

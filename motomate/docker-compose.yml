@@ -12,7 +12,7 @@ services:
       - TZ=Europe/Amsterdam
       - PUBLIC_APP_URL=http://localhost:3000
       - PUBLIC_APP_ORIGINS=http://localhost
-      - AUTH_SECRET=change-me-in-production-min-32-chars
+      - AUTH_SECRET=${AUTH_SECRET:?set AUTH_SECRET in your .env file, generate with openssl rand -hex 32}
       - DATABASE_URL=/app/data/motomate.db
       - STORAGE_LOCAL_PATH=/app/uploads
       - BODY_SIZE_LIMIT=20971520

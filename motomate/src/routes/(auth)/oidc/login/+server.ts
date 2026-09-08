@@ -1,11 +1,16 @@
 import { redirect, error } from '@sveltejs/kit';
 import { getOidcConfig, discoverOidc, randomToken, pkceChallenge } from '$lib/auth/oidc.js';
 import { isSecureCookie } from '$lib/auth/index.js';
+import { rateLimit } from '$lib/auth/rate-limit.js';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ cookies, url }) => {
+export const GET: RequestHandler = async ({ cookies, url, getClientAddress }) => {
 	const config = getOidcConfig();
 	if (!config) error(404);
+
+	if (!rateLimit(`oidc:login:${getClientAddress()}`, 30, 15 * 60_000)) {
+		error(429, 'Too many requests');
+	}
 
 	const discovery = await discoverOidc(config.issuer);
 	const state = randomToken();

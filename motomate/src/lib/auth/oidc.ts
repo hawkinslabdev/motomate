@@ -36,6 +36,10 @@ export async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
 	return _discoveryCache as OidcDiscovery;
 }
 
+export function isEmailVerified(value: boolean | string | undefined): boolean {
+	return value === true || value === 'true';
+}
+
 export function randomToken(): string {
 	return crypto.randomBytes(32).toString('base64url');
 }
@@ -70,7 +74,7 @@ export async function exchangeCode(
 export async function fetchUserinfo(
 	discovery: OidcDiscovery,
 	accessToken: string
-): Promise<{ email?: string; email_verified?: boolean; name?: string }> {
+): Promise<{ sub?: string; email?: string; email_verified?: boolean | string; name?: string }> {
 	const res = await fetch(discovery.userinfo_endpoint, {
 		headers: { authorization: `Bearer ${accessToken}` }
 	});

@@ -77,5 +77,8 @@
 		"tiptap-markdown": "^0.9.0",
 		"web-push": "^3.6.7",
 		"zod": "^4.4.3"
+	},
+	"allowScripts": {
+		"better-sqlite3@12.11.1": true
 	}
 }
