@@ -6,9 +6,11 @@ import {
 	updateUserPassword,
 	getUserById,
 	getUserByEmail,
+	updateUserSettings,
 	deleteUser
 } from '$lib/db/repositories/users.js';
 import { lucia } from '$lib/auth/index.js';
+import { isResetWindowOpen } from '$lib/auth/password-reset.js';
 import { locales as localeMap } from '$lib/i18n/locales.js';
 
 type AccountErrors = {
@@ -35,7 +37,11 @@ const ARGON2_OPTS = { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const record = await getUserById(locals.user!.id);
-	return { user: locals.user!, hasPassword: !!record?.password_hash };
+	return {
+		user: locals.user!,
+		hasPassword: !!record?.password_hash,
+		pwResetActive: isResetWindowOpen(record?.settings?.pw_reset_until)
+	};
 };
 
 export const actions: Actions = {
@@ -76,7 +82,10 @@ export const actions: Actions = {
 		const newPassword = String(data.new_password ?? '');
 		const confirmPassword = String(data.confirm_password ?? '');
 
-		if (!currentPassword || !newPassword) {
+		const fullUser = await getUserById(userId);
+		const resetActive = isResetWindowOpen(fullUser?.settings?.pw_reset_until);
+
+		if (!newPassword || (!resetActive && !currentPassword)) {
 			return fail(400, { passwordError: errors.allRequired });
 		}
 		if (newPassword.length < 8) {
@@ -86,21 +95,23 @@ export const actions: Actions = {
 			return fail(400, { passwordError: errors.noMatch });
 		}
 
-		const fullUser = await getUserById(userId);
 		if (!fullUser?.password_hash) {
 			return fail(400, {
 				passwordError: errors.noPasswordSet
 			});
 		}
 
-		const valid = await verify(fullUser.password_hash, currentPassword, ARGON2_OPTS);
-		if (!valid) return fail(400, { passwordError: errors.incorrect });
+		if (!resetActive) {
+			const valid = await verify(fullUser.password_hash, currentPassword, ARGON2_OPTS);
+			if (!valid) return fail(400, { passwordError: errors.incorrect });
+		}
 
 		const samePassword = await verify(fullUser.password_hash, newPassword, ARGON2_OPTS);
 		if (samePassword) return fail(400, { passwordError: errors.sameAsCurrent });
 
 		const passwordHash = await hash(newPassword, ARGON2_OPTS);
 		await updateUserPassword(userId, passwordHash);
+		if (resetActive) await updateUserSettings(userId, { pw_reset_until: null });
 
 		await lucia.invalidateUserSessions(userId);
 		const session = await lucia.createSession(userId, {});

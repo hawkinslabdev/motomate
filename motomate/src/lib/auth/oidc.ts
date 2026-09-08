@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { env } from '$env/dynamic/private';
 import { env as pubEnv } from '$env/dynamic/public';
+import { ts } from '../server/log.js';
 
 type OidcConfig = {
 	issuer: string;
@@ -122,7 +123,7 @@ export async function endSessionUrl(url: URL, idToken?: string): Promise<string 
 		else target.searchParams.set('client_id', config.clientId);
 		return target.toString();
 	} catch (e) {
-		console.error('[oidc] end_session lookup failed', e);
+		console.error(`${ts()} [MotoMate] OIDC end_session lookup failed`, e);
 		return null;
 	}
 }

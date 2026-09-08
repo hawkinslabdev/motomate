@@ -42,6 +42,7 @@
 			"noAccount": "Noch kein Konto?",
 			"signUp": "Registrieren!",
 			"magicLinkSent": "Überprüfen Sie Ihre E-Mail, ein Anmeldelink ist unterwegs.",
+			"magicLinkLogged": "Anscheinend ist SMTP nicht konfiguriert. Bitte sehen Sie in Ihren Server-Logs nach, um fortzufahren.",
 			"orSignInWith": "Oder mit einem Identitätsanbieter anmelden",
 			"setupNotice": {
 				"title": "Erstes Setup",

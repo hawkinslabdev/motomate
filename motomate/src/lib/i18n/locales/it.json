@@ -42,6 +42,7 @@
 			"noAccount": "Non hai un account?",
 			"signUp": "Registrati!",
 			"magicLinkSent": "Controlla la tua email, un link di accesso è in arrivo.",
+			"magicLinkLogged": "Sembra che SMTP non sia configurato. Controlla i log del server per continuare.",
 			"orSignInWith": "Oppure accedi con un provider di identità",
 			"setupNotice": {
 				"title": "Configurazione iniziale",

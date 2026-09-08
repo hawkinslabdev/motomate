@@ -7,15 +7,19 @@
 - You can now use your favorite OIDC provider (e.g. Authelia, Authentik, Pocket ID). See examples [here](https://github.com/hawkinslabdev/motomate/blob/main/docker-compose.yml).
 - Your OIDC provider can now create accounts by itself with `OIDC_ALLOW_SIGNUP`, so single sign-on works while public registration stays closed (#101)
 - Changing your password now logs out your other sessions
+- Fix: A magic link now lets you set a new password without entering the old one to allow password recovery
+- Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
 - Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, needed for rate limiting behind a reverse proxy
+- Fix: `PUBLIC_APP_URL` was read from the wrong place and always ignored, so magic link emails pointed at localhost and the OIDC redirect fell back to the request host
 - Security: require a verified email from your OIDC provider, and match accounts on the provider's user id instead of the email address
 - Security: refuse to start on a default `AUTH_SECRET` even when users already exist
 - Security: strip raw HTML and `javascript:` links when rendering notes
 - Security: add rate limiting to the magic link and OIDC routes
 - Security: remove an expensive hash from the magic link page that could be triggered without logging in
 - Security: prevent SVG injection via the unescaped rotate option in DiceBear avatars
+- Security: the magic link form no longer reveals whether an email address has an account
 
 ## 0.5.5
 

@@ -93,6 +93,7 @@ export type UserSettings = {
 	avatar_key?: string | null;
 	avatar_seed?: string | null;
 	oidc_sub?: string | null;
+	pw_reset_until?: string | null;
 	page_prefs?: PagePrefs;
 	integrations?: Integrations;
 };

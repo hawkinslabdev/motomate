@@ -6,12 +6,14 @@ import { isRegistrationOpen } from '$lib/auth/registration.js';
 import {
 	createMagicLinkToken,
 	sendMagicLinkEmail,
+	logMagicLink,
 	isSmtpConfigured
 } from '$lib/auth/magic-link.js';
 import { verifyAltcha } from '$lib/auth/altcha.js';
 import { getOidcConfig } from '$lib/auth/oidc.js';
 import { LoginSchema, MagicLinkRequestSchema } from '$lib/validators/schemas.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
+import { ts } from '$lib/server/log.js';
 import type { Actions, PageServerLoad } from './$types';
 import { hash, verify } from '@node-rs/argon2';
 import { locales as localeMap } from '$lib/i18n/locales.js';
@@ -24,9 +26,7 @@ type AuthErrors = {
 				invalidFormat: string;
 				invalidCredentials: string;
 				invalidEmail: string;
-				registrationClosed: string;
 				verificationFailed: string;
-				smtpNotConfigured: string;
 			};
 		};
 	};
@@ -50,12 +50,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const smtpEnabled = isSmtpConfigured();
 	if (!smtpEnabled && !_smtpWarned) {
 		console.warn(
-			'[auth] Magic link disabled: SMTP_HOST is not set. Configure SMTP to enable passwordless login.'
+			`${ts()} [MotoMate] SMTP_HOST is not set. Magic links are written to this log instead of being emailed.`
 		);
 		_smtpWarned = true;
 	}
-	const initialMode =
-		smtpEnabled && url.searchParams.get('mode') === 'magic' ? 'magic' : 'password';
+	const initialMode = url.searchParams.get('mode') === 'magic' ? 'magic' : 'password';
 	return {
 		registrationEnabled: await isRegistrationOpen(),
 		smtpEnabled,
@@ -150,10 +149,6 @@ export const actions: Actions = {
 		const messages = localeMessages[userLocale] ?? localeMessages['en'];
 		const errors = messages.auth.login.errors;
 
-		if (!isSmtpConfigured()) {
-			return fail(503, { error: errors.smtpNotConfigured });
-		}
-
 		const ip = getClientAddress();
 
 		if (!rateLimit(`magic:ip:${ip}`, 50, 60 * 60_000)) {
@@ -174,18 +169,19 @@ export const actions: Actions = {
 			return fail(429, { error: errors.rateLimited });
 		}
 
-		// Find or create user (passwordless)
+		// Same response whether or not the address has an account, so this cannot enumerate users.
 		let user = await getUserByEmail(parsed.data.email);
-		if (!user) {
-			if (!(await isRegistrationOpen())) {
-				return fail(400, { error: errors.registrationClosed });
-			}
+		if (!user && (await isRegistrationOpen())) {
 			user = await createUser({ email: parsed.data.email });
 		}
 
-		const token = await createMagicLinkToken(user.id);
-		await sendMagicLinkEmail(parsed.data.email, token);
+		const smtp = isSmtpConfigured();
+		if (user) {
+			const token = await createMagicLinkToken(user.id);
+			if (smtp) await sendMagicLinkEmail(parsed.data.email, token);
+			else logMagicLink(parsed.data.email, token);
+		}
 
-		return { magic: true };
+		return { magic: true, logged: !smtp };
 	}
 };

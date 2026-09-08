@@ -1,12 +1,11 @@
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { runIntegrationSync } from './integrations.js';
 import { sqlite } from '$lib/db/index.js';
+import { ts } from './log.js';
 
 const DEFAULT_INTERVAL_HOURS = 1;
 const INIT_KEY = Symbol.for('motomate.scheduler.initialized');
 const RUNNING_KEY = Symbol.for('motomate.scheduler.running');
-
-const ts = () => new Date().toLocaleString('sv');
 
 export function initScheduler(): void {
 	const g = globalThis as Record<symbol, boolean>;

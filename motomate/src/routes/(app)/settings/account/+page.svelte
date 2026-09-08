@@ -5,7 +5,7 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 
-	let { data } = $props<{ data: { user: User; hasPassword: boolean } }>();
+	let { data } = $props<{ data: { user: User; hasPassword: boolean; pwResetActive: boolean } }>();
 
 	let savingEmail = $state(false);
 	let savingPassword = $state(false);
@@ -106,17 +106,19 @@
 				};
 			}}
 		>
-			<label class="field">
-				<span class="field-label">{$_('settings.account.password.current')}</span>
-				<input
-					name="current_password"
-					type="password"
-					autocomplete="current-password"
-					placeholder={$_('settings.account.password.current')}
-					class="input"
-					required
-				/>
-			</label>
+			{#if !data.pwResetActive}
+				<label class="field">
+					<span class="field-label">{$_('settings.account.password.current')}</span>
+					<input
+						name="current_password"
+						type="password"
+						autocomplete="current-password"
+						placeholder={$_('settings.account.password.current')}
+						class="input"
+						required
+					/>
+				</label>
+			{/if}
 			<label class="field">
 				<span class="field-label">{$_('settings.account.password.new')}</span>
 				<input

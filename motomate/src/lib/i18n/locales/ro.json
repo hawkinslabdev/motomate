@@ -42,6 +42,7 @@
 			"noAccount": "Nu ai un cont?",
 			"signUp": "Înregistrează-te!",
 			"magicLinkSent": "Verifică-ți căsuța de email, un link de autentificare este pe drum.",
+			"magicLinkLogged": "Se pare că SMTP nu este configurat. Verifică jurnalele serverului pentru a continua.",
 			"orSignInWith": "Sau autentifică-te cu un furnizor de identitate",
 			"setupNotice": {
 				"title": "Configurare inițială",

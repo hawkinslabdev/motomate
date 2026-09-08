@@ -42,6 +42,7 @@
 			"noAccount": "Nog geen account?",
 			"signUp": "Registreer je hier!",
 			"magicLinkSent": "Controleer je e-mail, een inloglink is onderweg!",
+			"magicLinkLogged": "Het lijkt erop dat SMTP niet is geconfigureerd. Bekijk je serverlogs om door te gaan.",
 			"orSignInWith": "Of log in met een identiteitsprovider",
 			"setupNotice": {
 				"title": "Eerste setup",

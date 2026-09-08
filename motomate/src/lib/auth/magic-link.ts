@@ -5,6 +5,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { generateId } from '../utils/id.js';
 import { env } from '$env/dynamic/private';
 import { env as pubEnv } from '$env/dynamic/public';
+import { ts } from '../server/log.js';
 
 export function isSmtpConfigured(): boolean {
 	return !!env.SMTP_HOST;
@@ -50,9 +51,20 @@ export async function verifyMagicLinkToken(token: string): Promise<string | null
 	return record.user_id;
 }
 
+export function magicLinkUrl(token: string): string {
+	const appUrl = (pubEnv.PUBLIC_APP_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+	return `${appUrl}/magic-link?token=${token}`;
+}
+
+// Only reachable when SMTP is unset: the operator reads the link off the console.
+export function logMagicLink(email: string, token: string): void {
+	console.warn(
+		`${ts()} [MotoMate] SMTP is not configured. Login link for ${email}, valid 15 minutes: ${magicLinkUrl(token)}`
+	);
+}
+
 export async function sendMagicLinkEmail(email: string, token: string): Promise<void> {
-	const appUrl = pubEnv.PUBLIC_APP_URL ?? 'http://localhost:5173';
-	const link = `${appUrl}/magic-link?token=${token}`;
+	const link = magicLinkUrl(token);
 
 	// Lazy-import nodemailer so it only loads when needed
 	const nodemailer = await import('nodemailer');

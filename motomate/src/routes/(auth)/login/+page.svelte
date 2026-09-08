@@ -19,6 +19,7 @@
 			error?: string;
 			email?: string;
 			magic?: boolean;
+			logged?: boolean;
 			fieldErrors?: Record<string, string>;
 		} | null;
 	}>();
@@ -64,7 +65,9 @@
 			<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
 		</svg>
 		<div class="notice-content">
-			<p class="notice-text">{$_('auth.login.magicLinkSent')}</p>
+			<p class="notice-text">
+				{form.logged ? $_('auth.login.magicLinkLogged') : $_('auth.login.magicLinkSent')}
+			</p>
 			<a href="?" class="back-link">{$_('common.back')}</a>
 		</div>
 	</div>
@@ -73,7 +76,7 @@
 		<div class="form-error" role="alert">{form.error}</div>
 	{/if}
 
-	{#if !data.demoMode && data.smtpEnabled}
+	{#if !data.demoMode}
 		<div class="mode-tabs">
 			<button
 				type="button"
@@ -197,7 +200,7 @@
 					</span>
 					<span>{$_('auth.login.rememberMe')}</span>
 				</label>
-				{#if !data.demoMode && data.smtpEnabled}
+				{#if !data.demoMode}
 					<button type="button" class="link-btn" onclick={() => (mode = 'magic')}
 						>{$_('auth.login.forgotPassword')}</button
 					>

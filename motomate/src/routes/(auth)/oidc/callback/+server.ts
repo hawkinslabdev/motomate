@@ -16,6 +16,7 @@ import {
 } from '$lib/db/repositories/users.js';
 import { isOidcSignupOpen } from '$lib/auth/registration.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
+import { ts } from '$lib/server/log.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
@@ -45,7 +46,7 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 		idToken = tokens.id_token;
 		userinfo = await fetchUserinfo(discovery, tokens.access_token);
 	} catch (e) {
-		console.error('[oidc] token exchange failed', e);
+		console.error(`${ts()} [MotoMate] OIDC token exchange failed`, e);
 	}
 
 	if (!userinfo?.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
