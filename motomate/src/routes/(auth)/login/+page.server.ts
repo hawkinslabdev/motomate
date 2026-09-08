@@ -9,6 +9,7 @@ import {
 	isSmtpConfigured
 } from '$lib/auth/magic-link.js';
 import { verifyAltcha } from '$lib/auth/altcha.js';
+import { getOidcConfig } from '$lib/auth/oidc.js';
 import { LoginSchema, MagicLinkRequestSchema } from '$lib/validators/schemas.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
 import type { Actions, PageServerLoad } from './$types';
@@ -59,7 +60,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		registrationEnabled: await isRegistrationOpen(),
 		smtpEnabled,
 		altchaEnabled: true,
-		initialMode
+		initialMode,
+		oidcName: getOidcConfig()?.name ?? null
 	};
 };
 
