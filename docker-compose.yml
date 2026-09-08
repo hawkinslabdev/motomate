@@ -14,4 +14,11 @@ services:
       - AUTH_SECRET=${AUTH_SECRET:?set AUTH_SECRET in a .env file, generate with openssl rand -hex 32}
       - AUTH_ALLOW_REGISTRATION=false
       - AUTH_COOKIE_SECURE=false
+
+      # Optional. Use when configuring OIDC.
+      # OIDC_ISSUER=https://idp.example.com
+      # OIDC_CLIENT_ID=
+      # OIDC_CLIENT_SECRET=
+      # OIDC_SCOPES=openid email profile
+      # OIDC_NAME=SSO    
     restart: unless-stopped
