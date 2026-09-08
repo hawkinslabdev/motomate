@@ -50,7 +50,7 @@ After downloading the image and starting the container, the application will be 
 
 ## Integrations
 
-MotoMate exposes a complete OpenAPI interface for custom API integrations. It supports configurable notification handlers for alerts and it connects directly with S3-compatible object storage and [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) for automated document backups.
+MotoMate exposes a complete OpenAPI interface for custom API integrations. It supports configurable notification handlers for alerts, OIDC authentication, and it connects directly with S3-compatible object storage and [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) for automated document backups.
 
 ## Donate
 
