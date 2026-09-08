@@ -92,6 +92,7 @@ export type UserSettings = {
 	favorite_vehicle?: string | null;
 	avatar_key?: string | null;
 	avatar_seed?: string | null;
+	oidc_sub?: string | null;
 	page_prefs?: PagePrefs;
 	integrations?: Integrations;
 };

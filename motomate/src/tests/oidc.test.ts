@@ -4,7 +4,7 @@ vi.mock('$env/dynamic/private', () => ({
 	env: new Proxy({}, { get: (_, k: string) => process.env[k] })
 }));
 
-import { getOidcConfig, pkceChallenge } from '$lib/auth/oidc.js';
+import { getOidcConfig, pkceChallenge, isEmailVerified } from '$lib/auth/oidc.js';
 
 describe('getOidcConfig', () => {
 	beforeEach(() => {
@@ -27,6 +27,19 @@ describe('getOidcConfig', () => {
 		process.env.OIDC_CLIENT_ID = 'id';
 		process.env.OIDC_CLIENT_SECRET = 'secret';
 		expect(getOidcConfig()?.issuer).toBe('https://idp.example.com');
+	});
+});
+
+describe('isEmailVerified', () => {
+	it('accepts a true boolean and the string form some providers send', () => {
+		expect(isEmailVerified(true)).toBe(true);
+		expect(isEmailVerified('true')).toBe(true);
+	});
+
+	it('rejects anything else', () => {
+		expect(isEmailVerified(false)).toBe(false);
+		expect(isEmailVerified('false')).toBe(false);
+		expect(isEmailVerified(undefined)).toBe(false);
 	});
 });
 

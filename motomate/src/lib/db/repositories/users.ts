@@ -38,6 +38,12 @@ export async function getUserById(id: string): Promise<User | undefined> {
 	return db.query.users.findFirst({ where: eq(users.id, id) });
 }
 
+export async function getUserByOidcSub(sub: string): Promise<User | undefined> {
+	return db.query.users.findFirst({
+		where: sql`json_extract(${users.settings}, '$.oidc_sub') = ${sub}`
+	});
+}
+
 // Scheduler fan-out: only users who actually switched an integration on.
 export async function getUserIdsWithIntegrations(): Promise<string[]> {
 	const rows = await db

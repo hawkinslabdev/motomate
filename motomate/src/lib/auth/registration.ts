@@ -6,3 +6,9 @@ export async function isRegistrationOpen(): Promise<boolean> {
 	if (env.AUTH_ALLOW_REGISTRATION === 'true') return true;
 	return !(await hasAnyUser());
 }
+
+export async function isOidcSignupOpen(): Promise<boolean> {
+	if (env.OIDC_ALLOW_SIGNUP === 'true') return true;
+	if (env.OIDC_ALLOW_SIGNUP === 'false') return false;
+	return isRegistrationOpen();
+}

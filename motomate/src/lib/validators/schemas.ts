@@ -170,6 +170,7 @@ export const UserSettingsSchema = z.object({
 	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),
 	avatar_key: z.string().max(500).nullable().optional(),
 	avatar_seed: z.string().max(64).nullable().optional(),
+	oidc_sub: z.string().max(255).nullable().optional(),
 	page_prefs: PagePrefsSchema.optional(),
 	integrations: IntegrationsSchema
 });

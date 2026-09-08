@@ -1,13 +1,29 @@
 import { redirect, error } from '@sveltejs/kit';
-import { getOidcConfig, discoverOidc, exchangeCode, fetchUserinfo } from '$lib/auth/oidc.js';
+import {
+	getOidcConfig,
+	discoverOidc,
+	exchangeCode,
+	fetchUserinfo,
+	isEmailVerified
+} from '$lib/auth/oidc.js';
 import { lucia } from '$lib/auth/index.js';
-import { getUserByEmail, createUser } from '$lib/db/repositories/users.js';
-import { isRegistrationOpen } from '$lib/auth/registration.js';
+import {
+	getUserByEmail,
+	getUserByOidcSub,
+	createUser,
+	updateUserSettings
+} from '$lib/db/repositories/users.js';
+import { isOidcSignupOpen } from '$lib/auth/registration.js';
+import { rateLimit } from '$lib/auth/rate-limit.js';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, cookies }) => {
+export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
 	const config = getOidcConfig();
 	if (!config) error(404);
+
+	if (!rateLimit(`oidc:callback:${getClientAddress()}`, 30, 15 * 60_000)) {
+		error(429, 'Too many requests');
+	}
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
@@ -30,12 +46,25 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	);
 	const userinfo = await fetchUserinfo(discovery, tokens.access_token);
 
-	if (!userinfo.email) redirect(302, '/login?error=oidc');
+	if (!userinfo.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
+		redirect(302, '/login?error=oidc');
+	}
 
-	let user = await getUserByEmail(userinfo.email);
+	let user = await getUserByOidcSub(userinfo.sub);
+
 	if (!user) {
-		if (!(await isRegistrationOpen())) redirect(302, '/login?error=oidc_closed');
-		user = await createUser({ email: userinfo.email });
+		const byEmail = await getUserByEmail(userinfo.email);
+		if (byEmail) {
+			if (byEmail.settings?.oidc_sub) redirect(302, '/login?error=oidc');
+			await updateUserSettings(byEmail.id, { oidc_sub: userinfo.sub });
+			user = byEmail;
+		} else {
+			if (!(await isOidcSignupOpen())) redirect(302, '/login?error=oidc_closed');
+			user = await createUser({
+				email: userinfo.email,
+				initialSettings: { oidc_sub: userinfo.sub }
+			});
+		}
 	}
 
 	const session = await lucia.createSession(user.id, {});
