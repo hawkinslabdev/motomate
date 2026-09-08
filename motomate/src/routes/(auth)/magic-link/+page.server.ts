@@ -2,25 +2,19 @@ import { redirect } from '@sveltejs/kit';
 import { lucia } from '$lib/auth/index.js';
 import { verifyMagicLinkToken } from '$lib/auth/magic-link.js';
 import { getUserById } from '$lib/db/repositories/users.js';
-import crypto from 'crypto';
+import { rateLimit } from '$lib/auth/rate-limit.js';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url, cookies }) => {
+export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) => {
+	if (!rateLimit(`magiclink:consume:${getClientAddress()}`, 20, 15 * 60_000)) {
+		return { verified: false, errorKey: 'auth.magicLink.invalid' };
+	}
+
 	const token = url.searchParams.get('token') ?? '';
-
-	const dummyToken = crypto.randomBytes(32).toString('hex');
-	const tokenToVerify = token || dummyToken;
-
-	const userId = await verifyMagicLinkToken(tokenToVerify);
+	const userId = token ? await verifyMagicLinkToken(token) : null;
 	const user = userId ? await getUserById(userId) : null;
 
-	const isValid =
-		crypto.timingSafeEqual(Buffer.from(String(token)), Buffer.from(tokenToVerify)) &&
-		userId !== null &&
-		user !== null;
-
-	if (!isValid || !userId || !user) {
-		await crypto.scryptSync(crypto.randomBytes(16), 'salt', 64);
+	if (!userId || !user) {
 		return { verified: false, errorKey: 'auth.magicLink.invalid' };
 	}
 

@@ -20,10 +20,16 @@ const PLACEHOLDER_SECRETS = new Set([
 	'secret'
 ]);
 
-const SECRET_IS_WEAK = env.AUTH_SECRET.length < 32 || PLACEHOLDER_SECRETS.has(env.AUTH_SECRET);
+const SECRET_IS_PLACEHOLDER = PLACEHOLDER_SECRETS.has(env.AUTH_SECRET);
+const SECRET_IS_SHORT = env.AUTH_SECRET.length < 32;
 
 const WEAK_SECRET_MESSAGE =
-	'AUTH_SECRET is a known default or shorter than 32 characters. Anyone can forge download links and export tokens. Replace it with: openssl rand -hex 32 (this invalidates stored S3 and paperless credentials, re-enter them in Settings).';
+	'AUTH_SECRET uses an insecure default or is under 32 characters, risking forged downloads and token exports. Update it via `openssl rand -hex 32` (note: this clears stored S3 and paperless credentials; re-add them in Settings).';
+
+if (SECRET_IS_PLACEHOLDER) {
+	console.error(`${new Date().toLocaleString('sv')} [MotoMate] ${WEAK_SECRET_MESSAGE}`);
+	process.exit(1);
+}
 
 initScheduler();
 
@@ -32,7 +38,7 @@ let _secretChecked = false;
 // Fatal on a fresh install, warning on an existing one: an upgrade must never stop a live deployment booting.
 async function checkSecret(): Promise<void> {
 	_secretChecked = true;
-	if (!SECRET_IS_WEAK) return;
+	if (!SECRET_IS_SHORT) return;
 	const { hasAnyUser } = await import('$lib/db/repositories/users.js');
 	if (await hasAnyUser()) {
 		console.warn(`${new Date().toLocaleString('sv')} [MotoMate] WARNING: ${WEAK_SECRET_MESSAGE}`);

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { marked } from 'marked';
+	import { renderMarkdown } from '$lib/utils/markdown.js';
 	import { sheet } from '$lib/stores/sheet.svelte.js';
 	import { drafts } from '$lib/stores/drafts.svelte.js';
 	import { _, waitLocale } from '$lib/i18n';
@@ -52,14 +52,7 @@
 	// Opened as a preview, so cancelling an edit goes back to it rather than closing the sheet
 	const openedAsPreview = untrack(() => viewMode && !!editData);
 	let isViewMode = $state(openedAsPreview);
-	const renderedHtml = $derived(
-		isViewMode
-			? (marked.parse(contentValue) as string).replace(
-					/<a /g,
-					'<a target="_blank" rel="noopener noreferrer" '
-				)
-			: ''
-	);
+	const renderedHtml = $derived(isViewMode ? renderMarkdown(contentValue) : '');
 
 	let selectedDocIds = $state<Set<string>>(
 		untrack(() => {
