@@ -15,6 +15,7 @@
 - Security: strip raw HTML and `javascript:` links when rendering notes
 - Security: add rate limiting to the magic link and OIDC routes
 - Security: remove an expensive hash from the magic link page that could be triggered without logging in
+- Security: prevent SVG injection via the unescaped rotate option in DiceBear avatars
 
 ## 0.5.5
 
