@@ -46,7 +46,9 @@ services:
     restart: unless-stopped
 ```
 
-After downloading the image and starting the container, the application will be ready in a few seconds once database migrations complete.
+After downloading the image and starting the container, the application will be ready in a few seconds once database migrations complete. 
+
+Looking for a complete list of environment variables? See the [docker-compose.yml](docker-compose.yml) and [.env.example](motomate/.env.example) example files.
 
 ## Integrations
 
