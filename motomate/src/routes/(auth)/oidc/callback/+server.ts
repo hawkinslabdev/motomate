@@ -55,10 +55,17 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 		console.error(`${ts()} [MotoMate] OIDC token exchange failed`, e);
 	}
 
-	if (!userinfo?.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
+	const emailTrusted = config.trustUnverifiedEmail || isEmailVerified(userinfo?.email_verified);
+
+	if (!userinfo?.sub || !userinfo.email || !emailTrusted) {
 		console.error(
 			`${ts()} [MotoMate] OIDC userinfo unusable: sub=${!!userinfo?.sub} email=${!!userinfo?.email} emailVerified=${isEmailVerified(userinfo?.email_verified)}`
 		);
+		if (userinfo?.sub && userinfo.email) {
+			console.error(
+				`${ts()} [MotoMate] The IdP did not report this email as verified. If it never runs an email verification flow and its addresses are administrator-assigned, set OIDC_TRUST_UNVERIFIED_EMAIL=true.`
+			);
+		}
 		redirect(302, '/login?error=oidc');
 	}
 

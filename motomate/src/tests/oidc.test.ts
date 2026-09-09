@@ -186,3 +186,23 @@ describe('oidcCookie', () => {
 		expect(oidcCookie('state', false)).toBe('oidc_state');
 	});
 });
+
+describe('trustUnverifiedEmail', () => {
+	it('is off unless the deployment opts in', () => {
+		delete process.env.OIDC_TRUST_UNVERIFIED_EMAIL;
+		expect(getOidcConfig()?.trustUnverifiedEmail).toBe(false);
+		process.env.OIDC_TRUST_UNVERIFIED_EMAIL = 'yes';
+		expect(getOidcConfig()?.trustUnverifiedEmail).toBe(false);
+	});
+
+	it('is on for the exact opt-in value', () => {
+		process.env.OIDC_TRUST_UNVERIFIED_EMAIL = 'true';
+		expect(getOidcConfig()?.trustUnverifiedEmail).toBe(true);
+		delete process.env.OIDC_TRUST_UNVERIFIED_EMAIL;
+	});
+
+	it('still treats an explicit false claim as unverified on its own', () => {
+		expect(isEmailVerified(false)).toBe(false);
+		expect(isEmailVerified(undefined)).toBe(false);
+	});
+});

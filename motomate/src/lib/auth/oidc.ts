@@ -9,6 +9,7 @@ type OidcConfig = {
 	clientSecret: string;
 	scopes: string;
 	name: string;
+	trustUnverifiedEmail: boolean;
 };
 
 type OidcDiscovery = {
@@ -29,7 +30,8 @@ export function getOidcConfig(): OidcConfig | null {
 		clientId: env.OIDC_CLIENT_ID,
 		clientSecret: env.OIDC_CLIENT_SECRET,
 		scopes: env.OIDC_SCOPES ?? 'openid email profile',
-		name: env.OIDC_NAME ?? 'SSO'
+		name: env.OIDC_NAME ?? 'SSO',
+		trustUnverifiedEmail: env.OIDC_TRUST_UNVERIFIED_EMAIL === 'true'
 	};
 }
 
