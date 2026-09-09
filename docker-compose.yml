@@ -16,14 +16,14 @@ services:
       - AUTH_COOKIE_SECURE=false
 
       # Optional. Use when configuring OIDC.
-      # OIDC_ISSUER=https://idp.example.com
-      # OIDC_CLIENT_ID=
-      # OIDC_CLIENT_SECRET=
-      # OIDC_SCOPES=openid email profile
-      # OIDC_NAME=SSO
-      # OIDC_ALLOW_SIGNUP=true
+      # - OIDC_ISSUER=https://idp.example.com
+      # - OIDC_CLIENT_ID=
+      # - OIDC_CLIENT_SECRET=
+      # - OIDC_SCOPES=openid email profile
+      # - OIDC_NAME=SSO
+      # - OIDC_ALLOW_SIGNUP=true
 
       # Optional. Set both when running behind a reverse proxy
-      # ADDRESS_HEADER=x-forwarded-for
-      # XFF_DEPTH=1
+      # - ADDRESS_HEADER=x-forwarded-for
+      # - XFF_DEPTH=1
     restart: unless-stopped
