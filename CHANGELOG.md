@@ -11,7 +11,7 @@
 - Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
-- Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, needed for rate limiting behind a reverse proxy
+- Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, so rate limits bucket per client instead of per proxy behind a reverse proxy
 - Fix: `PUBLIC_APP_URL` was read from the wrong place and always ignored, so magic link emails pointed at localhost and the OIDC redirect fell back to the request host
 - Security: refuse to start on a default `AUTH_SECRET` even when users already exist
 - Security: require a verified email from your OIDC provider, and match accounts on the provider's user id instead of the email address (can be disabled with `OIDC_TRUST_UNVERIFIED_EMAIL`)
