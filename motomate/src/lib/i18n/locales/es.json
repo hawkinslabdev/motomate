@@ -26,6 +26,8 @@
 	},
 	"auth": {
 		"changeLanguage": "Cambiar idioma",
+		"searchLanguage": "Buscar idiomas",
+		"noLanguageMatch": "Ningún idioma coincide",
 		"language": "Idioma",
 		"toggleTheme": "Cambiar tema",
 		"theme": "Tema",

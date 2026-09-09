@@ -461,12 +461,16 @@
 	}
 	.mode-btn {
 		flex: 1;
+		min-width: 0;
 		padding: 0.5rem;
 		background: var(--bg-subtle);
 		border: none;
 		cursor: pointer;
 		font-size: var(--text-sm);
 		color: var(--text-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		transition:
 			background 150ms cubic-bezier(0.25, 1, 0.5, 1),
 			color 150ms cubic-bezier(0.25, 1, 0.5, 1),
@@ -507,10 +511,14 @@
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 	}
+	.oidc-divider span {
+		text-align: center;
+		text-wrap: balance;
+	}
 	.oidc-divider::before,
 	.oidc-divider::after {
 		content: '';
-		flex: 1;
+		flex: 1 0 1.25rem;
 		height: 1px;
 		background: var(--border);
 	}
@@ -682,6 +690,57 @@
 	@media (prefers-reduced-motion: reduce) {
 		.spinner {
 			animation: none;
+		}
+	}
+
+	@media (pointer: coarse) {
+		.input {
+			min-height: 44px;
+		}
+		.input-suffix-btn {
+			width: 44px;
+		}
+		.mode-btn,
+		.btn-primary,
+		.btn-oidc {
+			min-height: 44px;
+		}
+		.toggle-label,
+		.link-btn {
+			min-height: 44px;
+		}
+		.link-btn {
+			display: inline-flex;
+			align-items: center;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.page-header {
+			margin-bottom: 1rem;
+		}
+		.mode-tabs {
+			margin-bottom: 0.875rem;
+		}
+		.mode-btn {
+			padding: 0.5rem 0.375rem;
+		}
+		.auth-form {
+			gap: 0.875rem;
+		}
+		.form-row {
+			margin: -0.25rem 0 0;
+			flex-wrap: wrap;
+			gap: 0.25rem 0.75rem;
+		}
+		.oidc-divider {
+			margin: 1rem 0 0.75rem;
+		}
+		.footer-link {
+			margin-top: 1rem;
+		}
+		.form-error {
+			margin-bottom: 0.875rem;
 		}
 	}
 </style>

@@ -26,6 +26,8 @@
 	},
 	"auth": {
 		"changeLanguage": "Taal wijzigen",
+		"searchLanguage": "Zoek talen",
+		"noLanguageMatch": "Geen talen gevonden",
 		"language": "Taal",
 		"toggleTheme": "Thema wisselen",
 		"theme": "Thema",

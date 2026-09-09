@@ -64,6 +64,38 @@
 	let theme = $state<'light' | 'dark' | 'system'>(initialTheme);
 	let langMenuOpen = $state(false);
 	let currentLocale = $state(initialLocale);
+	let langQuery = $state('');
+	let langSearchEl = $state<HTMLInputElement | null>(null);
+
+	const matchingLanguages = $derived.by(() => {
+		const q = langQuery.trim().toLowerCase();
+		if (!q) return SUPPORTED_LANGUAGES;
+		return SUPPORTED_LANGUAGES.filter(
+			(lang) => lang.label.toLowerCase().includes(q) || lang.code.toLowerCase().includes(q)
+		);
+	});
+
+	function openLangMenu(open: boolean) {
+		langMenuOpen = open;
+		if (!open) langQuery = '';
+	}
+
+	$effect(() => {
+		if (!langMenuOpen) return;
+		if (window.matchMedia('(pointer: coarse)').matches) return;
+		langSearchEl?.focus();
+	});
+
+	function onLangSearchKey(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			openLangMenu(false);
+			return;
+		}
+		if (e.key === 'Enter' && matchingLanguages.length > 0) {
+			e.preventDefault();
+			setLanguage(matchingLanguages[0].code);
+		}
+	}
 
 	setContext('altcha-locale', {
 		get locale() {
@@ -98,13 +130,13 @@
 	function setLanguage(code: string) {
 		currentLocale = code;
 		setLocale(code);
-		langMenuOpen = false;
+		openLangMenu(false);
 	}
 </script>
 
 <svelte:document
 	onclick={(e) => {
-		if (langMenuOpen && !(e.target as Element).closest('.lang-toggle-wrap')) langMenuOpen = false;
+		if (langMenuOpen && !(e.target as Element).closest('.lang-toggle-wrap')) openLangMenu(false);
 	}}
 />
 <div class="demo-banner" class:active={data.demoMode}>
@@ -134,7 +166,7 @@
 				<div class="lang-toggle-wrap">
 					<button
 						class="theme-toggle lang-toggle"
-						onclick={() => (langMenuOpen = !langMenuOpen)}
+						onclick={() => openLangMenu(!langMenuOpen)}
 						aria-label={$_('auth.changeLanguage')}
 						aria-expanded={langMenuOpen}
 						data-tooltip={$_('auth.language')}
@@ -155,18 +187,32 @@
 						</svg>
 					</button>
 					{#if langMenuOpen}
-						<div class="lang-dropdown" role="menu">
-							{#each SUPPORTED_LANGUAGES as lang (lang.code)}
-								<button
-									role="menuitem"
-									class="lang-item"
-									class:lang-item--active={currentLocale === lang.code}
-									onclick={() => setLanguage(lang.code)}
-								>
-									<span class="lang-item-code">{lang.code.toUpperCase()}</span>
-									<span class="lang-item-label">{lang.label}</span>
-								</button>
-							{/each}
+						<div class="lang-dropdown" aria-label={$_('auth.language')}>
+							<input
+								bind:this={langSearchEl}
+								bind:value={langQuery}
+								class="lang-search"
+								type="text"
+								autocomplete="off"
+								spellcheck="false"
+								placeholder={$_('auth.searchLanguage')}
+								aria-label={$_('auth.searchLanguage')}
+								onkeydown={onLangSearchKey}
+							/>
+							<div class="lang-list">
+								{#each matchingLanguages as lang (lang.code)}
+									<button
+										class="lang-item"
+										class:lang-item--active={currentLocale === lang.code}
+										onclick={() => setLanguage(lang.code)}
+									>
+										<span class="lang-item-code">{lang.code.toUpperCase()}</span>
+										<span class="lang-item-label">{lang.label}</span>
+									</button>
+								{:else}
+									<p class="lang-empty">{$_('auth.noLanguageMatch')}</p>
+								{/each}
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -420,8 +466,8 @@
 		background: var(--bg);
 		border: 1px solid var(--border);
 		border-radius: 10px;
-		padding: 0.3rem;
-		min-width: 160px;
+		padding: 0.375rem;
+		min-width: 15rem;
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 		z-index: 50;
 		display: flex;
@@ -437,9 +483,10 @@
 	.lang-item {
 		display: flex;
 		align-items: center;
-		gap: 0.625rem;
+		gap: 0.75rem;
 		width: 100%;
-		padding: 0.5rem 0.625rem;
+		min-height: 38px;
+		padding: 0.5rem 0.75rem;
 		background: none;
 		border: none;
 		border-radius: 6px;
@@ -454,20 +501,56 @@
 		background: color-mix(in srgb, var(--accent) 8%, transparent);
 	}
 	.lang-item-code {
-		font-size: var(--text-xs);
-		font-weight: 600;
-		font-family: var(--font-mono);
-		color: var(--text-muted);
-		width: 1.75rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		color: var(--text-subtle);
+		width: 2rem;
 		flex-shrink: 0;
 	}
 	.lang-item--active .lang-item-code {
 		color: var(--accent);
 	}
 	.lang-item-label {
-		font-size: var(--text-sm);
+		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+	}
+
+	.lang-search {
+		width: 100%;
+		min-height: 38px;
+		padding: 0.5rem 0.625rem;
+		margin-bottom: 0.375rem;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		background: var(--bg-subtle);
+		color: var(--text);
+		font-size: var(--text-md);
+		font-family: inherit;
+	}
+	.lang-search::placeholder {
+		color: var(--text-subtle);
+	}
+	.lang-search:focus {
+		outline: 2px solid var(--accent);
+		outline-offset: -1px;
+		border-color: transparent;
+	}
+
+	.lang-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		max-height: 20rem;
+		overflow-y: auto;
+	}
+
+	.lang-empty {
+		margin: 0;
+		padding: 0.5rem 0.625rem;
+		font-size: var(--text-sm);
+		color: var(--text-muted);
 	}
 
 	.footer-actions {
@@ -500,5 +583,67 @@
 	.footer-dot {
 		font-size: 0.5rem;
 		color: var(--border);
+	}
+
+	@media (hover: none) {
+		.theme-toggle[data-tooltip]::after {
+			display: none;
+		}
+	}
+
+	@media (pointer: coarse) {
+		.theme-toggle {
+			min-width: 44px;
+			min-height: 44px;
+			padding: 0.5rem;
+		}
+		.lang-item {
+			min-height: 44px;
+			padding: 0.625rem;
+		}
+		.lang-search {
+			min-height: 44px;
+			padding: 0.5rem 0.625rem;
+		}
+		.footer-link {
+			padding: 0.5rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.auth-shell {
+			justify-content: flex-start;
+			padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+				max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+		}
+		.auth-card {
+			margin-block: auto;
+			padding: 1.25rem;
+		}
+		.auth-header {
+			margin-bottom: 1.25rem;
+		}
+		.auth-logo {
+			font-size: 1rem;
+			gap: 0.5rem;
+		}
+		.auth-logo img {
+			width: 32px;
+			height: 32px;
+		}
+		.footer-actions {
+			margin-top: 1rem;
+		}
+		.demo-banner {
+			padding: 0.5rem 1rem;
+			flex-wrap: wrap;
+		}
+		.lang-dropdown {
+			min-width: min(17rem, calc(100vw - 2rem));
+			padding: 0.375rem;
+		}
+		.lang-list {
+			max-height: min(50vh, 20rem);
+		}
 	}
 </style>

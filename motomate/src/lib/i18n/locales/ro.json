@@ -26,6 +26,8 @@
 	},
 	"auth": {
 		"changeLanguage": "Schimbă limba",
+		"searchLanguage": "Caută limbi",
+		"noLanguageMatch": "Nicio limbă găsită",
 		"language": "Limbă",
 		"toggleTheme": "Comută tema",
 		"theme": "Temă",
