@@ -4,7 +4,8 @@ import {
 	discoverOidc,
 	randomToken,
 	pkceChallenge,
-	redirectUri
+	redirectUri,
+	oidcCookie
 } from '$lib/auth/oidc.js';
 import { isSecureCookie } from '$lib/auth/index.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
@@ -38,8 +39,8 @@ export const GET: RequestHandler = async ({ cookies, url, getClientAddress }) =>
 		sameSite: 'lax' as const,
 		maxAge: 600
 	};
-	cookies.set('oidc_state', state, cookieOpts);
-	cookies.set('oidc_verifier', verifier, cookieOpts);
+	cookies.set(oidcCookie('state', isSecureCookie), state, cookieOpts);
+	cookies.set(oidcCookie('verifier', isSecureCookie), verifier, cookieOpts);
 
 	const authUrl = new URL(discovery.authorization_endpoint);
 	authUrl.searchParams.set('response_type', 'code');

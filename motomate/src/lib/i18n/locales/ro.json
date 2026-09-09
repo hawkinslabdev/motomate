@@ -61,7 +61,9 @@
 				"invalidEmail": "Te rugăm să introduci o adresă de email validă",
 				"registrationClosed": "Din păcate, înregistrarea este închisă momentan. Contactează administratorul pentru acces.",
 				"verificationFailed": "Verificarea a eșuat. Te rugăm să încerci din nou.",
-				"smtpNotConfigured": "Autentificarea prin magic link nu este disponibilă: serverul SMTP nu este configurat."
+				"smtpNotConfigured": "Autentificarea prin magic link nu este disponibilă: serverul SMTP nu este configurat.",
+				"oidc": "Autentificarea unică a eșuat. Încearcă din nou sau contactează administratorul.",
+				"oidcClosed": "Autentificarea unică nu este deschisă pentru conturi noi. Contactează administratorul pentru acces."
 			}
 		},
 		"register": {

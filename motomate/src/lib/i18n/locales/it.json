@@ -61,7 +61,9 @@
 				"invalidEmail": "Inserisci un indirizzo email valido",
 				"registrationClosed": "La registrazione è chiusa. Contatta il tuo amministratore per l'accesso.",
 				"verificationFailed": "Verifica fallita. Riprova.",
-				"smtpNotConfigured": "Il login con magic link non è disponibile: SMTP non è configurato."
+				"smtpNotConfigured": "Il login con magic link non è disponibile: SMTP non è configurato.",
+				"oidc": "L'accesso singolo non è riuscito. Riprova o contatta il tuo amministratore.",
+				"oidcClosed": "L'accesso singolo non è aperto a nuovi account. Contatta il tuo amministratore per ottenere l'accesso."
 			}
 		},
 		"register": {

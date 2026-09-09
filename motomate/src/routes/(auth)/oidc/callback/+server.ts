@@ -5,7 +5,8 @@ import {
 	exchangeCode,
 	fetchUserinfo,
 	isEmailVerified,
-	redirectUri
+	redirectUri,
+	oidcCookie
 } from '$lib/auth/oidc.js';
 import { lucia, isSecureCookie } from '$lib/auth/index.js';
 import {
@@ -29,12 +30,17 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 
 	const code = url.searchParams.get('code');
 	const state = url.searchParams.get('state');
-	const storedState = cookies.get('oidc_state');
-	const verifier = cookies.get('oidc_verifier');
-	cookies.delete('oidc_state', { path: '/' });
-	cookies.delete('oidc_verifier', { path: '/' });
+	const stateCookie = oidcCookie('state', isSecureCookie);
+	const verifierCookie = oidcCookie('verifier', isSecureCookie);
+	const storedState = cookies.get(stateCookie);
+	const verifier = cookies.get(verifierCookie);
+	cookies.delete(stateCookie, { path: '/' });
+	cookies.delete(verifierCookie, { path: '/' });
 
 	if (!code || !state || !verifier || state !== storedState) {
+		console.error(
+			`${ts()} [MotoMate] OIDC callback rejected: code=${!!code} state=${!!state} verifier=${!!verifier} stateMatch=${state === storedState}`
+		);
 		redirect(302, '/login?error=oidc');
 	}
 
@@ -50,6 +56,9 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 	}
 
 	if (!userinfo?.sub || !userinfo.email || !isEmailVerified(userinfo.email_verified)) {
+		console.error(
+			`${ts()} [MotoMate] OIDC userinfo unusable: sub=${!!userinfo?.sub} email=${!!userinfo?.email} emailVerified=${isEmailVerified(userinfo?.email_verified)}`
+		);
 		redirect(302, '/login?error=oidc');
 	}
 
@@ -58,11 +67,19 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 	if (!user) {
 		const byEmail = await getUserByEmail(userinfo.email);
 		if (byEmail) {
-			if (byEmail.settings?.oidc_sub) redirect(302, '/login?error=oidc');
+			if (byEmail.settings?.oidc_sub) {
+				console.error(
+					`${ts()} [MotoMate] OIDC account conflict: local account already linked to a different subject`
+				);
+				redirect(302, '/login?error=oidc');
+			}
 			await updateUserSettings(byEmail.id, { oidc_sub: userinfo.sub });
 			user = byEmail;
 		} else {
-			if (!(await isOidcSignupOpen())) redirect(302, '/login?error=oidc_closed');
+			if (!(await isOidcSignupOpen())) {
+				console.error(`${ts()} [MotoMate] OIDC signup rejected: registration is closed`);
+				redirect(302, '/login?error=oidc_closed');
+			}
 			user = await createUser({
 				email: userinfo.email,
 				initialSettings: { oidc_sub: userinfo.sub }
@@ -75,7 +92,7 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 	cookies.set(cookie.name, cookie.value, { path: '/', ...cookie.attributes });
 
 	if (idToken && idToken.length <= 3500) {
-		cookies.set('oidc_id_token', idToken, {
+		cookies.set(oidcCookie('id_token', isSecureCookie), idToken, {
 			path: '/',
 			httpOnly: true,
 			secure: isSecureCookie,

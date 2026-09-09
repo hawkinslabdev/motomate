@@ -61,7 +61,9 @@
 				"invalidEmail": "Voer een geldig e-mailadres in",
 				"registrationClosed": "Aanmelden is nu niet mogelijk. Neem contact op met uw beheerder voor toegang.",
 				"verificationFailed": "Verificatie mislukt. Probeer het opnieuw.",
-				"smtpNotConfigured": "Magic link-aanmelding is niet beschikbaar: SMTP is niet geconfigureerd."
+				"smtpNotConfigured": "Magic link-aanmelding is niet beschikbaar: SMTP is niet geconfigureerd.",
+				"oidc": "Eenmalige aanmelding is mislukt. Probeer het opnieuw of neem contact op met je beheerder.",
+				"oidcClosed": "Eenmalige aanmelding staat niet open voor nieuwe accounts. Neem contact op met je beheerder voor toegang."
 			}
 		},
 		"register": {

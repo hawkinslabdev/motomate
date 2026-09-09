@@ -13,6 +13,7 @@
 			smtpEnabled: boolean;
 			altchaEnabled: boolean;
 			initialMode: 'password' | 'magic';
+			errorKey: string | null;
 			oidcName: string | null;
 		};
 		form: {
@@ -74,6 +75,8 @@
 {:else}
 	{#if form?.error}
 		<div class="form-error" role="alert">{form.error}</div>
+	{:else if data.errorKey}
+		<div class="form-error" role="alert">{$_(`auth.login.errors.${data.errorKey}`)}</div>
 	{/if}
 
 	{#if !data.demoMode}

@@ -61,7 +61,9 @@
 				"invalidEmail": "Veuillez entrer une adresse e-mail valide",
 				"registrationClosed": "L'inscription est fermée. Contactez votre administrateur pour obtenir l'accès.",
 				"verificationFailed": "Vérification échouée. Veuillez réessayer.",
-				"smtpNotConfigured": "La connexion par lien magique n'est pas disponible : SMTP n'est pas configuré."
+				"smtpNotConfigured": "La connexion par lien magique n'est pas disponible : SMTP n'est pas configuré.",
+				"oidc": "La connexion unique a échoué. Réessayez ou contactez votre administrateur.",
+				"oidcClosed": "La connexion unique n'est pas ouverte aux nouveaux comptes. Contactez votre administrateur pour obtenir un accès."
 			}
 		},
 		"register": {

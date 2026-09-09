@@ -1,12 +1,13 @@
 import { json } from '@sveltejs/kit';
-import { lucia } from '$lib/auth/index.js';
-import { endSessionUrl } from '$lib/auth/oidc.js';
+import { lucia, isSecureCookie } from '$lib/auth/index.js';
+import { endSessionUrl, oidcCookie } from '$lib/auth/oidc.js';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ locals, cookies, url }) => {
 	const wasOidc = !!locals.user?.settings?.oidc_sub;
-	const idToken = cookies.get('oidc_id_token');
-	cookies.delete('oidc_id_token', { path: '/' });
+	const idTokenCookie = oidcCookie('id_token', isSecureCookie);
+	const idToken = cookies.get(idTokenCookie);
+	cookies.delete(idTokenCookie, { path: '/' });
 
 	if (locals.session) {
 		await lucia.invalidateSession(locals.session.id);

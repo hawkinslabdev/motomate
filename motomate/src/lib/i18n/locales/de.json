@@ -61,7 +61,9 @@
 				"invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",
 				"registrationClosed": "Die Registrierung ist geschlossen. Wenden Sie sich an Ihren Administrator.",
 				"verificationFailed": "Verifizierung fehlgeschlagen. Bitte versuche es erneut.",
-				"smtpNotConfigured": "Magic-Link-Anmeldung ist nicht verfügbar: SMTP ist nicht konfiguriert."
+				"smtpNotConfigured": "Magic-Link-Anmeldung ist nicht verfügbar: SMTP ist nicht konfiguriert.",
+				"oidc": "Die Single-Sign-on-Anmeldung ist fehlgeschlagen. Bitte versuche es erneut oder wende dich an deinen Administrator.",
+				"oidcClosed": "Single Sign-on ist für neue Konten nicht freigegeben. Wende dich für den Zugang an deinen Administrator."
 			}
 		},
 		"register": {

@@ -61,7 +61,9 @@
 				"invalidEmail": "Please enter a valid email address",
 				"registrationClosed": "Unfortunately, you can't sign up right now. Contact your administrator for access.",
 				"verificationFailed": "Verification failed. Please try again.",
-				"smtpNotConfigured": "Magic link login is not available: SMTP is not configured."
+				"smtpNotConfigured": "Magic link login is not available: SMTP is not configured.",
+				"oidc": "Single sign-on failed. Please try again or contact your administrator.",
+				"oidcClosed": "Single sign-on is not open for new accounts. Contact your administrator for access."
 			}
 		},
 		"register": {

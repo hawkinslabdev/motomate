@@ -61,7 +61,9 @@
 				"invalidEmail": "Por favor, introduce una dirección de correo electrónico válida",
 				"registrationClosed": "El registro está cerrado. Contacta con tu administrador para obtener acceso.",
 				"verificationFailed": "Verificación fallida. Por favor, inténtalo de nuevo.",
-				"smtpNotConfigured": "El inicio de sesión con enlace mágico no está disponible: SMTP no está configurado."
+				"smtpNotConfigured": "El inicio de sesión con enlace mágico no está disponible: SMTP no está configurado.",
+				"oidc": "El inicio de sesión único ha fallado. Inténtalo de nuevo o contacta con tu administrador.",
+				"oidcClosed": "El inicio de sesión único no está abierto a cuentas nuevas. Contacta con tu administrador para obtener acceso."
 			}
 		},
 		"register": {

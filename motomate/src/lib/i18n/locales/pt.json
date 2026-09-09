@@ -61,7 +61,9 @@
 				"invalidEmail": "Por favor, introduz um endereço de e-mail válido",
 				"registrationClosed": "O registo está fechado. Contacte o seu administrador para obter acesso.",
 				"verificationFailed": "Verificação falhou. Por favor, tente novamente.",
-				"smtpNotConfigured": "O login por link mágico não está disponível: SMTP não está configurado."
+				"smtpNotConfigured": "O login por link mágico não está disponível: SMTP não está configurado.",
+				"oidc": "O início de sessão único falhou. Tente novamente ou contacte o seu administrador.",
+				"oidcClosed": "O início de sessão único não está aberto a novas contas. Contacte o seu administrador para obter acesso."
 			}
 		},
 		"register": {

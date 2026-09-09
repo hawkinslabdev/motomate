@@ -37,6 +37,11 @@ export function appOrigin(url: URL): string {
 	return (pubEnv.PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
 }
 
+// attempt for prefix to set these cookies host-only, which prevents apps on shared parent domains from cojoining? them
+export function oidcCookie(name: 'state' | 'verifier' | 'id_token', secure: boolean): string {
+	return secure ? `__Host-oidc_${name}` : `oidc_${name}`;
+}
+
 export function redirectUri(url: URL): string {
 	return `${appOrigin(url)}/oidc/callback`;
 }
@@ -54,7 +59,7 @@ export async function discoverOidc(issuer: string): Promise<OidcDiscovery> {
 		return _discoveryCache.doc;
 	}
 	const res = await fetch(`${issuer}/.well-known/openid-configuration`);
-	if (!res.ok) throw new Error('OIDC discovery failed');
+	if (!res.ok) throw new Error(`OIDC discovery failed: ${res.status} ${res.statusText}`);
 	const doc = (await res.json()) as OidcDiscovery;
 	if (doc.issuer?.replace(/\/$/, '') !== issuer) throw new Error('OIDC issuer mismatch');
 	for (const endpoint of [doc.authorization_endpoint, doc.token_endpoint, doc.userinfo_endpoint]) {

@@ -14,7 +14,8 @@ import {
 	isEmailVerified,
 	redirectUri,
 	discoverOidc,
-	endSessionUrl
+	endSessionUrl,
+	oidcCookie
 } from '$lib/auth/oidc.js';
 
 function discoveryDoc(issuer: string) {
@@ -171,5 +172,17 @@ describe('endSessionUrl', () => {
 		vi.restoreAllMocks();
 		mockDiscovery(discoveryDoc(bare));
 		expect(await endSessionUrl(new URL('http://host.test/'))).toBeNull();
+	});
+});
+
+describe('oidcCookie', () => {
+	it('uses the __Host- prefix over https so a parent-domain cookie cannot shadow it', () => {
+		expect(oidcCookie('state', true)).toBe('__Host-oidc_state');
+		expect(oidcCookie('verifier', true)).toBe('__Host-oidc_verifier');
+		expect(oidcCookie('id_token', true)).toBe('__Host-oidc_id_token');
+	});
+
+	it('drops the prefix without https, which the browser would otherwise reject', () => {
+		expect(oidcCookie('state', false)).toBe('oidc_state');
 	});
 });

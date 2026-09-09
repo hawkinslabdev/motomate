@@ -55,11 +55,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		_smtpWarned = true;
 	}
 	const initialMode = url.searchParams.get('mode') === 'magic' ? 'magic' : 'password';
+	const errorCodes: Record<string, string> = { oidc: 'oidc', oidc_closed: 'oidcClosed' };
 	return {
 		registrationEnabled: await isRegistrationOpen(),
 		smtpEnabled,
 		altchaEnabled: true,
 		initialMode,
+		errorKey: errorCodes[url.searchParams.get('error') ?? ''] ?? null,
 		oidcName: getOidcConfig()?.name ?? null
 	};
 };
