@@ -930,7 +930,8 @@
 				"hintProvider": "Conferma con {provider} che sei tu prima di cambiare questo dato.",
 				"hintMagic": "Crea prima una password, oppure apri un nuovo link magico per confermare.",
 				"verify": "Conferma con {provider}",
-				"active": "Confermato. Puoi fare modifiche nei prossimi minuti.",
+				"confirmed": "Identità confermata",
+				"confirmedWith": "Confermato con {provider}",
 				"failed": "Non ha funzionato. Riprova."
 			},
 			"export": {

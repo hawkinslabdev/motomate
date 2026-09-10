@@ -943,7 +943,8 @@
 				"hintProvider": "Confirmă cu {provider} că tu ești, înainte să schimbi asta.",
 				"hintMagic": "Setează mai întâi o parolă sau deschide un nou magic link pentru confirmare.",
 				"verify": "Confirmă cu {provider}",
-				"active": "Confirmat. Poți face modificări în următoarele minute.",
+				"confirmed": "Identitate confirmată",
+				"confirmedWith": "Confirmat cu {provider}",
 				"failed": "Nu a funcționat. Încearcă din nou."
 			},
 			"export": {

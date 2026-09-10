@@ -943,7 +943,8 @@
 				"hintProvider": "Confirm that it is you with {provider} before you change this.",
 				"hintMagic": "Set a password first, or open a new magic link to confirm that it is you.",
 				"verify": "Confirm with {provider}",
-				"active": "Confirmed. You can make changes for the next few minutes.",
+				"confirmed": "Identity confirmed",
+				"confirmedWith": "Confirmed with {provider}",
 				"failed": "That did not work. Please try again."
 			},
 			"export": {

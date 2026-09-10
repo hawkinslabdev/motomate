@@ -930,7 +930,8 @@
 				"hintProvider": "Bevestig met {provider} dat jij het bent voordat je dit wijzigt.",
 				"hintMagic": "Stel eerst een wachtwoord in, of open een nieuwe magische link om te bevestigen dat jij het bent.",
 				"verify": "Bevestigen met {provider}",
-				"active": "Bevestigd. Je kunt de komende minuten wijzigingen maken.",
+				"confirmed": "Identiteit bevestigd",
+				"confirmedWith": "Bevestigd met {provider}",
 				"failed": "Dat werkte niet. Probeer het opnieuw."
 			},
 			"export": {

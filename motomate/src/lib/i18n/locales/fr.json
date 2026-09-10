@@ -930,7 +930,8 @@
 				"hintProvider": "Confirmez avec {provider} que c'est bien vous avant de modifier ceci.",
 				"hintMagic": "Créez d'abord un mot de passe, ou ouvrez un nouveau lien magique pour confirmer.",
 				"verify": "Confirmer avec {provider}",
-				"active": "Confirmé. Vous pouvez faire des modifications pendant quelques minutes.",
+				"confirmed": "Identité confirmée",
+				"confirmedWith": "Confirmé avec {provider}",
 				"failed": "Cela n'a pas fonctionné. Réessayez."
 			},
 			"export": {

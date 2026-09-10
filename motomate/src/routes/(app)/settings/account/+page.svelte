@@ -20,6 +20,9 @@
 	const stepUpHref = $derived(
 		`/oidc/login?reauth=1&return=${encodeURIComponent('/settings/account')}`
 	);
+	const stepUpLabel = $derived(
+		$_('settings.account.reauth.verify', { values: { provider: data.stepUpProvider ?? '' } })
+	);
 
 	let deleteForm = $state<HTMLFormElement | null>(null);
 	let savingEmail = $state(false);
@@ -59,25 +62,71 @@
 	}
 </script>
 
-{#snippet currentPassword(extraClass = '')}
-	<div class="field {extraClass}">
-		<label class="field">
-			<span class="field-label">{$_('settings.account.password.current')}</span>
-			<input
-				name="current_password"
-				type="password"
-				autocomplete="current-password"
-				placeholder={$_('settings.account.password.current')}
-				class="input"
-				required
-			/>
-		</label>
-		{#if data.stepUpProvider}
-			<a class="stepup-link" href={stepUpHref} data-sveltekit-reload>
-				{$_('settings.account.reauth.verify', { values: { provider: data.stepUpProvider } })}
-			</a>
-		{/if}
-	</div>
+{#snippet proofField(id: string, extraClass = '')}
+	{#if data.reauthActive}
+		<p class="confirmed {extraClass}">
+			<svg
+				class="confirmed-icon"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.75"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M21.8 10A10 10 0 1 1 17 3.34" />
+				<path d="m9 11 3 3L22 4" />
+			</svg>
+			{data.stepUpProvider
+				? $_('settings.account.reauth.confirmedWith', {
+						values: { provider: data.stepUpProvider }
+					})
+				: $_('settings.account.reauth.confirmed')}
+		</p>
+	{:else if data.hasPassword}
+		<div class="field {extraClass}">
+			<label class="field-label" for="current-password-{id}"
+				>{$_('settings.account.password.current')}</label
+			>
+			<div class="input-wrap">
+				<input
+					id="current-password-{id}"
+					name="current_password"
+					type="password"
+					autocomplete="current-password"
+					placeholder={$_('settings.account.password.current')}
+					class="input"
+					class:input--action={!!data.stepUpProvider}
+					required
+				/>
+				{#if data.stepUpProvider}
+					<a
+						class="input-action"
+						href={stepUpHref}
+						data-sveltekit-reload
+						title={stepUpLabel}
+						aria-label={stepUpLabel}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path
+								d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+							/>
+							<path d="m9 12 2 2 4-4" />
+						</svg>
+					</a>
+				{/if}
+			</div>
+		</div>
+	{/if}
 {/snippet}
 
 {#snippet proofNotice()}
@@ -99,8 +148,6 @@
 				<p class="proof-text">{$_('settings.account.reauth.hintMagic')}</p>
 			{/if}
 		</div>
-	{:else if data.reauthActive}
-		<p class="proof-active">{$_('settings.account.reauth.active')}</p>
 	{/if}
 {/snippet}
 
@@ -145,9 +192,7 @@
 				required
 			/>
 		</label>
-		{#if data.hasPassword && !data.reauthActive}
-			{@render currentPassword()}
-		{/if}
+		{@render proofField('email')}
 		<button type="submit" class="btn-secondary" disabled={savingEmail || needsProof}>
 			{savingEmail ? $_('settings.profile.saving') : $_('settings.account.email.submit')}
 		</button>
@@ -181,9 +226,7 @@
 				};
 			}}
 		>
-			{#if data.hasPassword && !data.reauthActive}
-				{@render currentPassword()}
-			{/if}
+			{@render proofField('password')}
 			<label class="field">
 				<span class="field-label">{$_('settings.account.password.new')}</span>
 				<input
@@ -286,9 +329,7 @@
 		<div>
 			<div class="danger-title">{$_('settings.account.delete.title')}</div>
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
-			{#if data.hasPassword && !data.reauthActive}
-				{@render currentPassword('danger-field')}
-			{/if}
+			{@render proofField('delete', 'danger-field')}
 		</div>
 		<button
 			type="button"
@@ -449,19 +490,56 @@
 		font-weight: 500;
 		color: var(--status-overdue);
 	}
-	.proof-active {
-		margin: 0 0 var(--space-4);
+	.input-wrap {
+		position: relative;
+		display: flex;
+		align-items: stretch;
+	}
+	.input--action {
+		padding-right: 3rem;
+	}
+	.input-action {
+		position: absolute;
+		top: 1px;
+		right: 1px;
+		bottom: 1px;
+		width: 2.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-subtle);
+		border-radius: 0 7px 7px 0;
+		border-left: 1px solid var(--border);
+		transition:
+			color 0.15s,
+			background 0.15s;
+	}
+	.input-action svg {
+		width: 17px;
+		height: 17px;
+	}
+	.input-action:hover {
+		color: var(--accent);
+		background: var(--bg-muted);
+	}
+	.input-action:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: -2px;
+		color: var(--accent);
+	}
+	.confirmed {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin: 0;
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 	}
-	.stepup-link {
-		align-self: flex-start;
-		font-size: var(--text-sm);
-		color: var(--accent);
-		text-decoration: none;
-	}
-	.stepup-link:hover {
-		text-decoration: underline;
+	.confirmed-icon {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
+		color: var(--status-ok);
 	}
 	.danger-field {
 		margin-top: var(--space-3);

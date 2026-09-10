@@ -930,7 +930,8 @@
 				"hintProvider": "Bestätige mit {provider}, dass du es bist, bevor du das änderst.",
 				"hintMagic": "Lege zuerst ein Passwort fest oder öffne einen neuen Magic-Link zur Bestätigung.",
 				"verify": "Mit {provider} bestätigen",
-				"active": "Bestätigt. Du kannst in den nächsten Minuten Änderungen vornehmen.",
+				"confirmed": "Identität bestätigt",
+				"confirmedWith": "Mit {provider} bestätigt",
 				"failed": "Das hat nicht funktioniert. Bitte versuche es erneut."
 			},
 			"export": {
