@@ -59,6 +59,27 @@
 	}
 </script>
 
+{#snippet currentPassword(extraClass = '')}
+	<div class="field {extraClass}">
+		<label class="field">
+			<span class="field-label">{$_('settings.account.password.current')}</span>
+			<input
+				name="current_password"
+				type="password"
+				autocomplete="current-password"
+				placeholder={$_('settings.account.password.current')}
+				class="input"
+				required
+			/>
+		</label>
+		{#if data.stepUpProvider}
+			<a class="stepup-link" href={stepUpHref} data-sveltekit-reload>
+				{$_('settings.account.reauth.verify', { values: { provider: data.stepUpProvider } })}
+			</a>
+		{/if}
+	</div>
+{/snippet}
+
 {#snippet proofNotice()}
 	{#if needsProof}
 		<div class="proof">
@@ -125,17 +146,7 @@
 			/>
 		</label>
 		{#if data.hasPassword && !data.reauthActive}
-			<label class="field">
-				<span class="field-label">{$_('settings.account.password.current')}</span>
-				<input
-					name="current_password"
-					type="password"
-					autocomplete="current-password"
-					placeholder={$_('settings.account.password.current')}
-					class="input"
-					required
-				/>
-			</label>
+			{@render currentPassword()}
 		{/if}
 		<button type="submit" class="btn-secondary" disabled={savingEmail || needsProof}>
 			{savingEmail ? $_('settings.profile.saving') : $_('settings.account.email.submit')}
@@ -143,7 +154,7 @@
 	</form>
 </section>
 
-{#if data.hasPassword || data.pwResetActive}
+{#if data.hasPassword || data.reauthActive}
 	<div class="divider"></div>
 
 	<section class="setting-section">
@@ -170,18 +181,8 @@
 				};
 			}}
 		>
-			{#if data.hasPassword && !data.pwResetActive}
-				<label class="field">
-					<span class="field-label">{$_('settings.account.password.current')}</span>
-					<input
-						name="current_password"
-						type="password"
-						autocomplete="current-password"
-						placeholder={$_('settings.account.password.current')}
-						class="input"
-						required
-					/>
-				</label>
+			{#if data.hasPassword && !data.reauthActive}
+				{@render currentPassword()}
 			{/if}
 			<label class="field">
 				<span class="field-label">{$_('settings.account.password.new')}</span>
@@ -286,17 +287,7 @@
 			<div class="danger-title">{$_('settings.account.delete.title')}</div>
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
 			{#if data.hasPassword && !data.reauthActive}
-				<label class="field danger-field">
-					<span class="field-label">{$_('settings.account.password.current')}</span>
-					<input
-						name="current_password"
-						type="password"
-						autocomplete="current-password"
-						placeholder={$_('settings.account.password.current')}
-						class="input"
-						required
-					/>
-				</label>
+				{@render currentPassword('danger-field')}
 			{/if}
 		</div>
 		<button
@@ -462,6 +453,15 @@
 		margin: 0 0 var(--space-4);
 		font-size: var(--text-sm);
 		color: var(--text-muted);
+	}
+	.stepup-link {
+		align-self: flex-start;
+		font-size: var(--text-sm);
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.stepup-link:hover {
+		text-decoration: underline;
 	}
 	.danger-field {
 		margin-top: var(--space-3);
