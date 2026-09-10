@@ -70,7 +70,7 @@
 		"leaflet-gpx": "^2.2.0",
 		"lucia": "^3.2.2",
 		"marked": "^18.0.10",
-		"nodemailer": "^9.0.5",
+		"nodemailer": "^9.1.1",
 		"pdf-lib": "^1.17.1",
 		"pdfkit": "^0.18.0",
 		"svelte-i18n": "^4.0.1",
