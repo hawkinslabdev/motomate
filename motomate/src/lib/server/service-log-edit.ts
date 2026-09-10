@@ -2,7 +2,7 @@ import {
 	updateServiceLog,
 	updateServiceLogAttachments
 } from '$lib/db/repositories/service-logs.js';
-import { updateTrackerState, recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
+import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
 import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
 import { runWorkflowChecks } from '$lib/workflow/engine.js';
 import { collectAttachmentIds } from './finance-attachments.js';
@@ -48,15 +48,8 @@ export async function applyServiceLogEdit(
 		serviced_tracker_ids: resetTrackerIds
 	});
 
-	// The form submits the attachments it kept plus anything newly linked, so replace the list
+	// replaces all attachments with current selection on submission
 	await updateServiceLogAttachments(id, vehicleId, userId, attachments.ids);
-
-	for (const trackerId of resetTrackerIds) {
-		await updateTrackerState(trackerId, vehicleId, {
-			last_done_at: performedAt,
-			last_done_odometer: odometerAtService
-		});
-	}
 
 	const trueOdometer = await recomputeCurrentOdometer(vehicleId, userId);
 	await recomputeTrackerStatuses(vehicleId, trueOdometer);

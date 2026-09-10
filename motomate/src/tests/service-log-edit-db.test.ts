@@ -242,3 +242,56 @@ describe('editServiceLog from the vehicle timeline', () => {
 		expect(result.warning).toContain('lower than the highest recorded reading');
 	});
 });
+
+describe('trackers follow the newest service log, not the edited one', () => {
+	const NEWER = 'sl_newer';
+
+	beforeEach(async () => {
+		await db.insert(service_logs).values({
+			id: NEWER,
+			vehicle_id: VEHICLE,
+			serviced_tracker_ids: [TRACKER_CHAIN],
+			performed_at: '2026-09-09',
+			odometer_at_service: 18010,
+			currency: 'EUR'
+		});
+	});
+
+	it('keeps the tracker on the newer log when an older log is edited', async () => {
+		await maintenanceActions.editServiceLog(
+			event(editForm([['reset_trackers', TRACKER_CHAIN]]))
+		);
+
+		const chain = await db.query.active_trackers.findFirst({
+			where: eq(active_trackers.id, TRACKER_CHAIN)
+		});
+		expect(chain).toMatchObject({
+			last_done_at: '2026-09-09',
+			last_done_odometer: 18010,
+			next_due_odometer: 19010
+		});
+	});
+
+	it('falls back to the older log once the newer one is deleted', async () => {
+		await db.delete(service_logs).where(eq(service_logs.id, LOG));
+		await db.insert(service_logs).values({
+			id: LOG,
+			vehicle_id: VEHICLE,
+			serviced_tracker_ids: [TRACKER_CHAIN],
+			performed_at: '2026-01-05',
+			odometer_at_service: 12000,
+			currency: 'EUR'
+		});
+		const { deleteServiceLog } = await import('$lib/db/repositories/service-logs.js');
+		await deleteServiceLog(NEWER, VEHICLE, OWNER);
+
+		const chain = await db.query.active_trackers.findFirst({
+			where: eq(active_trackers.id, TRACKER_CHAIN)
+		});
+		expect(chain).toMatchObject({
+			last_done_at: '2026-01-05',
+			last_done_odometer: 12000,
+			next_due_odometer: 13000
+		});
+	});
+});

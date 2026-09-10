@@ -2,7 +2,7 @@ import { eq, and, inArray, desc } from 'drizzle-orm';
 import { db } from '../index.js';
 import { service_logs } from '../schema.js';
 import { CreateServiceLogSchema } from '../../validators/schemas.js';
-import { updateTrackerAfterService } from './maintenance.js';
+import { resyncTrackersFromServiceLogs } from './maintenance.js';
 import { updateOdometer, getVehicleById } from './vehicles.js';
 import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
@@ -32,27 +32,10 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	};
 	db.insert(service_logs).values(row).run();
 
-	// Reset primary tracker
-	if (parsed.tracker_id) {
-		await updateTrackerAfterService(
-			parsed.tracker_id,
-			parsed.vehicle_id,
-			parsed.performed_at,
-			parsed.odometer_at_service
-		);
-	}
-
-	// Reset any additional trackers selected alongside this entry
-	for (const id of parsed.serviced_tracker_ids) {
-		if (id !== parsed.tracker_id) {
-			await updateTrackerAfterService(
-				id,
-				parsed.vehicle_id,
-				parsed.performed_at,
-				parsed.odometer_at_service
-			);
-		}
-	}
+	await resyncTrackersFromServiceLogs(parsed.vehicle_id, [
+		parsed.tracker_id,
+		...parsed.serviced_tracker_ids
+	]);
 
 	// Only advance the vehicle odometer/hours; prevent to move it backwards.
 	const serviceMeasurement = resolveMeasurementValue(
@@ -134,6 +117,10 @@ export async function updateServiceLog(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const before = await db.query.service_logs.findFirst({
+		where: and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId))
+	});
+	if (!before) return;
 	const patch: Partial<InsertServiceLog> = { ...data };
 	if (data.odometer_at_service !== undefined) {
 		patch.measurement_at_service = data.odometer_at_service;
@@ -143,6 +130,13 @@ export async function updateServiceLog(
 		.set(patch)
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
+
+	// Trackers dropped from the list need re-deriving as much as the ones kept
+	await resyncTrackersFromServiceLogs(vehicleId, [
+		before.tracker_id,
+		...before.serviced_tracker_ids,
+		...(data.serviced_tracker_ids ?? [])
+	]);
 }
 
 export async function deleteServiceLog(
@@ -152,9 +146,18 @@ export async function deleteServiceLog(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const before = await db.query.service_logs.findFirst({
+		where: and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId))
+	});
 	db.delete(service_logs)
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
+	if (before) {
+		await resyncTrackersFromServiceLogs(vehicleId, [
+			before.tracker_id,
+			...before.serviced_tracker_ids
+		]);
+	}
 }
 
 export async function updateServiceLogAttachments(

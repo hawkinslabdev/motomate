@@ -1,7 +1,7 @@
 import { eq, and } from 'drizzle-orm';
 import { addMonths, parseISO, formatISO } from 'date-fns';
 import { db, sqlite } from '../index.js';
-import { task_templates, active_trackers, vehicles } from '../schema.js';
+import { task_templates, active_trackers, vehicles, service_logs } from '../schema.js';
 import { CreateTaskTemplateSchema } from '../../validators/schemas.js';
 import { getVehicleById, resolveVehicleDistanceMeasurement } from './vehicles.js';
 import type {
@@ -862,6 +862,47 @@ export async function updateTrackerState(
 		.update(active_trackers)
 		.set(trackerPatch)
 		.where(and(eq(active_trackers.id, trackerId), eq(active_trackers.vehicle_id, vehicleId)));
+}
+
+/**
+ * Re-derive tracker last_done/next_due from the newest service log that should service it.
+ * Editing, backdating or deleting an older log must not drag a tracker back previous log's odometer when a later log already serviced it (bug on 10-sept-26).
+ */
+export async function resyncTrackersFromServiceLogs(
+	vehicleId: string,
+	trackerIds: (string | null | undefined)[]
+): Promise<void> {
+	const ids = [...new Set(trackerIds.filter((id): id is string => Boolean(id)))];
+	if (ids.length === 0) return;
+
+	const logs = await db.query.service_logs.findMany({
+		where: eq(service_logs.vehicle_id, vehicleId)
+	});
+
+	for (const trackerId of ids) {
+		const serviced = logs
+			.filter((l) => l.tracker_id === trackerId || l.serviced_tracker_ids.includes(trackerId))
+			.sort(
+				(a, b) =>
+					b.performed_at.localeCompare(a.performed_at) ||
+					(b.measurement_at_service ?? b.odometer_at_service) -
+						(a.measurement_at_service ?? a.odometer_at_service)
+			);
+		const latest = serviced[0];
+		if (latest) {
+			await updateTrackerAfterService(
+				trackerId,
+				vehicleId,
+				latest.performed_at,
+				latest.measurement_at_service ?? latest.odometer_at_service
+			);
+		} else {
+			await updateTrackerState(trackerId, vehicleId, {
+				last_done_at: null,
+				last_done_odometer: null
+			});
+		}
+	}
 }
 
 export async function deleteTracker(trackerId: string, vehicleId: string): Promise<void> {

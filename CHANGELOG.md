@@ -13,6 +13,7 @@
 - Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
 - Fix: when using the magic link feature, the message will now clearly show when registration is either enabled or disabled
+- Fix: editing, backdating, or deleting a past service entry no longer resets tracker progress to that entry date
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
 - Fix: the notification channel settings were still shown in English in German, Spanish, French and Portuguese
 - Fix: restore the umlauts in German and the accents in Portuguese, which were written as plain ASCII in the integrations and notification text
