@@ -20,6 +20,11 @@
 	const stepUpHref = $derived(
 		`/oidc/login?reauth=1&return=${encodeURIComponent('/settings/account')}`
 	);
+	const confirmedLabel = $derived(
+		data.stepUpProvider
+			? $_('settings.account.reauth.confirmedWith', { values: { provider: data.stepUpProvider } })
+			: $_('settings.account.reauth.confirmed')
+	);
 	const stepUpLabel = $derived(
 		$_('settings.account.reauth.verify', { values: { provider: data.stepUpProvider ?? '' } })
 	);
@@ -63,70 +68,82 @@
 </script>
 
 {#snippet proofField(id: string, extraClass = '')}
-	{#if data.reauthActive}
-		<p class="confirmed {extraClass}">
-			<svg
-				class="confirmed-icon"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="1.75"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M21.8 10A10 10 0 1 1 17 3.34" />
-				<path d="m9 11 3 3L22 4" />
-			</svg>
-			{data.stepUpProvider
-				? $_('settings.account.reauth.confirmedWith', {
-						values: { provider: data.stepUpProvider }
-					})
-				: $_('settings.account.reauth.confirmed')}
-		</p>
-	{:else if data.hasPassword}
+	{#if data.hasPassword}
 		<div class="field {extraClass}">
 			<label class="field-label" for="current-password-{id}"
 				>{$_('settings.account.password.current')}</label
 			>
 			<div class="input-wrap">
-				<input
-					id="current-password-{id}"
-					name="current_password"
-					type="password"
-					autocomplete="current-password"
-					placeholder={$_('settings.account.password.current')}
-					class="input"
-					class:input--action={!!data.stepUpProvider}
-					required
-				/>
-				{#if data.stepUpProvider}
-					<a
-						class="input-action"
-						href={stepUpHref}
-						data-sveltekit-reload
-						title={stepUpLabel}
-						aria-label={stepUpLabel}
-					>
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.75"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							aria-hidden="true"
+				{#if data.reauthActive}
+					<input
+						id="current-password-{id}"
+						type="text"
+						class="input input--action"
+						value={confirmedLabel}
+						disabled
+					/>
+					<span class="input-action input-action--done" role="img" aria-label={confirmedLabel}>
+						{@render checkIcon()}
+					</span>
+				{:else}
+					<input
+						id="current-password-{id}"
+						name="current_password"
+						type="password"
+						autocomplete="current-password"
+						placeholder={$_('settings.account.password.current')}
+						class="input"
+						class:input--action={!!data.stepUpProvider}
+						required
+					/>
+					{#if data.stepUpProvider}
+						<a
+							class="input-action"
+							href={stepUpHref}
+							data-sveltekit-reload
+							title={stepUpLabel}
+							aria-label={stepUpLabel}
 						>
-							<path
-								d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
-							/>
-							<path d="m9 12 2 2 4-4" />
-						</svg>
-					</a>
+							<svg
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.75"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path
+									d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+								/>
+								<path d="m9 12 2 2 4-4" />
+							</svg>
+						</a>
+					{/if}
 				{/if}
 			</div>
 		</div>
+	{:else if data.reauthActive}
+		<p class="confirmed {extraClass}">
+			<span class="confirmed-icon">{@render checkIcon()}</span>
+			{confirmedLabel}
+		</p>
 	{/if}
+{/snippet}
+
+{#snippet checkIcon()}
+	<svg
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.75"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<path d="M21.8 10A10 10 0 1 1 17 3.34" />
+		<path d="m9 11 3 3L22 4" />
+	</svg>
 {/snippet}
 
 {#snippet proofNotice()}
@@ -536,10 +553,25 @@
 		color: var(--text-muted);
 	}
 	.confirmed-icon {
-		width: 16px;
-		height: 16px;
+		display: flex;
 		flex-shrink: 0;
 		color: var(--status-ok);
+	}
+	.confirmed-icon svg {
+		width: 16px;
+		height: 16px;
+	}
+	.input:disabled {
+		background: var(--bg-muted);
+		color: var(--text-muted);
+		border-color: var(--border);
+		cursor: default;
+	}
+	.input-action--done,
+	.input-action--done:hover {
+		color: var(--status-ok);
+		background: color-mix(in srgb, var(--status-ok) 8%, transparent);
+		cursor: default;
 	}
 	.danger-field {
 		margin-top: var(--space-3);
