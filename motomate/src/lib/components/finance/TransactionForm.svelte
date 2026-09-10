@@ -91,7 +91,7 @@
 		untrack(
 			() =>
 				(_initDraft?.fields.amount as string) ??
-				(editData ? String(editData.amount_cents / 100) : '')
+				(editData ? (editData.amount_cents / 100).toFixed(2) : '')
 		)
 	);
 	let date = $state(

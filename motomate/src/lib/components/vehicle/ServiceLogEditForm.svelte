@@ -197,7 +197,7 @@
 			<input
 				type="number"
 				name="cost"
-				value={editLog.cost_cents ? editLog.cost_cents / 100 : ''}
+				value={editLog.cost_cents != null ? (editLog.cost_cents / 100).toFixed(2) : ''}
 				min="0"
 				step="0.01"
 				placeholder={$_('vehicle.forms.placeholders.cost')}
