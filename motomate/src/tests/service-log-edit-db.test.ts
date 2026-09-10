@@ -258,9 +258,7 @@ describe('trackers follow the newest service log, not the edited one', () => {
 	});
 
 	it('keeps the tracker on the newer log when an older log is edited', async () => {
-		await maintenanceActions.editServiceLog(
-			event(editForm([['reset_trackers', TRACKER_CHAIN]]))
-		);
+		await maintenanceActions.editServiceLog(event(editForm([['reset_trackers', TRACKER_CHAIN]])));
 
 		const chain = await db.query.active_trackers.findFirst({
 			where: eq(active_trackers.id, TRACKER_CHAIN)
