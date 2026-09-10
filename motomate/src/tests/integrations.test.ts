@@ -31,7 +31,9 @@ vi.mock('$lib/server/paperless.js', async (original) => ({
 	paperlessTest: vi.fn(),
 	paperlessResolveTag: vi.fn(),
 	paperlessResolveCorrespondent: vi.fn(),
-	paperlessDocumentExists: vi.fn()
+	paperlessDocumentExists: vi.fn(),
+	paperlessFindId: vi.fn(),
+	paperlessUpdateTitle: vi.fn()
 }));
 
 import {
@@ -40,7 +42,7 @@ import {
 	updateUserSettings
 } from '$lib/db/repositories/users.js';
 import { getDocumentsByUser } from '$lib/db/repositories/documents.js';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
+import { getVehiclesByUser, getVehicleById } from '$lib/db/repositories/vehicles.js';
 import { raiseSystemAlert, clearSystemAlert } from '$lib/workflow/channels/inapp.js';
 import { getStorage } from '$lib/storage/index.js';
 import { s3Put, s3Exists, s3ClientConfig } from '$lib/storage/s3.js';
@@ -49,10 +51,17 @@ import {
 	paperlessResolveTag,
 	paperlessResolveCorrespondent,
 	paperlessDocumentExists,
+	paperlessFindId,
+	paperlessUpdateTitle,
 	PaperlessRejection
 } from '$lib/server/paperless.js';
 import { encryptSecret, decryptSecret, redactCredentials } from '$lib/server/secrets.js';
-import { resolveIntegrations, syncAll, runIntegrationSync } from '$lib/server/integrations.js';
+import {
+	resolveIntegrations,
+	syncAll,
+	runIntegrationSync,
+	onDocumentRenamed
+} from '$lib/server/integrations.js';
 import type { UserSettings } from '$lib/db/schema.js';
 
 function settings(overrides: Record<string, unknown> = {}): UserSettings {
@@ -553,5 +562,67 @@ describe('syncAll', () => {
 
 		expect(summary).toMatchObject({ filesUploaded: 0, docsPushed: 0 });
 		expect(vi.mocked(updateUserSettings)).not.toHaveBeenCalled();
+	});
+});
+
+describe('onDocumentRenamed', () => {
+	function renamed() {
+		return { ...doc('d1', '2026-01-01'), title: 'invoice.png' };
+	}
+
+	it('pushes the new title onto the paperless copy, found by our embedded id', async () => {
+		vi.mocked(getUserById).mockResolvedValue({ id: 'u1', settings: settings() } as never);
+		vi.mocked(getVehicleById).mockResolvedValue({ id: 'v1', name: 'Vespa' } as never);
+		vi.mocked(paperlessFindId).mockResolvedValue(77);
+
+		onDocumentRenamed('u1', renamed() as never);
+
+		await vi.waitFor(() => expect(paperlessUpdateTitle).toHaveBeenCalled());
+		expect(vi.mocked(paperlessFindId).mock.calls[0][1]).toBe('d1__');
+		expect(vi.mocked(paperlessUpdateTitle).mock.calls[0].slice(1)).toEqual([
+			77,
+			'Vespa - invoice.png'
+		]);
+		// one lookup, one patch: no extra roundtrips for tags or correspondents
+		expect(paperlessFindId).toHaveBeenCalledTimes(1);
+		expect(paperlessUpdateTitle).toHaveBeenCalledTimes(1);
+		expect(paperlessResolveTag).not.toHaveBeenCalled();
+		expect(paperlessResolveCorrespondent).not.toHaveBeenCalled();
+	});
+
+	it('does nothing when the document never reached paperless', async () => {
+		vi.mocked(getUserById).mockResolvedValue({ id: 'u1', settings: settings() } as never);
+		vi.mocked(paperlessFindId).mockResolvedValue(null);
+
+		onDocumentRenamed('u1', renamed() as never);
+
+		await vi.waitFor(() => expect(paperlessFindId).toHaveBeenCalled());
+		expect(paperlessUpdateTitle).not.toHaveBeenCalled();
+		expect(raiseSystemAlert).not.toHaveBeenCalled();
+	});
+
+	it('skips paperless entirely when the integration is off, and never touches S3', async () => {
+		vi.mocked(getUserById).mockResolvedValue({
+			id: 'u1',
+			settings: settings({ integrations: { paperless: { enabled: false } } })
+		} as never);
+
+		onDocumentRenamed('u1', renamed() as never);
+
+		await vi.waitFor(() => expect(getUserById).toHaveBeenCalled());
+		expect(paperlessFindId).not.toHaveBeenCalled();
+		expect(s3Put).not.toHaveBeenCalled();
+	});
+
+	it('raises a self-healing alert when paperless rejects the patch', async () => {
+		vi.mocked(getUserById).mockResolvedValue({ id: 'u1', settings: settings() } as never);
+		vi.mocked(getVehicleById).mockResolvedValue({ id: 'v1', name: 'Vespa' } as never);
+		vi.mocked(paperlessFindId).mockResolvedValue(77);
+		vi.mocked(paperlessUpdateTitle).mockRejectedValue(new Error('Paperless responded with 500'));
+
+		onDocumentRenamed('u1', renamed() as never);
+
+		await vi.waitFor(() => expect(raiseSystemAlert).toHaveBeenCalled());
+		expect(vi.mocked(raiseSystemAlert).mock.calls[0][1]).toBe('paperless');
 	});
 });

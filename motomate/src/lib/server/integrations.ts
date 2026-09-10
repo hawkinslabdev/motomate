@@ -14,6 +14,8 @@ import {
 	paperlessResolveTag,
 	paperlessResolveCorrespondent,
 	paperlessDocumentExists,
+	paperlessFindId,
+	paperlessUpdateTitle,
 	PaperlessRejection,
 	type PaperlessConfig
 } from './paperless.js';
@@ -212,6 +214,23 @@ export function onDocumentCreated(userId: string, doc: Document): void {
 			}
 		}
 	})().catch((e) => console.error('[integrations] document hook failed', doc.id, e));
+}
+
+// renames require an explicit push to Paperless; S3 storage keys are unaffected
+export function onDocumentRenamed(userId: string, doc: Document): void {
+	void (async () => {
+		const { user, paperless } = await resolveForUser(userId);
+		if (!paperless) return;
+		try {
+			const remoteId = await paperlessFindId(paperless, `${doc.id}__`);
+			if (remoteId === null) return; // never made it there (unsupported type, or a sync still pending)
+			const vehicle = await getVehicleById(doc.vehicle_id, userId);
+			await paperlessUpdateTitle(paperless, remoteId, paperlessTitle(vehicle?.name, doc));
+			await reportSuccess(userId, 'paperless');
+		} catch (e) {
+			await reportFailure(user, 'paperless', e);
+		}
+	})().catch((e) => console.error('[integrations] rename hook failed', doc.id, e));
 }
 
 // Keeps the backfill cursor level with what the live hook already sent, so a later sync does not repost it.

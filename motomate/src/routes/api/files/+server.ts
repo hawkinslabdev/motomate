@@ -6,6 +6,7 @@ import { env as pubEnv } from '$env/dynamic/public';
 import { getStorage } from '$lib/storage/index.js';
 import { getDocumentByStorageKey } from '$lib/db/repositories/documents.js';
 import { getVehicleByCoverImageKey } from '$lib/db/repositories/vehicles.js';
+import { downloadFilename } from '$lib/utils/storage.js';
 
 function isSafePath(key: string): boolean {
 	// Only allow keys starting with files/{userId}/ or avatars/{userId}/ and containing no path traversal
@@ -121,7 +122,12 @@ export const GET: RequestHandler = async ({ url, locals, request }) => {
 	};
 	const contentType = mimeMap[ext] ?? 'application/octet-stream';
 
-	const filename = isDoc || isDemo ? (docRecord?.name ?? key.split('/').pop() ?? null) : null;
+	const filename =
+		isDoc || isDemo
+			? docRecord
+				? downloadFilename(docRecord.name, docRecord.title)
+				: (key.split('/').pop() ?? null)
+			: null;
 
 	// files/ keys are unique per upload, avatars/ and demo/ keys are reused so they must revalidate
 	const cacheControl = isDoc ? 'private, max-age=31536000, immutable' : 'private, no-cache';

@@ -215,9 +215,12 @@
 
 	const highlightId = $derived(page.url.searchParams.get('highlight') ?? null);
 
+	// ooptimistic local rename; overwritten by server on next navigation
+	let titleOverrides = $state<Record<string, string>>({});
+
 	// Display name: user-facing title if set, otherwise original filename
 	function displayName(doc: PageData['docs'][number]): string {
-		return doc.title || doc.name;
+		return titleOverrides[doc.id] || doc.title || doc.name;
 	}
 
 	$effect(() => {
@@ -382,7 +385,20 @@
 				<div class="doc-icon">{@html fileIconSvg(doc.mime_type)}</div>
 				<div class="doc-info">
 					{#if editingDocId === doc.id}
-						<form method="POST" action="?/rename" use:enhance class="edit-name-form">
+						<form
+							method="POST"
+							action="?/rename"
+							class="edit-name-form"
+							use:enhance={() => {
+								const id = doc.id;
+								const next = editingName.trim();
+								if (next) titleOverrides[id] = next;
+								return async ({ result, update }) => {
+									if (result.type === 'failure') delete titleOverrides[id];
+									await update({ invalidateAll: false });
+								};
+							}}
+						>
 							<input type="hidden" name="id" value={doc.id} />
 							<input type="text" name="name" bind:value={editingName} class="edit-name-input" />
 							<button type="submit" class="edit-name-btn">Save</button>

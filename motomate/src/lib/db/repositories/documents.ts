@@ -82,6 +82,23 @@ export async function getDocumentByStorageKey(storageKey: string): Promise<Docum
 	});
 }
 
+// renames user-facing title (download filename and paperless copy); storage key remains unchanged
+export async function renameDocument(
+	id: string,
+	userId: string,
+	title: string
+): Promise<Document | undefined> {
+	const clean = title.trim().slice(0, 200);
+	if (!clean) return undefined;
+	await db
+		.update(documents)
+		.set({ title: clean })
+		.where(and(eq(documents.id, id), eq(documents.user_id, userId)));
+	return db.query.documents.findFirst({
+		where: and(eq(documents.id, id), eq(documents.user_id, userId))
+	});
+}
+
 export async function deleteDocument(id: string, userId: string): Promise<void> {
 	await db.delete(documents).where(and(eq(documents.id, id), eq(documents.user_id, userId)));
 }

@@ -147,11 +147,8 @@ export function paperlessResolveCorrespondent(cfg: PaperlessConfig, name: string
 	return resolveNamed(cfg, 'correspondents', name);
 }
 
-// true if a document whose original filename contains `query` already exists (our own dedup check, since paperless's own duplicate rejection can lag behind an async consume task)
-export async function paperlessDocumentExists(
-	cfg: PaperlessConfig,
-	query: string
-): Promise<boolean> {
+// paperless ID of first document matching `query` (or null), located via embedded `${doc.id}__`
+export async function paperlessFindId(cfg: PaperlessConfig, query: string): Promise<number | null> {
 	const url = await base(cfg.url);
 	const res = await fetch(
 		`${url}/api/documents/?original_file_name__icontains=${encodeURIComponent(query)}&page_size=1`,
@@ -165,8 +162,32 @@ export async function paperlessDocumentExists(
 		throw new Error(
 			`Paperless responded with ${res.status} while checking for an existing document`
 		);
-	const data = (await res.json()) as { count: number };
-	return data.count > 0;
+	const data = (await res.json()) as { results: { id: number }[] };
+	return data.results[0]?.id ?? null;
+}
+
+// our own dedup check, since paperless's own duplicate rejection can lag behind an async consume task
+export async function paperlessDocumentExists(
+	cfg: PaperlessConfig,
+	query: string
+): Promise<boolean> {
+	return (await paperlessFindId(cfg, query)) !== null;
+}
+
+// Paperless stores its own copy, so a rename on our side only shows up there if we push it. original_file_name is immutable in paperless; title is the field it displays.
+export async function paperlessUpdateTitle(
+	cfg: PaperlessConfig,
+	id: number,
+	title: string
+): Promise<void> {
+	const res = await fetch(`${await base(cfg.url)}/api/documents/${id}/`, {
+		method: 'PATCH',
+		headers: { ...headers(cfg), 'Content-Type': 'application/json' },
+		body: JSON.stringify({ title }),
+		redirect: 'manual',
+		signal: AbortSignal.timeout(TIMEOUT_MS)
+	});
+	if (!res.ok) throw new Error(`Paperless responded with ${res.status} while renaming a document`);
 }
 
 // returns task id, paperless handles dups so retrying is safe

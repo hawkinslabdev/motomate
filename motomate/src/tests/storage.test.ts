@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { attachmentStorageKey } from '$lib/utils/storage.js';
+import { attachmentStorageKey, downloadFilename } from '$lib/utils/storage.js';
 
 describe('attachmentStorageKey', () => {
 	it('namespaces the key by user and vehicle', () => {
@@ -30,5 +30,29 @@ describe('attachmentStorageKey', () => {
 		const a = attachmentStorageKey('u1', 'v1', 'invoice.pdf');
 		const b = attachmentStorageKey('u1', 'v1', 'invoice.pdf');
 		expect(a).not.toBe(b);
+	});
+});
+
+describe('downloadFilename', () => {
+	it('serves the renamed title instead of the original upload name', () => {
+		expect(downloadFilename('image.png', 'invoice.png')).toBe('invoice.png');
+	});
+
+	it('keeps the original extension when the rider drops it', () => {
+		expect(downloadFilename('image.png', 'invoice')).toBe('invoice.png');
+	});
+
+	it('falls back to the original name when there is no title', () => {
+		expect(downloadFilename('image.png', null)).toBe('image.png');
+		expect(downloadFilename('image.png', '   ')).toBe('image.png');
+	});
+
+	it('strips path separators and control characters out of the header value', () => {
+		const out = downloadFilename('image.png', 'a/b\\c\r\nX');
+		expect(out).not.toMatch(/[\\/\r\n]/);
+	});
+
+	it('leaves an extensionless upload extensionless', () => {
+		expect(downloadFilename('README', 'notes')).toBe('notes');
 	});
 });

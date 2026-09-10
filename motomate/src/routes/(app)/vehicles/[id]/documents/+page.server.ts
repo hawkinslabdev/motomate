@@ -1,19 +1,17 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { and, eq } from 'drizzle-orm';
-import { db } from '$lib/db/index.js';
-import { documents } from '$lib/db/schema.js';
 import {
 	getDocumentsByVehicle,
 	getDocumentsByVehicleTotal,
 	createDocument,
 	deleteDocument,
+	renameDocument,
 	getDocumentsByIds
 } from '$lib/db/repositories/documents.js';
 import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
 import { getTravelsByVehicle } from '$lib/db/repositories/travels.js';
 import { getStorage } from '$lib/storage/index.js';
-import { onDocumentCreated, mirrorDelete } from '$lib/server/integrations.js';
+import { onDocumentCreated, onDocumentRenamed, mirrorDelete } from '$lib/server/integrations.js';
 import { attachmentStorageKey } from '$lib/utils/storage.js';
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -132,11 +130,9 @@ export const actions: Actions = {
 		const id = String(data.get('id') ?? '');
 		const name = String(data.get('name') ?? '').trim();
 		if (!id || !name) return fail(400, { error: 'Missing id or name' });
-		// rename updates the user-facing description (title), not the original filename (name)
-		await db
-			.update(documents)
-			.set({ title: name.slice(0, 200) })
-			.where(and(eq(documents.id, id), eq(documents.user_id, locals.user!.id)));
+		const doc = await renameDocument(id, locals.user!.id, name);
+		if (!doc) return fail(404, { error: 'Document not found' });
+		onDocumentRenamed(locals.user!.id, doc);
 		return { renamed: true };
 	}
 };
