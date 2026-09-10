@@ -223,15 +223,14 @@
 		return titleOverrides[doc.id] || doc.title || doc.name;
 	}
 
-	$effect(() => {
-		if (highlightId) {
-			const doc = data.docs.find((d) => d.id === highlightId);
-			if (doc) searchQuery = displayName(doc);
-			tick().then(() => {
-				const el = document.getElementById(`doc-${highlightId}`);
-				if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-			});
-		}
+	// After navigation, so SvelteKit's own scroll reset does not cancel ours
+	afterNavigate(() => {
+		if (!highlightId) return;
+		tick().then(() => {
+			document
+				.getElementById(`doc-${highlightId}`)
+				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		});
 	});
 
 	const timelineDocs = $derived(() => {
@@ -486,9 +485,11 @@
 				<div class="month-divider"></div>
 				{#each docs as doc}
 					<div
+						id="doc-{doc.id}"
 						class="timeline-entry"
 						class:timeline-entry--expiring={isExpiringSoon(doc.expires_at)}
 						class:timeline-entry--expired={isExpired(doc.expires_at)}
+						class:timeline-entry--highlight={highlightId === doc.id}
 					>
 						<span class="entry-dot"></span>
 						<div class="entry-content">
@@ -772,6 +773,12 @@
 		background: var(--accent-subtle);
 		border-left-color: var(--accent);
 		animation: highlight-fade 2.5s ease forwards;
+	}
+	.timeline-entry--highlight {
+		animation: highlight-fade 2.5s ease forwards;
+	}
+	.timeline-entry--highlight .entry-dot {
+		background: var(--accent);
 	}
 	@keyframes highlight-fade {
 		0% {

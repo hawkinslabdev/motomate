@@ -12,9 +12,10 @@
 - Fix: amount fields no longer round costs off (e.g. showed 500,0 instead of 500,00)
 - Fix: a magic link now lets you set a new password without entering the old one to allow password recovery
 - Fix: an account created through OIDC can now set a password from a magic link, as a way back in when the provider is unavailable
-- Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
+- Fix: with no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: when using the magic link feature, the message will now clearly show when registration is either enabled or disabled
+- Fix: when clicking a linked document, the scroll should now work
 - Fix: editing, backdating, or deleting a past service entry no longer resets tracker progress to that entry date
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
 - Fix: the notification channel settings were still shown in English in German, Spanish, French and Portuguese
