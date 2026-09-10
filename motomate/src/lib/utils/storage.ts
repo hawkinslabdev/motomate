@@ -19,3 +19,8 @@ export function downloadFilename(name: string, title?: string | null): string {
 	const ext = name.includes('.') ? name.split('.').pop()! : '';
 	return ext && !clean.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${clean}.${ext}` : clean;
 }
+
+// Same-origin file URL, authorized by session
+export function fileUrl(storageKey: string): string {
+	return `/api/files?key=${encodeURIComponent(storageKey)}`;
+}

@@ -16,7 +16,7 @@ import {
 } from '$lib/db/repositories/documents.js';
 import { getStorage } from '$lib/storage/index.js';
 import { onDocumentCreated, mirrorDelete } from '$lib/server/integrations.js';
-import { attachmentStorageKey } from '$lib/utils/storage.js';
+import { attachmentStorageKey, fileUrl } from '$lib/utils/storage.js';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
@@ -30,19 +30,17 @@ export const load: PageServerLoad = async ({ parent, locals }) => {
 	] as string[];
 	const gpxDocs = await getDocumentsByIds(allDocIds, userId);
 
-	// Generate presigned URLs for GPX files (valid 1 hour)
-	const storage = getStorage();
+	// Same-origin, so the session authorizes the fetch
 	const gpxUrls: Record<string, string> = {};
 	for (const doc of gpxDocs) {
-		gpxUrls[doc.id] = await storage.presignedUrl(doc.storage_key, 3600);
+		gpxUrls[doc.id] = fileUrl(doc.storage_key);
 	}
 
 	// All route documents for this vehicle (for the "pick from library" selector)
 	const routeDocs = await getRouteDocumentsByVehicle(vehicle.id, userId);
 	const routeDocUrls: Record<string, string> = {};
 	for (const doc of routeDocs) {
-		// Reuse already-generated URL if available, otherwise generate
-		routeDocUrls[doc.id] = gpxUrls[doc.id] ?? (await storage.presignedUrl(doc.storage_key, 3600));
+		routeDocUrls[doc.id] = fileUrl(doc.storage_key);
 	}
 
 	return {

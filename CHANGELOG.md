@@ -13,6 +13,7 @@
 - Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
 - Fix: when using the magic link feature, the message will now clearly show when registration is either enabled or disabled
+- Photos and PDFs now open in a preview tab instead of downloading first, while formats no browser can render, like Office-documents, still download as before
 - Fix: editing, backdating, or deleting a past service entry no longer resets tracker progress to that entry date
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
 - Fix: the notification channel settings were still shown in English in German, Spanish, French and Portuguese
@@ -20,6 +21,7 @@
 - Fix: add the missing magic link page title to five languages, and drop a stray Italian key
 - Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, so rate limits bucket per client instead of per proxy behind a reverse proxy
 - Fix: `PUBLIC_APP_URL` was read from the wrong place and always ignored, so magic link emails pointed at localhost, the OIDC redirect fell back to the request host, and the API answered any origin on installs that set it without `PUBLIC_APP_ORIGINS`
+- Security: uploaded files are now served only to a logged-in owner, instead of allowing anyone access the (though secure and signed) url
 - Security: refuse to start on a default `AUTH_SECRET` even when users already exist
 - Security: require a verified email from your OIDC provider, and match accounts on the provider's user id instead of the email address (can be disabled with `OIDC_TRUST_UNVERIFIED_EMAIL`)
 - Security: changing your password now logs out your other sessions

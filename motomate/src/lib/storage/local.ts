@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 import { env } from '$env/dynamic/private';
 
 const BASE_PATH = env.STORAGE_LOCAL_PATH ?? './uploads';
@@ -40,15 +39,5 @@ export class LocalStorageAdapter {
 		} catch (e: unknown) {
 			if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
 		}
-	}
-
-	async presignedUrl(key: string, expiresInSeconds: number): Promise<string> {
-		// Sign with HMAC so the serve endpoint can verify authenticity
-		const expires = Math.floor(Date.now() / 1000) + expiresInSeconds;
-		const secret = env.AUTH_SECRET!;
-		const sig = crypto.createHmac('sha256', secret).update(`${key}:${expires}`).digest('hex');
-		// Relative URL so it always hits the origin the app is served from, whatever PUBLIC_APP_URL says
-		const params = new URLSearchParams({ key, expires: String(expires), sig });
-		return `/api/files?${params}`;
 	}
 }

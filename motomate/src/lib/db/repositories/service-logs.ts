@@ -131,7 +131,7 @@ export async function updateServiceLog(
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
 
-	// Trackers dropped from the list need re-deriving as much as the ones kept
+	// Dropped trackers need re-deriving too
 	await resyncTrackersFromServiceLogs(vehicleId, [
 		before.tracker_id,
 		...before.serviced_tracker_ids,
