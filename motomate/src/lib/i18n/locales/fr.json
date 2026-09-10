@@ -948,6 +948,10 @@
 				"title": "Supprimer ce compte",
 				"desc": "Supprime définitivement votre compte et tous vos véhicules, historique d'entretien et documents.",
 				"btn": "Supprimer le compte",
+				"confirm": "Saisissez {email} pour confirmer",
+				"errors": {
+					"mismatch": "Cela ne correspond pas à votre adresse e-mail."
+				},
 				"dialog": {
 					"title": "Supprimer votre compte ?",
 					"desc": "Cela supprimera définitivement votre compte, tous vos véhicules et toutes les données associées. Cette action est irréversible.",

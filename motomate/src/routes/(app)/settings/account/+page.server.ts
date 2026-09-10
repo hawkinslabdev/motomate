@@ -18,6 +18,7 @@ type AccountErrors = {
 	settings: {
 		account: {
 			email: { errors: { invalid: string; sameAsCurrent: string; alreadyInUse: string } };
+			delete: { errors: { mismatch: string } };
 			password: {
 				errors: {
 					allRequired: string;
@@ -150,6 +151,13 @@ export const actions: Actions = {
 			return fail(400, {
 				deleteError: proof === 'stepup' ? errors.reauthRequired : errors.incorrect
 			});
+		}
+
+		const typed = String(data.confirm_email ?? '')
+			.trim()
+			.toLowerCase();
+		if (typed !== locals.user!.email.trim().toLowerCase()) {
+			return fail(400, { deleteError: messages.settings.account.delete.errors.mismatch });
 		}
 
 		await deleteUser(userId);

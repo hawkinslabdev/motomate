@@ -30,6 +30,10 @@
 	);
 
 	let deleteForm = $state<HTMLFormElement | null>(null);
+	let confirmEmail = $state('');
+	const confirmMatches = $derived(
+		confirmEmail.trim().toLowerCase() === data.user.email.trim().toLowerCase()
+	);
 	let savingEmail = $state(false);
 	let savingPassword = $state(false);
 	let showDeleteDialog = $state(false);
@@ -347,11 +351,28 @@
 			<div class="danger-title">{$_('settings.account.delete.title')}</div>
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
 			{@render proofField('delete', 'danger-field')}
+			<div class="field danger-field">
+				<label class="field-label" for="delete-confirm">
+					{$_('settings.account.delete.confirm', { values: { email: data.user.email } })}
+				</label>
+				<input
+					id="delete-confirm"
+					name="confirm_email"
+					type="text"
+					inputmode="email"
+					autocomplete="off"
+					autocapitalize="none"
+					spellcheck="false"
+					class="input"
+					bind:value={confirmEmail}
+					required
+				/>
+			</div>
 		</div>
 		<button
 			type="button"
 			class="btn-danger"
-			disabled={needsProof}
+			disabled={needsProof || !confirmMatches}
 			onclick={() => {
 				if (deleteForm?.reportValidity()) showDeleteDialog = true;
 			}}
@@ -599,8 +620,13 @@
 		white-space: nowrap;
 		min-height: 48px;
 	}
-	.btn-danger:hover {
+	.btn-danger:hover:not(:disabled) {
 		background: color-mix(in srgb, var(--status-overdue) 8%, transparent);
+	}
+	.btn-danger:disabled {
+		border-color: var(--border);
+		color: var(--text-subtle);
+		cursor: not-allowed;
 	}
 
 	/* Export dropdown */

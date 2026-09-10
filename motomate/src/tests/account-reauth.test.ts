@@ -84,7 +84,9 @@ describe('re-authentication on account changes', () => {
 	it('refuses the delete on a wrong password', async () => {
 		vi.mocked(getUserById).mockResolvedValue((await localAccount()) as never);
 
-		const result = (await actions.deleteAccount(event({ current_password: 'wrong' }))) as {
+		const result = (await actions.deleteAccount(
+			event({ current_password: 'wrong', confirm_email: 'rider@test.com' })
+		)) as {
 			status: number;
 		};
 
@@ -96,9 +98,20 @@ describe('re-authentication on account changes', () => {
 		vi.mocked(getUserById).mockResolvedValue((await localAccount()) as never);
 
 		await expect(
-			actions.deleteAccount(event({ current_password: PASSWORD }))
+			actions.deleteAccount(event({ current_password: PASSWORD, confirm_email: 'RIDER@test.com ' }))
 		).rejects.toMatchObject({ status: 302 });
 		expect(deleteUser).toHaveBeenCalledWith('u_1');
+	});
+
+	it('refuses the delete when the typed email does not match', async () => {
+		vi.mocked(getUserById).mockResolvedValue((await localAccount()) as never);
+
+		const result = (await actions.deleteAccount(
+			event({ current_password: PASSWORD, confirm_email: 'someone@else.com' })
+		)) as { status: number };
+
+		expect(result.status).toBe(400);
+		expect(deleteUser).not.toHaveBeenCalled();
 	});
 
 	it('refuses a passwordless provider account with no open window', async () => {

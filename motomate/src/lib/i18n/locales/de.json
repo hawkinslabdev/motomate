@@ -948,6 +948,10 @@
 				"title": "Dieses Konto löschen",
 				"desc": "Entfernt dauerhaft dein Konto und alle deine Fahrzeuge, Servicehistorie und Dokumente.",
 				"btn": "Konto löschen",
+				"confirm": "Gib zur Bestätigung {email} ein",
+				"errors": {
+					"mismatch": "Das stimmt nicht mit deiner E-Mail-Adresse überein."
+				},
 				"dialog": {
 					"title": "Dein Konto löschen?",
 					"desc": "Dies entfernt dauerhaft dein Konto, alle deine Fahrzeuge und alle zugehörigen Daten. Diese Aktion kann nicht rückgängig gemacht werden.",

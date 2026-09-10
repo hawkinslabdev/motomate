@@ -961,6 +961,10 @@
 				"title": "Șterge acest cont",
 				"desc": "Elimină definitiv contul tău, precum și toate vehiculele, istoricul de service și documentele tale.",
 				"btn": "Șterge contul",
+				"confirm": "Scrie {email} pentru a confirma",
+				"errors": {
+					"mismatch": "Nu corespunde cu adresa ta de email."
+				},
 				"dialog": {
 					"title": "Ștergi contul tău?",
 					"desc": "Această acțiune va elimina definitiv contul tău, toate vehiculele și toate datele asociate. Acțiunea nu poate fi anulată.",

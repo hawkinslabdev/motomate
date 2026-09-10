@@ -948,6 +948,10 @@
 				"title": "Dit account verwijderen",
 				"desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten. Dit kan je niet ongedaan maken.",
 				"btn": "Account verwijderen",
+				"confirm": "Typ {email} ter bevestiging",
+				"errors": {
+					"mismatch": "Dat komt niet overeen met je e-mailadres."
+				},
 				"dialog": {
 					"title": "Je account verwijderen?",
 					"desc": "Dit verwijdert permanent je account, al je voertuigen en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt.",

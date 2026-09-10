@@ -948,6 +948,10 @@
 				"title": "Eliminar esta cuenta",
 				"desc": "Elimina permanentemente tu cuenta y todos tus vehículos, historial de servicio y documentos.",
 				"btn": "Eliminar cuenta",
+				"confirm": "Escribe {email} para confirmar",
+				"errors": {
+					"mismatch": "Eso no coincide con tu dirección de correo."
+				},
 				"dialog": {
 					"title": "¿Eliminar tu cuenta?",
 					"desc": "Esto eliminará permanentemente tu cuenta, todos tus vehículos y todos los datos asociados. Esta acción no se puede deshacer.",

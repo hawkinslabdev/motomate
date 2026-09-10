@@ -961,6 +961,10 @@
 				"title": "Delete this account",
 				"desc": "Permanently removes your account and all your vehicles, service history, and documents.",
 				"btn": "Delete account",
+				"confirm": "Type {email} to confirm",
+				"errors": {
+					"mismatch": "That does not match your email address."
+				},
 				"dialog": {
 					"title": "Delete your account?",
 					"desc": "This will permanently remove your account, all your vehicles, and all associated data. This action cannot be undone.",

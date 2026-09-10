@@ -7,7 +7,7 @@ export const ARGON2_OPTS = {
 	parallelism: 1
 } as const;
 
-export const REAUTH_WINDOW_MS = 15 * 60_000;
+export const REAUTH_WINDOW_MS = 2 * 60_000;
 
 export type ReauthRecord = {
 	password_hash?: string | null;

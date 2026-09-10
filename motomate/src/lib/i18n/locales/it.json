@@ -948,6 +948,10 @@
 				"title": "Elimina questo account",
 				"desc": "Rimuove definitivamente il tuo account e tutti i tuoi veicoli, cronologia di manutenzione e documenti.",
 				"btn": "Elimina account",
+				"confirm": "Digita {email} per confermare",
+				"errors": {
+					"mismatch": "Non corrisponde al tuo indirizzo email."
+				},
 				"dialog": {
 					"title": "Eliminare il tuo account?",
 					"desc": "Questo rimuoverà definitivamente il tuo account, tutti i tuoi veicoli e tutti i dati associati. Questa azione non può essere annullata.",
