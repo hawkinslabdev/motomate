@@ -43,8 +43,8 @@
 			"submit": "Se connecter",
 			"noAccount": "Pas de compte ?",
 			"signUp": "S'inscrire !",
-			"magicLinkSent": "Vérifiez votre e-mail, un lien de connexion est en route.",
-			"magicLinkLogged": "Il semble que SMTP ne soit pas configuré. Consultez les journaux du serveur pour continuer.",
+			"magicLinkSent": "Si un compte est associé à cette adresse, un lien de connexion est en route.",
+			"magicLinkLogged": "Si un compte est associé à cette adresse, le lien de connexion se trouve dans le journal du serveur. SMTP n'est pas configuré, les liens y sont donc écrits au lieu d'être envoyés par e-mail.",
 			"orSignInWith": "Ou connectez-vous avec un fournisseur d'identité",
 			"setupNotice": {
 				"title": "Configuration initiale",
@@ -911,6 +911,8 @@
 				"new": "Nouveau mot de passe",
 				"confirm": "Confirmer le nouveau mot de passe",
 				"hint": "Min. 8 caractères",
+				"setupHint": "Ce compte se connecte via votre fournisseur d'identité. Définir un mot de passe ici vous donne une solution de secours si ce fournisseur devient indisponible. L'authentification unique continue de fonctionner.",
+				"setSubmit": "Définir le mot de passe",
 				"submit": "Changer le mot de passe",
 				"saved": "Mot de passe changé",
 				"errors": {

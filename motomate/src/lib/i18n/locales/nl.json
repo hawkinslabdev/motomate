@@ -43,8 +43,8 @@
 			"submit": "Inloggen",
 			"noAccount": "Nog geen account?",
 			"signUp": "Registreer je hier!",
-			"magicLinkSent": "Controleer je e-mail, een inloglink is onderweg!",
-			"magicLinkLogged": "Het lijkt erop dat SMTP niet is geconfigureerd. Bekijk je serverlogs om door te gaan.",
+			"magicLinkSent": "Als er een account is gekoppeld aan dit e-mailadres, ontvang je zo een inloglink.",
+			"magicLinkLogged": "Als er een account is gekoppeld aan dit e-mailadres, vind je de inloglink in de serverlogs (SMTP is niet geconfigureerd).",
 			"orSignInWith": "Of log in met een identiteitsprovider",
 			"setupNotice": {
 				"title": "Eerste setup",
@@ -911,6 +911,8 @@
 				"new": "Nieuw wachtwoord",
 				"confirm": "Nieuw wachtwoord bevestigen",
 				"hint": "Min. 8 tekens",
+				"setupHint": "Dit account logt in via je identityprovider. Een wachtwoord instellen geeft je een terugvaloptie als die provider onbereikbaar is. Single sign-on blijft gewoon werken.",
+				"setSubmit": "Wachtwoord instellen",
 				"submit": "Wachtwoord wijzigen",
 				"saved": "Wachtwoord gewijzigd",
 				"errors": {

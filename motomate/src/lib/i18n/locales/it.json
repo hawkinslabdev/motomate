@@ -43,8 +43,8 @@
 			"submit": "Accedi",
 			"noAccount": "Non hai un account?",
 			"signUp": "Registrati!",
-			"magicLinkSent": "Controlla la tua email, un link di accesso è in arrivo.",
-			"magicLinkLogged": "Sembra che SMTP non sia configurato. Controlla i log del server per continuare.",
+			"magicLinkSent": "Se quell'indirizzo ha un account, un link di accesso è in arrivo.",
+			"magicLinkLogged": "Se quell'indirizzo ha un account, il link di accesso è nel log del server. SMTP non è configurato, quindi i link vengono scritti lì invece di essere inviati per email.",
 			"orSignInWith": "Oppure accedi con un provider di identità",
 			"setupNotice": {
 				"title": "Configurazione iniziale",
@@ -912,6 +912,8 @@
 				"new": "Nuova password",
 				"confirm": "Conferma nuova password",
 				"hint": "Min. 8 caratteri",
+				"setupHint": "Questo account accede tramite il tuo provider di identità. Impostare una password qui ti dà un accesso di riserva se quel provider non fosse disponibile. Il single sign-on continua a funzionare.",
+				"setSubmit": "Imposta password",
 				"submit": "Cambia password",
 				"saved": "Password cambiata",
 				"errors": {

@@ -43,8 +43,8 @@
 			"submit": "Iniciar sesión",
 			"noAccount": "¿No tienes cuenta?",
 			"signUp": "¡Regístrate!",
-			"magicLinkSent": "Revisa tu correo, un enlace de inicio de sesión está en camino.",
-			"magicLinkLogged": "Parece que SMTP no está configurado. Revisa los registros del servidor para continuar.",
+			"magicLinkSent": "Si esa dirección tiene una cuenta, un enlace de inicio de sesión está en camino.",
+			"magicLinkLogged": "Si esa dirección tiene una cuenta, el enlace de inicio de sesión está en el registro del servidor. SMTP no está configurado, así que los enlaces se escriben ahí en lugar de enviarse por correo.",
 			"orSignInWith": "O inicia sesión con un proveedor de identidad",
 			"setupNotice": {
 				"title": "Configuración inicial",
@@ -911,6 +911,8 @@
 				"new": "Nueva contraseña",
 				"confirm": "Confirmar nueva contraseña",
 				"hint": "Mín. 8 caracteres",
+				"setupHint": "Esta cuenta inicia sesión a través de tu proveedor de identidad. Establecer una contraseña aquí te da una vía alternativa por si ese proveedor deja de estar disponible. El inicio de sesión único seguirá funcionando.",
+				"setSubmit": "Establecer contraseña",
 				"submit": "Cambiar contraseña",
 				"saved": "Contraseña cambiada",
 				"errors": {

@@ -43,8 +43,8 @@
 			"submit": "Anmelden",
 			"noAccount": "Noch kein Konto?",
 			"signUp": "Registrieren!",
-			"magicLinkSent": "Überprüfen Sie Ihre E-Mail, ein Anmeldelink ist unterwegs.",
-			"magicLinkLogged": "Anscheinend ist SMTP nicht konfiguriert. Bitte sehen Sie in Ihren Server-Logs nach, um fortzufahren.",
+			"magicLinkSent": "Falls für diese Adresse ein Konto besteht, ist ein Anmeldelink unterwegs.",
+			"magicLinkLogged": "Falls für diese Adresse ein Konto besteht, steht der Anmeldelink im Server-Log. SMTP ist nicht konfiguriert, daher werden Links dort protokolliert statt per E-Mail versendet.",
 			"orSignInWith": "Oder mit einem Identitätsanbieter anmelden",
 			"setupNotice": {
 				"title": "Erstes Setup",
@@ -911,6 +911,8 @@
 				"new": "Neues Passwort",
 				"confirm": "Neues Passwort bestätigen",
 				"hint": "Min. 8 Zeichen",
+				"setupHint": "Dieses Konto meldet sich über deinen Identitätsanbieter an. Ein hier gesetztes Passwort dient als Ausweichweg, falls dieser Anbieter einmal nicht erreichbar ist. Single Sign-on funktioniert weiterhin.",
+				"setSubmit": "Passwort festlegen",
 				"submit": "Passwort ändern",
 				"saved": "Passwort geändert",
 				"errors": {

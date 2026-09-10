@@ -43,8 +43,8 @@
 			"submit": "Autentificare",
 			"noAccount": "Nu ai un cont?",
 			"signUp": "Înregistrează-te!",
-			"magicLinkSent": "Verifică-ți căsuța de email, un link de autentificare este pe drum.",
-			"magicLinkLogged": "Se pare că SMTP nu este configurat. Verifică jurnalele serverului pentru a continua.",
+			"magicLinkSent": "Dacă acea adresă are un cont, un link de autentificare este pe drum.",
+			"magicLinkLogged": "Dacă acea adresă are un cont, linkul de autentificare se află în jurnalul serverului. SMTP nu este configurat, așa că linkurile sunt scrise acolo în loc să fie trimise prin email.",
 			"orSignInWith": "Sau autentifică-te cu un furnizor de identitate",
 			"setupNotice": {
 				"title": "Configurare inițială",
@@ -925,6 +925,8 @@
 				"new": "Parolă nouă",
 				"confirm": "Confirmă parola nouă",
 				"hint": "Min. 8 caractere",
+				"setupHint": "Acest cont se autentifică prin furnizorul tău de identitate. Setarea unei parole aici îți oferă o cale de rezervă dacă acel furnizor devine indisponibil. Autentificarea unică funcționează în continuare.",
+				"setSubmit": "Setează parola",
 				"submit": "Schimbă parola",
 				"saved": "Parolă schimbată",
 				"errors": {

@@ -43,8 +43,8 @@
 			"submit": "Log in",
 			"noAccount": "Don't have an account?",
 			"signUp": "Sign up!",
-			"magicLinkSent": "Check your email, a login link is on its way.",
-			"magicLinkLogged": "It looks like SMTP is not configured. Please check your server logs to continue.",
+			"magicLinkSent": "If that address has an account, a login link is on its way.",
+			"magicLinkLogged": "If that address has an account, the login link is in the server log. SMTP is not configured, so links are written there instead of emailed.",
 			"orSignInWith": "Or sign in with identity providers",
 			"setupNotice": {
 				"title": "First time set-up",
@@ -925,6 +925,8 @@
 				"new": "New password",
 				"confirm": "Confirm new password",
 				"hint": "Min. 8 characters",
+				"setupHint": "This account signs in through your identity provider. Setting a password here gives you a fallback way in if that provider is ever unavailable. Single sign-on keeps working either way.",
+				"setSubmit": "Set password",
 				"submit": "Change password",
 				"saved": "Password changed",
 				"errors": {
