@@ -92,7 +92,7 @@ export const actions: Actions = {
 			await getStorage().put(key, buffer, MIME_MAP[safeExt] || 'image/jpeg');
 		} catch (e) {
 			console.error('User avatar upload failed:', e);
-			return fail(500, { avatarError: 'Upload failed — storage error' });
+			return fail(500, { avatarError: 'Upload failed, storage error' });
 		}
 
 		mirrorPut(user.id, key, MIME_MAP[safeExt] || 'image/jpeg');

@@ -93,6 +93,7 @@
 			}
 		},
 		"magicLink": {
+			"title": "Lien magique",
 			"verifying": "Connexion en cours…",
 			"invalid": "Ce lien est invalide ou a expiré.",
 			"retry": "Demander un nouveau lien"
@@ -101,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Sécurisez votre compte",
-			"description": "Vous êtes connecté en tant qu'administrateur par défaut. Définissez un vrai e-mail et mot de passe avant de continuer — vous pouvez toujours les mettre à jour dans Paramètres plus tard.",
+			"description": "Vous êtes connecté en tant qu'administrateur par défaut. Définissez votre propre e-mail et mot de passe avant de continuer. Vous pouvez les modifier plus tard dans Paramètres.",
 			"newEmail": "Nouvelle adresse e-mail",
 			"newPassword": "Nouveau mot de passe",
 			"confirmPassword": "Confirmer le mot de passe",
@@ -494,7 +495,7 @@
 					"btn": "Télécharger",
 					"modal": {
 						"title": "Rapport d'entretien",
-						"desc": "Sélectionne ce que tu veux inclure dans le rapport. Tes préférences sont sauvegardées pour la prochaine fois.",
+						"desc": "Sélectionnez ce que vous voulez inclure dans le rapport. Vos préférences sont enregistrées pour la prochaine fois.",
 						"download": "Télécharger le PDF",
 						"downloading": "Chargement...",
 						"cancel": "Annuler",
@@ -684,7 +685,7 @@
 				"everyMonths": "Tous les (mois)",
 				"date": "Date",
 				"odometer": "Kilométrage ({unit})",
-				"autoCompute": "— laisser vide pour calcul automatique",
+				"autoCompute": "laisser vide pour un calcul automatique",
 				"usage": "Relevé d'usage ({unit})",
 				"reminderOnly": "Rappel uniquement",
 				"reminderOnlyHint": "L'enregistrement réinitialise le rappel sans créer d'entrée dans la chronologie ni apparaître dans les rapports."
@@ -911,18 +912,26 @@
 				"new": "Nouveau mot de passe",
 				"confirm": "Confirmer le nouveau mot de passe",
 				"hint": "Min. 8 caractères",
-				"setupHint": "Ce compte se connecte via votre fournisseur d'identité. Définir un mot de passe ici vous donne une solution de secours si ce fournisseur devient indisponible. L'authentification unique continue de fonctionner.",
-				"setSubmit": "Définir le mot de passe",
+				"setupHint": "Ce compte n'a pas encore de mot de passe. Vous pouvez en créer un ici comme deuxième moyen de connexion. Votre méthode actuelle continue de fonctionner.",
+				"setSubmit": "Créer le mot de passe",
 				"submit": "Changer le mot de passe",
 				"saved": "Mot de passe changé",
 				"errors": {
 					"allRequired": "Tous les champs de mot de passe sont requis",
 					"tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères",
 					"noMatch": "Les mots de passe ne correspondent pas",
-					"noPasswordSet": "Aucun mot de passe défini sur ce compte — utilisez le lien magique pour vous connecter",
+					"noPasswordSet": "Aucun mot de passe défini sur ce compte. Utilisez le lien magique pour vous connecter",
 					"incorrect": "Le mot de passe actuel est incorrect",
-					"sameAsCurrent": "Le nouveau mot de passe doit être différent du mot de passe actuel"
+					"sameAsCurrent": "Le nouveau mot de passe doit être différent du mot de passe actuel",
+					"reauthRequired": "Confirmez d'abord que c'est bien vous, puis réessayez"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Confirmez avec {provider} que c'est bien vous avant de modifier ceci.",
+				"hintMagic": "Créez d'abord un mot de passe, ou ouvrez un nouveau lien magique pour confirmer.",
+				"verify": "Confirmer avec {provider}",
+				"active": "Confirmé. Vous pouvez faire des modifications pendant quelques minutes.",
+				"failed": "Cela n'a pas fonctionné. Réessayez."
 			},
 			"export": {
 				"title": "Exporter les données",
@@ -1017,7 +1026,7 @@
 				"testError": "Failed",
 				"push": {
 					"label": "Browser push",
-					"description": "Push notifications to this browser when a rule fires.",
+					"description": "Envoie des notifications push à ce navigateur lorsqu'une règle se déclenche.",
 					"subscribe": "Subscribe this browser",
 					"subscribed": "Subscribed",
 					"subError": "Subscription failed",
@@ -1025,31 +1034,31 @@
 				},
 				"email": {
 					"label": "Email",
-					"description": "Send an email notification to the address below.",
+					"description": "Envoie une notification par e-mail à l'adresse ci-dessous.",
 					"addressLabel": "Notification address",
 					"addressPlaceholder": "pierre@email.fr",
-					"hint": "Separate from your account login email.",
+					"hint": "Peut être différente de l'e-mail de connexion à votre compte.",
 					"noSmtp": "SMTP is not configured on this server."
 				},
 				"webhook": {
 					"label": "Webhook",
-					"description": "POST a JSON payload to any URL when a rule fires.",
+					"description": "Envoie une charge utile JSON en POST à n'importe quelle URL lorsqu'une règle se déclenche.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Envoie une requête POST avec l'événement, le titre, le corps, le nom du véhicule et les données."
 				},
 				"ha": {
 					"label": "Home Assistant",
-					"description": "Trigger a Home Assistant webhook automation.",
+					"description": "Déclenche une automatisation Home Assistant via webhook.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Paste your HA webhook URL. No token required.",
-					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
+					"hint": "Collez l'URL du webhook HA. Aucun jeton requis.",
+					"tip": "Astuce : pour une URL Home Assistant externe, désactivez « Accessible uniquement depuis le réseau ».",
 					"configLabel": "Automation config",
 					"copy": "Copy",
-					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+					"invalidUrl": "L'URL doit se terminer par /api/webhook/<webhook_id>"
 				}
 			},
 			"inbox": {
@@ -1392,7 +1401,7 @@
 	"draft": {
 		"resuming": "Reprise de {ago}",
 		"discard": "Abandonner",
-		"fileHint": "Un fichier était joint — veuillez le rajouter",
+		"fileHint": "Un fichier était joint. Veuillez le rajouter",
 		"justNow": "à l'instant",
 		"unitMin": "min",
 		"unitHour": "h",

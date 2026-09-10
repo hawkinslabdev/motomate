@@ -40,8 +40,19 @@ export function appOrigin(url: URL): string {
 }
 
 // attempt for prefix to set these cookies host-only, which prevents apps on shared parent domains from cojoining? them
-export function oidcCookie(name: 'state' | 'verifier' | 'id_token', secure: boolean): string {
+export function oidcCookie(
+	name: 'state' | 'verifier' | 'id_token' | 'reauth',
+	secure: boolean
+): string {
 	return secure ? `__Host-oidc_${name}` : `oidc_${name}`;
+}
+
+// blocks open redirect
+export function safeReturnPath(value: string | null | undefined, fallback: string): string {
+	if (!value || !value.startsWith('/') || value.startsWith('//') || value.startsWith('/\\')) {
+		return fallback;
+	}
+	return value;
 }
 
 export function redirectUri(url: URL): string {

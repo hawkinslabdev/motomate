@@ -88,7 +88,7 @@ export const actions: Actions = {
 			await storage.put(key, buffer, file.type || 'application/octet-stream');
 		} catch (e) {
 			console.error('Storage upload failed:', e);
-			return fail(500, { error: 'Upload failed — storage error' });
+			return fail(500, { error: 'Upload failed, storage error' });
 		}
 
 		const doc = await createDocument(user.id, {

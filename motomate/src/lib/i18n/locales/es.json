@@ -93,6 +93,7 @@
 			}
 		},
 		"magicLink": {
+			"title": "Enlace mágico",
 			"verifying": "Iniciando sesión…",
 			"invalid": "Este enlace no es válido o ha expirado.",
 			"retry": "Solicitar un nuevo enlace"
@@ -101,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Protege tu cuenta",
-			"description": "Has iniciado sesión como administrador predeterminado. Establece un correo electrónico y contraseña reales antes de continuar — siempre puedes actualizarlos en Configuración más tarde.",
+			"description": "Has iniciado sesión como administrador predeterminado. Configura tu propio correo electrónico y contraseña antes de continuar. Puedes cambiarlos más tarde en Configuración.",
 			"newEmail": "Nueva dirección de correo electrónico",
 			"newPassword": "Nueva contraseña",
 			"confirmPassword": "Confirmar contraseña",
@@ -684,7 +685,7 @@
 				"everyMonths": "Cada (meses)",
 				"date": "Fecha",
 				"odometer": "Odómetro ({unit})",
-				"autoCompute": "— dejar vacío para cálculo automático",
+				"autoCompute": "déjalo vacío para calcularlo automáticamente",
 				"usage": "Lectura de uso ({unit})",
 				"reminderOnly": "Solo recordatorio",
 				"reminderOnlyHint": "Registrar restablece el recordatorio sin crear una entrada en la cronología ni aparecer en los informes."
@@ -911,18 +912,26 @@
 				"new": "Nueva contraseña",
 				"confirm": "Confirmar nueva contraseña",
 				"hint": "Mín. 8 caracteres",
-				"setupHint": "Esta cuenta inicia sesión a través de tu proveedor de identidad. Establecer una contraseña aquí te da una vía alternativa por si ese proveedor deja de estar disponible. El inicio de sesión único seguirá funcionando.",
-				"setSubmit": "Establecer contraseña",
+				"setupHint": "Esta cuenta aún no tiene contraseña. Puedes crear una aquí como segunda forma de iniciar sesión. Tu forma actual de acceder sigue funcionando.",
+				"setSubmit": "Crear contraseña",
 				"submit": "Cambiar contraseña",
 				"saved": "Contraseña cambiada",
 				"errors": {
 					"allRequired": "Todos los campos de contraseña son obligatorios",
 					"tooShort": "La nueva contraseña debe tener al menos 8 caracteres",
 					"noMatch": "Las contraseñas no coinciden",
-					"noPasswordSet": "No hay contraseña configurada en esta cuenta — usa el enlace mágico para iniciar sesión",
+					"noPasswordSet": "No hay contraseña configurada en esta cuenta. Usa el enlace mágico para iniciar sesión",
 					"incorrect": "La contraseña actual es incorrecta",
-					"sameAsCurrent": "La nueva contraseña debe ser diferente de la actual"
+					"sameAsCurrent": "La nueva contraseña debe ser diferente de la actual",
+					"reauthRequired": "Confirma primero que eres tú e inténtalo de nuevo"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Confirma con {provider} que eres tú antes de cambiar esto.",
+				"hintMagic": "Crea primero una contraseña o abre un nuevo enlace mágico para confirmar que eres tú.",
+				"verify": "Confirmar con {provider}",
+				"active": "Confirmado. Puedes hacer cambios durante los próximos minutos.",
+				"failed": "No ha funcionado. Inténtalo de nuevo."
 			},
 			"export": {
 				"title": "Exportar datos",
@@ -1017,7 +1026,7 @@
 				"testError": "Failed",
 				"push": {
 					"label": "Browser push",
-					"description": "Push notifications to this browser when a rule fires.",
+					"description": "Envía notificaciones push a este navegador cuando se activa una regla.",
 					"subscribe": "Subscribe this browser",
 					"subscribed": "Subscribed",
 					"subError": "Subscription failed",
@@ -1025,31 +1034,31 @@
 				},
 				"email": {
 					"label": "Email",
-					"description": "Send an email notification to the address below.",
+					"description": "Envía una notificación por correo a la dirección de abajo.",
 					"addressLabel": "Notification address",
 					"addressPlaceholder": "you@example.com",
-					"hint": "Separate from your account login email.",
+					"hint": "Puede ser distinta del correo con el que inicias sesión.",
 					"noSmtp": "SMTP is not configured on this server."
 				},
 				"webhook": {
 					"label": "Webhook",
-					"description": "POST a JSON payload to any URL when a rule fires.",
+					"description": "Envía un payload JSON por POST a cualquier URL cuando se activa una regla.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Envía una petición POST con el evento, el título, el cuerpo, el nombre del vehículo y los datos."
 				},
 				"ha": {
 					"label": "Home Assistant",
-					"description": "Trigger a Home Assistant webhook automation.",
+					"description": "Activa una automatización de Home Assistant por webhook.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Paste your HA webhook URL. No token required.",
-					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
+					"hint": "Pega la URL del webhook de HA. No hace falta ningún token.",
+					"tip": "Consejo: para una URL externa de Home Assistant, desactiva «Accesible solo desde la red».",
 					"configLabel": "Automation config",
 					"copy": "Copy",
-					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+					"invalidUrl": "La URL debe terminar en /api/webhook/<webhook_id>"
 				}
 			},
 			"inbox": {
@@ -1392,7 +1401,7 @@
 	"draft": {
 		"resuming": "Retomando desde {ago}",
 		"discard": "Descartar",
-		"fileHint": "Había un archivo adjunto — vuelva a añadirlo",
+		"fileHint": "Había un archivo adjunto. Vuelve a añadirlo",
 		"justNow": "ahora mismo",
 		"unitMin": "min",
 		"unitHour": "h",

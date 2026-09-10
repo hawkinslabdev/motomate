@@ -93,6 +93,7 @@
 			}
 		},
 		"magicLink": {
+			"title": "Link magico",
 			"verifying": "Accesso in corso…",
 			"invalid": "Questo link non è valido o è scaduto.",
 			"retry": "Richiedi un nuovo link"
@@ -101,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Proteggi il tuo account",
-			"description": "Sei connesso come amministratore predefinito. Imposta una email e una password reali prima di continuare — puoi sempre aggiornarle in Impostazioni più tardi.",
+			"description": "Sei connesso come amministratore predefinito. Imposta la tua email e una password prima di continuare. Puoi cambiarle più tardi in Impostazioni.",
 			"newEmail": "Nuovo indirizzo email",
 			"newPassword": "Nuova password",
 			"confirmPassword": "Conferma password",
@@ -186,7 +187,7 @@
 		},
 		"lastService": {
 			"title": "Ultimo cambio olio",
-			"description": "Opzionale — aiuta a calcolare quando il prossimo servizio è dovuto.",
+			"description": "Facoltativo. Aiuta a calcolare quando è previsto il prossimo intervento.",
 			"date": "Data",
 			"odometer": "Contachilometri al servizio",
 			"skip": "Salta questo passaggio",
@@ -401,7 +402,6 @@
 				"odometer": "Chilometraggio"
 			},
 			"fields": {
-				"Nome": "Nome",
 				"make": "Marca",
 				"model": "Modello",
 				"year": "Anno",
@@ -685,7 +685,7 @@
 				"everyMonths": "Ogni (mesi)",
 				"date": "Data",
 				"odometer": "Contachilometri ({unit})",
-				"autoCompute": "— lascia vuoto per calcolo automatico",
+				"autoCompute": "lascia vuoto per il calcolo automatico",
 				"usage": "Lettura d'uso ({unit})",
 				"reminderOnly": "Solo promemoria",
 				"reminderOnlyHint": "La registrazione reimposta il promemoria senza creare una voce nella cronologia o apparire nei rapporti."
@@ -912,18 +912,26 @@
 				"new": "Nuova password",
 				"confirm": "Conferma nuova password",
 				"hint": "Min. 8 caratteri",
-				"setupHint": "Questo account accede tramite il tuo provider di identità. Impostare una password qui ti dà un accesso di riserva se quel provider non fosse disponibile. Il single sign-on continua a funzionare.",
-				"setSubmit": "Imposta password",
+				"setupHint": "Questo account non ha ancora una password. Puoi crearne una qui come secondo modo per accedere. Il tuo modo attuale di accedere continua a funzionare.",
+				"setSubmit": "Crea password",
 				"submit": "Cambia password",
 				"saved": "Password cambiata",
 				"errors": {
 					"allRequired": "Tutti i campi password sono obbligatori",
 					"tooShort": "La nuova password deve contenere almeno 8 caratteri",
 					"noMatch": "Le password non corrispondono",
-					"noPasswordSet": "Nessuna password impostata per questo account — usa il link magico per accedere",
+					"noPasswordSet": "Nessuna password impostata per questo account. Usa il link magico per accedere",
 					"incorrect": "La password attuale non è corretta",
-					"sameAsCurrent": "La nuova password deve essere diversa dalla password attuale"
+					"sameAsCurrent": "La nuova password deve essere diversa dalla password attuale",
+					"reauthRequired": "Conferma prima che sei tu, poi riprova"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Conferma con {provider} che sei tu prima di cambiare questo dato.",
+				"hintMagic": "Crea prima una password, oppure apri un nuovo link magico per confermare.",
+				"verify": "Conferma con {provider}",
+				"active": "Confermato. Puoi fare modifiche nei prossimi minuti.",
+				"failed": "Non ha funzionato. Riprova."
 			},
 			"export": {
 				"title": "Esporta dati",
@@ -1393,7 +1401,7 @@
 	"draft": {
 		"resuming": "Riprendendo da {ago}",
 		"discard": "Scarta",
-		"fileHint": "C'era un file allegato — aggiungilo di nuovo",
+		"fileHint": "C'era un file allegato. Aggiungilo di nuovo",
 		"justNow": "adesso",
 		"unitMin": "min fa",
 		"unitHour": "h fa",

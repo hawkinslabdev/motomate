@@ -1,18 +1,24 @@
 # Changelog
 
-## 0.6.0 
+## 0.6.0
 
-**Breaking change**: The application will refuse to start if your `AUTH_SECRET` variable is not secure enough (< 32 bytes). Generate a new key with: "openssl rand -hex 32", beware that this will invalidate your stored S3 and paperless credentials!
+**Breaking change**: The application will refuse to start on a default `AUTH_SECRET`. A secret under 32 bytes will prevent a fresh install from starting, though existing installs will only show a warning you should take seriously. Generate a new key with: `openssl rand -hex 32`, beware that this will invalidate your stored S3 and paperless credentials!
 
 - You can now use your favorite OIDC provider (e.g. Authelia, Authentik, Pocket ID). See examples [here](https://github.com/hawkinslabdev/motomate/blob/main/docker-compose.yml) (#99)
 - Your OIDC provider can now create accounts by itself with `OIDC_ALLOW_SIGNUP`, so single sign-on works while public registration stays closed (#101)
 - Added a search box to the login screen for easier language selection
-- Fix: A magic link now lets you set a new password without entering the old one to allow password recovery
+- Renaming a document will push that new document name to Paperless-ngx for consistency
+- Fix: a magic link now lets you set a new password without entering the old one to allow password recovery
+- Fix: an account created through OIDC can now set a password from a magic link, as a way back in when the provider is unavailable
 - Fix: With no SMTP configured, magic links are written to the server log instead of attempting to mail it
 - Fix: opening a magic link without a token returned a server error instead of the invalid link page
+- Fix: when using the magic link feature, the message will now clearly show when registration is either enabled or disabled
 - Fix: translate notification messages to Italian (contribution by @albanobattistella) #100
+- Fix: the notification channel settings were still shown in English in German, Spanish, French and Portuguese
+- Fix: restore the umlauts in German and the accents in Portuguese, which were written as plain ASCII in the integrations and notification text
+- Fix: add the missing magic link page title to five languages, and drop a stray Italian key
 - Fix: document `ADDRESS_HEADER` and `XFF_DEPTH` in the docker compose config and `.env.example`, so rate limits bucket per client instead of per proxy behind a reverse proxy
-- Fix: `PUBLIC_APP_URL` was read from the wrong place and always ignored, so magic link emails pointed at localhost and the OIDC redirect fell back to the request host
+- Fix: `PUBLIC_APP_URL` was read from the wrong place and always ignored, so magic link emails pointed at localhost, the OIDC redirect fell back to the request host, and the API answered any origin on installs that set it without `PUBLIC_APP_ORIGINS`
 - Security: refuse to start on a default `AUTH_SECRET` even when users already exist
 - Security: require a verified email from your OIDC provider, and match accounts on the provider's user id instead of the email address (can be disabled with `OIDC_TRUST_UNVERIFIED_EMAIL`)
 - Security: changing your password now logs out your other sessions
@@ -21,6 +27,8 @@
 - Security: remove an expensive hash from the magic link page that could be triggered without logging in
 - Security: prevent SVG injection via the unescaped rotate option in DiceBear avatars
 - Security: the magic link form no longer reveals whether an email address has an account
+- Security: the API keys now authenticate the REST API only, so a key can no longer drive a page route or a form action
+- Security: a read-only API key is refused on every write generally, instead of checking this on each endpoint
 
 ## 0.5.5
 

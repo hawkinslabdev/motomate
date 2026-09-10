@@ -33,7 +33,7 @@
 		"theme": "Design",
 		"login": {
 			"title": "Anmelden",
-			"subtitle": "Geben Sie Ihre E-Mail-Adresse ein, um fortzufahren",
+			"subtitle": "Gib deine E-Mail-Adresse ein, um fortzufahren",
 			"email": "E-Mail",
 			"password": "Passwort",
 			"showPassword": "Passwort anzeigen",
@@ -48,8 +48,8 @@
 			"orSignInWith": "Oder mit einem Identitätsanbieter anmelden",
 			"setupNotice": {
 				"title": "Erstes Setup",
-				"body": "Willkommen bei MotoMate. Da Sie neu hier sind, wurde ein Standard-Administratorkonto erstellt. Melden Sie sich an, um das Setup abzuschließen und diese Anmeldedaten zu ändern.",
-				"defaultCreds": "Verwenden Sie oben die Standard-Anmeldedaten für die erste Anmeldung. Sie können diese unter Einstellungen → Konto ändern."
+				"body": "Willkommen bei MotoMate. Da du neu hier bist, wurde ein Standard-Administratorkonto erstellt. Melde dich an, um das Setup abzuschließen und diese Anmeldedaten zu ändern.",
+				"defaultCreds": "Verwende oben die Standard-Anmeldedaten für die erste Anmeldung. Du kannst sie unter Einstellungen → Konto ändern."
 			},
 			"tabs": {
 				"password": "Passwort",
@@ -61,7 +61,7 @@
 				"invalidFormat": "Ungültiges E-Mail- oder Passwortformat",
 				"invalidCredentials": "Ungültige E-Mail oder Passwort",
 				"invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein",
-				"registrationClosed": "Die Registrierung ist geschlossen. Wenden Sie sich an Ihren Administrator.",
+				"registrationClosed": "Die Registrierung ist geschlossen. Wende dich an deinen Administrator.",
 				"verificationFailed": "Verifizierung fehlgeschlagen. Bitte versuche es erneut.",
 				"smtpNotConfigured": "Magic-Link-Anmeldung ist nicht verfügbar: SMTP ist nicht konfiguriert.",
 				"oidc": "Die Single-Sign-on-Anmeldung ist fehlgeschlagen. Bitte versuche es erneut oder wende dich an deinen Administrator.",
@@ -70,7 +70,7 @@
 		},
 		"register": {
 			"title": "Konto erstellen",
-			"subtitle": "Registrieren Sie sich, um mit der Fahrzeugwartung zu beginnen",
+			"subtitle": "Registriere dich, um mit der Fahrzeugwartung zu beginnen",
 			"email": "E-Mail",
 			"password": "Passwort",
 			"passwordHint": "Mindestens 8 Zeichen verwenden",
@@ -80,7 +80,7 @@
 			"hasAccount": "Bereits ein Konto?",
 			"login": "Anmelden",
 			"closedTitle": "Registrierung geschlossen",
-			"closedBody": "Neue Konten werden derzeit nicht angenommen. Wenden Sie sich an Ihren Administrator.",
+			"closedBody": "Neue Konten werden derzeit nicht angenommen. Wende dich an deinen Administrator.",
 			"closedAction": "Zur Anmeldung",
 			"errors": {
 				"registrationClosed": "Die Registrierung ist geschlossen.",
@@ -93,7 +93,8 @@
 			}
 		},
 		"magicLink": {
-			"verifying": "Wir melden Sie an…",
+			"title": "Magic-Link",
+			"verifying": "Wir melden dich an…",
 			"invalid": "Dieser Link ist ungültig oder abgelaufen.",
 			"retry": "Neuen Link anfordern"
 		}
@@ -101,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Konto sichern",
-			"description": "Sie sind als Standard-Administrator angemeldet. Legen Sie eine echte E-Mail und ein Passwort fest, bevor Sie fortfahren — Sie können diese jederzeit in den Einstellungen aktualisieren.",
+			"description": "Du bist als Standard-Administrator angemeldet. Lege deine eigene E-Mail-Adresse und ein Passwort fest, bevor du fortfährst. Du kannst beides später in den Einstellungen ändern.",
 			"newEmail": "Neue E-Mail-Adresse",
 			"newPassword": "Neues Passwort",
 			"confirmPassword": "Passwort bestätigen",
@@ -110,9 +111,9 @@
 		},
 		"welcome": {
 			"title": "Willkommen bei MotoMate",
-			"description": "Fügen Sie Ihr erstes Fahrzeug hinzu und richten Sie einen Wartungsplan ein. Dauert etwa eine Minute.",
+			"description": "Füge dein erstes Fahrzeug hinzu und richte einen Wartungsplan ein. Dauert etwa eine Minute.",
 			"submit": "Loslegen →",
-			"skipWarning": "Denken Sie daran, Ihre E-Mail und Ihr Passwort in Einstellungen → Konto zu aktualisieren, bevor Sie live gehen.",
+			"skipWarning": "Denk daran, deine E-Mail und dein Passwort in Einstellungen → Konto zu aktualisieren, bevor du live gehst.",
 			"nameLabel": "Dein Name",
 			"namePlaceholder": "z.B. Max"
 		},
@@ -124,7 +125,7 @@
 			"other": "Andere"
 		},
 		"details": {
-			"title": "Erzählen Sie uns über Ihr {vehicleType}",
+			"title": "Erzähl uns von deinem {vehicleType}",
 			"name": "Spitzname",
 			"make": "Marke",
 			"model": "Modell",
@@ -148,7 +149,7 @@
 		},
 		"presets": {
 			"title": "Welche Wartungsarbeiten?",
-			"description": "Wir erstellen Tracker dafür. Sie können sie jederzeit hinzufügen oder entfernen.",
+			"description": "Wir erstellen Tracker dafür. Du kannst sie jederzeit hinzufügen oder entfernen.",
 			"tasks": {
 				"oil": "Öl & Filterwechsel",
 				"tire": "Reifendruck & -verschleiß",
@@ -194,7 +195,7 @@
 			"hoursReading": "Stunden bei Service"
 		},
 		"summary": {
-			"title": "Sie sind fertig!",
+			"title": "Du bist fertig!",
 			"submit": "Meine Garage öffnen →"
 		},
 		"nav": {
@@ -216,7 +217,7 @@
 			"overdue": "{count, plural, =1 {1 Element überfällig.} other {# Elemente überfällig.}}",
 			"dueSoon": "{count, plural, =1 {1 Element bald fällig.} other {# Elemente bald fällig.}}",
 			"allGood": "Alles sieht gut aus.",
-			"addFirst": "Fügen Sie Ihr erstes Fahrzeug hinzu, um zu beginnen."
+			"addFirst": "Füge dein erstes Fahrzeug hinzu, um zu beginnen."
 		},
 		"sections": {
 			"needsAttention": "Erfordert Aufmerksamkeit",
@@ -233,9 +234,9 @@
 			"moreOnVehicle": "{count, plural, =1 {1 weiteres bei {vehicleName}} other {# weitere bei {vehicleName}}}"
 		},
 		"empty": {
-			"title": "Ihre Garage ist leer",
-			"descriptionOnboarding": "Fügen Sie Ihr erstes Motorrad oder Ihren Roller hinzu, um zu beginnen.",
-			"descriptionActive": "Fügen Sie ein neues Fahrzeug zu Ihrer Sammlung hinzu.",
+			"title": "Deine Garage ist leer",
+			"descriptionOnboarding": "Füge dein erstes Motorrad oder deinen Roller hinzu, um zu beginnen.",
+			"descriptionActive": "Füge ein neues Fahrzeug zu deiner Sammlung hinzu.",
 			"submit": "+ Fahrzeug hinzufügen"
 		}
 	},
@@ -250,8 +251,8 @@
 		"favorite": "Als Favorit markieren",
 		"unfavorite": "Aus Favoriten entfernen",
 		"empty": {
-			"title": "Ihre Garage ist leer",
-			"description": "Fügen Sie ein neues Fahrzeug zu Ihrer Sammlung hinzu."
+			"title": "Deine Garage ist leer",
+			"description": "Füge ein neues Fahrzeug zu deiner Sammlung hinzu."
 		}
 	},
 	"vehicle": {
@@ -276,10 +277,10 @@
 				"pin": "Dokument anheften",
 				"change": "Angeheftetes Dokument andern",
 				"view": "In Dokumenten anzeigen",
-				"openFile": "Datei offnen",
+				"openFile": "Datei öffnen",
 				"viewInList": "In Liste anzeigen",
 				"editPin": "Anheftung bearbeiten",
-				"openNewTab": "In neuem Tab offnen",
+				"openNewTab": "In neuem Tab öffnen",
 				"remove": "Anheftung entfernen",
 				"noDocs": "Noch keine Dokumente hochgeladen.",
 				"actions": "Dokumentaktionen",
@@ -296,10 +297,10 @@
 			},
 			"timeline": {
 				"title": "Zeitleiste",
-				"subtitle": "Alle Ihre Daten für {name} an einem Ort.",
+				"subtitle": "Alle deine Daten für {name} an einem Ort.",
 				"empty": {
 					"title": "Noch kein Verlauf",
-					"description": "Protokollieren Sie Ihren ersten Service oder Kilometerstand-Check-in, um die Zeitleiste zu starten.",
+					"description": "Protokolliere deinen ersten Service oder Kilometerstand-Check-in, um die Zeitleiste zu starten.",
 					"usageDescription": "Erfasse deinen ersten Service oder Stundenstand, um die Zeitachse zu starten."
 				},
 				"filter": {
@@ -331,7 +332,7 @@
 			"showMoreOdoReadings": "{n} weitere Kilometerstände anzeigen",
 			"deleteDialog": {
 				"title": "Diesen Eintrag löschen?",
-				"description": "Dieser Eintrag wird dauerhaft aus Ihrer Zeitleiste entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+				"description": "Dieser Eintrag wird dauerhaft aus deiner Zeitleiste entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
 				"confirm": "Löschen",
 				"cancel": "Behalten"
 			},
@@ -342,7 +343,7 @@
 			"logService": "Serviceeintrag protokollieren",
 			"updateOdo": "Kilometerstand aktualisieren",
 			"writeNote": "Notiz",
-			"noteDesc": "Schreiben Sie eine Notiz oder Bemerkung",
+			"noteDesc": "Schreib eine Notiz oder Bemerkung",
 			"editEntry": "Eintrag bearbeiten",
 			"fields": {
 				"date": "Datum",
@@ -430,7 +431,7 @@
 		},
 		"edit": {
 			"title": "Einstellungen",
-			"subtitle": "Verwalten Sie Ihr {name}",
+			"subtitle": "Verwalte dein {name}",
 			"odometer": {
 				"title": "Kilometerstand aktualisieren",
 				"currentReading": "Aktueller Stand ({unit})",
@@ -459,8 +460,8 @@
 				"archive": {
 					"title": "Fahrzeug archivieren",
 					"titleRestore": "Fahrzeug wiederherstellen",
-					"descArchive": "Verschieben Sie dieses Fahrzeug in das Archiv. Es wird in der Garage ausgeblendet.",
-					"descRestore": "Bringen Sie dieses Fahrzeug in Ihre aktive Garage zurück.",
+					"descArchive": "Verschiebe dieses Fahrzeug in das Archiv. Es wird in der Garage ausgeblendet.",
+					"descRestore": "Bring dieses Fahrzeug in deine aktive Garage zurück.",
 					"btnArchive": "Archivieren",
 					"btnRestore": "Wiederherstellen"
 				},
@@ -478,19 +479,19 @@
 				},
 				"archiveDialog": {
 					"title": "{name} archivieren?",
-					"desc": "Dieses Fahrzeug wird in Ihrer Garage ausgeblendet. Sie können es jederzeit wiederherstellen. Setzen Sie den Verkaufspreis oben, bevor Sie fortfahren, falls Sie es verkauft haben.",
+					"desc": "Dieses Fahrzeug wird in deiner Garage ausgeblendet. Du kannst es jederzeit wiederherstellen. Setze den Verkaufspreis oben, bevor du fortfährst, falls du es verkauft hast.",
 					"confirm": "Archivieren",
 					"cancel": "Aktiv behalten"
 				},
 				"unarchiveDialog": {
 					"title": "{name} wiederherstellen?",
-					"desc": "Dieses Fahrzeug wird in Ihre aktive Garage zurückversetzt. Der Verkaufspreis wird gelöscht, damit Sie die Fahrzeugdetails erneut bearbeiten können.",
+					"desc": "Dieses Fahrzeug wird in deine aktive Garage zurückversetzt. Der Verkaufspreis wird gelöscht, damit du die Fahrzeugdetails erneut bearbeiten kannst.",
 					"confirm": "Wiederherstellen",
 					"cancel": "Archiviert lassen"
 				},
 				"report": {
 					"title": "Wartungsheft",
-					"desc": "Laden Sie eine physische Kopie Ihrer vollständigen Wartungshistorie herunter.",
+					"desc": "Lade eine physische Kopie deiner vollständigen Wartungshistorie herunter.",
 					"btn": "Herunterladen",
 					"modal": {
 						"title": "Wartungsprotokoll",
@@ -516,17 +517,17 @@
 						"notEmbeddable": "nicht einbettbar",
 						"trackers": "Durchgeführt",
 						"period": "Zeitraum",
-						"attached": "Beigefuegt",
-						"financeSummary": "Ausgabenuebersicht",
+						"attached": "Beigefügt",
+						"financeSummary": "Ausgabenübersicht",
 						"financeTotal": "Gesamt",
 						"financeNoData": "Keine Ausgaben in diesem Zeitraum.",
 						"catMaintenance": "Wartung",
 						"catParts": "Ersatzteile",
-						"catAccessories": "Zubehoer",
+						"catAccessories": "Zubehör",
 						"catAdministrative": "Verwaltung",
 						"catFuel": "Kraftstoff",
 						"catOther": "Sonstiges",
-						"documentInApp": "Dieses Dokument ist in Ihrer MotoMate-Dokumentenbibliothek verfuegbar.",
+						"documentInApp": "Dieses Dokument ist in deiner MotoMate-Dokumentenbibliothek verfügbar.",
 						"vehicleNotes": "Notizen"
 					}
 				}
@@ -591,7 +592,7 @@
 	},
 	"maintenance": {
 		"title": "Wartung",
-		"subtitle": "Verfolgen Sie Ihren Serviceplan",
+		"subtitle": "Verfolge deinen Serviceplan",
 		"view": {
 			"current": "Aktuell",
 			"forecast": "Prognose",
@@ -615,7 +616,7 @@
 		"history": {
 			"title": "Servicehistorie",
 			"noHistory": "Noch keine Servicehistorie",
-			"noHistoryDesc": "Protokollieren Sie einen Serviceeintrag, um ihn hier zu sehen.",
+			"noHistoryDesc": "Protokolliere einen Serviceeintrag, um ihn hier zu sehen.",
 			"serviceEntry": "Service",
 			"task": "Aufgabe",
 			"odometer": "Kilometerstand",
@@ -651,9 +652,9 @@
 		},
 		"empty": {
 			"title": "Noch keine Wartungsaufgaben",
-			"description": "Fügen Sie benutzerdefinierte Aufgaben hinzu oder führen Sie den Onboarding-Assistenten aus, um Voreinstellungen einzurichten.",
+			"description": "Füge benutzerdefinierte Aufgaben hinzu oder führe den Onboarding-Assistenten aus, um Voreinstellungen einzurichten.",
 			"noMatch": "Keine Aufgaben gefunden",
-			"noMatchDesc": "Versuchen Sie einen anderen Suchbegriff oder löschen Sie das Filter."
+			"noMatchDesc": "Versuch einen anderen Suchbegriff oder lösche den Filter."
 		},
 		"tracker": {
 			"status": {
@@ -684,7 +685,7 @@
 				"everyMonths": "Alle (Monate)",
 				"date": "Datum",
 				"odometer": "Kilometerstand ({unit})",
-				"autoCompute": "— leer lassen für automatische Berechnung",
+				"autoCompute": "leer lassen für automatische Berechnung",
 				"usage": "Verbrauchsstand ({unit})",
 				"reminderOnly": "Nur Erinnerung",
 				"reminderOnlyHint": "Das Protokollieren setzt die Erinnerung zurück, ohne einen Zeitleisteneintrag zu erstellen oder in Berichten zu erscheinen."
@@ -700,7 +701,7 @@
 			"trackerUpdated": "Tracker aktualisiert",
 			"trackerDeleted": "Tracker gelöscht",
 			"taskAdded": "Aufgabe hinzugefügt",
-			"defaultsApplied": "Standard-Tracker basierend auf Ihrem Serviceverlauf angewendet"
+			"defaultsApplied": "Standard-Tracker basierend auf deinem Serviceverlauf angewendet"
 		},
 		"applyDefaults": "Standardwerte anwenden",
 		"delete": {
@@ -785,7 +786,7 @@
 		},
 		"empty": {
 			"title": "Keine Ausgaben erfasst",
-			"description": "Fügen Sie Ihre erste Ausgabe hinzu, um mit der Verfolgung zu beginnen."
+			"description": "Füge deine erste Ausgabe hinzu, um mit der Verfolgung zu beginnen."
 		},
 		"col": {
 			"date": "Datum",
@@ -911,7 +912,7 @@
 				"new": "Neues Passwort",
 				"confirm": "Neues Passwort bestätigen",
 				"hint": "Min. 8 Zeichen",
-				"setupHint": "Dieses Konto meldet sich über deinen Identitätsanbieter an. Ein hier gesetztes Passwort dient als Ausweichweg, falls dieser Anbieter einmal nicht erreichbar ist. Single Sign-on funktioniert weiterhin.",
+				"setupHint": "Dieses Konto hat noch kein Passwort. Du kannst hier eins festlegen, als zweiten Weg zum Anmelden. Deine bisherige Anmeldung funktioniert weiter.",
 				"setSubmit": "Passwort festlegen",
 				"submit": "Passwort ändern",
 				"saved": "Passwort geändert",
@@ -919,10 +920,18 @@
 					"allRequired": "Alle Passwortfelder sind erforderlich",
 					"tooShort": "Neues Passwort muss mindestens 8 Zeichen lang sein",
 					"noMatch": "Passwörter stimmen nicht überein",
-					"noPasswordSet": "Kein Passwort für dieses Konto gesetzt — verwende den Magic-Link zum Anmelden",
+					"noPasswordSet": "Kein Passwort für dieses Konto gesetzt. Verwende den Magic-Link zum Anmelden",
 					"incorrect": "Aktuelles Passwort ist falsch",
-					"sameAsCurrent": "Neues Passwort muss sich vom aktuellen Passwort unterscheiden"
+					"sameAsCurrent": "Neues Passwort muss sich vom aktuellen Passwort unterscheiden",
+					"reauthRequired": "Bestätige zuerst, dass du es bist, und versuche es erneut"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Bestätige mit {provider}, dass du es bist, bevor du das änderst.",
+				"hintMagic": "Lege zuerst ein Passwort fest oder öffne einen neuen Magic-Link zur Bestätigung.",
+				"verify": "Mit {provider} bestätigen",
+				"active": "Bestätigt. Du kannst in den nächsten Minuten Änderungen vornehmen.",
+				"failed": "Das hat nicht funktioniert. Bitte versuche es erneut."
 			},
 			"export": {
 				"title": "Daten exportieren",
@@ -950,7 +959,7 @@
 		"workflows": {
 			"title": "Benachrichtigungsregeln",
 			"loadPresets": "Voreinstellungen wiederherstellen",
-			"empty": "Noch keine Regeln. Stellen Sie die Voreinstellungen wieder her oder erstellen Sie eigene Regeln.",
+			"empty": "Noch keine Regeln. Stelle die Voreinstellungen wieder her oder erstelle eigene Regeln.",
 			"presets": {
 				"maintenanceDueSoonKm": "Wartung bald fällig",
 				"maintenanceOverdueKm": "Wartung überfällig",
@@ -1017,7 +1026,7 @@
 				"testError": "Failed",
 				"push": {
 					"label": "Browser push",
-					"description": "Push notifications to this browser when a rule fires.",
+					"description": "Push-Benachrichtigungen an diesen Browser, wenn eine Regel ausgelöst wird.",
 					"subscribe": "Subscribe this browser",
 					"subscribed": "Subscribed",
 					"subError": "Subscription failed",
@@ -1025,31 +1034,31 @@
 				},
 				"email": {
 					"label": "Email",
-					"description": "Send an email notification to the address below.",
+					"description": "Sendet eine E-Mail-Benachrichtigung an die Adresse unten.",
 					"addressLabel": "Notification address",
 					"addressPlaceholder": "you@example.com",
-					"hint": "Separate from your account login email.",
+					"hint": "Unabhängig von der E-Mail-Adresse für die Anmeldung.",
 					"noSmtp": "SMTP is not configured on this server."
 				},
 				"webhook": {
 					"label": "Webhook",
-					"description": "POST a JSON payload to any URL when a rule fires.",
+					"description": "Sendet einen JSON-Payload per POST an eine beliebige URL, wenn eine Regel ausgelöst wird.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Sendet eine POST-Anfrage mit Ereignis, Titel, Text, Fahrzeugname und Daten."
 				},
 				"ha": {
 					"label": "Home Assistant",
-					"description": "Trigger a Home Assistant webhook automation.",
+					"description": "Löst eine Home-Assistant-Automatisierung per Webhook aus.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Paste your Home Assistant webhook URL",
-					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
+					"hint": "Webhook-URL von Home Assistant einfügen. Kein Token nötig.",
+					"tip": "Tipp: Für eine externe Home-Assistant-URL die Option „Nur aus dem Netzwerk erreichbar“ deaktivieren.",
 					"configLabel": "Automation config",
 					"copy": "Copy",
-					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+					"invalidUrl": "Die URL muss auf /api/webhook/<webhook_id> enden"
 				}
 			},
 			"inbox": {
@@ -1168,7 +1177,7 @@
 				"label": "S3-Backup",
 				"description": "Spiegle Dokumente und Bilder in jeden S3-kompatiblen Bucket, darunter MinIO, SeaweedFS, Garage und Backblaze B2.",
 				"endpointLabel": "Endpoint",
-				"endpointHint": "Fuer AWS S3 leer lassen. Selbst gehostete Anbieter wie MinIO oder SeaweedFS brauchen die vollstaendige URL.",
+				"endpointHint": "Für AWS S3 leer lassen. Selbst gehostete Anbieter wie MinIO oder SeaweedFS brauchen die vollständige URL.",
 				"regionLabel": "Region",
 				"bucketLabel": "Bucket",
 				"accessKeyLabel": "Access Key",
@@ -1176,22 +1185,22 @@
 			},
 			"paperless": {
 				"label": "Paperless-ngx",
-				"description": "Sende eine Kopie jedes hochgeladenen Dokuments an dein paperless-ngx Archiv fuer OCR und Volltextsuche.",
+				"description": "Sende eine Kopie jedes hochgeladenen Dokuments an dein paperless-ngx Archiv für OCR und Volltextsuche.",
 				"urlLabel": "Server-URL",
 				"tokenLabel": "API-Token",
 				"tokenHint": "Lege eines in paperless-ngx unter Einstellungen, dann API-Token an.",
 				"includeReportsLabel": "Wartungsberichte ebenfalls archivieren",
-				"includeReportsHint": "Von MotoMate erzeugte Berichte werden standardmaessig uebersprungen, da du sie neu erzeugen kannst. Aktiviere dies, um sie auch in paperless zu behalten."
+				"includeReportsHint": "Von MotoMate erzeugte Berichte werden standardmäßig übersprungen, da du sie neu erzeugen kannst. Aktiviere dies, um sie auch in paperless zu behalten."
 			},
 			"sync": {
 				"title": "Alles synchronisieren",
-				"description": "Dateien von vor der Aktivierung wurden noch nicht kopiert. Fuehre das einmal nach der Einrichtung aus und erneut, wenn etwas fehlgeschlagen ist.",
+				"description": "Dateien von vor der Aktivierung wurden noch nicht kopiert. Führe das einmal nach der Einrichtung aus und erneut, wenn etwas fehlgeschlagen ist.",
 				"button": "Alles synchronisieren",
-				"running": "Laeuft",
-				"failed": "{count} Eintraege fehlgeschlagen. Behebe die Ursache und starte erneut.",
+				"running": "Läuft",
+				"failed": "{count} Einträge fehlgeschlagen. Behebe die Ursache und starte erneut.",
 				"skipped": "{count} Dokument(e) nicht an paperless gesendet.",
 				"reason": {
-					"unsupported": "Dateityp wird von paperless nicht unterstuetzt",
+					"unsupported": "Dateityp wird von paperless nicht unterstützt",
 					"report": "generierter Bericht, nicht archiviert"
 				},
 				"resultS3": "{uploaded} hochgeladen, {skipped} bereits im Bucket.",
@@ -1234,18 +1243,18 @@
 		"signOut": "Abmelden",
 		"logoutConfirm": {
 			"title": "Abmelden",
-			"description": "Möchten Sie sich wirklich abmelden?",
+			"description": "Möchtest du dich wirklich abmelden?",
 			"confirm": "Abmelden",
 			"cancel": "Angemeldet bleiben"
 		},
 		"addEntry": {
 			"title": "Eintrag hinzufügen",
 			"chooseVehicle": "Fahrzeug auswählen",
-			"whatLogging": "Was möchten Sie erfassen?",
+			"whatLogging": "Was möchtest du erfassen?",
 			"maintenance": "Wartung",
 			"maintenanceDesc": "Öl, Reifen oder Reparaturen",
 			"mileage": "Kilometerstand",
-			"mileageDesc": "Zahl auf Ihrem Tacho",
+			"mileageDesc": "Zahl auf deinem Tacho",
 			"finance": "Ausgaben",
 			"financeDesc": "Kraftstoff oder andere Kosten",
 			"usage": "Verbrauch",
@@ -1256,7 +1265,7 @@
 			"empty": "Keine neuen Benachrichtigungen",
 			"viewAll": "Alle anzeigen",
 			"error": "Benachrichtigungen konnten nicht geladen werden",
-			"clearAll": "Alle loeschen",
+			"clearAll": "Alle löschen",
 			"dismiss": "Verwerfen"
 		}
 	},
@@ -1283,12 +1292,12 @@
 		},
 		"integration": {
 			"s3": {
-				"title": "S3-Backup schlaegt fehl",
-				"body": "MotoMate konnte deine Dateien nicht in den Bucket kopieren. Pruefe die Verbindung unter Einstellungen, Integrationen."
+				"title": "S3-Backup schlägt fehl",
+				"body": "MotoMate konnte deine Dateien nicht in den Bucket kopieren. Prüfe die Verbindung unter Einstellungen, Integrationen."
 			},
 			"paperless": {
-				"title": "Paperless-Archivierung schlaegt fehl",
-				"body": "MotoMate konnte ein Dokument nicht an paperless-ngx senden. Pruefe die Verbindung unter Einstellungen, Integrationen."
+				"title": "Paperless-Archivierung schlägt fehl",
+				"body": "MotoMate konnte ein Dokument nicht an paperless-ngx senden. Prüfe die Verbindung unter Einstellungen, Integrationen."
 			}
 		}
 	},
@@ -1348,7 +1357,7 @@
 		},
 		"filter": {
 			"search": "Reisen suchen...",
-			"noResults": "Keine Reisen entsprechen Ihrer Suche.",
+			"noResults": "Keine Reisen entsprechen deiner Suche.",
 			"noResultsDesc": "Versuche einen anderen Suchbegriff oder lösche den Filter.",
 			"all": "Alle",
 			"past": "Vergangen",
@@ -1392,7 +1401,7 @@
 	"draft": {
 		"resuming": "Fortsetzen von {ago}",
 		"discard": "Verwerfen",
-		"fileHint": "Eine Datei war angehängt — bitte erneut hinzufügen",
+		"fileHint": "Eine Datei war angehängt. Bitte erneut hinzufügen",
 		"justNow": "gerade eben",
 		"unitMin": "Min. zuvor",
 		"unitHour": "Std. zuvor",

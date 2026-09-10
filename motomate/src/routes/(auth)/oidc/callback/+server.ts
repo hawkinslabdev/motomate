@@ -6,7 +6,8 @@ import {
 	fetchUserinfo,
 	isEmailVerified,
 	redirectUri,
-	oidcCookie
+	oidcCookie,
+	safeReturnPath
 } from '$lib/auth/oidc.js';
 import { lucia, isSecureCookie } from '$lib/auth/index.js';
 import {
@@ -17,10 +18,11 @@ import {
 } from '$lib/db/repositories/users.js';
 import { isOidcSignupOpen } from '$lib/auth/registration.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
+import { reauthExpiry } from '$lib/auth/reauth.js';
 import { ts } from '$lib/server/log.js';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
+export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddress }) => {
 	const config = getOidcConfig();
 	if (!config) error(404);
 
@@ -32,15 +34,28 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 	const state = url.searchParams.get('state');
 	const stateCookie = oidcCookie('state', isSecureCookie);
 	const verifierCookie = oidcCookie('verifier', isSecureCookie);
+	const reauthCookie = oidcCookie('reauth', isSecureCookie);
 	const storedState = cookies.get(stateCookie);
 	const verifier = cookies.get(verifierCookie);
-	cookies.delete(stateCookie, { path: '/' });
-	cookies.delete(verifierCookie, { path: '/' });
+	const reauthReturn = cookies.get(reauthCookie);
+	const clearOpts = { path: '/', secure: isSecureCookie };
+	cookies.delete(stateCookie, clearOpts);
+	cookies.delete(verifierCookie, clearOpts);
+	cookies.delete(reauthCookie, clearOpts);
+
+	const stepUp = !!reauthReturn;
+	const back = safeReturnPath(reauthReturn, '/settings/account');
+	const onFailure = stepUp ? `${back}?error=reauth` : '/login?error=oidc';
 
 	if (!code || !state || !verifier || state !== storedState) {
 		console.error(
 			`${ts()} [MotoMate] OIDC callback rejected: code=${!!code} state=${!!state} verifier=${!!verifier} stateMatch=${state === storedState}`
 		);
+		redirect(302, onFailure);
+	}
+
+	if (stepUp && !locals.user?.settings?.oidc_sub) {
+		console.error(`${ts()} [MotoMate] OIDC step-up rejected: no linked session`);
 		redirect(302, '/login?error=oidc');
 	}
 
@@ -53,6 +68,15 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 		userinfo = await fetchUserinfo(discovery, tokens.access_token);
 	} catch (e) {
 		console.error(`${ts()} [MotoMate] OIDC token exchange failed`, e);
+	}
+
+	if (stepUp) {
+		if (!userinfo?.sub || userinfo.sub !== locals.user!.settings!.oidc_sub) {
+			console.error(`${ts()} [MotoMate] OIDC step-up rejected: subject mismatch`);
+			redirect(302, `${back}?error=reauth`);
+		}
+		await updateUserSettings(locals.user!.id, { reauth_until: reauthExpiry() });
+		redirect(302, back);
 	}
 
 	const emailTrusted = config.trustUnverifiedEmail || isEmailVerified(userinfo?.email_verified);

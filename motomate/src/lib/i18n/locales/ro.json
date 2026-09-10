@@ -102,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Securizează-ți contul",
-			"description": "Ești autentificat cu contul de admin implicit. Setează o adresă de email reală și o parolă înainte de a continua — le poți actualiza oricând mai târziu în Setări.",
+			"description": "Ești autentificat cu contul de admin implicit. Setează adresa ta de email și o parolă înainte să continui. Le poți schimba mai târziu în Setări.",
 			"newEmail": "Adresă nouă de email",
 			"newPassword": "Parolă nouă",
 			"confirmPassword": "Confirmă parola",
@@ -686,7 +686,7 @@
 				"date": "Dată",
 				"odometer": "Odometru ({unit})",
 				"usage": "Citire utilizare ({unit})",
-				"autoCompute": "— lasă gol pentru calculare automată",
+				"autoCompute": "lasă gol pentru calculare automată",
 				"reminderOnly": "Doar memento",
 				"reminderOnlyHint": "Înregistrarea resetează mementoul fără a crea o intrare în cronologie sau a apărea în rapoarte."
 			},
@@ -925,7 +925,7 @@
 				"new": "Parolă nouă",
 				"confirm": "Confirmă parola nouă",
 				"hint": "Min. 8 caractere",
-				"setupHint": "Acest cont se autentifică prin furnizorul tău de identitate. Setarea unei parole aici îți oferă o cale de rezervă dacă acel furnizor devine indisponibil. Autentificarea unică funcționează în continuare.",
+				"setupHint": "Acest cont nu are încă parolă. Poți seta una aici, ca a doua modalitate de conectare. Modul tău actual de conectare rămâne activ.",
 				"setSubmit": "Setează parola",
 				"submit": "Schimbă parola",
 				"saved": "Parolă schimbată",
@@ -933,10 +933,18 @@
 					"allRequired": "Toate câmpurile de parolă sunt obligatorii",
 					"tooShort": "Noua parolă trebuie să aibă cel puțin 8 caractere",
 					"noMatch": "Parolele nu se potrivesc",
-					"noPasswordSet": "Nu este setată nicio parolă pentru acest cont — folosește magic link pentru autentificare",
+					"noPasswordSet": "Nu este setată nicio parolă pentru acest cont. Folosește magic link pentru autentificare",
 					"incorrect": "Parola curentă este incorectă",
-					"sameAsCurrent": "Noua parolă trebuie să fie diferită de parola curentă"
+					"sameAsCurrent": "Noua parolă trebuie să fie diferită de parola curentă",
+					"reauthRequired": "Confirmă mai întâi că tu ești, apoi încearcă din nou"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Confirmă cu {provider} că tu ești, înainte să schimbi asta.",
+				"hintMagic": "Setează mai întâi o parolă sau deschide un nou magic link pentru confirmare.",
+				"verify": "Confirmă cu {provider}",
+				"active": "Confirmat. Poți face modificări în următoarele minute.",
+				"failed": "Nu a funcționat. Încearcă din nou."
 			},
 			"export": {
 				"title": "Exportă datele",
@@ -1393,7 +1401,7 @@
 	"draft": {
 		"resuming": "Continuare din {ago}",
 		"discard": "Renunță",
-		"fileHint": "Era un fișier atașat — te rugăm să îl adaugi din nou",
+		"fileHint": "Era un fișier atașat. Adaugă-l din nou",
 		"justNow": "chiar acum",
 		"unitMin": "min în urmă",
 		"unitHour": "h în urmă",

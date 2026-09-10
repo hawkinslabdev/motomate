@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			odometer: l.odometer,
 			recorded_at: l.recorded_at
 		})),
-		/* Returns all categories. Fuel data is logged inconsistently and lacks user feedback (Aug 2026)—treat fuel as opt-in for budgeting. */
+		// fuel logged inconsistently, keep opt-in
 		expenses: expensesByVehicle.flat(),
 		serviceLogs: serviceByVehicle.flat().map((s) => ({
 			vehicle_id: s.vehicle_id,

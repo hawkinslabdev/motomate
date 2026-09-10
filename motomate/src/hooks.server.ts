@@ -1,4 +1,5 @@
 import { lucia } from '$lib/auth/index.js';
+import { json } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { env as pubEnv } from '$env/dynamic/public';
@@ -11,6 +12,8 @@ if (!env.AUTH_SECRET) {
 		'[MotoMate] AUTH_SECRET is not set. Set a random secret (min 32 chars) in your .env file before starting the server.'
 	);
 }
+
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 // Signs file URLs and export tokens, keys ALTCHA, and derives the integration-credential key.
 const PLACEHOLDER_SECRETS = new Set([
@@ -80,7 +83,7 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
 	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
 		? process.env.PUBLIC_APP_ORIGINS.split(',')
 		: [];
-	const appUrl = env.PUBLIC_APP_URL ?? '';
+	const appUrl = pubEnv.PUBLIC_APP_URL ?? '';
 	const appOrigins: string[] = [];
 	if (appUrl) {
 		try {
@@ -137,13 +140,20 @@ export const handle: Handle = async ({ event, resolve }) => {
 		});
 	}
 
-	// to prevent debugging later on again, the API key authntication must run before CSRF check so external clients bypass it
+	// keys skip csrf
 	const authHeader = event.request.headers.get('authorization');
-	if (authHeader?.startsWith('Bearer ')) {
+	if (authHeader?.startsWith('Bearer ') && event.url.pathname.startsWith('/api/')) {
 		const token = authHeader.slice(7).trim();
 		if (token.startsWith('mm_')) {
 			const result = await findUserByApiKey(token);
 			if (result) {
+				// read keys never mutate
+				if (result.scope === 'read' && !SAFE_METHODS.has(event.request.method)) {
+					return json(
+						{ error: 'Forbidden: read-only key', code: 'FORBIDDEN' },
+						{ status: 403, headers: { 'Access-Control-Allow-Origin': '*' } }
+					);
+				}
 				event.locals.user = redactCredentials(result.user);
 				event.locals.isApiKeyAuth = true;
 				event.locals.apiKeyId = result.keyId;

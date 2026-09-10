@@ -706,7 +706,7 @@ const spec = {
 															overdue_by: {
 																type: 'integer',
 																description:
-																	'units past due — km, mi, or h depending on odometer_unit'
+																	'units past due in km, mi, or h depending on odometer_unit'
 															},
 															overdue_by_days: {
 																type: 'integer',
@@ -728,7 +728,7 @@ const spec = {
 															due_in: {
 																type: 'integer',
 																description:
-																	'units until due — km, mi, or h depending on odometer_unit'
+																	'units until due in km, mi, or h depending on odometer_unit'
 															},
 															due_in_days: { type: 'integer' }
 														}
@@ -747,7 +747,7 @@ const spec = {
 															due_in: {
 																type: 'integer',
 																description:
-																	'units until due — km, mi, or h depending on odometer_unit'
+																	'units until due in km, mi, or h depending on odometer_unit'
 															},
 															due_in_days: { type: 'integer' }
 														}

@@ -5,12 +5,34 @@
 	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 
-	let { data } = $props<{ data: { user: User; hasPassword: boolean; pwResetActive: boolean } }>();
+	let { data, form } = $props<{
+		data: {
+			user: User;
+			hasPassword: boolean;
+			reauthActive: boolean;
+			stepUpProvider: string | null;
+			reauthFailed: boolean;
+		};
+		form?: { deleteError?: string } | null;
+	}>();
 
+	const needsProof = $derived(!data.hasPassword && !data.reauthActive);
+	const stepUpHref = $derived(
+		`/oidc/login?reauth=1&return=${encodeURIComponent('/settings/account')}`
+	);
+
+	let deleteForm = $state<HTMLFormElement | null>(null);
 	let savingEmail = $state(false);
 	let savingPassword = $state(false);
 	let showDeleteDialog = $state(false);
 	let deleteLoading = $state(false);
+
+	$effect(() => {
+		if (form?.deleteError) {
+			deleteLoading = false;
+			toasts.error(form.deleteError);
+		}
+	});
 
 	let exportOpen = $state(false);
 	let exportLoading = $state<'json' | 'zip' | null>(null);
@@ -37,12 +59,38 @@
 	}
 </script>
 
+{#snippet proofNotice()}
+	{#if needsProof}
+		<div class="proof">
+			{#if data.reauthFailed}
+				<p class="proof-failed">{$_('settings.account.reauth.failed')}</p>
+			{/if}
+			{#if data.stepUpProvider}
+				<p class="proof-text">
+					{$_('settings.account.reauth.hintProvider', {
+						values: { provider: data.stepUpProvider }
+					})}
+				</p>
+				<a class="btn-secondary" href={stepUpHref} data-sveltekit-reload>
+					{$_('settings.account.reauth.verify', { values: { provider: data.stepUpProvider } })}
+				</a>
+			{:else}
+				<p class="proof-text">{$_('settings.account.reauth.hintMagic')}</p>
+			{/if}
+		</div>
+	{:else if data.reauthActive}
+		<p class="proof-active">{$_('settings.account.reauth.active')}</p>
+	{/if}
+{/snippet}
+
 <svelte:head><title>{$_('settings.account.title')} · Settings</title></svelte:head>
 
 <div class="intro">
 	<h2 class="section-title">{$_('settings.account.title')}</h2>
 	<p class="section-desc">{$_('settings.account.subtitle')}</p>
 </div>
+
+{@render proofNotice()}
 
 <!-- Email -->
 <section class="setting-section">
@@ -76,17 +124,33 @@
 				required
 			/>
 		</label>
-		<button type="submit" class="btn-secondary" disabled={savingEmail}>
+		{#if data.hasPassword && !data.reauthActive}
+			<label class="field">
+				<span class="field-label">{$_('settings.account.password.current')}</span>
+				<input
+					name="current_password"
+					type="password"
+					autocomplete="current-password"
+					placeholder={$_('settings.account.password.current')}
+					class="input"
+					required
+				/>
+			</label>
+		{/if}
+		<button type="submit" class="btn-secondary" disabled={savingEmail || needsProof}>
 			{savingEmail ? $_('settings.profile.saving') : $_('settings.account.email.submit')}
 		</button>
 	</form>
 </section>
 
-{#if data.hasPassword}
+{#if data.hasPassword || data.pwResetActive}
 	<div class="divider"></div>
 
 	<section class="setting-section">
 		<h3 class="sub-title">{$_('settings.account.password.title')}</h3>
+		{#if !data.hasPassword}
+			<p class="sub-desc">{$_('settings.account.password.setupHint')}</p>
+		{/if}
 
 		<form
 			method="POST"
@@ -106,7 +170,7 @@
 				};
 			}}
 		>
-			{#if !data.pwResetActive}
+			{#if data.hasPassword && !data.pwResetActive}
 				<label class="field">
 					<span class="field-label">{$_('settings.account.password.current')}</span>
 					<input
@@ -143,7 +207,11 @@
 				/>
 			</label>
 			<button type="submit" class="btn-secondary" disabled={savingPassword}>
-				{savingPassword ? $_('settings.profile.saving') : $_('settings.account.password.submit')}
+				{savingPassword
+					? $_('settings.profile.saving')
+					: data.hasPassword
+						? $_('settings.account.password.submit')
+						: $_('settings.account.password.setSubmit')}
 			</button>
 		</form>
 	</section>
@@ -213,15 +281,35 @@
 <!-- Danger zone -->
 <section class="setting-section">
 	<h3 class="section-label section-label--danger">{$_('settings.account.dangerZone')}</h3>
-	<div class="danger-box">
+	<form method="POST" action="?/deleteAccount" class="danger-box" bind:this={deleteForm}>
 		<div>
 			<div class="danger-title">{$_('settings.account.delete.title')}</div>
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
+			{#if data.hasPassword && !data.reauthActive}
+				<label class="field danger-field">
+					<span class="field-label">{$_('settings.account.password.current')}</span>
+					<input
+						name="current_password"
+						type="password"
+						autocomplete="current-password"
+						placeholder={$_('settings.account.password.current')}
+						class="input"
+						required
+					/>
+				</label>
+			{/if}
 		</div>
-		<button type="button" class="btn-danger" onclick={() => (showDeleteDialog = true)}>
+		<button
+			type="button"
+			class="btn-danger"
+			disabled={needsProof}
+			onclick={() => {
+				if (deleteForm?.reportValidity()) showDeleteDialog = true;
+			}}
+		>
 			{$_('settings.account.delete.btn')}
 		</button>
-	</div>
+	</form>
 </section>
 
 <ConfirmDialog
@@ -233,12 +321,12 @@
 	danger={true}
 	loading={deleteLoading}
 	onconfirm={() => {
+		if (!deleteForm?.reportValidity()) {
+			showDeleteDialog = false;
+			return;
+		}
 		deleteLoading = true;
-		const form = document.createElement('form');
-		form.method = 'POST';
-		form.action = '?/deleteAccount';
-		document.body.appendChild(form);
-		form.submit();
+		deleteForm.requestSubmit();
 	}}
 	onclose={() => (showDeleteDialog = false)}
 />
@@ -346,6 +434,38 @@
 		flex-direction: column;
 		align-items: flex-start;
 		gap: var(--space-4);
+	}
+	.proof {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-3);
+		padding: var(--space-4);
+		margin-bottom: var(--space-4);
+		border-left: 3px solid var(--status-due);
+		background: color-mix(in srgb, var(--status-due) 6%, var(--bg));
+		border-radius: 0 8px 8px 0;
+	}
+	.proof-text {
+		margin: 0;
+		font-size: var(--text-sm);
+		line-height: var(--leading-base);
+		color: var(--text);
+	}
+	.proof-failed {
+		margin: 0;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--status-overdue);
+	}
+	.proof-active {
+		margin: 0 0 var(--space-4);
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+	}
+	.danger-field {
+		margin-top: var(--space-3);
+		max-width: 20rem;
 	}
 	.danger-title {
 		font-size: var(--text-sm);

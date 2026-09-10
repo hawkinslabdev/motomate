@@ -61,7 +61,7 @@
 				"invalidFormat": "Ongeldig e-mailadres of wachtwoordformaat",
 				"invalidCredentials": "Ongeldig e-mailadres of wachtwoord",
 				"invalidEmail": "Voer een geldig e-mailadres in",
-				"registrationClosed": "Aanmelden is nu niet mogelijk. Neem contact op met uw beheerder voor toegang.",
+				"registrationClosed": "Aanmelden is nu niet mogelijk. Neem contact op met je beheerder voor toegang.",
 				"verificationFailed": "Verificatie mislukt. Probeer het opnieuw.",
 				"smtpNotConfigured": "Magic link-aanmelding is niet beschikbaar: SMTP is niet geconfigureerd.",
 				"oidc": "Eenmalige aanmelding is mislukt. Probeer het opnieuw of neem contact op met je beheerder.",
@@ -80,7 +80,7 @@
 			"hasAccount": "Heb je al een account?",
 			"login": "Inloggen",
 			"closedTitle": "Registratie gesloten",
-			"closedBody": "Nieuwe accounts worden momenteel niet geaccepteerd. Neem contact op met uw beheerder voor toegang.",
+			"closedBody": "Nieuwe accounts worden momenteel niet geaccepteerd. Neem contact op met je beheerder voor toegang.",
 			"closedAction": "Ga naar inloggen",
 			"errors": {
 				"registrationClosed": "Registratie is gesloten.",
@@ -93,6 +93,7 @@
 			}
 		},
 		"magicLink": {
+			"title": "Magische link",
 			"verifying": "Je wordt ingelogd…",
 			"invalid": "Deze link is ongeldig of verlopen.",
 			"retry": "Nieuwe link aanvragen"
@@ -101,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Beveilig je account",
-			"description": "Je bent ingelogd als de standaard admin. Stel een echt e-mailadres en wachtwoord in voordat je doorgaat — je kunt deze altijd later bijwerken in Instellingen.",
+			"description": "Je bent ingelogd als de standaard admin. Stel je eigen e-mailadres en wachtwoord in voordat je doorgaat. Je kunt ze later wijzigen in Instellingen.",
 			"newEmail": "Nieuw e-mailadres",
 			"newPassword": "Nieuw wachtwoord",
 			"confirmPassword": "Wachtwoord bevestigen",
@@ -526,7 +527,7 @@
 						"catAdministrative": "Administratief",
 						"catFuel": "Brandstof",
 						"catOther": "Overig",
-						"documentInApp": "Dit document is beschikbaar in uw MotoMate-documentenbibliotheek.",
+						"documentInApp": "Dit document is beschikbaar in je MotoMate-documentenbibliotheek.",
 						"vehicleNotes": "Notities"
 					}
 				}
@@ -684,7 +685,7 @@
 				"everyMonths": "Elke (maanden)",
 				"date": "Datum",
 				"odometer": "Kilometerstand ({unit})",
-				"autoCompute": "— leeglaten voor automatische berekening",
+				"autoCompute": "leeglaten om automatisch te berekenen",
 				"usage": "Draaiuren ({unit})",
 				"reminderOnly": "Alleen herinnering",
 				"reminderOnlyHint": "Bijhouden reset de herinnering zonder een tijdlijnvermelding aan te maken of in rapporten te verschijnen."
@@ -911,7 +912,7 @@
 				"new": "Nieuw wachtwoord",
 				"confirm": "Nieuw wachtwoord bevestigen",
 				"hint": "Min. 8 tekens",
-				"setupHint": "Dit account logt in via je identityprovider. Een wachtwoord instellen geeft je een terugvaloptie als die provider onbereikbaar is. Single sign-on blijft gewoon werken.",
+				"setupHint": "Dit account heeft nog geen wachtwoord. Je kunt er hier een instellen als tweede manier om in te loggen. Je huidige manier van inloggen blijft werken.",
 				"setSubmit": "Wachtwoord instellen",
 				"submit": "Wachtwoord wijzigen",
 				"saved": "Wachtwoord gewijzigd",
@@ -919,10 +920,18 @@
 					"allRequired": "Alle wachtwoordvelden zijn vereist",
 					"tooShort": "Nieuw wachtwoord moet minimaal 8 tekens bevatten",
 					"noMatch": "Wachtwoorden komen niet overeen",
-					"noPasswordSet": "Geen wachtwoord ingesteld voor dit account — gebruik de magische link om in te loggen",
+					"noPasswordSet": "Geen wachtwoord ingesteld voor dit account. Gebruik de magische link om in te loggen",
 					"incorrect": "Huidig wachtwoord is onjuist",
-					"sameAsCurrent": "Kies een nieuw wachtwoord dat anders is dan je huidige wachtwoord"
+					"sameAsCurrent": "Kies een nieuw wachtwoord dat anders is dan je huidige wachtwoord",
+					"reauthRequired": "Bevestig eerst dat jij het bent en probeer opnieuw"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Bevestig met {provider} dat jij het bent voordat je dit wijzigt.",
+				"hintMagic": "Stel eerst een wachtwoord in, of open een nieuwe magische link om te bevestigen dat jij het bent.",
+				"verify": "Bevestigen met {provider}",
+				"active": "Bevestigd. Je kunt de komende minuten wijzigingen maken.",
+				"failed": "Dat werkte niet. Probeer het opnieuw."
 			},
 			"export": {
 				"title": "Gegevens exporteren",
@@ -1045,7 +1054,7 @@
 					"description": "Start een Home Assistant webhook-automatisering.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Plak hier je Home Assistant webhook URL voor nodig.",
+					"hint": "Plak hier je Home Assistant webhook-URL. Geen token nodig.",
 					"tip": "Tip: schakel bij een externe Home Assistant-URL 'Alleen toegankelijk vanaf het netwerk' uit.",
 					"configLabel": "Automatisering voorbeeld",
 					"copy": "Kopiëren",
@@ -1392,7 +1401,7 @@
 	"draft": {
 		"resuming": "Verdergaan van {ago}",
 		"discard": "Verwerpen",
-		"fileHint": "Er was een bestand bijgevoegd — voeg het opnieuw toe",
+		"fileHint": "Er was een bestand bijgevoegd. Voeg het opnieuw toe",
 		"justNow": "zojuist",
 		"unitMin": "min geleden",
 		"unitHour": "u geleden",

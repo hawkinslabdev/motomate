@@ -33,7 +33,7 @@
 		"theme": "Tema",
 		"login": {
 			"title": "Iniciar sessão",
-			"subtitle": "Introduza o seu e-mail para continuar",
+			"subtitle": "Introduz o teu e-mail para continuar",
 			"email": "E-mail",
 			"password": "Palavra-passe",
 			"showPassword": "Mostrar palavra-passe",
@@ -45,11 +45,11 @@
 			"signUp": "Registar!",
 			"magicLinkSent": "Se esse endereço tiver uma conta, um link de início de sessão está a caminho.",
 			"magicLinkLogged": "Se esse endereço tiver uma conta, o link de início de sessão está no registo do servidor. O SMTP não está configurado, por isso os links são escritos aí em vez de enviados por e-mail.",
-			"orSignInWith": "Ou inicie sessão com um fornecedor de identidade",
+			"orSignInWith": "Ou inicia sessão com um fornecedor de identidade",
 			"setupNotice": {
 				"title": "Configuração inicial",
-				"body": "Bem-vindo ao MotoMate. Como é novo aqui, foi criada uma conta de administrador padrão. Inicie sessão para completar a configuração e alterar estas credenciais.",
-				"defaultCreds": "Use as credenciais padrão acima no primeiro início de sessão. Pode alterá-las em Definições → Conta."
+				"body": "Bem-vindo ao MotoMate. Como és novo aqui, foi criada uma conta de administrador padrão. Inicia sessão para completar a configuração e alterar estas credenciais.",
+				"defaultCreds": "Usa as credenciais padrão acima no primeiro início de sessão. Podes alterá-las em Definições → Conta."
 			},
 			"tabs": {
 				"password": "Palavra-passe",
@@ -61,48 +61,48 @@
 				"invalidFormat": "Formato de e-mail ou palavra-passe inválido",
 				"invalidCredentials": "E-mail ou palavra-passe inválidos",
 				"invalidEmail": "Por favor, introduz um endereço de e-mail válido",
-				"registrationClosed": "O registo está fechado. Contacte o seu administrador para obter acesso.",
+				"registrationClosed": "O registo está fechado. Contacta o teu administrador para obter acesso.",
 				"verificationFailed": "Verificação falhou. Por favor, tente novamente.",
 				"smtpNotConfigured": "O login por link mágico não está disponível: SMTP não está configurado.",
-				"oidc": "O início de sessão único falhou. Tente novamente ou contacte o seu administrador.",
-				"oidcClosed": "O início de sessão único não está aberto a novas contas. Contacte o seu administrador para obter acesso."
+				"oidc": "O início de sessão único falhou. Tenta novamente ou contacta o teu administrador.",
+				"oidcClosed": "O início de sessão único não está aberto a novas contas. Contacta o teu administrador para obter acesso."
 			}
 		},
 		"register": {
 			"title": "Criar conta",
-			"subtitle": "Registe-se para começar a acompanhar a manutenção do seu veículo",
+			"subtitle": "Regista-te para começar a acompanhar a manutenção do teu veículo",
 			"email": "E-mail",
 			"password": "Palavra-passe",
-			"passwordHint": "Use pelo menos 8 caracteres",
+			"passwordHint": "Usa pelo menos 8 caracteres",
 			"confirmPassword": "Confirmar senha",
 			"passwordMismatch": "As senhas não coincidem",
 			"submit": "Criar conta",
 			"hasAccount": "Já tem uma conta?",
 			"login": "Iniciar sessão",
 			"closedTitle": "Registo fechado",
-			"closedBody": "Novos registos não são aceites neste momento. Contacte o seu administrador para obter acesso.",
+			"closedBody": "Novos registos não são aceites neste momento. Contacta o teu administrador para obter acesso.",
 			"closedAction": "Ir para o login",
 			"errors": {
 				"registrationClosed": "O registo está encerrado.",
 				"rateLimited": "Demasiadas tentativas. Por favor, tenta novamente mais tarde.",
 				"verificationFailed": "Verificação falhou. Por favor, tente novamente.",
 				"invalidEmail": "Por favor, introduz um endereço de e-mail válido",
-				"passwordTooShort": "Use pelo menos 8 caracteres",
+				"passwordTooShort": "Usa pelo menos 8 caracteres",
 				"passwordRequired": "A palavra-passe é obrigatória",
-				"emailInUse": "Verifique os seus dados e tente novamente, ou inicie sessão se já tiver uma conta."
+				"emailInUse": "Verifica os teus dados e tenta novamente, ou inicia sessão se já tiveres uma conta."
 			}
 		},
 		"magicLink": {
+			"title": "Link mágico",
 			"verifying": "A iniciar sessão…",
 			"invalid": "Este link é inválido ou expirou.",
-			"retry": "Solicitar novo link",
-			"title": "Link mágico"
+			"retry": "Solicitar novo link"
 		}
 	},
 	"onboarding": {
 		"security": {
-			"title": "Proteja a sua conta",
-			"description": "Iniciou sessão como administrador padrão. Defina um e-mail e palavra-passe reais antes de continuar — pode sempre atualizá-los em Definições mais tarde.",
+			"title": "Protege a tua conta",
+			"description": "Iniciaste sessão como administrador padrão. Define o teu próprio e-mail e palavra-passe antes de continuar. Podes alterá-los mais tarde em Definições.",
 			"newEmail": "Novo endereço de e-mail",
 			"newPassword": "Nova palavra-passe",
 			"confirmPassword": "Confirmar palavra-passe",
@@ -111,10 +111,10 @@
 		},
 		"welcome": {
 			"title": "Bem-vindo ao MotoMate",
-			"description": "Vamos adicionar o seu primeiro veículo e configurar um plano de manutenção. Leva cerca de um minuto.",
+			"description": "Vamos adicionar o teu primeiro veículo e configurar um plano de manutenção. Leva cerca de um minuto.",
 			"submit": "Começar →",
-			"skipWarning": "Lembre-se de atualizar o seu e-mail e palavra-passe em Definições → Conta antes de ir para produção.",
-			"nameLabel": "O seu nome",
+			"skipWarning": "Lembra-te de atualizar o teu e-mail e palavra-passe em Definições → Conta antes de ir para produção.",
+			"nameLabel": "O teu nome",
 			"namePlaceholder": "Ex. João"
 		},
 		"type": {
@@ -125,7 +125,7 @@
 			"other": "Outro"
 		},
 		"details": {
-			"title": "Conte-nos sobre o seu {vehicleType}",
+			"title": "Conta-nos sobre o teu {vehicleType}",
 			"name": "Alcunha",
 			"make": "Marca",
 			"model": "Modelo",
@@ -149,7 +149,7 @@
 		},
 		"presets": {
 			"title": "Que tarefas de manutenção?",
-			"description": "Criaremos rastreadores para estas. Pode adicioná-las ou removê-las a qualquer momento.",
+			"description": "Criaremos rastreadores para estas. Podes adicioná-las ou removê-las a qualquer momento.",
 			"tasks": {
 				"oil": "Óleo e troca de filtro",
 				"tire": "Pressão e desgaste dos pneus",
@@ -217,7 +217,7 @@
 			"overdue": "{count, plural, =1 {1 item em atraso.} other {# items em atraso.}}",
 			"dueSoon": "{count, plural, =1 {1 item brevemente devido.} other {# items brevemente devidos.}}",
 			"allGood": "Tudo parece bem.",
-			"addFirst": "Adicione o seu primeiro veículo para começar."
+			"addFirst": "Adiciona o teu primeiro veículo para começar."
 		},
 		"sections": {
 			"needsAttention": "Requer atenção",
@@ -234,9 +234,9 @@
 			"moreOnVehicle": "{count, plural, =1 {1 a mais em {vehicleName}} other {# a mais em {vehicleName}}}"
 		},
 		"empty": {
-			"title": "A sua garage está vazia",
-			"descriptionOnboarding": "Adicione a sua primeira moto ou ciclomotor para começar.",
-			"descriptionActive": "Adicione um novo veículo à sua coleção.",
+			"title": "A tua garagem está vazia",
+			"descriptionOnboarding": "Adiciona a tua primeira moto ou ciclomotor para começar.",
+			"descriptionActive": "Adiciona um novo veículo à tua coleção.",
 			"submit": "+ Adicionar veículo"
 		}
 	},
@@ -251,8 +251,8 @@
 		"favorite": "Marcar como favorito",
 		"unfavorite": "Remover dos favoritos",
 		"empty": {
-			"title": "A sua garage está vazia",
-			"description": "Adicione um novo veículo à sua coleção."
+			"title": "A tua garagem está vazia",
+			"description": "Adiciona um novo veículo à tua coleção."
 		}
 	},
 	"vehicle": {
@@ -266,10 +266,10 @@
 			},
 			"tabs": {
 				"timeline": "Linha do tempo",
-				"maintenance": "Manutencao",
+				"maintenance": "Manutenção",
 				"documents": "Documentos",
 				"finance": "Despesas",
-				"settings": "Configuracoes",
+				"settings": "Definições",
 				"travels": "Viagens",
 				"notes": "Notas"
 			},
@@ -282,8 +282,8 @@
 				"editPin": "Editar pin",
 				"openNewTab": "Abrir em novo separador",
 				"remove": "Remover pin",
-				"noDocs": "Ainda nao foram carregados documentos.",
-				"actions": "Acoes do documento",
+				"noDocs": "Ainda não foram carregados documentos.",
+				"actions": "Ações do documento",
 				"noResults": "Sem resultados para \"{q}\"",
 				"searchPlaceholder": "Pesquisar documentos...",
 				"customLabel": "Etiqueta personalizada"
@@ -297,11 +297,11 @@
 			},
 			"timeline": {
 				"title": "Cronologia",
-				"subtitle": "Todos os seus registos para {name} num único lugar.",
+				"subtitle": "Todos os teus registos para {name} num único lugar.",
 				"empty": {
 					"title": "Ainda sem histórico",
-					"description": "Registe a sua primeira manutenção ou verificação de quilometragem para iniciar a cronologia.",
-					"usageDescription": "Regista o primeiro serviço ou leitura de uso para iniciar a linha do tempo."
+					"description": "Regista a tua primeira manutenção ou verificação de quilometragem para iniciar a cronologia.",
+					"usageDescription": "Regista o primeiro serviço ou leitura de uso para iniciar a cronologia."
 				},
 				"filter": {
 					"service": "Manutenção",
@@ -332,7 +332,7 @@
 			"showMoreOdoReadings": "Mostrar mais {n} leituras do odómetro",
 			"deleteDialog": {
 				"title": "Eliminar esta entrada?",
-				"description": "Esta entrada será removida permanentemente da sua cronologia. Esta ação não pode ser desfeita.",
+				"description": "Esta entrada será removida permanentemente da tua cronologia. Esta ação não pode ser desfeita.",
 				"confirm": "Eliminar",
 				"cancel": "Manter"
 			},
@@ -431,7 +431,7 @@
 		},
 		"edit": {
 			"title": "Definições",
-			"subtitle": "Gerir o seu {name}",
+			"subtitle": "Gerir o teu {name}",
 			"odometer": {
 				"title": "Atualizar quilometragem",
 				"currentReading": "Leitura atual ({unit})",
@@ -461,37 +461,37 @@
 					"title": "Arquivar veículo",
 					"titleRestore": "Restaurar veículo",
 					"descArchive": "Mover este veículo para o arquivo. Será ocultado da garagem.",
-					"descRestore": "Coloque este veículo de volta na sua garagem ativa.",
+					"descRestore": "Coloca este veículo de volta na tua garagem ativa.",
 					"btnArchive": "Arquivar",
 					"btnRestore": "Restaurar"
 				},
 				"dangerZone": "Zona de perigo",
 				"delete": {
 					"title": "Eliminar este veículo",
-					"desc": "Remove permanentemente toda a história de serviço, documentos e trackers.",
+					"desc": "Remove permanentemente todo o histórico de serviço, documentos e trackers.",
 					"btn": "Eliminar",
 					"dialog": {
 						"title": "Eliminar {name}?",
-						"desc": "Isto removerá permanentemente toda a história de serviço, documentos e trackers. Esta ação não pode ser desfeita.",
+						"desc": "Isto removerá permanentemente todo o histórico de serviço, documentos e trackers. Esta ação não pode ser desfeita.",
 						"confirm": "Eliminar veículo",
 						"cancel": "Manter veículo"
 					}
 				},
 				"archiveDialog": {
 					"title": "Arquivar {name}?",
-					"desc": "Este veículo será ocultado da sua garagem. Pode restaurá-lo a qualquer momento. Defina o preço de venda acima antes de continuar se o vendeu.",
+					"desc": "Este veículo será ocultado da tua garagem. Podes restaurá-lo a qualquer momento. Define o preço de venda acima antes de continuar se o vendeste.",
 					"confirm": "Arquivar",
 					"cancel": "Manter ativo"
 				},
 				"unarchiveDialog": {
 					"title": "Restaurar {name}?",
-					"desc": "Este veículo será devolvido à sua garagem ativa. O preço de venda será apagado para que possa editar os detalhes do veículo novamente.",
+					"desc": "Este veículo será devolvido à tua garagem ativa. O preço de venda será apagado para que possas editar os detalhes do veículo novamente.",
 					"confirm": "Restaurar",
 					"cancel": "Manter arquivado"
 				},
 				"report": {
 					"title": "Livro de manutenção",
-					"desc": "Descarregue uma cópia física do seu histórico de manutenção completo.",
+					"desc": "Descarrega uma cópia física do teu histórico de manutenção completo.",
 					"btn": "Descarregar",
 					"modal": {
 						"title": "Relatório de manutenção",
@@ -521,13 +521,13 @@
 						"financeSummary": "Resumo de despesas",
 						"financeTotal": "Total",
 						"financeNoData": "Nenhum registo de despesas neste periodo.",
-						"catMaintenance": "Manutencao",
+						"catMaintenance": "Manutenção",
 						"catParts": "Pecas",
-						"catAccessories": "Acessorios",
+						"catAccessories": "Acessórios",
 						"catAdministrative": "Administrativo",
-						"catFuel": "Combustivel",
+						"catFuel": "Combustível",
 						"catOther": "Outros",
-						"documentInApp": "Este documento esta disponivel na sua biblioteca de documentos MotoMate.",
+						"documentInApp": "Este documento está disponível na tua biblioteca de documentos MotoMate.",
 						"vehicleNotes": "Notas"
 					}
 				}
@@ -540,7 +540,7 @@
 				"invalidImageFormat": "Formato de imagem inválido. Suportado: JPEG, PNG, WebP, GIF",
 				"invalidFileExt": "Extensão de ficheiro inválida. Suportado: .jpg, .jpeg, .png, .webp, .gif",
 				"uploadFailed": "Falha no upload: erro de armazenamento",
-				"chooseDistanceUnit": "Escolha quilómetros ou milhas.",
+				"chooseDistanceUnit": "Escolhe quilómetros ou milhas.",
 				"notDistanceConvertible": "Este veículo não pode ser convertido para uma unidade de distância."
 			},
 			"measurementUnit": {
@@ -551,7 +551,7 @@
 				"review": "Rever conversão",
 				"converted": "Valores de distância convertidos",
 				"dialogTitle": "Converter {from} para {to}?",
-				"dialogDescription": "A sua leitura atual passará a ser {value} {unit}. O histórico do odómetro, os registos de serviço, os intervalos de manutenção e os lembretes por distância permanecerão alinhados.",
+				"dialogDescription": "A tua leitura atual passará a ser {value} {unit}. O histórico do odómetro, os registos de serviço, os intervalos de manutenção e os lembretes por distância permanecerão alinhados.",
 				"confirm": "Converter distâncias"
 			},
 			"usageUpdated": "Uso atualizado"
@@ -592,7 +592,7 @@
 	},
 	"maintenance": {
 		"title": "Manutenção",
-		"subtitle": "Acompanhe o seu plano de serviço",
+		"subtitle": "Acompanha o teu plano de serviço",
 		"view": {
 			"current": "Atual",
 			"forecast": "Previsão",
@@ -616,7 +616,7 @@
 		"history": {
 			"title": "Histórico de serviços",
 			"noHistory": "Sem histórico de serviços",
-			"noHistoryDesc": "Registe uma intervenção de serviço para a ver aqui.",
+			"noHistoryDesc": "Regista uma intervenção de serviço para a ver aqui.",
 			"serviceEntry": "Serviço",
 			"task": "Tarefa",
 			"odometer": "Odômetro",
@@ -652,9 +652,9 @@
 		},
 		"empty": {
 			"title": "Ainda sem tarefas de manutenção",
-			"description": "Adicione tarefas personalizadas ou execute o assistente de configuração para definir predefinições.",
+			"description": "Adiciona tarefas personalizadas ou executa o assistente de configuração para definir predefinições.",
 			"noMatch": "Nenhuma tarefa correspondente",
-			"noMatchDesc": "Tente um termo de pesquisa diferente ou limpe o filtro."
+			"noMatchDesc": "Tenta um termo de pesquisa diferente ou limpa o filtro."
 		},
 		"tracker": {
 			"status": {
@@ -685,7 +685,7 @@
 				"everyMonths": "Cada (meses)",
 				"date": "Data",
 				"odometer": "Odómetro ({unit})",
-				"autoCompute": "— deixar vazio para cálculo automático",
+				"autoCompute": "deixe vazio para calcular automaticamente",
 				"usage": "Leitura de uso ({unit})",
 				"reminderOnly": "Apenas lembrete",
 				"reminderOnlyHint": "Registar repõe o lembrete sem criar uma entrada na linha do tempo ou aparecer nos relatórios."
@@ -701,7 +701,7 @@
 			"trackerUpdated": "Rastreador atualizado",
 			"trackerDeleted": "Rastreador excluído",
 			"taskAdded": "Tarefa adicionada",
-			"defaultsApplied": "Rastreadores predefinidos aplicados com base no seu histórico de serviço"
+			"defaultsApplied": "Rastreadores predefinidos aplicados com base no teu histórico de serviço"
 		},
 		"applyDefaults": "Aplicar valores predefinidos",
 		"delete": {
@@ -720,8 +720,8 @@
 	},
 	"finance": {
 		"title": "Despesas",
-		"subtitle": "Acompanhe despesas",
-		"totalSpent": "Total gasto no seu {name}",
+		"subtitle": "Acompanha despesas",
+		"totalSpent": "Total gasto no teu {name}",
 		"addExpense": "Adicionar",
 		"noCosts": "Sem custos registados",
 		"groupBy": "Agrupar por:",
@@ -786,7 +786,7 @@
 		},
 		"empty": {
 			"title": "Sem despesas registadas",
-			"description": "Adicione a sua primeira despesa para começar a acompanhar."
+			"description": "Adiciona a tua primeira despesa para começar a acompanhar."
 		},
 		"col": {
 			"date": "Data",
@@ -799,7 +799,7 @@
 	},
 	"documents": {
 		"title": "Documentos",
-		"subtitle": "Guarde registos de serviço, fotos e papéis",
+		"subtitle": "Guarda registos de serviço, fotos e papéis",
 		"uploadFile": "Carregar um ficheiro",
 		"upload": "+ Carregar",
 		"dropHintDesktop": "Arraste um ficheiro aqui ou navegue",
@@ -863,10 +863,10 @@
 		},
 		"empty": {
 			"title": "Nenhum documento encontrado",
-			"description": "Carregue documentos ou ajuste os seus filtros."
+			"description": "Carrega documentos ou ajusta os teus filtros."
 		},
 		"prevPage": "Anterior",
-		"nextPage": "Proximo",
+		"nextPage": "Próximo",
 		"pageOf": "Pagina {page} de {total}",
 		"linkedBadge": "Vinculado · Serviço {date}",
 		"linkedTravelBadge": "Vinculado · Viagem {title}"
@@ -890,7 +890,7 @@
 			"avatarShuffle": "Misturar",
 			"subtitle": "Idioma, moeda e unidade do odómetro.",
 			"displayName": "Nome de exibição",
-			"displayNamePlaceholder": "O seu nome"
+			"displayNamePlaceholder": "O teu nome"
 		},
 		"account": {
 			"title": "Conta",
@@ -901,8 +901,8 @@
 				"submit": "Atualizar e-mail",
 				"saved": "E-mail atualizado",
 				"errors": {
-					"invalid": "Introduza um endereço de e-mail válido",
-					"sameAsCurrent": "Esse já é o seu e-mail atual",
+					"invalid": "Introduz um endereço de e-mail válido",
+					"sameAsCurrent": "Esse já é o teu e-mail atual",
 					"alreadyInUse": "Esse e-mail já está em uso"
 				}
 			},
@@ -912,22 +912,30 @@
 				"new": "Nova palavra-passe",
 				"confirm": "Confirmar nova palavra-passe",
 				"hint": "Mín. 8 caracteres",
-				"setupHint": "Esta conta inicia sessão através do teu fornecedor de identidade. Definir uma palavra-passe aqui dá-te uma alternativa caso esse fornecedor fique indisponível. O início de sessão único continua a funcionar.",
-				"setSubmit": "Definir palavra-passe",
+				"setupHint": "Esta conta ainda não tem palavra-passe. Podes criar uma aqui como segunda forma de entrar. A tua forma atual de entrar continua a funcionar.",
+				"setSubmit": "Criar palavra-passe",
 				"submit": "Alterar palavra-passe",
 				"saved": "Palavra-passe alterada",
 				"errors": {
 					"allRequired": "Todos os campos de palavra-passe são obrigatórios",
 					"tooShort": "A nova palavra-passe deve ter pelo menos 8 caracteres",
 					"noMatch": "As palavras-passe não coincidem",
-					"noPasswordSet": "Nenhuma palavra-passe definida nesta conta — use o link mágico para iniciar sessão",
+					"noPasswordSet": "Nenhuma palavra-passe definida nesta conta. Usa o link mágico para iniciar sessão",
 					"incorrect": "A palavra-passe atual está incorreta",
-					"sameAsCurrent": "A nova palavra-passe deve ser diferente da palavra-passe atual"
+					"sameAsCurrent": "A nova palavra-passe deve ser diferente da palavra-passe atual",
+					"reauthRequired": "Confirma primeiro que és tu e tenta novamente"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Confirma com {provider} que és tu antes de alterares isto.",
+				"hintMagic": "Cria primeiro uma palavra-passe ou abre um novo link mágico para confirmar.",
+				"verify": "Confirmar com {provider}",
+				"active": "Confirmado. Podes fazer alterações nos próximos minutos.",
+				"failed": "Não funcionou. Tenta novamente."
 			},
 			"export": {
 				"title": "Exportar dados",
-				"desc": "Baixe uma cópia dos seus veículos, registros de manutenção, documentos e configurações.",
+				"desc": "Descarrega uma cópia dos teus veículos, registos de manutenção, documentos e definições.",
 				"btn": "Exportar dados",
 				"json": "Exportar como JSON",
 				"jsonHint": "Dados estruturados, sem arquivos",
@@ -937,11 +945,11 @@
 			"dangerZone": "Zona de perigo",
 			"delete": {
 				"title": "Eliminar esta conta",
-				"desc": "Remove permanentemente a sua conta e todos os seus veículos, histórico de serviço e documentos.",
+				"desc": "Remove permanentemente a tua conta e todos os teus veículos, histórico de serviço e documentos.",
 				"btn": "Eliminar conta",
 				"dialog": {
-					"title": "Eliminar a sua conta?",
-					"desc": "Isto removerá permanentemente a sua conta, todos os seus veículos e todos os dados associados. Esta ação não pode ser anulada.",
+					"title": "Eliminar a tua conta?",
+					"desc": "Isto removerá permanentemente a tua conta, todos os teus veículos e todos os dados associados. Esta ação não pode ser anulada.",
 					"confirm": "Eliminar conta",
 					"cancel": "Manter conta"
 				}
@@ -951,7 +959,7 @@
 		"workflows": {
 			"title": "Regras de notificação",
 			"loadPresets": "Restaurar regras predefinidas",
-			"empty": "Ainda sem regras. Restaure as regras predefinidas para começar, ou crie as suas próprias.",
+			"empty": "Ainda sem regras. Restaura as regras predefinidas para começar, ou cria as tuas próprias.",
 			"presets": {
 				"maintenanceDueSoonKm": "Manutenção em breve",
 				"maintenanceOverdueKm": "Manutenção em atraso",
@@ -1000,12 +1008,12 @@
 			},
 			"excludeVehiclesBtn": "Veículos",
 			"excludeVehiclesTitle": "Veículos para esta regra",
-			"excludeVehiclesDesc": "Aplica-se a todos os veículos por padrão. Desative um veículo para excluí-lo desta regra.",
+			"excludeVehiclesDesc": "Aplica-se a todos os veículos por padrão. Desativa um veículo para excluí-lo desta regra.",
 			"excludeVehiclesEmpty": "Ainda não há veículos.",
 			"excludeVehiclesSaved": "Seleção de veículos guardada"
 		},
 		"notifications": {
-			"title": "Notificacoes",
+			"title": "Notificações",
 			"markAllRead": "Marcar tudo como lido",
 			"empty": "No notifications yet.",
 			"markRead": "Marcar como lido",
@@ -1018,7 +1026,7 @@
 				"testError": "Failed",
 				"push": {
 					"label": "Browser push",
-					"description": "Push notifications to this browser when a rule fires.",
+					"description": "Envia notificações push para este navegador quando uma regra é ativada.",
 					"subscribe": "Subscribe this browser",
 					"subscribed": "Subscribed",
 					"subError": "Subscription failed",
@@ -1026,31 +1034,31 @@
 				},
 				"email": {
 					"label": "Email",
-					"description": "Send an email notification to the address below.",
+					"description": "Envia uma notificação por e-mail para o endereço abaixo.",
 					"addressLabel": "Notification address",
 					"addressPlaceholder": "you@example.com",
-					"hint": "Separate from your account login email.",
+					"hint": "Pode ser diferente do e-mail com que inicias sessão.",
 					"noSmtp": "SMTP is not configured on this server."
 				},
 				"webhook": {
 					"label": "Webhook",
-					"description": "POST a JSON payload to any URL when a rule fires.",
+					"description": "Envia um payload JSON por POST para qualquer URL quando uma regra é ativada.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "https://hooks.example.com/...",
 					"authLabel": "Authorization header",
 					"authPlaceholder": "Bearer token123 (optional)",
-					"hint": "Sends a POST request with event, title, body, vehicle name, and data."
+					"hint": "Envia um pedido POST com o evento, o título, o corpo, o nome do veículo e os dados."
 				},
 				"ha": {
 					"label": "Home Assistant",
-					"description": "Trigger a Home Assistant webhook automation.",
+					"description": "Aciona uma automação do Home Assistant através de webhook.",
 					"urlLabel": "Webhook URL",
 					"urlPlaceholder": "http://homeassistant.local:8123/api/webhook/motomate",
-					"hint": "Paste your HA webhook URL. No token required.",
-					"tip": "Tip: For an external Home Assistant URL, disable “Accessible only from the network”.",
+					"hint": "Cola o URL do webhook do HA. Não é necessário token.",
+					"tip": "Dica: para um URL externo do Home Assistant, desative «Acessível apenas a partir da rede».",
 					"configLabel": "Automation example",
 					"copy": "Copy",
-					"invalidUrl": "URL must end with /api/webhook/<webhook_id>"
+					"invalidUrl": "O URL tem de terminar em /api/webhook/<webhook_id>"
 				}
 			},
 			"inbox": {
@@ -1081,22 +1089,22 @@
 		},
 		"sectionsNav": "Secções de definições",
 		"nav": {
-			"preferences": "Preferencias",
+			"preferences": "Preferências",
 			"account": "Conta",
-			"notifications": "Notificacoes",
+			"notifications": "Notificações",
 			"workflows": "Fluxos de trabalho",
 			"developer": "Desenvolvedor",
-			"sourceCode": "Codigo fonte",
+			"sourceCode": "Código-fonte",
 			"reportIssue": "Reportar um problema",
 			"tapAgain": "Toque novamente para abrir",
 			"changelog": "Changelog",
-			"integrations": "Integracoes"
+			"integrations": "Integrações"
 		},
 		"changelog": {
 			"title": "O que há de novo?",
-			"subtitle": "Veja o que mudou nas versões mais recentes.",
+			"subtitle": "Vê o que mudou nas versões mais recentes.",
 			"refresh": "Atualizar",
-			"noContent": "Nenhuma alteração encontrada. Tente novamente mais tarde.",
+			"noContent": "Nenhuma alteração encontrada. Tenta novamente mais tarde.",
 			"latest": "Mais recente",
 			"installed": "Instalada",
 			"viewFull": "Ver changelog completo",
@@ -1107,7 +1115,7 @@
 			"subtitle": "Crie chaves de API e explore a documentação.",
 			"apiKeys": {
 				"title": "Chaves API",
-				"description": "Crie e gerencie chaves para usar a API do MotoMate.",
+				"description": "Cria e faz a gestão de chaves para usar a API do MotoMate.",
 				"empty": "Nenhuma chave API ainda.",
 				"create": "Criar chave",
 				"creating": "Criando...",
@@ -1157,17 +1165,17 @@
 			}
 		},
 		"integrations": {
-			"title": "Integracoes",
-			"description": "O MotoMate mantem sempre os teus ficheiros neste servidor. Estes destinos opcionais recebem uma copia.",
+			"title": "Integrações",
+			"description": "O MotoMate mantém sempre os teus ficheiros neste servidor. Estes destinos opcionais recebem uma cópia.",
 			"storedPlaceholder": "Guardado, deixa vazio para manter",
-			"test": "Testar ligacao",
-			"testOk": "A ligacao funciona",
-			"testFirst": "Primeiro teste a ligacao",
+			"test": "Testar ligação",
+			"testOk": "A ligação funciona",
+			"testFirst": "Testa primeiro a ligação",
 			"never": "Nunca",
-			"lastSync": "Ultima sincronizacao: {date}",
+			"lastSync": "Última sincronização: {date}",
 			"s3": {
 				"label": "Backup S3",
-				"description": "Replica documentos e imagens para qualquer bucket compativel com S3, incluindo MinIO, SeaweedFS, Garage e Backblaze B2.",
+				"description": "Replica documentos e imagens para qualquer bucket compatível com S3, incluindo MinIO, SeaweedFS, Garage e Backblaze B2.",
 				"endpointLabel": "Endpoint",
 				"endpointHint": "Deixa vazio para AWS S3. Fornecedores self-hosted como MinIO ou SeaweedFS precisam do URL completo.",
 				"regionLabel": "Regiao",
@@ -1177,31 +1185,31 @@
 			},
 			"paperless": {
 				"label": "Paperless-ngx",
-				"description": "Envia uma copia de cada documento carregado para o teu arquivo paperless-ngx para OCR e pesquisa em texto integral.",
+				"description": "Envia uma cópia de cada documento carregado para o teu arquivo paperless-ngx para OCR e pesquisa em texto integral.",
 				"urlLabel": "URL do servidor",
 				"tokenLabel": "Token de API",
-				"tokenHint": "Cria um no paperless-ngx em Definicoes e depois Tokens de API.",
-				"includeReportsLabel": "Arquivar tambem os relatorios de manutencao",
-				"includeReportsHint": "Os relatorios gerados pelo MotoMate sao ignorados por omissao porque podes gera-los de novo. Ativa isto para os manteres tambem no paperless."
+				"tokenHint": "Cria um no paperless-ngx em Definições e depois Tokens de API.",
+				"includeReportsLabel": "Arquivar também os relatórios de manutenção",
+				"includeReportsHint": "Os relatórios gerados pelo MotoMate são ignorados por omissão porque podes gerá-los de novo. Ativa isto para os manteres também no paperless."
 			},
 			"sync": {
 				"title": "Sincronizar tudo",
-				"description": "Os ficheiros anteriores a ativacao ainda nao foram copiados. Executa uma vez depois de configurar e de novo se algo falhar.",
+				"description": "Os ficheiros anteriores à ativação ainda não foram copiados. Executa uma vez depois de configurar e de novo se algo falhar.",
 				"button": "Sincronizar tudo",
 				"running": "A sincronizar",
 				"failed": "{count} item(s) falharam. Corrige a causa e executa outra vez.",
-				"skipped": "{count} documento(s) nao enviado(s) para o paperless.",
+				"skipped": "{count} documento(s) não enviado(s) para o paperless.",
 				"reason": {
-					"unsupported": "tipo de ficheiro nao suportado pelo paperless",
-					"report": "relatorio gerado, nao arquivado"
+					"unsupported": "tipo de ficheiro não suportado pelo paperless",
+					"report": "relatório gerado, não arquivado"
 				},
-				"resultS3": "{uploaded} carregados, {skipped} ja no bucket.",
-				"resultPaperless": "{pushed} enviados para o paperless, {already} ja arquivados.",
+				"resultS3": "{uploaded} carregados, {skipped} já no bucket.",
+				"resultPaperless": "{pushed} enviados para o paperless, {already} já arquivados.",
 				"resend": "Enviar tudo de novo",
-				"resendHint": "Usa isto depois de esvaziares o teu arquivo paperless: ignora o que ja foi enviado."
+				"resendHint": "Usa isto depois de esvaziares o teu arquivo paperless: ignora o que já foi enviado."
 			},
-			"saved": "Definicoes guardadas",
-			"saveFailed": "Nao foi possivel guardar as definicoes"
+			"saved": "Definições guardadas",
+			"saveFailed": "Não foi possível guardar as definições"
 		}
 	},
 	"units": {
@@ -1246,7 +1254,7 @@
 			"maintenance": "Manutenção",
 			"maintenanceDesc": "Óleo, pneus ou reparações",
 			"mileage": "Quilometragem",
-			"mileageDesc": "Número no seu painel",
+			"mileageDesc": "Número no teu painel",
 			"finance": "Despesas",
 			"financeDesc": "Combustível ou outros custos",
 			"usage": "Uso",
@@ -1279,27 +1287,27 @@
 			"body": "'{{tracker_name}}' em {{vehicle_name}} está {{days_over}} dias em atraso (prevista em {{due_date}})."
 		},
 		"odometerNudge": {
-			"title": "Atualize o seu odómetro",
-			"body": "Conduziu {{vehicle_name}} recentemente? Atualize o odómetro para manter os seus registos de manutenção precisos."
+			"title": "Atualiza o teu odómetro",
+			"body": "Conduziste {{vehicle_name}} recentemente? Atualiza o odómetro para manter os teus registos de manutenção precisos."
 		},
 		"integration": {
 			"s3": {
 				"title": "O backup S3 esta a falhar",
-				"body": "O MotoMate nao conseguiu copiar os teus ficheiros para o bucket. Verifica a ligacao em Definicoes, Integracoes."
+				"body": "O MotoMate não conseguiu copiar os teus ficheiros para o bucket. Verifica a ligação em Definições, Integrações."
 			},
 			"paperless": {
 				"title": "O arquivo paperless esta a falhar",
-				"body": "O MotoMate nao conseguiu enviar um documento para o paperless-ngx. Verifica a ligacao em Definicoes, Integracoes."
+				"body": "O MotoMate não conseguiu enviar um documento para o paperless-ngx. Verifica a ligação em Definições, Integrações."
 			}
 		}
 	},
 	"travels": {
 		"title": "Viagens",
-		"subtitle": "As suas rotas e percursos",
+		"subtitle": "As tuas rotas e percursos",
 		"add": "Adicionar viagem",
 		"empty": {
 			"title": "Sem viagens",
-			"description": "Registe a sua primeira viagem para iniciar o historial."
+			"description": "Regista a tua primeira viagem para iniciar o histórico."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 dia} other {# dias}}",
@@ -1332,7 +1340,7 @@
 			"loading": "A carregar rotas…",
 			"error": "Não foi possível carregar o mapa",
 			"noRoutes": "Sem percursos",
-			"clickHint": "Clique numa rota no mapa para filtrar",
+			"clickHint": "Clica numa rota no mapa para filtrar",
 			"filterActive": "{n, plural, =1 {1 percurso selecionado} other {# percursos selecionados}}",
 			"clearFilter": "Mostrar tudo",
 			"hideDay": "Ocultar este dia do mapa",
@@ -1349,8 +1357,8 @@
 		},
 		"filter": {
 			"search": "Pesquisar viagens...",
-			"noResults": "Nenhuma viagem corresponde à sua pesquisa.",
-			"noResultsDesc": "Tente outro termo de pesquisa ou limpe o filtro.",
+			"noResults": "Nenhuma viagem corresponde à tua pesquisa.",
+			"noResultsDesc": "Tenta outro termo de pesquisa ou limpa o filtro.",
 			"all": "Todos",
 			"past": "Passados",
 			"upcoming": "Planeados"
@@ -1386,19 +1394,19 @@
 		},
 		"empty": {
 			"title": "Sem dados ainda",
-			"mileage": "Registe leituras do odómetro para ver quantos quilómetros percorreu.",
-			"costs": "Adicione despesas para ver o que gastou."
+			"mileage": "Regista leituras do odómetro para ver quantos quilómetros percorreste.",
+			"costs": "Adiciona despesas para ver o que gastaste."
 		}
 	},
 	"draft": {
 		"resuming": "Retomar de {ago}",
 		"discard": "Descartar",
-		"fileHint": "Havia um arquivo em anexo — por favor, adicione-o novamente",
+		"fileHint": "Havia um ficheiro em anexo. Adiciona-o novamente",
 		"justNow": "agora mesmo",
 		"unitMin": "min atrás",
 		"unitHour": "h atrás",
 		"unitDay": "d atrás",
-		"autosaved": "Salvo automaticamente"
+		"autosaved": "Guardado automaticamente"
 	},
 	"richEditor": {
 		"bold": "Negrito",

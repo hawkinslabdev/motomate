@@ -870,11 +870,7 @@ export async function deleteTracker(trackerId: string, vehicleId: string): Promi
 		.where(and(eq(active_trackers.id, trackerId), eq(active_trackers.vehicle_id, vehicleId)));
 }
 
-/**
- * Recomputes tracker statuses for a vehicle and returns the updated trackers.
- * Returning trackers here avoids a redundant getTrackersByVehicle() read at the call site.
- * All writes are batched in a single SQLite transaction — much faster than N individual UPDATEs.
- */
+// recalculates vehicle trackers in a single transaction and returns them to avoid extra reads
 export async function recomputeTrackerStatuses(
 	vehicleId: string,
 	currentOdometer: number

@@ -102,7 +102,7 @@
 	"onboarding": {
 		"security": {
 			"title": "Secure your account",
-			"description": "You're logged in as the default admin. Set a real email and password before continuing — you can always update these in Settings later.",
+			"description": "You are logged in as the default admin. Set your own email and password before you continue. You can change them later in Settings.",
 			"newEmail": "New email address",
 			"newPassword": "New password",
 			"confirmPassword": "Confirm password",
@@ -686,7 +686,7 @@
 				"date": "Date",
 				"odometer": "Odometer ({unit})",
 				"usage": "Usage reading ({unit})",
-				"autoCompute": "— leave empty to auto-compute",
+				"autoCompute": "leave empty to calculate automatically",
 				"reminderOnly": "Reminder only",
 				"reminderOnlyHint": "Logging resets the reminder without creating a timeline entry or appearing in reports."
 			},
@@ -925,7 +925,7 @@
 				"new": "New password",
 				"confirm": "Confirm new password",
 				"hint": "Min. 8 characters",
-				"setupHint": "This account signs in through your identity provider. Setting a password here gives you a fallback way in if that provider is ever unavailable. Single sign-on keeps working either way.",
+				"setupHint": "This account has no password yet. You can set one here as a second way to log in. Your current way to sign in keeps working.",
 				"setSubmit": "Set password",
 				"submit": "Change password",
 				"saved": "Password changed",
@@ -933,10 +933,18 @@
 					"allRequired": "All password fields are required",
 					"tooShort": "New password must be at least 8 characters",
 					"noMatch": "Passwords do not match",
-					"noPasswordSet": "No password set on this account — use magic link to log in",
+					"noPasswordSet": "No password set on this account. Use a magic link to log in",
 					"incorrect": "Current password is incorrect",
-					"sameAsCurrent": "New password must be different from current password"
+					"sameAsCurrent": "New password must be different from current password",
+					"reauthRequired": "Confirm that it is you first, then try again"
 				}
+			},
+			"reauth": {
+				"hintProvider": "Confirm that it is you with {provider} before you change this.",
+				"hintMagic": "Set a password first, or open a new magic link to confirm that it is you.",
+				"verify": "Confirm with {provider}",
+				"active": "Confirmed. You can make changes for the next few minutes.",
+				"failed": "That did not work. Please try again."
 			},
 			"export": {
 				"title": "Export data",
@@ -1393,7 +1401,7 @@
 	"draft": {
 		"resuming": "Continuing from {ago}",
 		"discard": "Discard",
-		"fileHint": "Had a file attached — please re-add it",
+		"fileHint": "A file was attached. Please add it again",
 		"justNow": "just now",
 		"unitMin": "m ago",
 		"unitHour": "h ago",
