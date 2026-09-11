@@ -21,11 +21,22 @@ export const load: PageServerLoad = async ({ locals }) => {
 			odometer_unit: v.odometer_unit,
 			meta: v.meta as { avatar_emoji?: string } | null
 		})),
-		odometerLogs: odoByVehicle.flat().map((l) => ({
-			vehicle_id: l.vehicle_id,
-			odometer: l.odometer,
-			recorded_at: l.recorded_at
-		})),
+		odometerLogs: [
+			...odoByVehicle.flat().map((l) => ({
+				vehicle_id: l.vehicle_id,
+				odometer: l.odometer,
+				recorded_at: l.recorded_at
+			})),
+			// service entries include readings too
+			...serviceByVehicle
+				.flat()
+				.filter((s) => !s.is_reminder && s.odometer_at_service > 0)
+				.map((s) => ({
+					vehicle_id: s.vehicle_id,
+					odometer: s.odometer_at_service,
+					recorded_at: s.performed_at
+				}))
+		],
 		// fuel logged inconsistently, keep opt-in
 		expenses: expensesByVehicle.flat(),
 		serviceLogs: serviceByVehicle.flat().map((s) => ({
