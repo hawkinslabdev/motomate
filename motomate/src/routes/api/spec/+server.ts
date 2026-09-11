@@ -9,19 +9,19 @@ const spec = {
 		title: 'MotoMate API',
 		version: APP_VERSION,
 		description:
-			'Your digital maintenance journal for your vehicles. All vehicle data, accessible from scripts, automations, and home integrations.\n\nAuthenticate with an API key from **Settings > Developer**.'
+			'Read and write your MotoMate vehicle data from scripts, automations, and home integrations.\n\nAuthenticate with an API key from **Settings > Developer**.'
 	},
 	servers: [{ url: '/api/v1' }],
 	tags: [
 		{ name: 'Profile', description: 'Your account details and data export.' },
-		{ name: 'Vehicles', description: 'Your garage. Read vehicle details and current odometer.' },
+		{ name: 'Vehicles', description: 'Vehicle details and current odometer.' },
 		{
 			name: 'Attention',
-			description: 'Everything that needs your attention on a vehicle in a single call.'
+			description: 'Overdue, due, and upcoming maintenance per vehicle.'
 		},
-		{ name: 'Maintenance', description: 'All trackers with their current status.' },
-		{ name: 'Service logs', description: 'Read and write your service history.' },
-		{ name: 'Odometer', description: 'Log and retrieve odometer readings.' },
+		{ name: 'Maintenance', description: 'Maintenance trackers and their status.' },
+		{ name: 'Service logs', description: 'Service history.' },
+		{ name: 'Odometer', description: 'Odometer readings.' },
 		{ name: 'Spending', description: 'Expenses, fuel costs, and other transactions.' }
 	],
 	'x-tagGroups': [
@@ -141,7 +141,7 @@ const spec = {
 			get: {
 				tags: ['Profile'],
 				summary: 'Your profile',
-				description: 'Confirm your key is valid and see which account it belongs to.',
+				description: 'Returns the account the API key belongs to. Use it to verify a key.',
 				operationId: 'getMe',
 				responses: {
 					'200': {
@@ -164,14 +164,14 @@ const spec = {
 				tags: ['Profile'],
 				summary: 'Request a download link',
 				description:
-					'Back up your full journal: service history, odometer logs, expenses, and documents. Returns a 15-minute link you can paste into any browser to trigger the download without setting request headers.',
+					'Creates a download link for a full export: service history, odometer logs, expenses, and documents. The link is valid for 15 minutes and needs no authentication headers.',
 				operationId: 'createDownloadLink',
 				parameters: [
 					{
 						name: 'format',
 						in: 'query',
 						schema: { type: 'string', enum: ['json', 'zip'], default: 'json' },
-						description: '`json` for structured data only. `zip` includes attached documents.'
+						description: '`json` exports data only. `zip` also includes attached documents.'
 					}
 				],
 				responses: {
@@ -185,7 +185,7 @@ const spec = {
 										data: {
 											type: 'object',
 											properties: {
-												url: { type: 'string', description: 'Visit in any browser to download.' },
+												url: { type: 'string', description: 'Open in a browser to download.' },
 												format: { type: 'string', enum: ['json', 'zip'] },
 												expires_at: { type: 'string', format: 'date-time' }
 											}
@@ -202,8 +202,7 @@ const spec = {
 			get: {
 				tags: ['Vehicles'],
 				summary: 'Your garage',
-				description:
-					'Your garage in sort order. Each entry includes the current odometer, useful for checking whether maintenance intervals have been crossed since you last looked.',
+				description: 'Lists your vehicles in sort order. Each entry includes the current odometer.',
 				operationId: 'listVehicles',
 				responses: {
 					'200': {
@@ -226,8 +225,7 @@ const spec = {
 			get: {
 				tags: ['Vehicles'],
 				summary: 'A single vehicle',
-				description:
-					'Full detail on one vehicle: make, model, year, and its latest odometer reading.',
+				description: 'Returns one vehicle: make, model, year, and current odometer.',
 				operationId: 'getVehicle',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				responses: {
@@ -254,7 +252,7 @@ const spec = {
 				tags: ['Maintenance'],
 				summary: 'Tracker status',
 				description:
-					'See whether your oil is due, your chain needs lube, or your brakes are overdue. Tracker status is recalculated on every call so you always see where things stand right now.',
+					'Lists the maintenance trackers for a vehicle. Status is recalculated on every call.',
 				operationId: 'listTrackers',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				responses: {
@@ -278,8 +276,7 @@ const spec = {
 			get: {
 				tags: ['Service logs'],
 				summary: 'Service history',
-				description:
-					'Everything logged for this vehicle: oil changes, tyre checks, chain lube, and any custom service entries. Newest first.',
+				description: 'Lists service entries for a vehicle, newest first.',
 				operationId: 'listServiceLogs',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -312,7 +309,7 @@ const spec = {
 				tags: ['Service logs'],
 				summary: 'Add a service entry',
 				description:
-					'Record that you just serviced your vehicle. Pass `tracker_ids` to close out those maintenance tasks: the tracker resets and the next due date or km is calculated from the service date you supply.',
+					'Adds a service entry. Pass `tracker_ids` to reset those trackers; their next due date and distance are calculated from `performed_at` and `odometer_at_service`.',
 				operationId: 'createServiceLog',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				requestBody: {
@@ -337,7 +334,7 @@ const spec = {
 									tracker_ids: {
 										type: 'array',
 										items: { type: 'string' },
-										description: 'First entry becomes the primary tracker reset.'
+										description: 'Trackers to reset with this entry.'
 									},
 									cost_cents: { type: 'integer', minimum: 0, nullable: true },
 									notes: { type: 'string', maxLength: 2000, nullable: true },
@@ -370,7 +367,7 @@ const spec = {
 			get: {
 				tags: ['Service logs'],
 				summary: 'A single service entry',
-				description: 'Fetch one specific entry from the service history.',
+				description: 'Returns one service entry.',
 				operationId: 'getServiceLog',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -397,8 +394,7 @@ const spec = {
 			delete: {
 				tags: ['Service logs'],
 				summary: 'Remove a service entry',
-				description:
-					'Remove an entry you logged by mistake. Tracker statuses are recalculated after deletion so nothing is left inconsistent.',
+				description: 'Deletes a service entry. Tracker statuses are recalculated afterwards.',
 				operationId: 'deleteServiceLog',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -417,8 +413,7 @@ const spec = {
 			get: {
 				tags: ['Odometer'],
 				summary: 'Odometer history',
-				description:
-					'The full reading history for this vehicle. Useful for tracking mileage trends or verifying that an automation logged what you expected.',
+				description: 'Lists odometer readings for a vehicle, newest first.',
 				operationId: 'listOdometerLogs',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -446,7 +441,7 @@ const spec = {
 				tags: ['Odometer'],
 				summary: 'Add a reading',
 				description:
-					'Log the current reading after a ride. If this is the highest reading on record, maintenance intervals are recalculated against it.',
+					'Adds an odometer reading. If it is the highest on record, the vehicle odometer and tracker statuses are updated.',
 				operationId: 'addOdometerReading',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				requestBody: {
@@ -483,7 +478,7 @@ const spec = {
 											properties: {
 												odometer: {
 													type: 'integer',
-													description: 'Recomputed current odometer for this vehicle.'
+													description: 'Current vehicle odometer after this reading.'
 												}
 											}
 										}
@@ -504,7 +499,7 @@ const spec = {
 				tags: ['Odometer'],
 				summary: 'Remove a reading',
 				description:
-					'Remove an incorrect reading. The vehicle odometer is recalculated from what remains.',
+					'Deletes an odometer reading. The vehicle odometer is recalculated from the remaining readings.',
 				operationId: 'deleteOdometerLog',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -524,7 +519,7 @@ const spec = {
 				tags: ['Spending'],
 				summary: 'Expense history',
 				description:
-					'Every cost logged against this vehicle: fuel, parts, insurance, services. The response always includes a `total_cents` that sums all records, not just the current page.',
+					'Lists expenses for a vehicle. `total_cents` sums all records, including those outside the current page.',
 				operationId: 'listFinanceTransactions',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -559,7 +554,7 @@ const spec = {
 				tags: ['Spending'],
 				summary: 'Add a transaction',
 				description:
-					'Log an expense: a tank of fuel, a new tyre, an insurance premium. Amount in cents; negative values for income such as selling a part. Currency follows your account setting.',
+					'Adds an expense. Amount is in cents; use a negative value for income such as a sold part. Currency follows your account setting.',
 				operationId: 'createFinanceTransaction',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				requestBody: {
@@ -617,7 +612,7 @@ const spec = {
 			delete: {
 				tags: ['Spending'],
 				summary: 'Remove a transaction',
-				description: 'Remove an expense you logged by mistake.',
+				description: 'Deletes an expense.',
 				operationId: 'deleteFinanceTransaction',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -637,7 +632,7 @@ const spec = {
 				tags: ['Attention'],
 				summary: 'Attention across your garage',
 				description:
-					'The equivalent of glancing across your garage before heading out. Returns every vehicle that has at least one overdue, due, or upcoming item. Vehicles with nothing to report are excluded.',
+					'Returns every vehicle with at least one overdue, due, or upcoming item. Vehicles with nothing due are omitted.',
 				operationId: 'listAttention',
 				responses: {
 					'200': {
@@ -675,7 +670,7 @@ const spec = {
 				tags: ['Attention'],
 				summary: 'Attention for this vehicle',
 				description:
-					"Scoped to one vehicle. Returns what is overdue, due now, and coming up within 14 days or 500 km (10 h for hour-based vehicles). Each item includes fields like `overdue_by` and `due_in_days` so you know exactly how far past due your chain lube is. Values are in the vehicle's `odometer_unit`. For all vehicles at once, use `GET /vehicles/attention`.",
+					"Returns what is overdue, due now, and upcoming within 14 days or 500 km (10 h for hour-based vehicles) for one vehicle. Distance values use the vehicle's `odometer_unit`. Use `GET /vehicles/attention` for all vehicles.",
 				operationId: 'getVehicleAttention',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				responses: {
@@ -705,12 +700,11 @@ const spec = {
 															last_done_odometer: { type: 'integer', nullable: true },
 															overdue_by: {
 																type: 'integer',
-																description:
-																	'units past due in km, mi, or h depending on odometer_unit'
+																description: 'Amount past due, in the vehicle odometer_unit.'
 															},
 															overdue_by_days: {
 																type: 'integer',
-																description: 'days past due date'
+																description: 'Days past the due date.'
 															}
 														}
 													}
@@ -727,8 +721,7 @@ const spec = {
 															next_due_odometer: { type: 'integer', nullable: true },
 															due_in: {
 																type: 'integer',
-																description:
-																	'units until due in km, mi, or h depending on odometer_unit'
+																description: 'Amount until due, in the vehicle odometer_unit.'
 															},
 															due_in_days: { type: 'integer' }
 														}
@@ -746,8 +739,7 @@ const spec = {
 															next_due_odometer: { type: 'integer', nullable: true },
 															due_in: {
 																type: 'integer',
-																description:
-																	'units until due in km, mi, or h depending on odometer_unit'
+																description: 'Amount until due, in the vehicle odometer_unit.'
 															},
 															due_in_days: { type: 'integer' }
 														}
@@ -768,7 +760,7 @@ const spec = {
 				tags: ['Notes'],
 				summary: 'List notes',
 				description:
-					'All notes for this vehicle, newest first. Notes may contain Markdown and embedded document reference links.',
+					'Lists notes for a vehicle, newest first. Note content is Markdown and may include document reference links.',
 				operationId: 'listVehicleNotes',
 				parameters: [
 					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
@@ -796,7 +788,7 @@ const spec = {
 				tags: ['Notes'],
 				summary: 'Create a note',
 				description:
-					'Add a Markdown note to this vehicle. Use `doc_refs` to track which document IDs are referenced in the note content.',
+					'Adds a Markdown note to a vehicle. `doc_refs` lists the document IDs referenced in the content.',
 				operationId: 'createVehicleNote',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				requestBody: {
@@ -923,7 +915,7 @@ const spec = {
 			post: {
 				summary: 'Workflow notification',
 				description:
-					'Sent by MotoMate to the URL you set in Settings > Workflows whenever one of your rules fires. This is a request your endpoint receives, not one you call.\n\nThe `Authorization` header is whatever you entered alongside the URL, sent verbatim. Redirects are not followed, the request times out after 5 seconds, and any non-2xx response is logged and dropped without a retry, so treat delivery as best effort.',
+					'MotoMate sends this request to the URL configured in Settings > Workflows when a rule fires. Your endpoint receives it; you do not call it.\n\nThe `Authorization` header is sent exactly as entered in Settings. Redirects are not followed and the request times out after 5 seconds. A non-2xx response is logged and not retried.',
 				operationId: 'workflowNotification',
 				security: [],
 				requestBody: {
@@ -942,7 +934,7 @@ const spec = {
 									data: {
 										type: 'object',
 										description:
-											'Template variables for the rule that fired. Always includes `vehicle_name`; the rest depend on the trigger.',
+											'Template variables for the rule that fired. `vehicle_name` is always present; other keys depend on the trigger.',
 										additionalProperties: { type: ['string', 'number'] }
 									}
 								}
@@ -952,7 +944,7 @@ const spec = {
 				},
 				responses: {
 					'2XX': {
-						description: 'Any 2xx counts as delivered. Anything else is logged and dropped.'
+						description: 'Delivered. Non-2xx responses are logged and not retried.'
 					}
 				}
 			}
