@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.1
+
+- Fix: Added a missing documents API endpoint to list a vehicle's documents
+- Fix: OpenAPI specification now shares enums and thresholds with the server-side code
+- Fix: insights mileage ignored odometer readings from service entries
+- Security: reject invalid `limit` and `offset` values on the API
+
 ## 0.6.0
 
 **Breaking change**: The application will refuse to start on a default `AUTH_SECRET`. A secret under 32 bytes will prevent a fresh install from starting, though existing installs will only show a warning you should take seriously. Generate a new key with: `openssl rand -hex 32`, beware that this will invalidate your stored S3 and paperless credentials!
