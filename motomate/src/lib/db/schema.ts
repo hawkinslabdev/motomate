@@ -7,6 +7,26 @@ import {
 	type OdometerUnit
 } from '../utils/measurement.js';
 
+export const VEHICLE_TYPES = ['motorcycle', 'scooter', 'bike', 'other'] as const;
+export const TRACKER_STATUSES = ['ok', 'due', 'overdue'] as const;
+export const FINANCE_CATEGORIES = [
+	'maintenance',
+	'parts',
+	'accessories',
+	'administrative',
+	'fuel',
+	'other'
+] as const;
+export const DOC_TYPES = [
+	'service',
+	'quotation',
+	'papers',
+	'photo',
+	'notes',
+	'other',
+	'route'
+] as const;
+
 // State types (I'm defining these in JSON)
 
 export type NotificationChannels = {
@@ -197,9 +217,7 @@ export const vehicles = sqliteTable(
 		user_id: text('user_id')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		type: text('type', { enum: ['motorcycle', 'scooter', 'bike', 'other'] })
-			.notNull()
-			.default('motorcycle'),
+		type: text('type', { enum: VEHICLE_TYPES }).notNull().default('motorcycle'),
 		name: text('name').notNull(),
 		make: text('make').notNull(),
 		model: text('model').notNull(),
@@ -286,9 +304,7 @@ export const active_trackers = sqliteTable(
 		measurement_unit: text('measurement_unit', {
 			enum: MEASUREMENT_UNITS
 		}).$type<MeasurementUnit>(),
-		status: text('status', { enum: ['ok', 'due', 'overdue'] })
-			.notNull()
-			.default('ok'),
+		status: text('status', { enum: TRACKER_STATUSES }).notNull().default('ok'),
 		state: text('state', { mode: 'json' })
 			.$type<TrackerState>()
 			.notNull()
@@ -359,11 +375,7 @@ export const finance_transactions = sqliteTable(
 		user_id: text('user_id')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		category: text('category', {
-			enum: ['maintenance', 'parts', 'accessories', 'administrative', 'fuel', 'other']
-		})
-			.notNull()
-			.default('other'),
+		category: text('category', { enum: FINANCE_CATEGORIES }).notNull().default('other'),
 		amount_cents: integer('amount_cents').notNull(),
 		currency: text('currency').notNull().default('EUR'),
 		notes: text('notes'),
@@ -404,11 +416,7 @@ export const documents = sqliteTable(
 			.references(() => users.id, { onDelete: 'cascade' }),
 		name: text('name').notNull(), // original filename (used for download Content-Disposition)
 		title: text('title'), // user-facing description/summary
-		doc_type: text('doc_type', {
-			enum: ['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route']
-		})
-			.notNull()
-			.default('service'),
+		doc_type: text('doc_type', { enum: DOC_TYPES }).notNull().default('service'),
 		storage_key: text('storage_key').notNull(),
 		mime_type: text('mime_type').notNull(),
 		size_bytes: integer('size_bytes').notNull(),

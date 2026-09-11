@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DOC_TYPES, FINANCE_CATEGORIES, VEHICLE_TYPES } from '../db/schema.js';
 import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, MEASUREMENT_UNITS } from '../utils/measurement.js';
 
 const MeasurementUnitSchema = z.enum(MEASUREMENT_UNITS);
@@ -209,7 +210,7 @@ const VehicleMetaSchema = z.object({
 });
 
 export const CreateVehicleSchema = z.object({
-	type: z.enum(['motorcycle', 'scooter', 'bike', 'other']).default('motorcycle'),
+	type: z.enum(VEHICLE_TYPES).default('motorcycle'),
 	name: z.string().min(1).max(100).trim(),
 	make: z.string().min(1).max(100).trim(),
 	model: z.string().min(1).max(100).trim(),
@@ -273,9 +274,7 @@ export const CreateDocumentSchema = z.object({
 	vehicle_id: z.string().min(1),
 	name: z.string().min(1).max(200).trim(), // original filename
 	title: z.string().max(200).trim().optional().nullable(), // user-facing description
-	doc_type: z
-		.enum(['service', 'quotation', 'papers', 'photo', 'notes', 'other', 'route'])
-		.default('service'),
+	doc_type: z.enum(DOC_TYPES).default('service'),
 	storage_key: z.string().min(1),
 	mime_type: z.string().min(1),
 	size_bytes: reqInt(0),
@@ -365,9 +364,7 @@ export const ApiOdometerSchema = z.object({
 });
 
 export const ApiFinanceTransactionSchema = z.object({
-	category: z
-		.enum(['maintenance', 'parts', 'accessories', 'administrative', 'fuel', 'other'])
-		.default('other'),
+	category: z.enum(FINANCE_CATEGORIES).default('other'),
 	amount_cents: z.number().int(),
 	performed_at: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
 	notes: z.string().max(500).optional(),

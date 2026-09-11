@@ -1,5 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
+import { DOC_TYPES, FINANCE_CATEGORIES, TRACKER_STATUSES, VEHICLE_TYPES } from '$lib/db/schema.js';
+import { UPCOMING_DAYS, UPCOMING_DISTANCE, UPCOMING_HOURS } from '$lib/api/attention.js';
 
 const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0';
 
@@ -22,7 +24,8 @@ const spec = {
 		{ name: 'Maintenance', description: 'Maintenance trackers and their status.' },
 		{ name: 'Service logs', description: 'Service history.' },
 		{ name: 'Odometer', description: 'Odometer readings.' },
-		{ name: 'Spending', description: 'Expenses, fuel costs, and other transactions.' }
+		{ name: 'Spending', description: 'Expenses, fuel costs, and other transactions.' },
+		{ name: 'Documents', description: 'Files saved to a vehicle.' }
 	],
 	'x-tagGroups': [
 		{ name: 'Account', tags: ['Profile'] },
@@ -48,7 +51,7 @@ const spec = {
 					make: { type: 'string' },
 					model: { type: 'string' },
 					year: { type: 'integer' },
-					type: { type: 'string', enum: ['motorcycle', 'scooter', 'bike', 'other'] },
+					type: { type: 'string', enum: VEHICLE_TYPES },
 					current_odometer: { type: 'integer' },
 					odometer_unit: { type: 'string' },
 					license_plate: { type: 'string', nullable: true },
@@ -63,7 +66,7 @@ const spec = {
 				properties: {
 					id: { type: 'string' },
 					vehicle_id: { type: 'string' },
-					status: { type: 'string', enum: ['ok', 'due', 'overdue'] },
+					status: { type: 'string', enum: TRACKER_STATUSES },
 					last_done_at: { type: 'string', format: 'date', nullable: true },
 					last_done_odometer: { type: 'integer', nullable: true },
 					next_due_at: { type: 'string', format: 'date', nullable: true },
@@ -103,7 +106,7 @@ const spec = {
 					vehicle_id: { type: 'string' },
 					category: {
 						type: 'string',
-						enum: ['maintenance', 'parts', 'accessories', 'administrative', 'fuel', 'other']
+						enum: FINANCE_CATEGORIES
 					},
 					amount_cents: { type: 'integer' },
 					currency: { type: 'string' },
@@ -140,7 +143,7 @@ const spec = {
 		'/me': {
 			get: {
 				tags: ['Profile'],
-				summary: 'Your profile',
+				summary: 'Current account',
 				description: 'Returns the account the API key belongs to. Use it to verify a key.',
 				operationId: 'getMe',
 				responses: {
@@ -201,8 +204,8 @@ const spec = {
 		'/vehicles': {
 			get: {
 				tags: ['Vehicles'],
-				summary: 'Your garage',
-				description: 'Lists your vehicles in sort order. Each entry includes the current odometer.',
+				summary: 'List vehicles',
+				description: 'Lists vehicles in sort order. Each entry includes the current odometer.',
 				operationId: 'listVehicles',
 				responses: {
 					'200': {
@@ -554,7 +557,7 @@ const spec = {
 				tags: ['Spending'],
 				summary: 'Add a transaction',
 				description:
-					'Adds an expense. Amount is in cents; use a negative value for income such as a sold part. Currency follows your account setting.',
+					'Adds an expense. Amount is in cents; use a negative value for income such as a sold part. Currency follows the account setting.',
 				operationId: 'createFinanceTransaction',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				requestBody: {
@@ -567,14 +570,7 @@ const spec = {
 								properties: {
 									category: {
 										type: 'string',
-										enum: [
-											'maintenance',
-											'parts',
-											'accessories',
-											'administrative',
-											'fuel',
-											'other'
-										],
+										enum: FINANCE_CATEGORIES,
 										default: 'other'
 									},
 									amount_cents: {
@@ -630,7 +626,7 @@ const spec = {
 		'/vehicles/attention': {
 			get: {
 				tags: ['Attention'],
-				summary: 'Attention across your garage',
+				summary: 'Attention for all vehicles',
 				description:
 					'Returns every vehicle with at least one overdue, due, or upcoming item. Vehicles with nothing due are omitted.',
 				operationId: 'listAttention',
@@ -669,8 +665,7 @@ const spec = {
 			get: {
 				tags: ['Attention'],
 				summary: 'Attention for this vehicle',
-				description:
-					"Returns what is overdue, due now, and upcoming within 14 days or 500 km (10 h for hour-based vehicles) for one vehicle. Distance values use the vehicle's `odometer_unit`. Use `GET /vehicles/attention` for all vehicles.",
+				description: `Returns what is overdue, due now, and upcoming within ${UPCOMING_DAYS} days or ${UPCOMING_DISTANCE} km (${UPCOMING_HOURS} h for hour-based vehicles) for one vehicle. Distance values use the vehicle's \`odometer_unit\`. Use \`GET /vehicles/attention\` for all vehicles.`,
 				operationId: 'getVehicleAttention',
 				parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
 				responses: {
@@ -752,6 +747,61 @@ const spec = {
 							}
 						}
 					}
+				}
+			}
+		},
+		'/vehicles/{id}/documents': {
+			get: {
+				tags: ['Documents'],
+				summary: 'List documents',
+				description:
+					'Lists files attached to a vehicle, newest first. Fetch the file itself from `url` with the same Bearer key; the response has the stored `mime_type` and a `Content-Disposition` filename. Add `&download=1` to force an attachment.',
+				operationId: 'listVehicleDocuments',
+				parameters: [
+					{ name: 'id', in: 'path', required: true, schema: { type: 'string' } },
+					{
+						name: 'doc_type',
+						in: 'query',
+						schema: { type: 'string', enum: DOC_TYPES }
+					},
+					{ name: 'limit', in: 'query', schema: { type: 'integer', default: 50, maximum: 200 } },
+					{ name: 'offset', in: 'query', schema: { type: 'integer', default: 0 } }
+				],
+				responses: {
+					'200': {
+						description: 'Documents',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										data: {
+											type: 'array',
+											items: {
+												type: 'object',
+												properties: {
+													id: { type: 'string' },
+													name: { type: 'string', description: 'Original filename.' },
+													title: { type: 'string', nullable: true },
+													doc_type: { type: 'string' },
+													mime_type: { type: 'string' },
+													size_bytes: { type: 'integer' },
+													expires_at: { type: 'string', nullable: true },
+													created_at: { type: 'string' },
+													url: {
+														type: 'string',
+														description: 'Path to the file, relative to the server origin.'
+													}
+												}
+											}
+										},
+										total: { type: 'integer' }
+									}
+								}
+							}
+						}
+					},
+					'404': { description: 'Vehicle not found' }
 				}
 			}
 		},
@@ -915,7 +965,7 @@ const spec = {
 			post: {
 				summary: 'Workflow notification',
 				description:
-					'MotoMate sends this request to the URL configured in Settings > Workflows when a rule fires. Your endpoint receives it; you do not call it.\n\nThe `Authorization` header is sent exactly as entered in Settings. Redirects are not followed and the request times out after 5 seconds. A non-2xx response is logged and not retried.',
+					'MotoMate sends this request to the URL configured in Settings > Workflows when a rule fires. Your endpoint receives it.\n\nThe `Authorization` header is sent exactly as entered in Settings. Redirects are not followed and the request times out after 5 seconds. A non-2xx response is logged and not retried.',
 				operationId: 'workflowNotification',
 				security: [],
 				requestBody: {

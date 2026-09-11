@@ -1,6 +1,6 @@
 export const UPCOMING_DAYS = 14;
-const UPCOMING_DISTANCE = 500;
-const UPCOMING_HOURS = 10;
+export const UPCOMING_DISTANCE = 500;
+export const UPCOMING_HOURS = 10;
 
 function upcomingThreshold(odometerUnit: string): number {
 	return odometerUnit === 'h' ? UPCOMING_HOURS : UPCOMING_DISTANCE;
