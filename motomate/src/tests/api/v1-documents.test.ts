@@ -61,3 +61,11 @@ describe('GET /vehicles/:id/documents', () => {
 		expect((await GET(event({ id: 'v_x' }))).status).toBe(404);
 	});
 });
+
+describe('parsePage', () => {
+	it('clamps garbage and negative values', async () => {
+		const { parsePage } = await import('$lib/api/guards.js');
+		expect(parsePage(new URL('http://x?limit=abc&offset=-5'))).toEqual({ limit: 50, offset: 0 });
+		expect(parsePage(new URL('http://x?limit=9999&offset=3'))).toEqual({ limit: 200, offset: 3 });
+	});
+});

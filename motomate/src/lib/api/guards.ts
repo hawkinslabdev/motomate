@@ -30,9 +30,11 @@ export async function parseBody<T>(request: Request): Promise<T | Response> {
 }
 
 export function parsePage(url: URL): { limit: number; offset: number } {
+	const limit = parseInt(url.searchParams.get('limit') ?? '50');
+	const offset = parseInt(url.searchParams.get('offset') ?? '0');
 	return {
-		limit: Math.min(parseInt(url.searchParams.get('limit') ?? '50'), 200),
-		offset: parseInt(url.searchParams.get('offset') ?? '0')
+		limit: Number.isFinite(limit) ? Math.min(Math.max(limit, 1), 200) : 50,
+		offset: Number.isFinite(offset) ? Math.max(offset, 0) : 0
 	};
 }
 
