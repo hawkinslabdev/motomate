@@ -33,8 +33,8 @@
 <style>
 	.bell {
 		position: relative;
-		width: 42px;
-		height: 42px;
+		width: 44px;
+		height: 44px;
 		background: transparent;
 		border: 3px solid transparent;
 		border-radius: 12px;

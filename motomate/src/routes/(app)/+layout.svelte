@@ -1060,8 +1060,8 @@
 	}
 
 	.action-item {
-		width: 42px;
-		height: 42px;
+		width: 44px;
+		height: 44px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -1159,8 +1159,8 @@
 	}
 
 	.topnav-avatar {
-		width: 42px;
-		height: 42px;
+		width: 44px;
+		height: 44px;
 		border-radius: 12px;
 		background: transparent;
 		border: 3px solid transparent;
