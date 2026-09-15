@@ -12,6 +12,7 @@ export function attachmentStorageKey(userId: string, vehicleId: string, filename
 // use sanitized title as the download filename, preserving the original extension
 export function downloadFilename(name: string, title?: string | null): string {
 	const clean = (title ?? '')
+		// eslint-disable-next-line no-control-regex -- strip control chars from filename
 		.replace(/[\\/\u0000-\u001f]/g, ' ')
 		.trim()
 		.slice(0, 200);
