@@ -70,13 +70,16 @@ export const actions: Actions = {
 			: undefined;
 		const isReminder = tracker ? isReminderTracker(tracker) : false;
 
-		await createServiceLog(locals.user!.id, { ...parsed.data, is_reminder: isReminder });
+		const log = await createServiceLog(locals.user!.id, {
+			...parsed.data,
+			is_reminder: isReminder
+		});
 
 		const trueOdo = await recomputeCurrentOdometer(params.id, locals.user!.id);
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
-		return { logged: true };
+		return { logged: true, warning: log.warning };
 	},
 
 	skipTracker: async ({ request, locals, params }) => {

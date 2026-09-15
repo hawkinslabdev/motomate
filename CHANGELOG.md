@@ -2,6 +2,7 @@
 
 ## 0.6.1
 
+- Fix: insights mileage chart could overcount distance past the actual odometer
 - Fix: added a missing documents API endpoint to list a vehicle's documents
 - Fix: the OpenAPI specification now shares enums and thresholds with server-side code
 - Fix: onsights mileage calculation ignored odometer readings from service entries

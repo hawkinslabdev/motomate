@@ -125,13 +125,6 @@ export const actions: Actions = {
 			attachmentDocIds.push(doc.id);
 		}
 
-		const vehicle = await getVehicleById(params.id, locals.user!.id);
-		const maxOdo = vehicle?.current_odometer ?? 0;
-		const warning =
-			parsed.data.odometer_at_service < maxOdo
-				? `Odometer is lower than the highest recorded reading (${maxOdo} km). Saved as a historical record.`
-				: undefined;
-
 		// Collect any existing doc IDs linked from the picker in the new form
 		const linkedDocIds = formData.getAll('linked_doc_id').map(String).filter(Boolean);
 
@@ -141,7 +134,7 @@ export const actions: Actions = {
 			: undefined;
 		const isReminder = primaryTracker ? isReminderTracker(primaryTracker) : false;
 
-		await createServiceLog(locals.user!.id, {
+		const log = await createServiceLog(locals.user!.id, {
 			...parsed.data,
 			attachments: [...attachmentDocIds, ...linkedDocIds],
 			is_reminder: isReminder
@@ -151,7 +144,7 @@ export const actions: Actions = {
 		await recomputeTrackerStatuses(params.id, trueOdo);
 		runWorkflowChecks(locals.user!.id).catch(() => {});
 
-		return { logged: true, warning };
+		return { logged: true, warning: log.warning };
 	},
 
 	updateOdometer: async ({ request, locals, params }) => {

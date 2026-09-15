@@ -71,10 +71,11 @@
 	const mileagePoints = $derived.by(() => {
 		if (filteredOdo.length === 0) return [];
 		const byMonth = new Map<string, number>();
+		let runningMax = 0;
 		for (const l of filteredOdo) {
-			const ym = l.recorded_at.slice(0, 7);
-			const existing = byMonth.get(ym) ?? 0;
-			if (l.odometer > existing) byMonth.set(ym, l.odometer);
+			if (l.odometer < runningMax) continue;
+			runningMax = l.odometer;
+			byMonth.set(l.recorded_at.slice(0, 7), runningMax);
 		}
 		const sorted = [...byMonth.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 		if (mileageMode === 'odometer') {
@@ -129,8 +130,8 @@
 	const totalKm = $derived.by(() => {
 		if (filteredOdo.length === 0) return null;
 		if (mileageMode === 'delta') return mileagePoints.reduce((s, p) => s + p.value, 0);
-		const vals = filteredOdo.map((l) => l.odometer);
-		return Math.max(...vals) - Math.min(...vals);
+		const vals = mileagePoints.map((p) => p.value);
+		return vals.length ? Math.max(...vals) - Math.min(...vals) : 0;
 	});
 
 	const totalCost = $derived(filteredFinance.reduce((s, t) => s + t.amount_cents, 0));

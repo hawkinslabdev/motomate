@@ -20,7 +20,10 @@ function hydrateServiceLog(log: ServiceLog): ServiceLog {
 	};
 }
 
-export async function createServiceLog(userId: string, input: unknown): Promise<ServiceLog> {
+export async function createServiceLog(
+	userId: string,
+	input: unknown
+): Promise<ServiceLog & { warning?: string }> {
 	const parsed = CreateServiceLogSchema.parse(input);
 	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
 	const id = generateId();
@@ -45,7 +48,8 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 	const vehicleMeasurement = vehicle
 		? resolveMeasurementValue(vehicle.current_measurement, vehicle.current_measurement_unit)
 		: null;
-	if ((compareMeasurements(serviceMeasurement, vehicleMeasurement) ?? 0) > 0) {
+	const cmp = compareMeasurements(serviceMeasurement, vehicleMeasurement) ?? 0;
+	if (cmp > 0) {
 		await updateOdometer(
 			parsed.vehicle_id,
 			userId,
@@ -56,9 +60,18 @@ export async function createServiceLog(userId: string, input: unknown): Promise<
 		);
 	}
 
-	return hydrateServiceLog(
-		(await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) })) as ServiceLog
-	);
+	// Flag reading behind highest past value like update/edit flows;
+	const warning =
+		cmp < 0 && vehicle
+			? `Odometer is lower than the highest recorded reading (${vehicle.current_odometer} ${vehicle.odometer_unit}). Saved as a historical record.`
+			: undefined;
+
+	return {
+		...hydrateServiceLog(
+			(await db.query.service_logs.findFirst({ where: eq(service_logs.id, id) })) as ServiceLog
+		),
+		warning
+	};
 }
 
 export async function getServiceLogsByVehicle(
