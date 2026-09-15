@@ -268,12 +268,13 @@
 		margin-bottom: var(--space-10);
 	}
 	.greeting-text {
-		font-size: var(--text-2xl);
+		font-size: clamp(1.375rem, 5vw + 0.5rem, 1.75rem);
 		font-weight: 600;
 		color: var(--text);
 		letter-spacing: -0.02em;
 		line-height: var(--leading-tight);
 		margin: 0 0 var(--space-2);
+		overflow-wrap: break-word;
 	}
 	.status-summary {
 		font-size: var(--text-base);
@@ -409,7 +410,7 @@
 		flex-shrink: 0;
 	}
 	.mono {
-		font-family: var(--font-mono);
+		font-family: var(--font-sans);
 		font-variant-numeric: tabular-nums;
 	}
 	.cost {

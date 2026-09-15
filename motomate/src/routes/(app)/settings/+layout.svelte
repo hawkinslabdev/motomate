@@ -19,35 +19,73 @@
 		{ href: '/settings/developer', labelKey: 'settings.nav.developer' }
 	];
 
-	let primedLink = $state<string | null>(null);
-	let primedTimeout: ReturnType<typeof setTimeout> | null = null;
-	let isMobile = $state(false);
+	let navOpen = $state(false);
 
-	$effect(() => {
-		if (typeof window === 'undefined') return;
-		const checkMobile = () => {
-			isMobile = window.innerWidth <= 640;
-		};
-		checkMobile();
-		window.addEventListener('resize', checkMobile);
-		return () => window.removeEventListener('resize', checkMobile);
-	});
+	const activeLabelKey = $derived(
+		tabs.find((tab) => tab.href === $page.url.pathname)?.labelKey ?? 'settings.title'
+	);
 
-	function handleExternalClick(e: MouseEvent, href: string) {
-		if (!isMobile) return;
-		if (primedLink === href) {
-			primedLink = null;
-			if (primedTimeout) clearTimeout(primedTimeout);
-			return;
-		}
-		e.preventDefault();
-		primedLink = href;
-		if (primedTimeout) clearTimeout(primedTimeout);
-		primedTimeout = setTimeout(() => {
-			primedLink = null;
-		}, 2000);
+	function closeNav() {
+		navOpen = false;
+	}
+
+	function handleNavClickOutside(e: MouseEvent) {
+		if (navOpen && !(e.target as Element).closest('.settings-nav-mobile')) closeNav();
+	}
+
+	function handleNavKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape' && navOpen) closeNav();
 	}
 </script>
+
+<svelte:window onclick={handleNavClickOutside} onkeydown={handleNavKeydown} />
+
+{#snippet navLinks(onLinkClick: () => void)}
+	{#each tabs as tab}
+		<a
+			href={tab.href}
+			class="settings-nav-link"
+			class:settings-nav-link--active={$page.url.pathname === tab.href}
+			onclick={onLinkClick}
+		>
+			{$_(tab.labelKey)}
+		</a>
+	{/each}
+
+	<div class="settings-nav-divider" role="separator"></div>
+
+	<a
+		href="https://github.com/hawkinslabdev/motomate/issues"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="settings-nav-link external-link"
+		onclick={onLinkClick}
+	>
+		<span>{$_('settings.nav.reportIssue')}</span>
+		&nbsp;
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			class="external-icon"
+		>
+			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+			<polyline points="15 3 21 3 21 9"></polyline>
+			<line x1="10" y1="14" x2="21" y2="3"></line>
+		</svg>
+	</a>
+
+	<a
+		href="/settings/changelog"
+		class="settings-nav-version"
+		class:settings-nav-version--active={$page.url.pathname === '/settings/changelog'}
+		data-tooltip={$_('settings.nav.changelog')}
+		onclick={onLinkClick}>v{appVersion}</a
+	>
+{/snippet}
 
 <div class="settings-shell">
 	<div class="settings-header">
@@ -55,84 +93,52 @@
 	</div>
 	<div class="settings-body">
 		<nav class="settings-nav" aria-label={$_('settings.sectionsNav')}>
-			{#each tabs as tab}
-				<a
-					href={tab.href}
-					class="settings-nav-link"
-					class:settings-nav-link--active={$page.url.pathname === tab.href}
-				>
-					{$_(tab.labelKey)}
-				</a>
-			{/each}
-
-			<div class="settings-nav-divider" role="separator"></div>
-
-			<a
-				href="https://github.com/hawkinslabdev/motomate"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="settings-nav-link external-link"
-				class:external-link--primed={primedLink === 'https://github.com/hawkinslabdev/motomate'}
-				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate')}
-			>
-				<span
-					>{primedLink === 'https://github.com/hawkinslabdev/motomate'
-						? $_('settings.nav.tapAgain')
-						: $_('settings.nav.sourceCode')}</span
-				>
-				&nbsp;
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="external-icon"
-				>
-					<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-					<polyline points="15 3 21 3 21 9"></polyline>
-					<line x1="10" y1="14" x2="21" y2="3"></line>
-				</svg>
-			</a>
-
-			<a
-				href="https://github.com/hawkinslabdev/motomate/issues"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="settings-nav-link external-link"
-				class:external-link--primed={primedLink ===
-					'https://github.com/hawkinslabdev/motomate/issues'}
-				onclick={(e) => handleExternalClick(e, 'https://github.com/hawkinslabdev/motomate/issues')}
-			>
-				<span
-					>{primedLink === 'https://github.com/hawkinslabdev/motomate/issues'
-						? $_('settings.nav.tapAgain')
-						: $_('settings.nav.reportIssue')}</span
-				>
-				&nbsp;
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="external-icon"
-				>
-					<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-					<polyline points="15 3 21 3 21 9"></polyline>
-					<line x1="10" y1="14" x2="21" y2="3"></line>
-				</svg>
-			</a>
-
-			<a
-				href="/settings/changelog"
-				class="settings-nav-version"
-				class:settings-nav-version--active={$page.url.pathname === '/settings/changelog'}
-				data-tooltip={$_('settings.nav.changelog')}>v{appVersion}</a
-			>
+			{@render navLinks(() => {})}
 		</nav>
+
+		<div class="settings-nav-mobile">
+			<button
+				type="button"
+				class="settings-nav-trigger"
+				class:settings-nav-trigger--open={navOpen}
+				onclick={() => (navOpen = !navOpen)}
+				aria-expanded={navOpen}
+				aria-haspopup="true"
+			>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					aria-hidden="true"
+				>
+					<line x1="4" y1="7" x2="20" y2="7" />
+					<line x1="4" y1="12" x2="20" y2="12" />
+					<line x1="4" y1="17" x2="20" y2="17" />
+				</svg>
+				<span class="settings-nav-trigger-label">{$_(activeLabelKey)}</span>
+				<svg
+					class="settings-nav-trigger-chevron"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<polyline points="6 9 12 15 18 9" />
+				</svg>
+			</button>
+
+			{#if navOpen}
+				<nav class="settings-nav-dropdown" aria-label={$_('settings.sectionsNav')}>
+					{@render navLinks(closeNav)}
+				</nav>
+			{/if}
+		</div>
+
 		<div class="settings-content">
 			{#if children}
 				{@render children()}
@@ -197,10 +203,6 @@
 	}
 	.external-link {
 		opacity: 0.8;
-	}
-	.external-link--primed {
-		color: var(--accent);
-		opacity: 1;
 	}
 	.external-icon {
 		width: 14px;
@@ -274,6 +276,11 @@
 	.settings-content {
 		min-width: 0;
 	}
+
+	.settings-nav-mobile {
+		display: none;
+	}
+
 	@media (max-width: 640px) {
 		.settings-shell {
 			padding: var(--space-4);
@@ -282,54 +289,96 @@
 			grid-template-columns: 1fr;
 		}
 		.settings-nav {
-			flex-direction: row;
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-			scrollbar-width: none;
-			align-items: stretch;
-			border-bottom: 1px solid var(--border);
-			margin-bottom: var(--space-4);
-			gap: 0;
-		}
-		.settings-nav::-webkit-scrollbar {
 			display: none;
 		}
-		.settings-nav-link {
-			border-left: none;
-			border-bottom: 2px solid transparent;
-			border-radius: 0;
-			white-space: nowrap;
-			padding: 0.625rem 0.875rem;
-			min-height: 44px;
-			justify-content: center;
+		.settings-nav-mobile {
+			display: block;
+			position: relative;
+			margin-bottom: var(--space-4);
 		}
-		.settings-nav-link--active {
-			color: var(--accent);
-			border-bottom-color: var(--accent);
+		.settings-nav-trigger {
+			display: flex;
+			align-items: center;
+			gap: 0.625rem;
+			width: 100%;
+			min-height: 44px;
+			padding: 0.625rem 0.875rem;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			color: var(--text);
+			font-size: var(--text-sm);
+			font-weight: 500;
+			font-family: inherit;
+			cursor: pointer;
+		}
+		.settings-nav-trigger svg:first-child {
+			width: 18px;
+			height: 18px;
+			flex-shrink: 0;
+			color: var(--text-muted);
+		}
+		.settings-nav-trigger-label {
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-align: left;
+		}
+		.settings-nav-trigger-chevron {
+			width: 16px;
+			height: 16px;
+			flex-shrink: 0;
+			color: var(--text-subtle);
+			transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+		}
+		.settings-nav-trigger--open {
+			border-color: var(--border-strong);
+		}
+		.settings-nav-trigger--open .settings-nav-trigger-chevron {
+			transform: rotate(180deg);
+		}
+		.settings-nav-dropdown {
+			position: absolute;
+			top: calc(100% + 6px);
+			left: 0;
+			right: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			background: var(--bg);
+			border: 1px solid var(--border);
+			border-radius: 14px;
+			padding: 0.4rem;
+			box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+			z-index: 30;
+		}
+		.settings-nav-dropdown .settings-nav-link {
+			border-left: none;
+			border-radius: 10px;
+			padding: 0.625rem 0.75rem;
+			min-height: 44px;
+		}
+		.settings-nav-dropdown .settings-nav-link--active {
+			border-left: none;
 		}
 		.settings-nav-divider {
-			display: none;
+			margin: 0.4rem 0.75rem;
 		}
 		.external-link .external-icon {
 			opacity: 0.5;
 			transform: translateX(0);
 		}
-		.settings-nav-version {
+		.settings-nav-dropdown .settings-nav-version {
 			border-left: none;
-			border-bottom: 2px solid transparent;
-			border-radius: 0;
-			white-space: nowrap;
-			padding: 0.625rem 0.875rem;
 			min-height: 44px;
 			display: flex;
 			align-items: center;
 			opacity: 1;
 			font-family: 'JetBrains Mono', monospace;
 		}
-		.settings-nav-version--active {
-			border-bottom-color: var(--accent);
-		}
-		.settings-nav-version::after {
+		.settings-nav-dropdown .settings-nav-version::after {
 			display: none;
 		}
 	}

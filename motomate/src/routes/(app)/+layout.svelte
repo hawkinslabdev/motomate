@@ -632,7 +632,7 @@
 				<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
 				<polyline points="9 22 9 12 15 12 15 22" />
 			</svg>
-			<span class="tab-label">{$_('layout.nav.dashboard')}</span>
+			<span class="tab-label sr-only">{$_('layout.nav.dashboard')}</span>
 		</a>
 
 		<div class="bottom-tab bottom-tab--fab">
@@ -678,7 +678,7 @@
 				<path d="M5.5 17.5L8 10h6l3 4.5" />
 				<path d="M14 10l1.5-3H19" />
 			</svg>
-			<span class="tab-label">{$_('layout.nav.garage')}</span>
+			<span class="tab-label sr-only">{$_('layout.nav.garage')}</span>
 		</a>
 	</nav>
 </div>
@@ -1585,6 +1585,10 @@
 	}
 	.tab-label {
 		line-height: 1;
+		align-self: stretch;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	/* FAB slot */
@@ -1599,10 +1603,10 @@
 	.fab-btn {
 		position: fixed;
 		left: 50%;
-		bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+		bottom: env(safe-area-inset-bottom, 0px);
 		transform: translateX(-50%);
-		width: 72px;
-		height: 72px;
+		width: 80px;
+		height: 80px;
 		border-radius: 50%;
 		background: var(--accent);
 		border: none;
@@ -1618,8 +1622,8 @@
 			box-shadow 0.15s;
 	}
 	.fab-btn svg {
-		width: 30px;
-		height: 30px;
+		width: 34px;
+		height: 34px;
 		stroke-width: 2.25;
 		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
@@ -1677,12 +1681,16 @@
 		color: var(--text);
 		margin: 0;
 		flex: 1;
+		min-width: 0;
 		text-align: center;
 	}
 	.sheet-title--vehicle {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		font-weight: 500;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.sheet-close {
 		width: 32px;
@@ -1770,9 +1778,13 @@
 	}
 	.pick-name {
 		flex: 1;
+		min-width: 0;
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.pick-arrow {
 		width: 18px;
@@ -1820,7 +1832,7 @@
 		color: var(--text-muted);
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 640px) {
 		.topnav-links {
 			display: none;
 		}
