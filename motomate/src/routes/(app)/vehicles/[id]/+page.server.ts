@@ -149,11 +149,13 @@ export const actions: Actions = {
 
 	updateOdometer: async ({ request, locals, params }) => {
 		const data = await request.formData();
-		const raw = Number(data.get('odometer'));
+		const odometerStr = String(data.get('odometer') ?? '').trim();
+		const raw = Number(odometerStr);
 		const remark = data.get('remark') ? String(data.get('remark')).trim() : undefined;
 		const recordedAt = String(data.get('recorded_at') ?? '').trim() || undefined;
 
-		if (!Number.isInteger(raw) || raw < 0) {
+		// empty or missing input to becomes zero not nan
+		if (!odometerStr || !Number.isInteger(raw) || raw < 0) {
 			return fail(400, { odoError: 'Enter a valid odometer reading' });
 		}
 
