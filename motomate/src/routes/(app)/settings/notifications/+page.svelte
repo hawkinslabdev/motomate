@@ -23,6 +23,12 @@
 	let haEnabled = $state(initialChannels.home_assistant?.enabled ?? false);
 	let haUrl = $state(initialChannels.home_assistant?.webhook_url ?? '');
 
+	// Default collapsed only if a valid config was already saved before this mount.
+	const haHadSavedConfig = untrack(
+		() => extractHaWebhookId(initialChannels.home_assistant?.webhook_url ?? '') !== null
+	);
+	let haConfigCollapsed = $state(haHadSavedConfig);
+
 	// Derived values for display (reactive)
 	let initVapid = $derived(data.vapidPublicKey);
 	let initSmtp = $derived(data.smtpConfigured);
@@ -394,30 +400,41 @@ actions:
 						bind:value={haUrl}
 					/>
 					<p class="channel-hint">{$_('settings.notifications.channels.ha.hint')}</p>
-					{#if haUrl}
-						{#if haConfigValid}
-							<div class="ha-config">
-								<div class="ha-config-header">
-									<span class="ha-config-label"
-										>{$_('settings.notifications.channels.ha.configLabel')}</span
-									>
-									<button
-										type="button"
-										class="copy-btn"
-										onclick={() => navigator.clipboard.writeText(haYamlConfig)}
-									>
-										{$_('settings.notifications.channels.ha.copy')}
-									</button>
-								</div>
-								<pre class="ha-config-code">{haYamlConfig}</pre>
-							</div>
-							<p class="channel-hint">{$_('settings.notifications.channels.ha.tip')}</p>
-						{:else}
-							<p class="channel-hint channel-hint--warn">
-								{$_('settings.notifications.channels.ha.invalidUrl')}
-							</p>
-						{/if}
+					{#if haUrl && !haConfigValid}
+						<p class="channel-hint channel-hint--warn">
+							{$_('settings.notifications.channels.ha.invalidUrl')}
+						</p>
 					{/if}
+					<div class="ha-config">
+						<div class="ha-config-header">
+							<button
+								type="button"
+								class="collapse-btn"
+								class:collapse-btn--collapsed={haConfigCollapsed}
+								onclick={() => (haConfigCollapsed = !haConfigCollapsed)}
+								aria-expanded={!haConfigCollapsed}
+								aria-controls="ha-config-code"
+							>
+								<svg class="chevron" viewBox="0 0 10 6" aria-hidden="true">
+									<path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" />
+								</svg>
+								<span class="ha-config-label"
+									>{$_('settings.notifications.channels.ha.configLabel')}</span
+								>
+							</button>
+							<button
+								type="button"
+								class="copy-btn"
+								onclick={() => navigator.clipboard.writeText(haYamlConfig)}
+							>
+								{$_('settings.notifications.channels.ha.copy')}
+							</button>
+						</div>
+						{#if !haConfigCollapsed}
+							<pre id="ha-config-code" class="ha-config-code">{haYamlConfig}</pre>
+						{/if}
+					</div>
+					<p class="channel-hint">{$_('settings.notifications.channels.ha.tip')}</p>
 					<button
 						type="button"
 						class="test-btn"
@@ -629,6 +646,26 @@ actions:
 		color: var(--text-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+	}
+	.collapse-btn {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		color: inherit;
+	}
+	.chevron {
+		width: 0.625rem;
+		height: 0.625rem;
+		color: var(--text-subtle);
+		flex-shrink: 0;
+		transition: transform 0.15s;
+	}
+	.collapse-btn--collapsed .chevron {
+		transform: rotate(-90deg);
 	}
 	.copy-btn {
 		font-size: var(--text-xs);
