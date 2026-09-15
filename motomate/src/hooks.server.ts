@@ -6,6 +6,7 @@ import { env as pubEnv } from '$env/dynamic/public';
 import { initScheduler } from '$lib/server/scheduler.js';
 import { findUserByApiKey, updateKeyLastUsed } from '$lib/db/repositories/api-keys.js';
 import { redactCredentials } from '$lib/server/secrets.js';
+import { rateLimit } from '$lib/auth/rate-limit.js';
 
 if (!env.AUTH_SECRET) {
 	throw new Error(
@@ -14,6 +15,20 @@ if (!env.AUTH_SECRET) {
 }
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+
+const RATE_LIMITS: Record<string, { max: number; windowMs: number }> = {
+	'/api/export': { max: 5, windowMs: 15 * 60_000 },
+	'/api/v1/me/download': { max: 20, windowMs: 15 * 60_000 },
+	'/api/push/subscribe': { max: 20, windowMs: 15 * 60_000 },
+	'/api/notifications/test': { max: 5, windowMs: 15 * 60_000 }
+};
+
+function checkRateLimit(pathname: string, userId: string): Response | null {
+	const limit = RATE_LIMITS[pathname];
+	if (!limit) return null;
+	if (rateLimit(`${pathname}:${userId}`, limit.max, limit.windowMs)) return null;
+	return json({ error: 'Too many attempts', code: 'RATE_LIMITED' }, { status: 429 });
+}
 
 // Signs file URLs and export tokens, keys ALTCHA, and derives the integration-credential key.
 const PLACEHOLDER_SECRETS = new Set([
@@ -119,7 +134,7 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
 	};
 	if (allowedOrigin) {
 		headers['Access-Control-Allow-Origin'] = allowedOrigin;
-		headers['Access-Control-Allow-Credentials'] = 'true';
+		if (allowedOrigin !== '*') headers['Access-Control-Allow-Credentials'] = 'true';
 	}
 	return headers;
 }
@@ -162,6 +177,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 			// skiip Lucia session validation entirely when Bearer header is present
 			event.locals.session = null;
+
+			if (event.locals.user) {
+				const limited = checkRateLimit(event.url.pathname, event.locals.user.id);
+				if (limited) return limited;
+			}
 
 			const response = await resolve(event, {
 				transformPageChunk({ html }) {
@@ -247,6 +267,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	event.locals.user = user ? redactCredentials(user) : user;
 	event.locals.session = session;
+
+	if (event.locals.user) {
+		const limited = checkRateLimit(event.url.pathname, event.locals.user.id);
+		if (limited) return limited;
+	}
 
 	const response = await resolve(event, {
 		transformPageChunk({ html }) {

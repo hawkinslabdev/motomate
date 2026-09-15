@@ -2,6 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { verifyDownloadToken } from '$lib/server/download-token.js';
 import { generateJsonExport, generateZipExport } from '$lib/server/export.js';
 import { getUserById } from '$lib/db/repositories/users.js';
+import { rateLimit } from '$lib/auth/rate-limit.js';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const payload = verifyDownloadToken(params.token!);
@@ -19,6 +20,13 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (!user) {
 		return new Response(JSON.stringify({ error: 'Unauthorized', code: 'UNAUTHORIZED' }), {
 			status: 401,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
+
+	if (!rateLimit(`/api/export:${user.id}`, 5, 15 * 60_000)) {
+		return new Response(JSON.stringify({ error: 'Too many attempts', code: 'RATE_LIMITED' }), {
+			status: 429,
 			headers: { 'Content-Type': 'application/json' }
 		});
 	}

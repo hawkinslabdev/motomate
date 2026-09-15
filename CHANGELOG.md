@@ -14,6 +14,10 @@
 - Fix: dashboard odometer and cost figures no longer render in a mismatched monospace font
 - Fix: removed duplicate GitHub link in settings menu
 - Security: reject invalid `limit` and `offset` values on the API
+- Security: the notifications endpoint now rejects invalid `limit` values, matching the rest of the API
+- Security: download link verification now uses a constant-time comparison
+- Security: an unconfigured deployment no longer allows credentialed cross-origin requests from any origin
+- Security: added rate limiting to data export, download links, push subscriptions, and test notifications
 
 ## 0.6.0
 
