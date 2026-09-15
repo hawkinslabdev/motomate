@@ -970,55 +970,6 @@
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 	}
 
-	/* Filters */
-	.filters {
-		display: flex;
-		gap: var(--space-3);
-		margin-bottom: var(--space-5);
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	.search-box {
-		flex: 1;
-		min-width: 200px;
-	}
-	.search-input {
-		width: 100%;
-		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		background: var(--bg-subtle);
-		color: var(--text);
-		font-size: var(--text-sm);
-		min-height: 40px;
-	}
-	.search-input:focus {
-		outline: 2px solid var(--accent);
-		outline-offset: 1px;
-		border-color: transparent;
-	}
-	.filter-controls {
-		display: flex;
-		gap: var(--space-2);
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	.filter-select {
-		padding: 0.375rem 0.625rem;
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		background: var(--bg-subtle);
-		color: var(--text);
-		font-size: var(--text-sm);
-		cursor: pointer;
-		min-height: 40px;
-		box-sizing: border-box;
-	}
-	.filter-select:focus {
-		outline: 2px solid var(--accent);
-		outline-offset: -1px;
-		border-color: transparent;
-	}
 	.tracker-list {
 		display: flex;
 		flex-direction: column;

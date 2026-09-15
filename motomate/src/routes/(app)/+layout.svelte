@@ -672,11 +672,13 @@
 				stroke-linejoin="round"
 				aria-hidden="true"
 			>
-				<circle cx="5.5" cy="17.5" r="2.5" />
-				<circle cx="18.5" cy="17.5" r="2.5" />
-				<path d="M8 17.5h7" />
-				<path d="M5.5 17.5L8 10h6l3 4.5" />
-				<path d="M14 10l1.5-3H19" />
+				<g transform="translate(12 12) scale(1.25) translate(-12 -13.5)">
+					<circle cx="5.5" cy="17.5" r="2.5" />
+					<circle cx="18.5" cy="17.5" r="2.5" />
+					<path d="M8 17.5h7" />
+					<path d="M5.5 17.5L8 10h6l3 4.5" />
+					<path d="M14 10l1.5-3H19" />
+				</g>
 			</svg>
 			<span class="tab-label sr-only">{$_('layout.nav.garage')}</span>
 		</a>

@@ -181,12 +181,20 @@
 	@media (max-width: 640px) {
 		.page-header {
 			padding: var(--space-4) var(--space-4) 0;
+			flex-direction: column;
+			align-items: stretch;
 		}
 		.vehicle-list {
 			padding: 0 var(--space-4) var(--space-4);
 		}
 		.page-actions {
-			flex-direction: row-reverse;
+			flex-direction: column-reverse;
+			width: 100%;
+		}
+		.btn-primary,
+		.btn-ghost {
+			width: 100%;
+			justify-content: center;
 		}
 	}
 </style>
