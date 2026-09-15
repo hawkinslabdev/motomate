@@ -280,9 +280,9 @@
 				"unit": "Unitate"
 			},
 			"placeholders": {
-				"name": "Motocicleta mea CB500F",
-				"make": "de ex. Honda",
-				"model": "de ex. CB500F",
+				"name": "Vehiculul meu {example}",
+				"make": "de ex. {example}",
+				"model": "de ex. {example}",
 				"vin": "opțional",
 				"licensePlate": "de ex. B-123-AAA"
 			},

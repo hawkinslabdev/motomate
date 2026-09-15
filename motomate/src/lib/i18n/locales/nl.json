@@ -412,11 +412,11 @@
 				"unit": "Eenheid"
 			},
 			"placeholders": {
-				"name": "Mijn CB500F",
-				"make": "bijv. Honda",
-				"model": "bijv. CB500F",
+				"name": "Mijn {example}",
+				"make": "bijv. {example}",
+				"model": "bijv. {example}",
 				"vin": "optioneel",
-				"licensePlate": "bijv. AB-123 CD"
+				"licensePlate": "bijv. 12-ABC-3"
 			},
 			"types": {
 				"motorcycle": "Motor",
