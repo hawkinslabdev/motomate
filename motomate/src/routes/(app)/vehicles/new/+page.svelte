@@ -15,6 +15,18 @@
 	const selectedOdometerUnit = $derived(
 		form?.values?.odometer_unit ?? data.defaultOdometerUnit ?? DEFAULT_ODOMETER_UNIT
 	);
+
+	const TYPE_EXAMPLES = {
+		motorcycle: { make: 'Honda', model: 'CB500F' },
+		scooter: { make: 'Piaggio', model: 'Beverly' },
+		bike: { make: 'Cube', model: 'Touring' },
+		other: { make: 'Volvo', model: 'XC60' }
+	} as const;
+
+	let selectedType = $state<keyof typeof TYPE_EXAMPLES>(
+		(form?.values?.type as keyof typeof TYPE_EXAMPLES) ?? 'motorcycle'
+	);
+	const typeExample = $derived(TYPE_EXAMPLES[selectedType]);
 </script>
 
 <svelte:head><title>{$_('vehicle.add.title')} &middot; MotoMate</title></svelte:head>
@@ -31,7 +43,7 @@
 			<div class="type-cards">
 				{#each [['motorcycle', '🏍', $_('vehicle.add.types.motorcycle')], ['scooter', '🛵', $_('vehicle.add.types.scooter')], ['bike', '🚲', $_('vehicle.add.types.bike')], ['other', '🚗', $_('vehicle.add.types.other')]] as [val, icon, label]}
 					<label class="type-card">
-						<input type="radio" name="type" value={val} checked={val === 'motorcycle'} />
+						<input type="radio" name="type" value={val} bind:group={selectedType} />
 						<span aria-hidden="true">{icon}</span>
 						<span>{label}</span>
 					</label>
@@ -50,7 +62,9 @@
 						name="name"
 						type="text"
 						required
-						placeholder={$_('vehicle.add.placeholders.name')}
+						placeholder={$_('vehicle.add.placeholders.name', {
+							values: { example: typeExample.model }
+						})}
 						value={form?.values?.name ?? ''}
 						class="input"
 					/>
@@ -64,7 +78,9 @@
 						name="make"
 						type="text"
 						required
-						placeholder={$_('vehicle.add.placeholders.make')}
+						placeholder={$_('vehicle.add.placeholders.make', {
+							values: { example: typeExample.make }
+						})}
 						value={form?.values?.make ?? ''}
 						class="input"
 					/>
@@ -77,7 +93,9 @@
 						name="model"
 						type="text"
 						required
-						placeholder={$_('vehicle.add.placeholders.model')}
+						placeholder={$_('vehicle.add.placeholders.model', {
+							values: { example: typeExample.model }
+						})}
 						value={form?.values?.model ?? ''}
 						class="input"
 					/>
@@ -279,11 +297,6 @@
 	.mono {
 		font-family: var(--font-mono);
 	}
-	.input:focus {
-		outline: 2px solid var(--accent);
-		outline-offset: 1px;
-		border-color: transparent;
-	}
 
 	.form-actions {
 		display: flex;
@@ -293,7 +306,11 @@
 		border-top: 1px solid var(--border);
 	}
 	.btn-primary {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		padding: 0.5rem 1rem;
+		min-height: 44px;
 		background: var(--accent);
 		color: #fff;
 		border: none;
@@ -307,7 +324,11 @@
 		background: var(--accent-hover);
 	}
 	.btn-ghost {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		padding: 0.5rem 0.875rem;
+		min-height: 44px;
 		background: transparent;
 		color: var(--text-muted);
 		border: 1px solid var(--border);
@@ -330,10 +351,19 @@
 			grid-template-columns: 1fr;
 		}
 		.type-cards {
-			flex-direction: column;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
 		}
 		.odo-row {
 			flex-direction: column;
+			align-items: stretch;
+		}
+		.form-actions {
+			flex-direction: column-reverse;
+		}
+		.btn-primary,
+		.btn-ghost {
+			width: 100%;
 		}
 	}
 </style>

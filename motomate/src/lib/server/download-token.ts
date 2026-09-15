@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { env } from '$env/dynamic/private';
 
 const TTL_MS = 15 * 60 * 1000;
@@ -26,7 +26,8 @@ export function verifyDownloadToken(token: string): TokenPayload | null {
 	const encoded = token.slice(0, dot);
 	const sig = token.slice(dot + 1);
 	const expected = createHmac('sha256', secret()).update(encoded).digest('hex').slice(0, 32);
-	if (sig !== expected) return null;
+	if (sig.length !== expected.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(expected)))
+		return null;
 	try {
 		const data = JSON.parse(Buffer.from(encoded, 'base64url').toString()) as TokenPayload;
 		if (Date.now() > data.exp) return null;

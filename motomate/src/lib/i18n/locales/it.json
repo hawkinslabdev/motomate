@@ -412,11 +412,11 @@
 				"name": "Nome"
 			},
 			"placeholders": {
-				"name": "Il mio CB500F",
-				"make": "es. Honda",
-				"model": "es. CB500F",
+				"name": "Il mio {example}",
+				"make": "es. {example}",
+				"model": "es. {example}",
 				"vin": "opzionale",
-				"licensePlate": "es. AB-123 CD"
+				"licensePlate": "es. AB 123 CD"
 			},
 			"types": {
 				"motorcycle": "Moto",

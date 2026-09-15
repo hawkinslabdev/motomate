@@ -412,11 +412,11 @@
 				"unit": "Unidade"
 			},
 			"placeholders": {
-				"name": "O meu CB500F",
-				"make": "ex. Honda",
-				"model": "ex. CB500F",
+				"name": "O meu {example}",
+				"make": "ex. {example}",
+				"model": "ex. {example}",
 				"vin": "opcional",
-				"licensePlate": "ex. AB-123 CD"
+				"licensePlate": "ex. AA-12-BC"
 			},
 			"types": {
 				"motorcycle": "Motociclo",

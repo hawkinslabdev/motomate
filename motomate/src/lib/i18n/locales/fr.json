@@ -412,9 +412,9 @@
 				"unit": "Unité"
 			},
 			"placeholders": {
-				"name": "Mon CB500F",
-				"make": "ex. Honda",
-				"model": "ex. CB500F",
+				"name": "Mon {example}",
+				"make": "ex. {example}",
+				"model": "ex. {example}",
 				"vin": "optionnel",
 				"licensePlate": "ex. AB-123 CD"
 			},
