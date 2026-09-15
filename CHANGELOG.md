@@ -2,9 +2,17 @@
 
 ## 0.6.1
 
-- Fix: Added a missing documents API endpoint to list a vehicle's documents
-- Fix: OpenAPI specification now shares enums and thresholds with the server-side code
-- Fix: insights mileage ignored odometer readings from service entries
+- Fix: added a missing documents API endpoint to list a vehicle's documents
+- Fix: the OpenAPI specification now shares enums and thresholds with server-side code
+- Fix: onsights mileage calculation ignored odometer readings from service entries
+- Fix: bottom navigation had empty space above it, and the add button could clip off-screen on some devices
+- Fix: mobile text scaled down globally on top of tuned component sizes
+- Fix: garage icon in bottom navigation appeared smaller than other icons
+- Fix: maintenance view toggle and vehicles page action buttons could overflow screen in some languages
+- Fix: search and filter bars on documents, notes, travels, and maintenance pages now scale consistently on mobile
+- Fix: fixed sub-44px touch targets and non-full-width fields on the add-vehicle form
+- Fix: dashboard odometer and cost figures no longer render in a mismatched monospace font
+- Fix: removed duplicate GitHub link in settings menu
 - Security: reject invalid `limit` and `offset` values on the API
 
 ## 0.6.0
