@@ -1512,6 +1512,7 @@
 		}
 		.page-actions {
 			flex-wrap: wrap;
+			width: 100%;
 		}
 		.view-toggle {
 			width: 100%;
@@ -1520,6 +1521,8 @@
 			flex: 1;
 			min-width: 0;
 			text-align: center;
+			padding: 0.375rem 0.5rem;
+			font-size: var(--text-xs);
 		}
 	}
 
