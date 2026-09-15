@@ -125,6 +125,15 @@ actions:
 	// Browser push subscription
 	let pushSubStatus = $state<'idle' | 'subscribing' | 'subscribed' | 'error'>('idle');
 
+	$effect(() => {
+		if (!('serviceWorker' in navigator)) return;
+		navigator.serviceWorker.ready
+			.then((reg) => reg.pushManager.getSubscription())
+			.then((sub) => {
+				if (sub) pushSubStatus = 'subscribed';
+			});
+	});
+
 	async function subscribePush() {
 		if (!initVapid) return;
 		pushSubStatus = 'subscribing';
@@ -248,6 +257,9 @@ actions:
 									? $_('settings.notifications.channels.testError')
 									: $_('settings.notifications.channels.testBtn')}
 					</button>
+					{#if testStatus.push === 'error' && testError.push}
+						<p class="channel-hint channel-hint--warn">{testError.push}</p>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -366,6 +378,9 @@ actions:
 									? $_('settings.notifications.channels.testError')
 									: $_('settings.notifications.channels.testBtn')}
 					</button>
+					{#if testStatus.webhook === 'error' && testError.webhook}
+						<p class="channel-hint channel-hint--warn">{testError.webhook}</p>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -449,6 +464,9 @@ actions:
 									? $_('settings.notifications.channels.testError')
 									: $_('settings.notifications.channels.testBtn')}
 					</button>
+					{#if testStatus.home_assistant === 'error' && testError.home_assistant}
+						<p class="channel-hint channel-hint--warn">{testError.home_assistant}</p>
+					{/if}
 				</div>
 			{/if}
 		</div>

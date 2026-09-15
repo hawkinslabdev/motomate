@@ -238,6 +238,13 @@
 			"descriptionOnboarding": "Add your first motorcycle or scooter to get started.",
 			"descriptionActive": "Add a new vehicle to your collection.",
 			"submit": "+ Add vehicle"
+		},
+		"pushBanner": {
+			"title": "Push notifications",
+			"description": "Do you want to receive notifications from the browser?",
+			"enable": "Enable",
+			"dismiss": "Skip",
+			"error": "Notification setup failed"
 		}
 	},
 	"vehicles": {
@@ -1166,7 +1173,7 @@
 				"title": "API Documentation",
 				"description": "Explore and test all available endpoints.",
 				"link": "View documentation",
-				"specLink": "Raw OpenAPI spec"
+				"specLink": "View JSON"
 			}
 		},
 		"integrations": {
@@ -1244,7 +1251,7 @@
 		"addEntry": {
 			"title": "Add entry",
 			"chooseVehicle": "Choose a vehicle",
-			"whatLogging": "What are you logging on your timeline?",
+			"whatLogging": "What are you logging today?",
 			"maintenance": "Maintenance",
 			"maintenanceDesc": "Oil, tires, or repairs",
 			"mileage": "Mileage",

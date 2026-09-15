@@ -98,6 +98,7 @@ export type PagePrefs = {
 	};
 	global?: {
 		addMenuOrder?: Array<'service' | 'odometer' | 'note' | 'finance'>;
+		pushBannerDismissed?: boolean;
 	};
 	drafts?: Record<string, Record<string, unknown>>;
 };

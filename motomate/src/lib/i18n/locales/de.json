@@ -238,6 +238,13 @@
 			"descriptionOnboarding": "Füge dein erstes Motorrad oder deinen Roller hinzu, um zu beginnen.",
 			"descriptionActive": "Füge ein neues Fahrzeug zu deiner Sammlung hinzu.",
 			"submit": "+ Fahrzeug hinzufügen"
+		},
+		"pushBanner": {
+			"title": "Push-Benachrichtigungen",
+			"description": "Möchtest du Benachrichtigungen vom Browser erhalten?",
+			"enable": "Aktivieren",
+			"dismiss": "Überspringen",
+			"error": "Einrichtung fehlgeschlagen"
 		}
 	},
 	"vehicles": {
@@ -1166,7 +1173,7 @@
 				"title": "API-Dokumentation",
 				"description": "Alle verfügbaren Endpunkte erkunden und testen.",
 				"link": "Dokumentation aufrufen",
-				"specLink": "OpenAPI-Spec"
+				"specLink": "JSON anzeigen"
 			}
 		},
 		"integrations": {
@@ -1255,7 +1262,7 @@
 		"addEntry": {
 			"title": "Eintrag hinzufügen",
 			"chooseVehicle": "Fahrzeug auswählen",
-			"whatLogging": "Was möchtest du erfassen?",
+			"whatLogging": "Was möchtest du heute erfassen?",
 			"maintenance": "Wartung",
 			"maintenanceDesc": "Öl, Reifen oder Reparaturen",
 			"mileage": "Kilometerstand",

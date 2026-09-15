@@ -238,6 +238,13 @@
 			"descriptionOnboarding": "Adiciona a tua primeira moto ou ciclomotor para começar.",
 			"descriptionActive": "Adiciona um novo veículo à tua coleção.",
 			"submit": "+ Adicionar veículo"
+		},
+		"pushBanner": {
+			"title": "Notificações push",
+			"description": "Queres receber notificações do navegador?",
+			"enable": "Ativar",
+			"dismiss": "Saltar",
+			"error": "Falha ao configurar"
 		}
 	},
 	"vehicles": {
@@ -1166,7 +1173,7 @@
 				"title": "Documentação API",
 				"description": "Explore e teste todos os endpoints disponíveis.",
 				"link": "Ver documentação",
-				"specLink": "Spec OpenAPI bruta"
+				"specLink": "Ver JSON"
 			}
 		},
 		"integrations": {
@@ -1255,7 +1262,7 @@
 		"addEntry": {
 			"title": "Adicionar entrada",
 			"chooseVehicle": "Escolher veículo",
-			"whatLogging": "O que está a registar?",
+			"whatLogging": "O que vai registar hoje?",
 			"maintenance": "Manutenção",
 			"maintenanceDesc": "Óleo, pneus ou reparações",
 			"mileage": "Quilometragem",

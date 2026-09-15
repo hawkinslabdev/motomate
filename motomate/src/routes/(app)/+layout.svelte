@@ -14,7 +14,7 @@
 	import { quickAdd } from '$lib/stores/quickAdd.svelte.js';
 	import { drafts } from '$lib/stores/drafts.svelte.js';
 	import { dicebearUri } from '$lib/utils/dicebear.js';
-	import { resolveTheme, readStoredTheme } from '$lib/utils/theme.js';
+	import { resolveTheme, readStoredTheme, persistTheme } from '$lib/utils/theme.js';
 
 	import Sun from '$lib/components/icons/Sun.svelte';
 	import Moon from '$lib/components/icons/Moon.svelte';
@@ -307,6 +307,7 @@
 		document.documentElement.dataset.theme = resolveTheme(
 			currentTheme as 'light' | 'dark' | 'system'
 		);
+		persistTheme(currentTheme as 'light' | 'dark' | 'system');
 	});
 
 	async function setTheme(next: 'light' | 'dark' | 'system') {
@@ -315,11 +316,6 @@
 		const odometerUnit = isDistanceUnit(data.user.settings.odometer_unit)
 			? data.user.settings.odometer_unit
 			: DEFAULT_ODOMETER_UNIT;
-
-		// Sync to localStorage for auth pages after logout
-		if (typeof window !== 'undefined') {
-			localStorage.setItem('theme', next);
-		}
 
 		const fd = new FormData();
 		fd.set('theme', next);
@@ -664,6 +660,7 @@
 		>
 			<svg
 				class="tab-icon"
+				style="width: 27px; height: 27px;"
 				viewBox="0 0 24 24"
 				fill="none"
 				stroke="currentColor"
@@ -672,13 +669,11 @@
 				stroke-linejoin="round"
 				aria-hidden="true"
 			>
-				<g transform="translate(12 12) scale(1.25) translate(-12 -13.5)">
-					<circle cx="5.5" cy="17.5" r="2.5" />
-					<circle cx="18.5" cy="17.5" r="2.5" />
-					<path d="M8 17.5h7" />
-					<path d="M5.5 17.5L8 10h6l3 4.5" />
-					<path d="M14 10l1.5-3H19" />
-				</g>
+				<path
+					d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.3 1 12.1 1 13v3c0 .6.4 1 1 1h2"
+				/>
+				<circle cx="7" cy="17" r="2" />
+				<circle cx="17" cy="17" r="2" />
 			</svg>
 			<span class="tab-label sr-only">{$_('layout.nav.garage')}</span>
 		</a>
@@ -1553,8 +1548,8 @@
 		background: var(--bg);
 		border-top: 1px solid var(--border);
 		pointer-events: none;
-		mask-image: radial-gradient(circle 40px at 50% 0px, transparent 40px, black 41px);
-		-webkit-mask-image: radial-gradient(circle 40px at 50% 0px, transparent 40px, black 41px);
+		mask-image: radial-gradient(circle 40px at 50% 30px, transparent 40px, black 41px);
+		-webkit-mask-image: radial-gradient(circle 40px at 50% 30px, transparent 40px, black 41px);
 	}
 
 	.bottom-tab {
@@ -1605,7 +1600,7 @@
 	.fab-btn {
 		position: fixed;
 		left: 50%;
-		bottom: env(safe-area-inset-bottom, 0px);
+		bottom: calc(env(safe-area-inset-bottom, 0px) - 14px);
 		transform: translateX(-50%);
 		width: 80px;
 		height: 80px;
@@ -1627,7 +1622,7 @@
 		width: 34px;
 		height: 34px;
 		stroke-width: 2.25;
-		transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+		transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 	.fab-btn--open svg {
 		transform: rotate(45deg);

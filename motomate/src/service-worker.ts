@@ -34,6 +34,17 @@ sw.addEventListener('activate', (event) => {
 	event.waitUntil(deleteOldCaches());
 });
 
+sw.addEventListener('push', (event) => {
+	if (!event.data) return;
+	const { title, body } = event.data.json() as { title: string; body: string };
+	event.waitUntil(sw.registration.showNotification(title, { body, icon: '/icon.png' }));
+});
+
+sw.addEventListener('notificationclick', (event) => {
+	event.notification.close();
+	event.waitUntil(sw.clients.openWindow('/'));
+});
+
 sw.addEventListener('fetch', (event) => {
 	if (event.request.method !== 'GET') return;
 

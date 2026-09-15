@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { _ } from '$lib/i18n';
+	import Banner from './Banner.svelte';
 
 	let {
 		savedAt,
@@ -20,65 +21,16 @@
 	});
 </script>
 
-<div class="draft-banner">
-	<div class="draft-info">
-		<span class="draft-label">{$_('draft.resuming', { values: { ago } })}</span>
+<Banner variant="info">
+	{#snippet children()}
+		<span class="banner-title">{$_('draft.resuming', { values: { ago } })}</span>
 		{#if hasUnsavedFile}
-			<span class="draft-file-hint">{$_('draft.fileHint')}</span>
+			<span class="banner-hint--warn">{$_('draft.fileHint')}</span>
 		{/if}
-	</div>
-	<button type="button" class="draft-discard" onclick={onDiscard}>
-		{$_('draft.discard')}
-	</button>
-</div>
-
-<style>
-	.draft-banner {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-3);
-		padding: var(--space-3) var(--space-4);
-		background: color-mix(in srgb, var(--accent) 6%, var(--bg));
-		border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
-		border-radius: 8px;
-		font-size: var(--text-sm);
-	}
-
-	.draft-info {
-		display: flex;
-		flex-direction: column;
-		gap: 0.2rem;
-	}
-
-	.draft-label {
-		color: var(--text-muted);
-		font-weight: 500;
-	}
-
-	.draft-file-hint {
-		font-size: var(--text-xs);
-		color: var(--status-due);
-	}
-
-	.draft-discard {
-		background: none;
-		border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-		border-radius: 6px;
-		color: var(--accent);
-		font-size: var(--text-xs);
-		font-weight: 500;
-		cursor: pointer;
-		padding: 0.25rem 0.625rem;
-		white-space: nowrap;
-		flex-shrink: 0;
-		transition:
-			background 0.1s,
-			border-color 0.1s;
-	}
-
-	.draft-discard:hover {
-		background: color-mix(in srgb, var(--accent) 10%, transparent);
-		border-color: var(--accent);
-	}
-</style>
+	{/snippet}
+	{#snippet actions()}
+		<button type="button" class="banner-btn banner-btn--primary" onclick={onDiscard}>
+			{$_('draft.discard')}
+		</button>
+	{/snippet}
+</Banner>

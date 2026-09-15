@@ -238,6 +238,13 @@
 			"descriptionOnboarding": "Voeg je eerste motor of bromfiets toe om te beginnen.",
 			"descriptionActive": "Voeg een nieuw voertuig toe aan je collectie.",
 			"submit": "+ Voertuig toevoegen"
+		},
+		"pushBanner": {
+			"title": "Pushmeldingen",
+			"description": "Wil je meldingen ontvangen vanuit de browser?",
+			"enable": "Inschakelen",
+			"dismiss": "Overslaan",
+			"error": "Instellen mislukt"
 		}
 	},
 	"vehicles": {
@@ -1166,7 +1173,7 @@
 				"title": "API-documentatie",
 				"description": "Verken en test alle beschikbare endpoints.",
 				"link": "Documentatie bekijken",
-				"specLink": "Ruwe OpenAPI-spec"
+				"specLink": "Bekijk JSON"
 			}
 		},
 		"integrations": {
@@ -1255,7 +1262,7 @@
 		"addEntry": {
 			"title": "Item toevoegen",
 			"chooseVehicle": "Kies voertuig",
-			"whatLogging": "Wat ga je registreren op je tijdlijn?",
+			"whatLogging": "Wat ga je vandaag registreren?",
 			"maintenance": "Onderhoud",
 			"maintenanceDesc": "Olie, banden of reparaties",
 			"mileage": "Kilometerstand",

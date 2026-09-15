@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import AttentionCard from '$lib/components/ui/AttentionCard.svelte';
+	import PushBanner from '$lib/components/ui/PushBanner.svelte';
 	import {
 		formatCurrency,
 		formatDateShort,
@@ -11,6 +12,20 @@
 	import { _ } from '$lib/i18n';
 
 	let { data } = $props<{ data: PageData }>();
+
+	let locallyDismissed = $state(false);
+	let permissionDenied = $state(false);
+	$effect(() => {
+		permissionDenied = typeof Notification !== 'undefined' && Notification.permission === 'denied';
+	});
+
+	const showPushBanner = $derived(
+		!!data.vapidPublicKey &&
+			!data.pushChannelEnabled &&
+			!data.pushBannerDismissed &&
+			!permissionDenied &&
+			!locallyDismissed
+	);
 
 	const currentLocale = $derived(data.user.settings.locale ?? 'en');
 	const _currency = $derived(data.user.settings.currency ?? 'EUR');
@@ -76,6 +91,12 @@
 <svelte:head><title>Dashboard &middot; MotoMate</title></svelte:head>
 
 <div class="dashboard">
+	{#if showPushBanner}
+		<div class="push-banner-slot">
+			<PushBanner vapidPublicKey={data.vapidPublicKey} onDone={() => (locallyDismissed = true)} />
+		</div>
+	{/if}
+
 	<div class="dash-greeting">
 		<h1 class="greeting-text">{greeting}.</h1>
 		<p
@@ -261,6 +282,10 @@
 		padding: var(--space-8) var(--space-6);
 		max-width: 860px;
 		margin: 0 auto;
+	}
+
+	.push-banner-slot {
+		margin-bottom: var(--space-8);
 	}
 
 	/* Greeting */

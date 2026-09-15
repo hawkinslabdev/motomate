@@ -244,7 +244,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
-		return resolve(event);
+		return resolve(event, {
+			transformPageChunk({ html }) {
+				const theme = event.cookies.get('theme');
+				if (theme === 'light' || theme === 'dark') {
+					return html.replace('<html ', `<html data-theme="${theme}" `);
+				}
+				return html;
+			}
+		});
 	}
 
 	const { session, user } = await lucia.validateSession(sessionId);
@@ -275,7 +283,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const response = await resolve(event, {
 		transformPageChunk({ html }) {
-			const theme = (event.locals.user as any)?.settings?.theme;
+			const theme = (event.locals.user as any)?.settings?.theme ?? event.cookies.get('theme');
 			if (theme === 'light' || theme === 'dark') {
 				return html.replace('<html ', `<html data-theme="${theme}" `);
 			}

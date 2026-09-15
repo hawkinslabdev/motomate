@@ -68,12 +68,15 @@
 	}
 
 	const allBlocks = $derived(data.raw ? parseChangelog(data.raw) : []);
-	const latestVersion = $derived(allBlocks[0]?.version ?? null);
+	const releasedBlocks = $derived(
+		allBlocks.filter((b) => semverGte(data.currentVersion, b.version))
+	);
+	const latestVersion = $derived(releasedBlocks[0]?.version ?? null);
 	const blocks = $derived.by(() => {
-		if (!latestVersion) return allBlocks;
+		if (!latestVersion) return releasedBlocks;
 		const [major, minor] = latestVersion.split('.').map(Number);
 		const minorFloor = `${major}.${minor}.0`;
-		return allBlocks.filter((b) => semverGte(b.version, minorFloor));
+		return releasedBlocks.filter((b) => semverGte(b.version, minorFloor));
 	});
 </script>
 

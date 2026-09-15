@@ -6,7 +6,7 @@
 	import { setContext, untrack } from 'svelte';
 	import 'altcha/i18n';
 	import type {} from 'altcha/types/svelte';
-	import { resolveTheme, readStoredTheme } from '$lib/utils/theme.js';
+	import { resolveTheme, readStoredTheme, persistTheme } from '$lib/utils/theme.js';
 	import Sun from '$lib/components/icons/Sun.svelte';
 	import Moon from '$lib/components/icons/Moon.svelte';
 	import Monitor from '$lib/components/icons/Monitor.svelte';
@@ -110,7 +110,7 @@
 		if (urlTheme && ['light', 'dark', 'system'].includes(urlTheme)) {
 			theme = urlTheme as 'light' | 'dark' | 'system';
 		} else {
-			localStorage.setItem('theme', theme);
+			persistTheme(theme);
 		}
 	});
 

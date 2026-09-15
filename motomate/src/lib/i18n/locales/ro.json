@@ -238,6 +238,13 @@
 		},
 		"yearCost": {
 			"none": "Nicio cheltuială înregistrată"
+		},
+		"pushBanner": {
+			"title": "Notificări push",
+			"description": "Vrei să primești notificări din browser?",
+			"enable": "Activează",
+			"dismiss": "Omite",
+			"error": "Configurarea a eșuat"
 		}
 	},
 	"vehicles": {
@@ -1166,7 +1173,7 @@
 				"title": "Documentație API",
 				"description": "Explorează și testează toate endpoint-urile disponibile.",
 				"link": "Vezi documentația",
-				"specLink": "Specificație OpenAPI brută (Raw)"
+				"specLink": "Vezi JSON"
 			}
 		},
 		"integrations": {
@@ -1244,7 +1251,7 @@
 		"addEntry": {
 			"title": "Adaugă înregistrare",
 			"chooseVehicle": "Alege un vehicul",
-			"whatLogging": "Ce dorești să înregistrezi?",
+			"whatLogging": "Ce dorești să înregistrezi astăzi?",
 			"maintenance": "Întreținere",
 			"maintenanceDesc": "Ulei, anvelope sau reparații",
 			"mileage": "Odometru",

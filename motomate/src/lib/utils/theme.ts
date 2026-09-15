@@ -12,3 +12,8 @@ export function readStoredTheme(): 'light' | 'dark' | 'system' {
 	if (attr === 'light' || attr === 'dark') return attr;
 	return 'system';
 }
+
+export function persistTheme(t: 'light' | 'dark' | 'system') {
+	localStorage.setItem('theme', t);
+	document.cookie = `theme=${t}; path=/; max-age=31536000; SameSite=Lax`;
+}

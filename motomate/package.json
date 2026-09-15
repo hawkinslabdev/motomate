@@ -21,7 +21,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
-		"@scalar/api-reference": "^1.65.1",
+		"@scalar/api-reference": "^1.68.0",
 		"@sveltejs/adapter-node": "^5.5.7",
 		"@sveltejs/kit": "^2.70.3",
 		"@sveltejs/vite-plugin-svelte": "^7.3.0",
@@ -57,7 +57,7 @@
 		"@node-rs/argon2": "^2.1.0",
 		"@tiptap/core": "^3.30.4",
 		"@tiptap/extension-link": "^3.26.1",
-		"@tiptap/starter-kit": "^3.30.2",
+		"@tiptap/starter-kit": "^3.31.3",
 		"altcha": "^3.2.2",
 		"altcha-lib": "^2.3.2",
 		"better-sqlite3": "^12.11.1",

@@ -4,13 +4,14 @@ import { db } from '$lib/db/index.js';
 import { push_subscriptions } from '$lib/db/schema.js';
 import { generateId } from '$lib/utils/id.js';
 import { and, eq } from 'drizzle-orm';
+import { updateUserSettings } from '$lib/db/repositories/users.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.user) error(401);
 	const sub = await request.json();
 	if (!sub.endpoint || !sub.keys) error(400, 'Invalid subscription');
 
-	// Unscoped by necessarity: endpoint is unique, so a stale row from another account must go or the insert fails
+	// Unscoped: unique endpoint constraint requires deleting stale cross-account row
 	await db.delete(push_subscriptions).where(eq(push_subscriptions.endpoint, sub.endpoint));
 	await db.insert(push_subscriptions).values({
 		id: generateId(),
@@ -18,6 +19,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		endpoint: sub.endpoint,
 		keys: sub.keys
 	});
+
+	const channels = locals.user.settings?.notification_channels ?? {};
+	if (!channels.push?.enabled) {
+		await updateUserSettings(locals.user.id, {
+			notification_channels: { ...channels, push: { enabled: true } }
+		});
+	}
+
 	return json({ ok: true });
 };
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { untrack } from 'svelte';
 	import { _ } from '$lib/i18n';
 	import {
 		DEFAULT_ODOMETER_UNIT,
@@ -24,7 +25,7 @@
 	} as const;
 
 	let selectedType = $state<keyof typeof TYPE_EXAMPLES>(
-		(form?.values?.type as keyof typeof TYPE_EXAMPLES) ?? 'motorcycle'
+		untrack(() => (form?.values?.type as keyof typeof TYPE_EXAMPLES) ?? 'motorcycle')
 	);
 	const typeExample = $derived(TYPE_EXAMPLES[selectedType]);
 </script>
@@ -208,7 +209,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
 		letter-spacing: 0.07em;
 		margin: 0 0 0.875rem;
 	}

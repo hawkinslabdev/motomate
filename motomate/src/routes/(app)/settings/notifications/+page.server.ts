@@ -10,6 +10,7 @@ import { updateUserSettings } from '$lib/db/repositories/users.js';
 import { NotificationChannelsSchema } from '$lib/validators/schemas.js';
 import type { NotificationChannels } from '$lib/db/schema.js';
 import { env } from '$env/dynamic/private';
+import { getVapidConfig } from '$lib/server/vapid.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const [notifications, totalNotifications] = await Promise.all([
@@ -20,7 +21,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		notifications,
 		totalNotifications,
 		channels: (locals.user!.settings?.notification_channels ?? {}) as NotificationChannels,
-		vapidPublicKey: env.VAPID_PUBLIC_KEY ?? null,
+		vapidPublicKey: getVapidConfig().publicKey,
 		smtpConfigured: !!env.SMTP_HOST
 	};
 };

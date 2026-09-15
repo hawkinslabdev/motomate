@@ -5,6 +5,7 @@ import { getRecentLogsAcrossVehicles } from '$lib/db/repositories/service-logs.j
 import { getVehicleExpenses } from '$lib/db/repositories/finance-transactions.js';
 import { getUnreadCount } from '$lib/workflow/channels/inapp.js';
 import { totalByCurrency } from '$lib/utils/money.js';
+import { getVapidConfig } from '$lib/server/vapid.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;
@@ -74,6 +75,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		recentLogs,
 		vehicleStatus: Object.fromEntries(vehicleStatus),
 		yearCostByVehicle,
-		unreadCount
+		unreadCount,
+		vapidPublicKey: getVapidConfig().publicKey,
+		pushChannelEnabled: user.settings?.notification_channels?.push?.enabled ?? false,
+		pushBannerDismissed: user.settings?.page_prefs?.global?.pushBannerDismissed ?? false
 	};
 };
