@@ -22,11 +22,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 			meta: v.meta as { avatar_emoji?: string } | null
 		})),
 		odometerLogs: [
-			...odoByVehicle.flat().map((l) => ({
-				vehicle_id: l.vehicle_id,
-				odometer: l.odometer,
-				recorded_at: l.recorded_at
-			})),
+			...odoByVehicle
+				.flat()
+				.filter((l) => l.kind !== 'note')
+				.map((l) => ({
+					vehicle_id: l.vehicle_id,
+					odometer: l.odometer,
+					recorded_at: l.recorded_at
+				})),
 			// service entries include readings too
 			...serviceByVehicle
 				.flat()
