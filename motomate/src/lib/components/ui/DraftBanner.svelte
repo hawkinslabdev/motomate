@@ -22,12 +22,10 @@
 </script>
 
 <Banner variant="info">
-	{#snippet children()}
-		<span class="banner-title">{$_('draft.resuming', { values: { ago } })}</span>
-		{#if hasUnsavedFile}
-			<span class="banner-hint--warn">{$_('draft.fileHint')}</span>
-		{/if}
-	{/snippet}
+	<span class="banner-title">{$_('draft.resuming', { values: { ago } })}</span>
+	{#if hasUnsavedFile}
+		<span class="banner-hint--warn">{$_('draft.fileHint')}</span>
+	{/if}
 	{#snippet actions()}
 		<button type="button" class="banner-btn banner-btn--primary" onclick={onDiscard}>
 			{$_('draft.discard')}
