@@ -187,6 +187,8 @@ altcha-widget {
 html {
 	font-size: 100%;
 	-webkit-text-size-adjust: 100%;
+	background-color: var(--bg);
+	overscroll-behavior-y: none;
 }
 body {
 	font-family: var(--font-sans);
@@ -195,6 +197,7 @@ body {
 	background-color: var(--bg);
 	color: var(--text);
 	min-height: 100dvh;
+	overscroll-behavior-y: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-kerning: normal;
