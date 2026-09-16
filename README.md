@@ -1,20 +1,27 @@
-# MotoMate
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hawkinslabdev/motomate/refs/heads/main/motomate/static/icon.svg" alt="MotoMate Logo" width="120" height="120">
+</p>
 
-[![License](https://img.shields.io/badge/license-AGPL%203.0-blue)](LICENSE)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/hawkinslabdev/motomate/.github%2Fworkflows%2Fbuild-container.yml)](#)
-[![GitHub Tag](https://img.shields.io/github/v/tag/hawkinslabdev/motomate?label=version)](#)
-[![Support](https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-fdd734?logo=buy-me-a-coffee)](https://coff.ee/hawkinslabdev)
+<h1 align="center">MotoMate</h1>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL%203.0-blue" alt="License"></a>
+  <a href="#"><img src="https://img.shields.io/github/actions/workflow/status/hawkinslabdev/motomate/.github%2Fworkflows%2Fbuild-container.yml" alt="GitHub Actions Workflow Status"></a>
+  <a href="#"><img src="https://img.shields.io/github/v/tag/hawkinslabdev/motomate?label=version" alt="GitHub Tag"></a>
+  <a href="https://coff.ee/hawkinslabdev"><img src="https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-fdd734?logo=buy-me-a-coffee" alt="Support"></a>
+</p>
 
 Take control of your **vehicle maintenance** with MotoMate, a self-hosted (maintenance) tracking web application. Access your digital maintenance journal from any mobile device to log tasks right from the garage. Because it is self-hosted, your data and service history never leave your own hardware.
 
-View our [**demo-instance here**](https://motomate.mijnmotorparkeren.nl) (hosted by MijnMotorParkeren.nl). Want to try it yourself? Then set-up your own instance using the instructions below.
+We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
 
 > [!WARNING]
 > **We need your help!** MotoMate is still under _active_ development and you may encounter bugs. Please help improve the project by reporting issues, suggesting missing features, or, preferably, submitting a pull request.
 
+View our [**demo-instance here**](https://motomate.mijnmotorparkeren.nl) (hosted by MijnMotorParkeren.nl). Want to try it yourself? Then set-up your own instance using the instructions below.
+
 <img width="100%" alt="MotoMate screenshot" src=".github/images/example.webp" />
 
-We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
 
 ## Getting Started
 
