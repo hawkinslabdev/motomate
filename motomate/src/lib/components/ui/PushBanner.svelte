@@ -41,13 +41,11 @@
 </script>
 
 <Banner variant="info">
-	{#snippet children()}
-		<span class="banner-title">{$_('dashboard.pushBanner.title')}</span>
-		<span class="banner-desc">{$_('dashboard.pushBanner.description')}</span>
-		{#if status === 'error'}
-			<span class="banner-hint--warn">{$_('dashboard.pushBanner.error')}</span>
-		{/if}
-	{/snippet}
+	<span class="banner-title">{$_('dashboard.pushBanner.title')}</span>
+	<span class="banner-desc">{$_('dashboard.pushBanner.description')}</span>
+	{#if status === 'error'}
+		<span class="banner-hint--warn">{$_('dashboard.pushBanner.error')}</span>
+	{/if}
 	{#snippet actions()}
 		<button type="button" class="banner-btn banner-btn--secondary" onclick={dismiss}>
 			{$_('dashboard.pushBanner.dismiss')}
