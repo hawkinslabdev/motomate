@@ -6,7 +6,7 @@
 - Fix: insights mileage chart could overcount distance past the actual odometer
 - Fix: added a missing documents API endpoint to list a vehicle's documents
 - Fix: the OpenAPI specification now shares enums and thresholds with server-side code
-- Fix: onsights mileage calculation ignored odometer readings from service entries
+- Fix: insights mileage calculation ignored odometer readings from service entries
 - Fix: bottom navigation had empty space above it, and the add button could clip off-screen on some mobile devices
 - Fix: mobile text scaled down globally on top of tuned component sizes
 - Fix: garage icon in bottom navigation appeared smaller than other icons
