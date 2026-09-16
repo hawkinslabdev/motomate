@@ -21,7 +21,9 @@ function loadOrGenerateKeys(): VapidKeyPair {
 		try {
 			const stored = JSON.parse(readFileSync(KEYS_PATH, 'utf-8'));
 			if (stored.publicKey && stored.privateKey) return stored;
-		} catch {}
+		} catch {
+			// fall through to regenerate
+		}
 	}
 	const generated = webpush.generateVAPIDKeys();
 	try {
