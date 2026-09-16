@@ -6,6 +6,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { _, setUserLocale } from '$lib/i18n';
 	import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '$lib/utils/measurement.js';
+	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
 	import NotificationBell from '$lib/components/ui/NotificationBell.svelte';
 	import Toast from '$lib/components/ui/Toast.svelte';
 	import ShortcutsModal from '$lib/components/ui/ShortcutsModal.svelte';
@@ -283,7 +284,7 @@
 	}
 
 	function vehicleEmoji(v: NavVehicle) {
-		return v.meta?.avatar_emoji ?? (v.type === 'scooter' ? '🛵' : v.type === 'bike' ? '🚲' : '🏍');
+		return v.meta?.avatar_emoji ?? defaultVehicleEmoji(v.type);
 	}
 
 	let currentTheme = $state(

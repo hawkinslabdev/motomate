@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { formatNumber } from '$lib/utils/format.js';
 	import { _ } from '$lib/i18n';
+	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
 
 	let {
 		vehicle,
@@ -27,10 +28,7 @@
 		onFavorite?: (vehicleId: string) => void;
 	} = $props();
 
-	const defaultEmoji = $derived(
-		vehicle.type === 'scooter' ? '🛵' : vehicle.type === 'bike' ? '🚲' : '🏍'
-	);
-	const avatarEmoji = $derived(vehicle.meta?.avatar_emoji ?? defaultEmoji);
+	const avatarEmoji = $derived(vehicle.meta?.avatar_emoji ?? defaultVehicleEmoji(vehicle.type));
 	const hasAvatarImage = $derived(!!vehicle.cover_image_key);
 
 	function handleFavoriteClick(e: MouseEvent) {

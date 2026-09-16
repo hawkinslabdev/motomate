@@ -22,7 +22,8 @@
 		"removeFile": "Remover ficheiro",
 		"removeSelection": "Remover seleção",
 		"entryOptions": "Opções da entrada",
-		"actions": "Ações"
+		"actions": "Ações",
+		"open": "Abrir"
 	},
 	"auth": {
 		"changeLanguage": "Mudar idioma",

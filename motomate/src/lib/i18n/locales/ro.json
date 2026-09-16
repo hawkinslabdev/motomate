@@ -22,7 +22,8 @@
 		"removeSelection": "Elimină selecția",
 		"entryOptions": "Opțiuni intrare",
 		"actions": "Acțiuni",
-		"timeline": "Cronologie"
+		"timeline": "Cronologie",
+		"open": "Deschide"
 	},
 	"auth": {
 		"changeLanguage": "Schimbă limba",

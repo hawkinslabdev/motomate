@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { untrack } from 'svelte';
+	import { tick, untrack } from 'svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { formatCurrency, formatMoneyTotal, formatNumber } from '$lib/utils/format.js';
@@ -10,6 +10,7 @@
 	import LineChart from '$lib/components/charts/LineChart.svelte';
 	import BarChart from '$lib/components/charts/BarChart.svelte';
 	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
+	import VehicleAvatar from '$lib/components/ui/VehicleAvatar.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -34,6 +35,11 @@
 		const vParam = page.url.searchParams.get('v');
 		if (vParam && data.vehicles.some((v) => v.id === vParam)) {
 			selectedVehicleId = vParam;
+			tick().then(() => {
+				pillGroupEl
+					?.querySelector(`[data-vehicle-id="${vParam}"]`)
+					?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+			});
 		}
 	});
 
@@ -239,9 +245,32 @@
 	<div class="page-header">
 		{#if selectedVehicle}
 			<div class="page-header-vehicle">
-				<span class="vehicle-avatar">{selectedVehicle.meta?.avatar_emoji ?? '🏍'}</span>
+				<VehicleAvatar vehicle={selectedVehicle} size={56} class="page-header-avatar" />
 				<div>
-					<h1 class="page-title">{selectedVehicle.name}</h1>
+					<div class="page-title-row">
+						<h1 class="page-title">{selectedVehicle.name}</h1>
+						<a
+							href="/vehicles/{selectedVehicle.id}"
+							class="vehicle-page-link"
+							aria-label={$_('common.open')}
+							title={$_('common.open')}
+						>
+							<svg
+								width="14"
+								height="14"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path d="M7 17L17 7" />
+								<path d="M7 7h10v10" />
+							</svg>
+						</a>
+					</div>
 					<p class="page-sub">{$_('insights.subtitle')}</p>
 				</div>
 			</div>
@@ -273,6 +302,7 @@
 			<button
 				class="pill"
 				class:pill--active={selectedVehicleId === 'all'}
+				data-vehicle-id="all"
 				onclick={(e) => selectVehicle('all', e)}
 			>
 				{$_('insights.vehicles.all')}
@@ -281,9 +311,10 @@
 				<button
 					class="pill"
 					class:pill--active={selectedVehicleId === v.id}
+					data-vehicle-id={v.id}
 					onclick={(e) => selectVehicle(v.id, e)}
 				>
-					{v.meta?.avatar_emoji ?? '🏍'}
+					<VehicleAvatar vehicle={v} size={18} />
 					{v.name}
 				</button>
 			{/each}
@@ -425,16 +456,33 @@
 		gap: var(--space-3);
 	}
 
-	.vehicle-avatar {
-		width: 56px;
-		height: 56px;
-		border-radius: 50%;
+	:global(.page-header-avatar) {
 		background: var(--bg-muted);
+	}
+
+	.page-title-row {
 		display: flex;
 		align-items: center;
+		gap: var(--space-1);
+	}
+
+	.vehicle-page-link {
+		display: inline-flex;
+		align-items: center;
 		justify-content: center;
-		font-size: 1.75rem;
+		width: 24px;
+		height: 24px;
+		border-radius: 6px;
+		color: var(--text-subtle);
 		flex-shrink: 0;
+		transition:
+			color 0.15s,
+			background 0.15s;
+	}
+
+	.vehicle-page-link:hover {
+		color: var(--text);
+		background: var(--bg-muted);
 	}
 
 	.page-title {
@@ -485,6 +533,9 @@
 	}
 
 	.pill {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
 		padding: 0.375rem 0.75rem;
 		min-height: 2.75rem;
 		border: 1px solid var(--border);
@@ -639,6 +690,28 @@
 		.chart-card-header {
 			flex-direction: column;
 			align-items: flex-start;
+		}
+
+		.chart-card-header :global(.view-toggle) {
+			width: 100%;
+		}
+
+		.chart-card-controls {
+			flex-direction: column;
+			align-items: stretch;
+			width: 100%;
+		}
+
+		.insights-controls {
+			flex-wrap: wrap;
+		}
+
+		.insights-controls :global(.view-toggle) {
+			width: 100%;
+		}
+
+		.pill-group {
+			flex-basis: 100%;
 		}
 	}
 </style>

@@ -18,7 +18,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		vehicles: vehicles.map((v) => ({
 			id: v.id,
 			name: v.name,
+			type: v.type,
 			odometer_unit: v.odometer_unit,
+			cover_image_key: v.cover_image_key,
 			meta: v.meta as { avatar_emoji?: string } | null
 		})),
 		odometerLogs: [

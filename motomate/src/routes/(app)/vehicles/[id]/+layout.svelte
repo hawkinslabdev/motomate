@@ -4,6 +4,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { formatNumber } from '$lib/utils/format.js';
+	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
 	import { _, waitLocale } from '$lib/i18n';
 	import type { LayoutData } from './$types';
 
@@ -79,11 +80,7 @@
 		return () => cancelAnimationFrame(rafId);
 	});
 
-	const defaultEmoji = $derived(
-		vehicle.type === 'scooter' ? '🛵' : vehicle.type === 'bike' ? '🚲' : '🏍'
-	);
-
-	const avatarEmoji = $derived(vehicle.meta?.avatar_emoji ?? defaultEmoji);
+	const avatarEmoji = $derived(vehicle.meta?.avatar_emoji ?? defaultVehicleEmoji(vehicle.type));
 	const hasAvatarImage = $derived(!!vehicle.cover_image_key);
 	const hasAvatar = $derived(!!avatarEmoji || hasAvatarImage);
 

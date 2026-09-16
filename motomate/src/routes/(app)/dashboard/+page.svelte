@@ -9,6 +9,7 @@
 		formatMoneyTotal,
 		formatNumber
 	} from '$lib/utils/format.js';
+	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
 	import { _ } from '$lib/i18n';
 
 	let { data } = $props<{ data: PageData }>();
@@ -148,9 +149,7 @@
 			</div>
 			<div class="entry-list">
 				{#each data.vehicles as vehicle (vehicle.id)}
-					{@const defaultEmoji =
-						vehicle.type === 'scooter' ? '🛵' : vehicle.type === 'bike' ? '🚲' : '🏍'}
-					{@const avatarEmoji = vehicle.meta?.avatar_emoji ?? defaultEmoji}
+					{@const avatarEmoji = vehicle.meta?.avatar_emoji ?? defaultVehicleEmoji(vehicle.type)}
 					{@const hasAvatarImage = !!vehicle.cover_image_key}
 					{@const vStatus = data.vehicleStatus[vehicle.id] ?? 'ok'}
 					<a href="/vehicles/{vehicle.id}" class="entry">
@@ -236,8 +235,7 @@
 					{#if yearCost}
 						<a href="/insights?v={vehicle.id}" class="year-entry">
 							<span class="year-vehicle"
-								>{vehicle.meta?.avatar_emoji ??
-									(vehicle.type === 'scooter' ? '🛵' : vehicle.type === 'bike' ? '🚲' : '🏍')}
+								>{vehicle.meta?.avatar_emoji ?? defaultVehicleEmoji(vehicle.type)}
 								{vehicle.name}</span
 							>
 							<span class="year-cost mono">

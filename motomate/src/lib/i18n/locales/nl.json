@@ -22,7 +22,8 @@
 		"removeFile": "Bestand verwijderen",
 		"removeSelection": "Selectie verwijderen",
 		"entryOptions": "Opties voor item",
-		"actions": "Acties"
+		"actions": "Acties",
+		"open": "Openen"
 	},
 	"auth": {
 		"changeLanguage": "Taal wijzigen",
