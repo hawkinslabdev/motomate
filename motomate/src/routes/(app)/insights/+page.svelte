@@ -431,7 +431,7 @@
 			background 0.15s;
 	}
 
-	.pill:hover {
+	.pill:hover:not(.pill--active) {
 		border-color: var(--border-strong);
 		color: var(--text);
 	}

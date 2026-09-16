@@ -18,6 +18,7 @@
 - Fix: keep theme preference after setting cookie
 - Fix: remove unnecessary items in the mobile menu for an improved visual experience on mobile
 - Fix: remove unreleased version information in /changelog page
+- Fix: hovering the active insights vehicle filter pill turned its text black and unreadable
 - Fix: resolve subdependency conflict after pinning @tiptap/starter-kit
 - Security: reject invalid `limit` and `offset` values on the API
 - Security: the notifications endpoint now rejects invalid `limit` values, matching the rest of the API
