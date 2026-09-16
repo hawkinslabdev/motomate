@@ -167,6 +167,49 @@
 		if (txInMonth.length > 0) selectedVehicleId = txInMonth[0].vehicle_id;
 	}
 
+	let pillGroupEl: HTMLDivElement | undefined;
+	let dragOrigin: { x: number; scrollLeft: number } | null = null;
+	let dragged = false;
+
+	function onPillMouseDown(e: MouseEvent) {
+		const el = e.currentTarget as HTMLDivElement;
+		if (el.scrollWidth <= el.clientWidth) return;
+		dragOrigin = { x: e.clientX, scrollLeft: el.scrollLeft };
+		dragged = false;
+		window.addEventListener('mousemove', onPillMouseMove);
+		window.addEventListener('mouseup', onPillMouseUp);
+	}
+
+	function onPillMouseMove(e: MouseEvent) {
+		if (!dragOrigin || !pillGroupEl) return;
+		const dx = e.clientX - dragOrigin.x;
+		if (Math.abs(dx) > 4) dragged = true;
+		pillGroupEl.scrollLeft = dragOrigin.scrollLeft - dx;
+	}
+
+	function onPillMouseUp() {
+		dragOrigin = null;
+		window.removeEventListener('mousemove', onPillMouseMove);
+		window.removeEventListener('mouseup', onPillMouseUp);
+	}
+
+	function guardPillClick(e: MouseEvent) {
+		if (dragged) {
+			e.preventDefault();
+			e.stopPropagation();
+			dragged = false;
+		}
+	}
+
+	function selectVehicle(id: string, e: MouseEvent) {
+		selectedVehicleId = id;
+		(e.currentTarget as HTMLElement).scrollIntoView({
+			behavior: 'smooth',
+			block: 'nearest',
+			inline: 'nearest'
+		});
+	}
+
 	const prefsSync = createPrefsSync('insights');
 	let _firstRun = true;
 
@@ -211,11 +254,26 @@
 	</div>
 
 	<div class="insights-controls">
-		<div class="pill-group">
+		<div
+			class="pill-group"
+			role="toolbar"
+			tabindex="-1"
+			onwheel={(e) => {
+				const el = e.currentTarget;
+				if (el.scrollWidth <= el.clientWidth) return;
+				if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+					e.preventDefault();
+					el.scrollLeft += e.deltaY;
+				}
+			}}
+			bind:this={pillGroupEl}
+			onmousedown={onPillMouseDown}
+			onclickcapture={guardPillClick}
+		>
 			<button
 				class="pill"
 				class:pill--active={selectedVehicleId === 'all'}
-				onclick={() => (selectedVehicleId = 'all')}
+				onclick={(e) => selectVehicle('all', e)}
 			>
 				{$_('insights.vehicles.all')}
 			</button>
@@ -223,7 +281,7 @@
 				<button
 					class="pill"
 					class:pill--active={selectedVehicleId === v.id}
-					onclick={() => (selectedVehicleId = v.id)}
+					onclick={(e) => selectVehicle(v.id, e)}
 				>
 					{v.meta?.avatar_emoji ?? '🏍'}
 					{v.name}
@@ -396,17 +454,30 @@
 		display: flex;
 		align-items: center;
 		gap: var(--space-3);
-		flex-wrap: wrap;
+		flex-wrap: nowrap;
+	}
+
+	.insights-controls :global(.view-toggle) {
+		flex-shrink: 0;
 	}
 
 	.pill-group {
 		display: flex;
+		flex: 1 1 auto;
 		gap: var(--space-1);
 		flex-wrap: nowrap;
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 		scrollbar-width: none;
 		padding-bottom: 2px;
+		min-width: 0;
+		cursor: grab;
+		user-select: none;
+		background:
+			linear-gradient(to right, var(--bg) 40%, transparent) 0 0 / 24px 100% local no-repeat,
+			linear-gradient(to left, var(--bg) 40%, transparent) 100% 0 / 24px 100% local no-repeat,
+			linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent) 0 0 / 16px 100% scroll no-repeat,
+			linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent) 100% 0 / 16px 100% scroll no-repeat;
 	}
 
 	.pill-group::-webkit-scrollbar {
@@ -425,6 +496,7 @@
 		cursor: pointer;
 		white-space: nowrap;
 		flex-shrink: 0;
+		user-select: none;
 		transition:
 			border-color 0.15s,
 			color 0.15s,
