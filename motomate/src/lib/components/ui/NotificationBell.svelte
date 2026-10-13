@@ -61,7 +61,7 @@
 		top: 0;
 		right: 0;
 		background: var(--status-overdue);
-		color: #fff;
+		color: var(--status-overdue-fg);
 		border-radius: 999px;
 		font-size: 0.625rem;
 		font-weight: 700;

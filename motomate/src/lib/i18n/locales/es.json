@@ -26,6 +26,7 @@
 		"open": "Abrir"
 	},
 	"auth": {
+		"tagline": "Registra el mantenimiento, los gastos y los documentos de tus vehículos.",
 		"changeLanguage": "Cambiar idioma",
 		"searchLanguage": "Buscar idiomas",
 		"noLanguageMatch": "Ningún idioma coincide",
@@ -896,6 +897,7 @@
 			"avatarUpdated": "Foto de perfil actualizada",
 			"avatarDicebear": "Elegir un avatar",
 			"avatarShuffle": "Mezclar",
+			"avatarCredits": "Créditos de avatares",
 			"subtitle": "Idioma, moneda y unidad de odómetro.",
 			"displayName": "Nombre de pantalla",
 			"displayNamePlaceholder": "Tu nombre"

@@ -688,7 +688,7 @@
 	.save-btn {
 		padding: 0.5rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);
@@ -886,7 +886,7 @@
 	.edit-input {
 		font-size: var(--text-base);
 		padding: 0.375rem 0.625rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 6px;
 		background: var(--bg-subtle);
 		color: var(--text);
@@ -909,7 +909,7 @@
 	.edit-save-btn {
 		padding: 0.375rem 0.75rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 6px;
 		font-size: var(--text-sm);

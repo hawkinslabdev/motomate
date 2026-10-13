@@ -5,6 +5,7 @@ import { getStorage } from '$lib/storage/index.js';
 import { mirrorPut, mirrorDelete } from '$lib/server/integrations.js';
 import type { UserSettings } from '$lib/db/schema.js';
 import type { OdometerUnit } from '$lib/utils/measurement.js';
+import { isValidAvatarSeed } from '$lib/utils/dicebear.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_AVATAR_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -110,7 +111,9 @@ export const actions: Actions = {
 	setDiceBearSeed: async ({ request, locals }) => {
 		const user = locals.user!;
 		const seed = String((await request.formData()).get('seed') ?? '').trim();
-		if (!seed || seed.length > 64) return fail(400, { avatarError: 'Invalid seed' });
+		if (!seed || seed.length > 64 || !isValidAvatarSeed(seed)) {
+			return fail(400, { avatarError: 'Invalid seed' });
+		}
 		// Clear uploaded image when switching to DiceBear
 		const currentKey = user.settings.avatar_key ?? null;
 		if (currentKey) {

@@ -26,6 +26,7 @@
 		"open": "Open"
 	},
 	"auth": {
+		"tagline": "Logs service, costs and documents for your vehicles.",
 		"changeLanguage": "Change language",
 		"searchLanguage": "Search languages",
 		"noLanguageMatch": "No languages match",
@@ -909,6 +910,7 @@
 			"avatarUpdated": "Profile picture updated",
 			"avatarDicebear": "Choose an avatar",
 			"avatarShuffle": "Shuffle",
+			"avatarCredits": "Avatar credits",
 			"subtitle": "Language, currency, and odometer unit.",
 			"displayName": "Display name",
 			"displayNamePlaceholder": "Your name"

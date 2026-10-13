@@ -13,7 +13,7 @@
 	} from '$lib/utils/measurement.js';
 	import { untrack } from 'svelte';
 	import { browser } from '$app/environment';
-	import { dicebearUri, randomSeed } from '$lib/utils/dicebear.js';
+	import { dicebearUri, parseAvatarSeed, randomAvatarSeed } from '$lib/utils/dicebear.js';
 	import { resolveTheme, readStoredTheme } from '$lib/utils/theme.js';
 	import { toasts } from '$lib/stores/toasts.svelte.js';
 
@@ -34,22 +34,40 @@
 	let fileInput = $state<HTMLInputElement | null>(null);
 	let uploadForm = $state<HTMLFormElement | null>(null);
 
-	// 9 seeds: index 0 = currently selected, 1-8 = alternatives
-	function buildGrid(): string[] {
-		const current = data.user.settings.avatar_seed ?? randomSeed();
-		return [current, ...Array.from({ length: 8 }, randomSeed)];
+	function normalizeSeed(value: string): string {
+		const { style, seed } = parseAvatarSeed(value);
+		return `${style}:${seed}`;
 	}
 
-	let gridSeeds = $state<string[]>(buildGrid());
-	let selectedSeed = $state(untrack(() => data.user.settings.avatar_seed ?? gridSeeds[0]));
-	const gridUris = $derived(gridSeeds.map(dicebearUri));
+	// 9 seeds: index 0 = currently selected, 1-8 = alternatives
+	const initialSeed = untrack(() =>
+		data.user.settings.avatar_seed
+			? normalizeSeed(data.user.settings.avatar_seed)
+			: randomAvatarSeed()
+	);
+	let gridSeeds = $state<string[]>([initialSeed, ...Array.from({ length: 8 }, randomAvatarSeed)]);
+	let selectedSeed = $state(initialSeed);
+	let gridUris = $state<string[]>([]);
+	let previewUri = $state<string | null>(null);
+	let showAttribution = $state(false);
+
+	$effect(() => {
+		const values = gridSeeds;
+		let stale = false;
+		Promise.all(values.map(dicebearUri)).then((uris) => {
+			if (!stale) gridUris = uris;
+		});
+		return () => {
+			stale = true;
+		};
+	});
 
 	$effect(() => {
 		if (form?.avatarUpdated) {
 			avatarCacheBuster = Date.now();
 			showAvatarPopover = false;
 			if (data.user.settings.avatar_seed) {
-				selectedSeed = data.user.settings.avatar_seed;
+				selectedSeed = normalizeSeed(data.user.settings.avatar_seed);
 			}
 		}
 	});
@@ -62,7 +80,19 @@
 	);
 
 	// DiceBear URI for the 56px button and 96px preview
-	const previewUri = $derived(!hasAvatarImage ? dicebearUri(selectedSeed) : null);
+	$effect(() => {
+		if (hasAvatarImage) {
+			previewUri = null;
+			return;
+		}
+		let stale = false;
+		dicebearUri(selectedSeed).then((uri) => {
+			if (!stale) previewUri = uri;
+		});
+		return () => {
+			stale = true;
+		};
+	});
 
 	function triggerFileUpload() {
 		if (fileInput?.files?.length) {
@@ -70,8 +100,30 @@
 		}
 	}
 
+	const CC_BY = 'https://creativecommons.org/licenses/by/4.0/';
+	const AVATAR_CREDITS = [
+		{
+			artist: 'Davis Uche',
+			artistUrl: 'https://www.instagram.com/davedirect3/',
+			license: 'CC BY 4.0',
+			licenseUrl: CC_BY
+		},
+		{
+			artist: 'The Visual Team',
+			artistUrl: 'https://thevisual.team/',
+			license: 'CC BY 4.0',
+			licenseUrl: CC_BY
+		},
+		{
+			artist: 'DiceBear',
+			artistUrl: 'https://www.dicebear.com',
+			license: 'CC0',
+			licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/'
+		}
+	];
+
 	function shuffle() {
-		gridSeeds = [gridSeeds[0], ...Array.from({ length: 8 }, randomSeed)];
+		gridSeeds = [gridSeeds[0], ...Array.from({ length: 8 }, randomAvatarSeed)];
 	}
 
 	let selectedOdometerUnit = $state<DistanceUnit>(
@@ -119,7 +171,10 @@
 		type="button"
 		class="user-avatar"
 		class:user-avatar--image={hasAvatarImage || previewUri}
-		onclick={() => (showAvatarPopover = true)}
+		onclick={() => {
+			showAttribution = false;
+			showAvatarPopover = true;
+		}}
 		aria-label={$_('settings.profile.avatarUpload')}
 	>
 		{#if hasAvatarImage && avatarSrc}
@@ -248,8 +303,39 @@
 				{/if}
 			</div>
 
-			<!-- DiceBear grid (3×3) -->
-			<div class="dice-label">{$_('settings.profile.avatarDicebear')}</div>
+			<div class="dice-head">
+				<span class="dice-label">{$_('settings.profile.avatarDicebear')}</span>
+				<button
+					type="button"
+					class="dice-info"
+					aria-label={$_('settings.profile.avatarCredits')}
+					aria-expanded={showAttribution}
+					onclick={() => (showAttribution = !showAttribution)}
+				>
+					<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+						<circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.25" />
+						<path
+							d="M6.2 6.1a1.85 1.85 0 0 1 3.6.55c0 1.25-1.8 1.6-1.8 2.85"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.25"
+							stroke-linecap="round"
+						/>
+						<circle cx="8" cy="11.6" r="0.8" fill="currentColor" />
+					</svg>
+				</button>
+			</div>
+			{#if showAttribution}
+				<ul class="dice-credits">
+					{#each AVATAR_CREDITS as c (c.artist)}
+						<li>
+							<a href={c.artistUrl} target="_blank" rel="noopener noreferrer">{c.artist}</a>
+							&middot;
+							<a href={c.licenseUrl} target="_blank" rel="noopener noreferrer">{c.license}</a>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 			<div class="dice-grid">
 				{#each gridSeeds as seed, i (seed)}
 					<form
@@ -271,7 +357,7 @@
 							class:dice-btn--selected={seed === selectedSeed && !hasAvatarImage}
 							aria-label="Avatar option {i + 1}"
 						>
-							<img src={gridUris[i]} alt="" />
+							{#if gridUris[i]}<img src={gridUris[i]} alt="" />{/if}
 						</button>
 					</form>
 				{/each}
@@ -394,7 +480,7 @@
 	}
 	.input {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg-subtle);
 		color: var(--text);
@@ -433,7 +519,7 @@
 	}
 	.toggle-opt--active {
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 	}
 	.sr-only {
 		position: absolute;
@@ -606,14 +692,50 @@
 		background: var(--border);
 		margin: 0.5rem 0;
 	}
+	.dice-head {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-1);
+		margin-bottom: 0.5rem;
+	}
 	.dice-label {
 		font-size: var(--text-xs);
 		font-weight: 500;
 		color: var(--text-muted);
-		text-align: center;
 		text-transform: uppercase;
 		letter-spacing: 0.06em;
-		margin-bottom: 0.5rem;
+	}
+	.dice-info {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: none;
+		border-radius: 50%;
+		background: none;
+		color: var(--text-subtle);
+		cursor: pointer;
+	}
+	.dice-info:hover,
+	.dice-info[aria-expanded='true'] {
+		color: var(--text-muted);
+	}
+	.dice-credits {
+		font-size: var(--text-xs);
+		line-height: var(--leading-base);
+		color: var(--text-muted);
+		text-align: center;
+		list-style: none;
+		padding: 0;
+		margin: 0 0 0.5rem;
+	}
+	.dice-credits a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 2px;
 	}
 	.dice-grid {
 		display: grid;

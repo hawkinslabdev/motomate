@@ -620,7 +620,7 @@ actions:
 		width: 100%;
 		font-size: max(1rem, 16px);
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg-subtle);
 		color: var(--text);
@@ -728,7 +728,7 @@ actions:
 	}
 	.sub-btn:hover:not(:disabled) {
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 	}
 	.sub-btn:disabled {
 		opacity: 0.6;
@@ -755,7 +755,7 @@ actions:
 	.save-btn {
 		padding: 0.5rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);

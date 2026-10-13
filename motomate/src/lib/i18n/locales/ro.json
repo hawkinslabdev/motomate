@@ -26,6 +26,7 @@
 		"open": "Deschide"
 	},
 	"auth": {
+		"tagline": "Înregistrează service-ul, costurile și documentele vehiculelor tale.",
 		"changeLanguage": "Schimbă limba",
 		"searchLanguage": "Caută limbi",
 		"noLanguageMatch": "Nicio limbă găsită",
@@ -909,6 +910,7 @@
 			"avatarUpdated": "Fotografia de profil a fost actualizată",
 			"avatarDicebear": "Alege un avatar",
 			"avatarShuffle": "Amestecă",
+			"avatarCredits": "Credite avatare",
 			"subtitle": "Limba, moneda și unitatea odometrului.",
 			"displayName": "Nume afișat",
 			"displayNamePlaceholder": "Numele tău"

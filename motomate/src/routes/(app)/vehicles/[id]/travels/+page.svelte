@@ -471,7 +471,7 @@
 		padding: 0.5rem 1rem;
 		min-height: 44px;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);

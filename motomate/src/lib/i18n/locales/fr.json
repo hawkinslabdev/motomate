@@ -26,6 +26,7 @@
 		"open": "Ouvrir"
 	},
 	"auth": {
+		"tagline": "Enregistre l’entretien, les dépenses et les documents de vos véhicules.",
 		"changeLanguage": "Changer de langue",
 		"searchLanguage": "Rechercher une langue",
 		"noLanguageMatch": "Aucune langue trouvée",
@@ -896,6 +897,7 @@
 			"avatarUpdated": "Photo de profil mise à jour",
 			"avatarDicebear": "Choisir un avatar",
 			"avatarShuffle": "Mélanger",
+			"avatarCredits": "Crédits des avatars",
 			"subtitle": "Langue, devise et unité kilométrique.",
 			"displayName": "Nom d'affichage",
 			"displayNamePlaceholder": "Votre prénom"

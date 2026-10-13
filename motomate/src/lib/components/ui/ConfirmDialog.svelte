@@ -100,7 +100,7 @@
 		border-radius: 10px;
 		font-size: var(--text-sm);
 		font-weight: 500;
-		color: #fff;
+		color: var(--accent-fg);
 		cursor: pointer;
 		min-height: 44px;
 		transition:

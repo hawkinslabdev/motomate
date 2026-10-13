@@ -60,11 +60,21 @@
 
 	let notifCountAdjustment = $state(0);
 	const notifCount = $derived(Math.max(0, (data.unreadCount ?? 0) - notifCountAdjustment));
-	const topnavAvatarUri = $derived(
-		!data.user.settings?.avatar_key && data.user.settings?.avatar_seed
-			? dicebearUri(data.user.settings.avatar_seed)
-			: null
-	);
+	let topnavAvatarUri = $state<string | null>(null);
+	$effect(() => {
+		const seed = !data.user.settings?.avatar_key ? data.user.settings?.avatar_seed : null;
+		if (!seed) {
+			topnavAvatarUri = null;
+			return;
+		}
+		let stale = false;
+		dicebearUri(seed).then((uri) => {
+			if (!stale) topnavAvatarUri = uri;
+		});
+		return () => {
+			stale = true;
+		};
+	});
 	let shortcutsOpen = $state(false);
 	let themeMenuOpen = $state(false);
 	let avatarMenuOpen = $state(false);
@@ -1612,7 +1622,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #fff;
+		color: var(--accent-fg);
 		box-shadow: 0 2px 16px color-mix(in srgb, var(--accent) 45%, transparent);
 		z-index: 55;
 		transition:

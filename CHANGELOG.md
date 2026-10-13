@@ -2,8 +2,10 @@
 
 ## 0.6.2
 
-- Fix: Scheduled reminders, such as a missing mileage update, now wait until morning in your timezone instead of arriving at night. Set the quiet window with `NOTIFY_QUIET_HOURS` (default `22-8`, `off` to disable)
-- Minor: generated profile avatars look different after the DiceBear 10 update, pick a new one under Settings, Profile if preferred
+- Minor: the authentication pages have been redesigned
+- Minor: generated profile avatars look different after the DiceBear 10 update
+- Fix: scheduled reminders, such as a missing mileage update, now wait until morning in your timezone instead of arriving at night (override with `NOTIFY_QUIET_HOURS` with a range `22-8` or  `off` to disable)
+- Fix: form fields and primary buttons have higher contrast, and the authentication pages have better keyboard and screen reader support (WCAG 2.2 AA)
 - Security: various api actions actions now require a vehicle parameter
 - Security: vehicle edit form no longer accepts a cover image key from the request
 - Security: push subscription endpoint registered by another account is rejected

@@ -40,11 +40,12 @@
 		margin-bottom: var(--space-4);
 	}
 	.page-title {
-		font-size: var(--text-xl);
+		font-size: var(--text-2xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0;
-		letter-spacing: -0.01em;
+		letter-spacing: -0.025em;
+		line-height: var(--leading-tight);
 	}
 
 	.loading-bar {
@@ -113,7 +114,7 @@
 		width: 100%;
 		padding: 0.625rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--bg);
 		border: none;
 		border-radius: 10px;
 		font-weight: 500;

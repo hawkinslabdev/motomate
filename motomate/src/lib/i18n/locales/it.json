@@ -26,6 +26,7 @@
 		"open": "Apri"
 	},
 	"auth": {
+		"tagline": "Registra manutenzione, spese e documenti dei tuoi veicoli.",
 		"changeLanguage": "Cambia lingua",
 		"searchLanguage": "Cerca lingue",
 		"noLanguageMatch": "Nessuna lingua trovata",
@@ -896,6 +897,7 @@
 			"avatarUpdated": "Foto del profilo aggiornata",
 			"avatarDicebear": "Scegli un avatar",
 			"avatarShuffle": "Mescola",
+			"avatarCredits": "Crediti avatar",
 			"subtitle": "Lingua, valuta e unità chilometrica.",
 			"displayName": "Nome visualizzato",
 			"displayNamePlaceholder": "Il tuo nome"

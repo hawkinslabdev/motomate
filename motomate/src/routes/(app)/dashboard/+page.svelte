@@ -535,7 +535,7 @@
 		align-items: center;
 		padding: 0.5rem 1.25rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border-radius: 10px;
 		font-size: var(--text-sm);
 		font-weight: 500;

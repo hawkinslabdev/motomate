@@ -663,7 +663,7 @@
 		padding: 0.5rem 1rem;
 		min-height: 44px;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);
@@ -971,7 +971,7 @@
 		font-weight: 500;
 		cursor: pointer;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		white-space: nowrap;
 	}
@@ -1012,7 +1012,7 @@
 		font-size: var(--text-xs);
 		cursor: pointer;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 	}
 	.edit-name-btn--cancel {

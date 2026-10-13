@@ -26,6 +26,7 @@
 		"open": "Öffnen"
 	},
 	"auth": {
+		"tagline": "Erfasst Wartung, Kosten und Dokumente für deine Fahrzeuge.",
 		"changeLanguage": "Sprache ändern",
 		"searchLanguage": "Sprachen suchen",
 		"noLanguageMatch": "Keine Sprache gefunden",
@@ -896,6 +897,7 @@
 			"avatarUpdated": "Profilbild aktualisiert",
 			"avatarDicebear": "Avatar wählen",
 			"avatarShuffle": "Neu mischen",
+			"avatarCredits": "Avatar-Quellen",
 			"subtitle": "Sprache, Währung und Kilometereinheit.",
 			"displayName": "Anzeigename",
 			"displayNamePlaceholder": "Dein Name"

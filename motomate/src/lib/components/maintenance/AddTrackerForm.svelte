@@ -114,7 +114,7 @@
 
 	.input {
 		padding: 0.75rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		background: var(--bg);
 		color: var(--text);
@@ -147,7 +147,7 @@
 	.btn-primary {
 		padding: 0.75rem 1.25rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);

@@ -461,7 +461,7 @@
 		font-family: 'JetBrains Mono', monospace;
 		font-size: var(--text-sm);
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border-strong);
+		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg);
 		color: var(--text);
@@ -498,7 +498,7 @@
 	}
 	.input {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg-subtle);
 		color: var(--text);

@@ -26,6 +26,7 @@
 		"open": "Openen"
 	},
 	"auth": {
+		"tagline": "Houdt onderhoud, kosten en documenten bij voor je voertuigen.",
 		"changeLanguage": "Taal wijzigen",
 		"searchLanguage": "Zoek talen",
 		"noLanguageMatch": "Geen talen gevonden",
@@ -896,6 +897,7 @@
 			"avatarUpdated": "Profielfoto bijgewerkt",
 			"avatarDicebear": "Kies een avatar",
 			"avatarShuffle": "Shufflen",
+			"avatarCredits": "Avatarbronnen",
 			"subtitle": "Taal, valuta en kilometereenheid.",
 			"displayName": "Weergavenaam",
 			"displayNamePlaceholder": "Jouw naam"

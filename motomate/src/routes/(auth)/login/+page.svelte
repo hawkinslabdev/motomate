@@ -51,7 +51,7 @@
 </div>
 
 {#if form?.magic}
-	<div class="notice">
+	<div class="notice" role="status">
 		<svg
 			class="notice-icon"
 			viewBox="0 0 24 24"
@@ -85,12 +85,14 @@
 				type="button"
 				class="mode-btn"
 				class:mode-btn--active={mode === 'password'}
+				aria-pressed={mode === 'password'}
 				onclick={() => (mode = 'password')}>{$_('auth.login.tabs.password')}</button
 			>
 			<button
 				type="button"
 				class="mode-btn"
 				class:mode-btn--active={mode === 'magic'}
+				aria-pressed={mode === 'magic'}
 				onclick={() => (mode = 'magic')}>{$_('auth.login.tabs.magicLink')}</button
 			>
 		</div>
@@ -126,9 +128,11 @@
 					required
 					class="input"
 					class:input--err={form?.fieldErrors?.email}
+					aria-invalid={form?.fieldErrors?.email ? 'true' : undefined}
+					aria-describedby={form?.fieldErrors?.email ? 'login-email-err' : undefined}
 				/>
 				{#if form?.fieldErrors?.email}
-					<span class="field-err">{form.fieldErrors.email}</span>
+					<span id="login-email-err" class="field-err">{form.fieldErrors.email}</span>
 				{/if}
 			</label>
 			<label class="field">
@@ -141,6 +145,8 @@
 						required
 						class="input"
 						class:input--err={form?.fieldErrors?.password}
+						aria-invalid={form?.fieldErrors?.password ? 'true' : undefined}
+						aria-describedby={form?.fieldErrors?.password ? 'login-password-err' : undefined}
 					/>
 					<button
 						type="button"
@@ -183,7 +189,7 @@
 					</button>
 				</div>
 				{#if form?.fieldErrors?.password}
-					<span class="field-err">{form.fieldErrors.password}</span>
+					<span id="login-password-err" class="field-err">{form.fieldErrors.password}</span>
 				{/if}
 			</label>
 			<div class="form-row">
@@ -295,11 +301,12 @@
 		margin-bottom: var(--space-5);
 	}
 	.page-title {
-		font-size: var(--text-xl);
+		font-size: var(--text-2xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 0.25rem;
-		letter-spacing: -0.01em;
+		letter-spacing: -0.025em;
+		line-height: var(--leading-tight);
 	}
 	.page-subtitle {
 		font-size: var(--text-sm);
@@ -324,7 +331,7 @@
 	}
 	.input {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border-strong);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		background: var(--bg-subtle);
 		color: var(--text);
@@ -382,7 +389,7 @@
 	.btn-primary {
 		padding: 0.625rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--bg);
 		border: none;
 		border-radius: 10px;
 		font-weight: 500;
@@ -618,7 +625,7 @@
 		align-items: center;
 		width: 2rem;
 		height: 1.125rem;
-		background: var(--border-strong);
+		background: var(--text-muted);
 		border-radius: 9999px;
 		transition: background 0.18s ease;
 		flex-shrink: 0;

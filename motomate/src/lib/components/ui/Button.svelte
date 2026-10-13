@@ -106,7 +106,7 @@
 	/* Primary */
 	.btn--primary {
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border-color: var(--accent);
 	}
 	.btn--primary:hover {

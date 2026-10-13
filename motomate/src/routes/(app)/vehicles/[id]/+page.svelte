@@ -1226,7 +1226,7 @@
 	.btn-primary {
 		padding: 0.5rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);

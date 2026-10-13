@@ -752,7 +752,7 @@
 		height: 1.125rem;
 		padding: 0 0.25rem;
 		background: var(--status-overdue);
-		color: #fff;
+		color: var(--status-overdue-fg);
 		border-radius: 999px;
 		font-size: 0.6875rem;
 		font-weight: 600;
@@ -1283,7 +1283,7 @@
 		flex: 1;
 		min-width: 0;
 		padding: 0.375rem 0.5rem;
-		border: 1px solid var(--border-strong);
+		border: 1px solid var(--border-input);
 		border-radius: 6px;
 		background: var(--bg);
 		color: var(--text);

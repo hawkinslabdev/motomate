@@ -408,8 +408,7 @@
 			style="min-height:{minHeight}"
 			{placeholder}
 			bind:value={currentMarkdown}
-			oninput={() => onchange?.(currentMarkdown)}
-		></textarea>
+			oninput={() => onchange?.(currentMarkdown)}></textarea>
 	{/if}
 
 	<input type="hidden" {name} value={currentMarkdown} />
@@ -417,7 +416,7 @@
 
 <style>
 	.rich-editor {
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		overflow: hidden;
 		background: var(--bg);
@@ -513,7 +512,7 @@
 
 	.link-input {
 		flex: 1;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 6px;
 		padding: 0.25rem 0.5rem;
 		font-size: var(--text-sm);
@@ -550,7 +549,7 @@
 
 	.link-btn--confirm {
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border-color: var(--accent);
 	}
 
@@ -573,7 +572,7 @@
 	.doc-search-input {
 		width: 100%;
 		padding: 0.3rem 0.5rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 6px;
 		background: var(--bg);
 		color: var(--text);

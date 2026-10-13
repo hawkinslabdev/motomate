@@ -828,8 +828,7 @@
 									name="notes"
 									rows="2"
 									placeholder={$_('vehicle.forms.placeholders.partsUsed')}
-									class="input"
-								></textarea>
+									class="input"></textarea>
 							</label>
 							<div class="log-actions">
 								{#if (data as any).demoMode}
@@ -1100,7 +1099,7 @@
 	}
 	.input {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border-strong);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		background: var(--bg);
 		color: var(--text);
@@ -1125,7 +1124,7 @@
 		padding: 0.5rem 1rem;
 		min-height: 44px;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);

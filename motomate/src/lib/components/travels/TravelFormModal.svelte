@@ -742,7 +742,7 @@
 	/* Inputs; matches .input across documents + Input.svelte */
 	.input {
 		padding: 0.75rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		background: var(--bg);
 		color: var(--text);
@@ -775,7 +775,7 @@
 	.input-group {
 		display: flex;
 		align-items: stretch;
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		overflow: hidden;
 		transition: border-color 0.1s;
@@ -943,7 +943,7 @@
 	.btn-primary {
 		padding: 0.75rem 1.25rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--accent-fg);
 		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);
@@ -1046,7 +1046,7 @@
 		flex: 1;
 		font-size: max(1rem, 16px);
 		padding: var(--space-1) var(--space-2);
-		border: 1px solid var(--border);
+		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg);
 		color: var(--text);

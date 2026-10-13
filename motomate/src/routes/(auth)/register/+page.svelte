@@ -39,7 +39,7 @@
 	</div>
 
 	{#if form?.error}
-		<div class="form-error">{form.error}</div>
+		<div class="form-error" role="alert">{form.error}</div>
 	{/if}
 
 	<form
@@ -66,9 +66,11 @@
 				required
 				class="input"
 				class:input--err={form?.fieldErrors?.email}
+				aria-invalid={form?.fieldErrors?.email ? 'true' : undefined}
+				aria-describedby={form?.fieldErrors?.email ? 'reg-email-err' : undefined}
 			/>
 			{#if form?.fieldErrors?.email}
-				<span class="field-err">{form.fieldErrors.email}</span>
+				<span id="reg-email-err" class="field-err">{form.fieldErrors.email}</span>
 			{/if}
 		</label>
 		<label class="field">
@@ -81,12 +83,14 @@
 				required
 				class="input"
 				class:input--err={form?.fieldErrors?.password}
+				aria-invalid={form?.fieldErrors?.password ? 'true' : undefined}
+				aria-describedby="reg-password-msg"
 				bind:value={passwordValue}
 			/>
 			{#if form?.fieldErrors?.password}
-				<span class="field-err">{form.fieldErrors.password}</span>
+				<span id="reg-password-msg" class="field-err">{form.fieldErrors.password}</span>
 			{:else}
-				<span class="field-hint">{$_('auth.register.passwordHint')}</span>
+				<span id="reg-password-msg" class="field-hint">{$_('auth.register.passwordHint')}</span>
 			{/if}
 		</label>
 		<label class="field">
@@ -99,12 +103,16 @@
 				required
 				class="input"
 				class:input--err={mismatch || !!form?.fieldErrors?.confirm_password}
+				aria-invalid={mismatch || form?.fieldErrors?.confirm_password ? 'true' : undefined}
+				aria-describedby={mismatch || form?.fieldErrors?.confirm_password
+					? 'reg-confirm-err'
+					: undefined}
 				bind:value={confirmValue}
 			/>
 			{#if form?.fieldErrors?.confirm_password}
-				<span class="field-err">{form.fieldErrors.confirm_password}</span>
+				<span id="reg-confirm-err" class="field-err">{form.fieldErrors.confirm_password}</span>
 			{:else if mismatch}
-				<span class="field-err">{$_('auth.register.passwordMismatch')}</span>
+				<span id="reg-confirm-err" class="field-err">{$_('auth.register.passwordMismatch')}</span>
 			{/if}
 		</label>
 		{#if data.altchaEnabled}
@@ -141,11 +149,12 @@
 		margin-bottom: var(--space-5);
 	}
 	.page-title {
-		font-size: var(--text-xl);
+		font-size: var(--text-2xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 0.25rem;
-		letter-spacing: -0.01em;
+		letter-spacing: -0.025em;
+		line-height: var(--leading-tight);
 	}
 	.page-subtitle {
 		font-size: var(--text-sm);
@@ -179,7 +188,7 @@
 
 	.input {
 		padding: 0.5rem 0.75rem;
-		border: 1px solid var(--border-strong);
+		border: 1px solid var(--border-input);
 		border-radius: 10px;
 		background: var(--bg-subtle);
 		color: var(--text);
@@ -200,7 +209,7 @@
 	.btn-primary {
 		padding: 0.625rem 1rem;
 		background: var(--accent);
-		color: #fff;
+		color: var(--bg);
 		border: none;
 		border-radius: 10px;
 		font-weight: 500;
