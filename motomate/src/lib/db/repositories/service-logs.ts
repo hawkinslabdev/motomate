@@ -26,6 +26,7 @@ export async function createServiceLog(
 ): Promise<ServiceLog & { warning?: string }> {
 	const parsed = CreateServiceLogSchema.parse(input);
 	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
+	if (!vehicle) throw new Error('Vehicle not found');
 	const id = generateId();
 	const row: InsertServiceLog = {
 		...parsed,

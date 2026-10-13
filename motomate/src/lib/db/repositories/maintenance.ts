@@ -436,6 +436,7 @@ function getPresetsForType(type: string, measurementUnit: MeasurementUnit = DEFA
 export async function createTaskTemplate(userId: string, input: unknown): Promise<TaskTemplate> {
 	const parsed = CreateTaskTemplateSchema.parse(input);
 	const vehicle = parsed.vehicle_id ? await getVehicleById(parsed.vehicle_id, userId) : undefined;
+	if (parsed.vehicle_id && !vehicle) throw new Error('Vehicle not found');
 	const id = generateId();
 	const row: InsertTaskTemplate = {
 		...parsed,

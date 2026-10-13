@@ -1,5 +1,5 @@
 import { lucia } from '$lib/auth/index.js';
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { env as pubEnv } from '$env/dynamic/public';
@@ -7,6 +7,7 @@ import { initScheduler } from '$lib/server/scheduler.js';
 import { findUserByApiKey, updateKeyLastUsed } from '$lib/db/repositories/api-keys.js';
 import { redactCredentials } from '$lib/server/secrets.js';
 import { rateLimit } from '$lib/auth/rate-limit.js';
+import { getVehicleById } from '$lib/db/repositories/vehicles.js';
 
 if (!env.AUTH_SECRET) {
 	throw new Error(
@@ -139,6 +140,34 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
 	return headers;
 }
 
+const PUBLIC_ROUTES = ['/(app)/auth/logout', '/api/altcha', '/api/download/[token]', '/api/spec'];
+
+function isPublicRoute(routeId: string | null): boolean {
+	return (
+		routeId === null ||
+		routeId === '/' ||
+		routeId.startsWith('/(auth)') ||
+		PUBLIC_ROUTES.includes(routeId)
+	);
+}
+
+const VEHICLE_ROUTE = /^\/(?:\(app\)|api)\/vehicles\/\[id\](?:\/|$)/;
+
+function isVehicleScopedRoute(routeId: string | null): boolean {
+	return routeId !== null && VEHICLE_ROUTE.test(routeId);
+}
+
+function denyAnonymous(event: Parameters<Handle>[0]['event']): Response | null {
+	if (event.locals.user || isPublicRoute(event.route.id)) return null;
+	if (event.url.pathname.startsWith('/api/')) {
+		return json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 });
+	}
+	if (SAFE_METHODS.has(event.request.method)) {
+		return new Response(null, { status: 303, headers: { Location: '/login' } });
+	}
+	return new Response('Unauthorized', { status: 401 });
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!_secretChecked) await checkSecret();
 
@@ -244,6 +273,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
+		const denied = denyAnonymous(event);
+		if (denied) return denied;
 		return resolve(event, {
 			transformPageChunk({ html }) {
 				const theme = event.cookies.get('theme');
@@ -276,9 +307,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = user ? redactCredentials(user) : user;
 	event.locals.session = session;
 
+	const denied = denyAnonymous(event);
+	if (denied) return denied;
+
 	if (event.locals.user) {
 		const limited = checkRateLimit(event.url.pathname, event.locals.user.id);
 		if (limited) return limited;
+
+		if (isVehicleScopedRoute(event.route.id) && event.params.id) {
+			if (!(await getVehicleById(event.params.id, event.locals.user.id))) {
+				error(404, 'Vehicle not found');
+			}
+		}
 	}
 
 	const response = await resolve(event, {

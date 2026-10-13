@@ -10,6 +10,7 @@ vi.mock('$lib/db/repositories/api-keys.js', () => ({
 	findUserByApiKey: vi.fn(),
 	updateKeyLastUsed: vi.fn()
 }));
+vi.mock('$lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
 vi.mock('$lib/server/secrets.js', () => ({ redactCredentials: (u: unknown) => u }));
 
 import { isOriginTrusted } from '../hooks.server.js';

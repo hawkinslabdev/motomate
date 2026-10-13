@@ -336,6 +336,7 @@ export async function insertOdometerLog(
 		throw new Error('Odometer cannot be negative');
 	}
 	const vehicle = await getVehicleById(vehicleId, userId);
+	if (!vehicle) throw new Error('Vehicle not found');
 	await db.insert(odometer_logs).values({
 		id: generateId(),
 		vehicle_id: vehicleId,

@@ -27,6 +27,7 @@ export async function createFinanceTransaction(
 	input: Omit<InsertFinanceTransaction, 'id' | 'user_id' | 'created_at' | 'updated_at'>
 ): Promise<FinanceTransaction> {
 	const vehicle = await getVehicleById(input.vehicle_id, userId);
+	if (!vehicle) throw new Error('Vehicle not found');
 	const id = generateId();
 	const now = new Date().toISOString();
 	const row: InsertFinanceTransaction = {

@@ -8,6 +8,7 @@ import { generateId } from '../../utils/id.js';
 
 export async function createDocument(userId: string, input: unknown): Promise<Document> {
 	const parsed = CreateDocumentSchema.parse(input);
+	if (!(await getVehicleById(parsed.vehicle_id, userId))) throw new Error('Vehicle not found');
 	const id = generateId();
 	const row: InsertDocument = { ...parsed, id, user_id: userId };
 	await db.insert(documents).values(row);

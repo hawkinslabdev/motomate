@@ -17,6 +17,7 @@ vi.mock('$lib/db/repositories/api-keys.js', () => ({
 	updateKeyLastUsed: vi.fn(async () => {})
 }));
 vi.mock('$lib/db/repositories/users.js', () => ({ hasAnyUser: vi.fn(async () => true) }));
+vi.mock('$lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
 vi.mock('$lib/server/secrets.js', () => ({ redactCredentials: (u: unknown) => u }));
 
 import { handle } from '../hooks.server.js';
@@ -25,12 +26,13 @@ import { findUserByApiKey } from '$lib/db/repositories/api-keys.js';
 const KEY = 'mm_' + 'a'.repeat(64);
 const user = { id: 'u_1', email: 'rider@test.com', settings: {} };
 
-function call(pathname: string, method = 'GET') {
+function call(pathname: string, method = 'GET', routeId: string | null = pathname) {
 	const url = new URL(`https://moto.example.com${pathname}`);
 	const locals: Record<string, unknown> = {};
 	const event = {
 		url,
 		locals,
+		route: { id: routeId },
 		cookies: { get: () => undefined, set: vi.fn() },
 		request: new Request(url, {
 			method,
@@ -73,11 +75,10 @@ describe('API key scope enforcement in hooks', () => {
 
 	it('never authenticates a key outside /api/, so form actions stay session-only', async () => {
 		grant('write');
-		const c = call('/settings/account', 'POST');
+		const c = call('/settings/account', 'POST', '/(app)/settings/account');
 		const res = await c.run();
 		expect(c.locals.user).toBeFalsy();
 		expect(findUserByApiKey).not.toHaveBeenCalled();
-		// falls through to the origin check, then to Lucia, with no session cookie present
-		expect(res.status).toBe(200);
+		expect(res.status).toBe(401);
 	});
 });
