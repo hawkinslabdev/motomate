@@ -9,3 +9,4 @@ uploads/*
 !CHANGELOG.md
 *.db
 *.db*
+motomate/[sS][kK]*-lock.json
