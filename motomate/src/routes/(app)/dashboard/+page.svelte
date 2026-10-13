@@ -322,14 +322,6 @@
 		justify-content: space-between;
 		margin-bottom: var(--space-3);
 	}
-	.section-eyebrow {
-		font-size: var(--text-sm);
-		font-weight: 600;
-		color: var(--text-subtle);
-		letter-spacing: 0.01em;
-		margin: 0 0 var(--space-3);
-		line-height: 1;
-	}
 	.section-header .section-eyebrow {
 		margin: 0;
 	}

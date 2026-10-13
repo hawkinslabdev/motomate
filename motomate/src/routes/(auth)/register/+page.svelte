@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { getContext } from 'svelte';
+	import { getContext, untrack } from 'svelte';
 	import { browser } from '$app/environment';
 	import { _ } from '$lib/i18n';
 
@@ -11,6 +11,7 @@
 		form: { error?: string; email?: string; fieldErrors?: Record<string, string> } | null;
 	}>();
 
+	let emailValue = $state(untrack(() => form?.email ?? ''));
 	let passwordValue = $state('');
 	let confirmValue = $state('');
 	let loading = $state(false);
@@ -62,7 +63,7 @@
 				name="email"
 				type="email"
 				autocomplete="email"
-				value={form?.email ?? ''}
+				bind:value={emailValue}
 				required
 				class="input"
 				class:input--err={form?.fieldErrors?.email}

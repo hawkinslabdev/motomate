@@ -173,7 +173,7 @@ actions:
 </svelte:head>
 
 <div class="intro">
-	<h2 class="section-title">{$_('settings.notifications.channels.title')}</h2>
+	<h2 class="section-title">{$_('settings.nav.notifications')}</h2>
 	<p class="section-desc">{$_('settings.notifications.subtitle')}</p>
 </div>
 
@@ -535,7 +535,7 @@ actions:
 		margin-bottom: var(--space-5);
 	}
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);

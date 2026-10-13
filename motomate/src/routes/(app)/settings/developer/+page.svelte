@@ -304,7 +304,7 @@
 				</label>
 			</div>
 
-			<button type="submit" class="btn-secondary" disabled={creating}>
+			<button type="submit" class="btn-primary" disabled={creating}>
 				{creating
 					? $_('settings.developer.apiKeys.creating')
 					: $_('settings.developer.apiKeys.create')}
@@ -330,7 +330,7 @@
 
 <style>
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);
@@ -564,6 +564,24 @@
 		background: var(--bg-muted);
 	}
 	.btn-secondary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	.btn-primary {
+		align-self: flex-start;
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: var(--accent-fg);
+		border: none;
+		border-radius: 10px;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+	}
+	.btn-primary:hover:not(:disabled) {
+		background: var(--accent-hover);
+	}
+	.btn-primary:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}

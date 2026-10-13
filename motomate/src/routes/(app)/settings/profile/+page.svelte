@@ -273,7 +273,7 @@
 			</div>
 		</div>
 
-		<button type="submit" class="btn-secondary" disabled={saving}>
+		<button type="submit" class="btn-primary" disabled={saving}>
 			{saving ? $_('settings.profile.saving') : $_('settings.profile.submit')}
 		</button>
 	</form>
@@ -429,7 +429,7 @@
 
 <style>
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);
@@ -532,19 +532,23 @@
 		white-space: nowrap;
 		border-width: 0;
 	}
-	.btn-secondary {
+	.btn-primary {
 		align-self: flex-start;
 		padding: 0.5rem 1rem;
-		background: none;
-		color: var(--text);
-		border: 1px solid var(--border-strong);
+		background: var(--accent);
+		color: var(--accent-fg);
+		border: none;
 		border-radius: 10px;
 		font-size: var(--text-sm);
 		font-weight: 500;
 		cursor: pointer;
 	}
-	.btn-secondary:hover:not(:disabled) {
-		background: var(--bg-muted);
+	.btn-primary:hover:not(:disabled) {
+		background: var(--accent-hover);
+	}
+	.btn-primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	/* User avatar button; mirrors .vehicle-avatar */

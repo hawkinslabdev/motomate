@@ -139,7 +139,19 @@
 		<!-- Step 1: Welcome -->
 		{#if step === 1}
 			<div class="step-content center">
-				<div class="step-icon step-icon--welcome" aria-hidden="true">🏍</div>
+				<div class="welcome-band" aria-hidden="true">
+					<img src="/favicon.svg" alt="" width="56" height="56" />
+					<svg viewBox="0 0 520 96" preserveAspectRatio="none">
+						<path
+							class="welcome-road"
+							d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30"
+						/>
+						<path
+							class="welcome-road-line"
+							d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30"
+						/>
+					</svg>
+				</div>
 				<h1 class="step-title">{$_('onboarding.welcome.title')}</h1>
 				<p class="step-desc">{$_('onboarding.welcome.description')}</p>
 				<label class="field field--wide">
@@ -164,7 +176,7 @@
 		{:else if step === 2}
 			<h2 class="step-title">{$_('onboarding.type.title')}</h2>
 			<div class="type-grid">
-				{#each [['motorcycle', '🏍', $_('onboarding.type.motorcycle')], ['scooter', '🛵', $_('onboarding.type.scooter')], ['bike', '🚲', $_('onboarding.type.bike')], ['other', '🚗', $_('onboarding.type.other')]] as [val, icon, label]}
+				{#each [['motorcycle', '🏍', $_('vehicle.add.types.motorcycle')], ['scooter', '🛵', $_('vehicle.add.types.scooter')], ['bike', '🚲', $_('vehicle.add.types.bike')], ['other', '🚗', $_('vehicle.add.types.other')]] as [val, icon, label]}
 					<button
 						class="type-card"
 						class:type-card--active={vehicleType === val}
@@ -257,7 +269,7 @@
 				</div>
 			</div>
 
-			<!-- ── Step 4: Odometer ── -->
+			<!-- Step 4: Odometer -->
 		{:else if step === 4}
 			<h2 class="step-title">{currentReadingTitle}</h2>
 			<p class="step-desc">{currentReadingDescription}</p>
@@ -276,7 +288,7 @@
 				</select>
 			</div>
 
-			<!-- ── Step 5: Maintenance presets ── -->
+			<!-- Step 5: Maintenance presets -->
 		{:else if step === 5}
 			<h2 class="step-title">{$_('onboarding.presets.title')}</h2>
 			<p class="step-desc">{$_('onboarding.presets.description')}</p>
@@ -315,7 +327,7 @@
 				</div>
 			{/if}
 
-			<!-- ── Step 6: Last oil change (optional) ── -->
+			<!-- Step 6: Last oil change (optional) -->
 		{:else if step === 6}
 			<h2 class="step-title">{$_('onboarding.lastService.title')}</h2>
 			<p class="step-desc">{$_('onboarding.lastService.description')}</p>
@@ -349,7 +361,7 @@
 				}}>{$_('onboarding.lastService.skip')}</button
 			>
 
-			<!-- ── Step 7: Confirm & submit ── -->
+			<!-- Step 7: Confirm & submit -->
 		{:else if step === 7}
 			<div class="step-content center">
 				<div class="done-icon" aria-hidden="true">✓</div>
@@ -515,12 +527,52 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-	.step-icon {
-		font-size: 3rem;
-		line-height: 1;
+	.welcome-band {
+		position: relative;
+		align-self: stretch;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		height: 9rem;
+		margin: -2rem -2rem 0;
+		padding-top: var(--space-6);
+		overflow: hidden;
+		border-radius: 12px 12px 0 0;
+		background:
+			radial-gradient(120% 120% at 0% 0%, #3b82f6 0%, transparent 60%),
+			#2563eb;
 	}
-	.step-icon--welcome {
-		font-size: 4rem;
+	:global([data-theme='dark']) .welcome-band {
+		background:
+			radial-gradient(120% 120% at 0% 0%, #2563eb 0%, transparent 60%),
+			#1e40af;
+	}
+	.welcome-band img {
+		position: relative;
+		z-index: 1;
+		border-radius: 14px;
+		box-shadow: 0 6px 18px rgba(8, 20, 70, 0.35);
+	}
+	.welcome-band svg {
+		position: absolute;
+		inset: auto 0 0 0;
+		width: 100%;
+		height: 4.5rem;
+	}
+	.welcome-road {
+		fill: none;
+		stroke: #0b1f66;
+		stroke-opacity: 0.28;
+		stroke-width: 22;
+		stroke-linecap: round;
+	}
+	.welcome-road-line {
+		fill: none;
+		stroke: #ffffff;
+		stroke-opacity: 0.85;
+		stroke-width: 2;
+		stroke-dasharray: 12 14;
+		vector-effect: non-scaling-stroke;
 	}
 	.done-icon {
 		font-size: 1.5rem;

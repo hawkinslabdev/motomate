@@ -25,6 +25,13 @@
 		"actions": "Actions",
 		"open": "Open"
 	},
+	"errorPage": {
+		"notFoundTitle": "Page not found",
+		"notFoundBody": "This page does not exist or has moved.",
+		"genericTitle": "Something went wrong",
+		"genericBody": "Your request could not be processed. Try again later.",
+		"action": "Back to MotoMate"
+	},
 	"auth": {
 		"tagline": "Logs service, costs and documents for your vehicles.",
 		"changeLanguage": "Change language",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "e.g. Julian"
 		},
 		"type": {
-			"title": "What kind of vehicle?",
-			"motorcycle": "Motorcycle",
-			"scooter": "Scooter",
-			"bike": "Bicycle",
-			"other": "Other"
+			"title": "What kind of vehicle?"
 		},
 		"details": {
 			"title": "Tell us about your {vehicleType}",
@@ -911,7 +914,7 @@
 			"avatarDicebear": "Choose an avatar",
 			"avatarShuffle": "Shuffle",
 			"avatarCredits": "Avatar credits",
-			"subtitle": "Language, currency, and odometer unit.",
+			"subtitle": "Profile photo, display name, language, currency, unit and theme.",
 			"displayName": "Display name",
 			"displayNamePlaceholder": "Your name"
 		},

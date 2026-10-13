@@ -312,12 +312,12 @@
 		);
 	}
 
-	const CurrentThemeIcon = $derived(themes.find((t) => t.id === currentTheme)?.icon);
+	let resolvedTheme = $state<'light' | 'dark'>('light');
+	const CurrentThemeIcon = $derived(resolvedTheme === 'dark' ? Moon : Sun);
 
 	$effect(() => {
-		document.documentElement.dataset.theme = resolveTheme(
-			currentTheme as 'light' | 'dark' | 'system'
-		);
+		resolvedTheme = resolveTheme(currentTheme as 'light' | 'dark' | 'system');
+		document.documentElement.dataset.theme = resolvedTheme;
 		persistTheme(currentTheme as 'light' | 'dark' | 'system');
 	});
 

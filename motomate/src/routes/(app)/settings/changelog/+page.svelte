@@ -309,7 +309,7 @@
 	}
 
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);

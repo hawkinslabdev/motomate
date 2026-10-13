@@ -167,11 +167,11 @@
 <svelte:window onclick={closeLastFiredTooltip} />
 
 <svelte:head>
-	<title>{$_('settings.workflows.title')} · {$_('layout.nav.settings')}</title>
+	<title>{$_('settings.nav.workflows')} · {$_('layout.nav.settings')}</title>
 </svelte:head>
 
 <div class="intro">
-	<h2 class="section-title">{$_('settings.workflows.title')}</h2>
+	<h2 class="section-title">{$_('settings.nav.workflows')}</h2>
 	<p class="section-desc">{$_('settings.workflows.subtitle')}</p>
 </div>
 
@@ -638,7 +638,7 @@
 		margin-bottom: var(--space-5);
 	}
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);

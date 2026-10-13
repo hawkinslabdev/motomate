@@ -40,7 +40,7 @@
 
 	<form method="POST" use:enhance class="vehicle-form">
 		<div class="form-section">
-			<h2 class="section-title">{$_('vehicle.add.sections.type')}</h2>
+			<h2 class="section-eyebrow">{$_('vehicle.add.sections.type')}</h2>
 			<div class="type-cards">
 				{#each [['motorcycle', '🏍', $_('vehicle.add.types.motorcycle')], ['scooter', '🛵', $_('vehicle.add.types.scooter')], ['bike', '🚲', $_('vehicle.add.types.bike')], ['other', '🚗', $_('vehicle.add.types.other')]] as [val, icon, label]}
 					<label class="type-card">
@@ -53,7 +53,7 @@
 		</div>
 
 		<div class="form-section">
-			<h2 class="section-title">{$_('vehicle.add.sections.details')}</h2>
+			<h2 class="section-eyebrow">{$_('vehicle.add.sections.details')}</h2>
 			<div class="form-grid">
 				<label class="field">
 					<span class="field-label"
@@ -142,7 +142,7 @@
 		</div>
 
 		<div class="form-section">
-			<h2 class="section-title">{$_('vehicle.add.sections.odometer')}</h2>
+			<h2 class="section-eyebrow">{$_('vehicle.add.sections.odometer')}</h2>
 			<div class="odo-row">
 				<label class="field" style="flex:1">
 					<span class="field-label"
@@ -181,7 +181,7 @@
 
 <style>
 	.page {
-		max-width: 640px;
+		max-width: 860px;
 		padding: var(--space-6) var(--space-6);
 		margin: 0 auto;
 	}
@@ -204,13 +204,6 @@
 	}
 	.form-section {
 		margin-bottom: var(--space-6);
-	}
-	.section-title {
-		font-size: var(--text-xs);
-		font-weight: 600;
-		color: var(--text-muted);
-		letter-spacing: 0.07em;
-		margin: 0 0 0.875rem;
 	}
 
 	.type-cards {

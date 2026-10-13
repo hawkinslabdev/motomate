@@ -31,13 +31,14 @@
 :root {
 	color-scheme: light dark;
 
-	/* ── Colour tokens ── */
+	/* Colour tokens */
 	--bg: #ffffff;
 	--bg-subtle: #fafaf9; /* very slightly warm off-white */
 	--bg-muted: #f4f3f1;
 	--border: #e5e7eb;
 	--border-strong: #d1d5db;
-	--border-input: #868b94;
+	--border-input: #d1d5db;
+	--border-input-hover: #868b94;
 	--text: #111827;
 	--text-muted: #6b7280;
 	--text-subtle: #9ca3af;
@@ -50,7 +51,7 @@
 	--status-overdue: #dc2626;
 	--status-overdue-fg: #ffffff;
 
-	/* ── Spacing scale ── */
+	/* Spacing scale */
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
 	--space-3: 0.75rem;
@@ -61,7 +62,7 @@
 	--space-8: 3rem;
 	--space-10: 4rem;
 
-	/* ── Type scale ── */
+	/* Type scale */
 	--text-xs: 0.75rem; /* 12px — captions, badges, timestamps */
 	--text-sm: 0.875rem; /* 14px — secondary labels, metadata */
 	--text-base: 1rem; /* 16px — primary body / list item text */
@@ -71,7 +72,7 @@
 	--text-2xl: 1.75rem; /* 28px — page titles, vehicle names */
 	--text-3xl: 2.25rem; /* 36px — odometer hero number */
 
-	/* ── Leading (line-height) ── */
+	/* Leading (line-height) */
 	--leading-tight: 1.2; /* headings */
 	--leading-snug: 1.4; /* labels, subheadings */
 	--leading-base: 1.65; /* body copy */
@@ -82,7 +83,8 @@
 		--bg-muted: #1a1a1a;
 		--border: #262626;
 		--border-strong: #404040;
-		--border-input: #6b6b6b;
+		--border-input: #404040;
+		--border-input-hover: #6b6b6b;
 		--text: #ededed;
 		--text-muted: #a1a1aa;
 		--text-subtle: #71717a;
@@ -104,7 +106,8 @@
 	--bg-muted: #f4f3f1;
 	--border: #e5e7eb;
 	--border-strong: #d1d5db;
-	--border-input: #868b94;
+	--border-input: #d1d5db;
+	--border-input-hover: #868b94;
 	--text: #111827;
 	--text-muted: #6b7280;
 	--text-subtle: #9ca3af;
@@ -125,7 +128,8 @@
 	--bg-muted: #1a1a1a;
 	--border: #262626;
 	--border-strong: #404040;
-	--border-input: #6b6b6b;
+	--border-input: #404040;
+	--border-input-hover: #6b6b6b;
 	--text: #ededed;
 	--text-muted: #a1a1aa;
 	--text-subtle: #71717a;
@@ -311,6 +315,16 @@ button[disabled] {
 	cursor: not-allowed;
 }
 
+/* Section eyebrow */
+.section-eyebrow {
+	font-size: var(--text-sm);
+	font-weight: 600;
+	color: var(--text-subtle);
+	letter-spacing: 0.01em;
+	margin: 0 0 var(--space-3);
+	line-height: 1;
+}
+
 /* std. hared filter/search bar collection */
 .filters {
 	display: flex;
@@ -319,6 +333,10 @@ button[disabled] {
 	margin: var(--space-6) 0 var(--space-5);
 	align-items: center;
 }
+:is(input, select, textarea):hover:not(:disabled):not(:focus):not([aria-invalid='true']) {
+	border-color: var(--border-input-hover) !important;
+}
+
 .search-box {
 	flex: 1;
 	min-width: 200px;

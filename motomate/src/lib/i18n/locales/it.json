@@ -25,6 +25,13 @@
 		"actions": "Azioni",
 		"open": "Apri"
 	},
+	"errorPage": {
+		"notFoundTitle": "Pagina non trovata",
+		"notFoundBody": "Questa pagina non esiste o è stata spostata.",
+		"genericTitle": "Qualcosa è andato storto",
+		"genericBody": "Non è stato possibile elaborare la richiesta. Riprova più tardi.",
+		"action": "Torna a MotoMate"
+	},
 	"auth": {
 		"tagline": "Registra manutenzione, spese e documenti dei tuoi veicoli.",
 		"changeLanguage": "Cambia lingua",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "Es. Marco"
 		},
 		"type": {
-			"title": "Che tipo di veicolo?",
-			"motorcycle": "Motocicletta",
-			"scooter": "Scooter",
-			"bike": "Bicicletta",
-			"other": "Altro"
+			"title": "Che tipo di veicolo?"
 		},
 		"details": {
 			"title": "Raccontaci del tuo {vehicleType}",
@@ -898,7 +901,7 @@
 			"avatarDicebear": "Scegli un avatar",
 			"avatarShuffle": "Mescola",
 			"avatarCredits": "Crediti avatar",
-			"subtitle": "Lingua, valuta e unità chilometrica.",
+			"subtitle": "Foto profilo, nome visualizzato, lingua, valuta, unità e tema.",
 			"displayName": "Nome visualizzato",
 			"displayNamePlaceholder": "Il tuo nome"
 		},

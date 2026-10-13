@@ -25,6 +25,13 @@
 		"timeline": "Cronologie",
 		"open": "Deschide"
 	},
+	"errorPage": {
+		"notFoundTitle": "Pagina nu a fost găsită",
+		"notFoundBody": "Această pagină nu există sau a fost mutată.",
+		"genericTitle": "Ceva nu a mers bine",
+		"genericBody": "Cererea ta nu a putut fi procesată. Încearcă din nou mai târziu.",
+		"action": "Înapoi la MotoMate"
+	},
 	"auth": {
 		"tagline": "Înregistrează service-ul, costurile și documentele vehiculelor tale.",
 		"changeLanguage": "Schimbă limba",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "de ex. Andrei"
 		},
 		"type": {
-			"title": "Ce fel de vehicul este?",
-			"motorcycle": "Motocicletă",
-			"scooter": "Scuter",
-			"bike": "Bicicletă",
-			"other": "Altul"
+			"title": "Ce fel de vehicul este?"
 		},
 		"details": {
 			"title": "Spune-ne mai multe despre acest {vehicleType}",
@@ -911,7 +914,7 @@
 			"avatarDicebear": "Alege un avatar",
 			"avatarShuffle": "Amestecă",
 			"avatarCredits": "Credite avatare",
-			"subtitle": "Limba, moneda și unitatea odometrului.",
+			"subtitle": "Fotografie de profil, nume afișat, limbă, monedă, unitate și temă.",
 			"displayName": "Nume afișat",
 			"displayNamePlaceholder": "Numele tău"
 		},

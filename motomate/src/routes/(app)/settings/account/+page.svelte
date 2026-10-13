@@ -403,7 +403,7 @@
 
 <style>
 	.section-title {
-		font-size: var(--text-2xl);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--text);
 		margin: 0 0 var(--space-2);
@@ -443,7 +443,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		max-width: 360px;
 	}
 	.field {
 		display: flex;
@@ -596,7 +595,6 @@
 	}
 	.danger-field {
 		margin-top: var(--space-3);
-		max-width: 20rem;
 	}
 	.danger-title {
 		font-size: var(--text-sm);
@@ -689,9 +687,6 @@
 		color: var(--text-subtle);
 	}
 	@media (max-width: 640px) {
-		.pref-form {
-			max-width: 100%;
-		}
 		.danger-box {
 			width: 100%;
 		}

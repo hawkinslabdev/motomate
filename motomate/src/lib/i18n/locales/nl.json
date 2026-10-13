@@ -25,6 +25,13 @@
 		"actions": "Acties",
 		"open": "Openen"
 	},
+	"errorPage": {
+		"notFoundTitle": "Pagina niet gevonden",
+		"notFoundBody": "Deze pagina bestaat niet of is verplaatst.",
+		"genericTitle": "Er is iets misgegaan",
+		"genericBody": "Je verzoek kon niet worden verwerkt. Probeer het later opnieuw.",
+		"action": "Terug naar MotoMate"
+	},
 	"auth": {
 		"tagline": "Houdt onderhoud, kosten en documenten bij voor je voertuigen.",
 		"changeLanguage": "Taal wijzigen",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "bijv. Tom"
 		},
 		"type": {
-			"title": "Welk type voertuig?",
-			"motorcycle": "Motorfiets",
-			"scooter": "Bromfiets",
-			"bike": "Fiets",
-			"other": "Anders"
+			"title": "Welk type voertuig?"
 		},
 		"details": {
 			"title": "Vertel ons over je {vehicleType}",
@@ -898,7 +901,7 @@
 			"avatarDicebear": "Kies een avatar",
 			"avatarShuffle": "Shufflen",
 			"avatarCredits": "Avatarbronnen",
-			"subtitle": "Taal, valuta en kilometereenheid.",
+			"subtitle": "Profielfoto, weergavenaam, taal, valuta, eenheid en thema.",
 			"displayName": "Weergavenaam",
 			"displayNamePlaceholder": "Jouw naam"
 		},
@@ -1131,7 +1134,7 @@
 			"apiKeys": {
 				"title": "API-sleutels",
 				"description": "Maak sleutels aan en beheer ze om de MotoMate API te gebruiken.",
-				"empty": "Je hebt nog geen API-sleutels aangemaakt!",
+				"empty": "Nog geen API-sleutels.",
 				"create": "Sleutel maken",
 				"creating": "Maken...",
 				"nameLabel": "Naam",

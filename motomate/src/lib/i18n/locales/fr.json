@@ -25,6 +25,13 @@
 		"actions": "Actions",
 		"open": "Ouvrir"
 	},
+	"errorPage": {
+		"notFoundTitle": "Page introuvable",
+		"notFoundBody": "Cette page n’existe pas ou a été déplacée.",
+		"genericTitle": "Une erreur s’est produite",
+		"genericBody": "Votre demande n’a pas pu être traitée. Réessayez plus tard.",
+		"action": "Retour à MotoMate"
+	},
 	"auth": {
 		"tagline": "Enregistre l’entretien, les dépenses et les documents de vos véhicules.",
 		"changeLanguage": "Changer de langue",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "Ex. Marie"
 		},
 		"type": {
-			"title": "Quel type de véhicule ?",
-			"motorcycle": "Moto",
-			"scooter": "Scooter",
-			"bike": "Vélo",
-			"other": "Autre"
+			"title": "Quel type de véhicule ?"
 		},
 		"details": {
 			"title": "Parlez-nous de votre {vehicleType}",
@@ -428,7 +431,7 @@
 				"licensePlate": "ex. AB-123 CD"
 			},
 			"types": {
-				"motorcycle": "Motocyclette",
+				"motorcycle": "Moto",
 				"scooter": "Scooter",
 				"bike": "Vélo",
 				"other": "Autre"
@@ -898,7 +901,7 @@
 			"avatarDicebear": "Choisir un avatar",
 			"avatarShuffle": "Mélanger",
 			"avatarCredits": "Crédits des avatars",
-			"subtitle": "Langue, devise et unité kilométrique.",
+			"subtitle": "Photo de profil, nom affiché, langue, devise, unité et thème.",
 			"displayName": "Nom d'affichage",
 			"displayNamePlaceholder": "Votre prénom"
 		},
@@ -1131,7 +1134,7 @@
 			"apiKeys": {
 				"title": "Clés API",
 				"description": "Créez et gérez des clés pour utiliser l'API MotoMate.",
-				"empty": "Aucune clé API pour l instant.",
+				"empty": "Aucune clé API pour l'instant.",
 				"create": "Créer une clé",
 				"creating": "Création...",
 				"nameLabel": "Nom",

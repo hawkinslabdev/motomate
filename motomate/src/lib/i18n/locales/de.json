@@ -25,6 +25,13 @@
 		"actions": "Aktionen",
 		"open": "Öffnen"
 	},
+	"errorPage": {
+		"notFoundTitle": "Seite nicht gefunden",
+		"notFoundBody": "Diese Seite existiert nicht oder wurde verschoben.",
+		"genericTitle": "Etwas ist schiefgelaufen",
+		"genericBody": "Deine Anfrage konnte nicht verarbeitet werden. Versuche es später noch einmal.",
+		"action": "Zurück zu MotoMate"
+	},
 	"auth": {
 		"tagline": "Erfasst Wartung, Kosten und Dokumente für deine Fahrzeuge.",
 		"changeLanguage": "Sprache ändern",
@@ -120,11 +127,7 @@
 			"namePlaceholder": "z.B. Max"
 		},
 		"type": {
-			"title": "Welche Fahrzeugart?",
-			"motorcycle": "Motorrad",
-			"scooter": "Roller",
-			"bike": "Fahrrad",
-			"other": "Andere"
+			"title": "Welche Fahrzeugart?"
 		},
 		"details": {
 			"title": "Erzähl uns von deinem {vehicleType}",
@@ -898,7 +901,7 @@
 			"avatarDicebear": "Avatar wählen",
 			"avatarShuffle": "Neu mischen",
 			"avatarCredits": "Avatar-Quellen",
-			"subtitle": "Sprache, Währung und Kilometereinheit.",
+			"subtitle": "Profilbild, Anzeigename, Sprache, Währung, Einheit und Design.",
 			"displayName": "Anzeigename",
 			"displayNamePlaceholder": "Dein Name"
 		},
