@@ -71,7 +71,7 @@ export const actions: Actions = {
 		const ip = getClientAddress();
 		const data = Object.fromEntries(await request.formData());
 		const rawLocale = String(data.locale ?? cookies.get('locale') ?? 'en');
-		const userLocale = rawLocale in localeMessages ? rawLocale : 'en';
+		const userLocale = Object.hasOwn(localeMessages, rawLocale) ? rawLocale : 'en';
 		const messages = localeMessages[userLocale] ?? localeMessages['en'];
 		const errors = messages.auth.login.errors;
 
