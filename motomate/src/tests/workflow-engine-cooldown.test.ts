@@ -3,7 +3,8 @@ import {
 	getCooldownHours,
 	parseFiredAtMap,
 	cooldownKey,
-	lastFiredAt
+	lastFiredAt,
+	isQuietHour
 } from '$lib/workflow/engine-utils.js';
 
 function hoursAgo(h: number): string {
@@ -169,5 +170,36 @@ describe('lastFiredAt', () => {
 	it('returns null instead of an unparseable date', () => {
 		expect(lastFiredAt('not json')).toBeNull();
 		expect(lastFiredAt(JSON.stringify({ v1: 'whenever' }))).toBeNull();
+	});
+});
+
+describe('quiet hours', () => {
+	const at = (iso: string) => new Date(iso);
+
+	it('holds reminders overnight in the user timezone', () => {
+		expect(isQuietHour('Europe/Amsterdam', at('2026-10-13T21:30:00Z'))).toBe(true);
+		expect(isQuietHour('Europe/Amsterdam', at('2026-10-13T05:59:00Z'))).toBe(true);
+		expect(isQuietHour('Europe/Amsterdam', at('2026-10-13T06:00:00Z'))).toBe(false);
+		expect(isQuietHour('America/New_York', at('2026-10-13T21:30:00Z'))).toBe(false);
+	});
+
+	it('supports same-day windows and disabling', () => {
+		expect(isQuietHour('UTC', at('2026-10-13T13:00:00Z'), '12-14')).toBe(true);
+		expect(isQuietHour('UTC', at('2026-10-13T14:00:00Z'), '12-14')).toBe(false);
+		expect(isQuietHour('UTC', at('2026-10-13T23:00:00Z'), 'off')).toBe(false);
+		expect(isQuietHour('UTC', at('2026-10-13T23:00:00Z'), '0-24')).toBe(false);
+		expect(isQuietHour('UTC', at('2026-10-13T03:00:00Z'), '25-8')).toBe(false);
+	});
+
+	it('accepts common separators and hh:mm', () => {
+		const night = at('2026-10-13T23:00:00Z');
+		for (const w of ['22-8', '22 - 8', '22–8', '22 to 8', '22/8', '22:00-08:00', '22:30 - 7:45']) {
+			expect(isQuietHour('UTC', night, w), w).toBe(true);
+		}
+		expect(isQuietHour('UTC', night, '22')).toBe(false);
+	});
+
+	it('falls back to UTC for an unknown timezone', () => {
+		expect(isQuietHour('Not/AZone', at('2026-10-13T23:00:00Z'))).toBe(true);
 	});
 });

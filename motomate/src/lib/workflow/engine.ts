@@ -17,7 +17,7 @@ import {
 	evaluateMaintenanceTrigger,
 	normalizeWorkflowTrigger
 } from './triggers.js';
-import { getCooldownHours, parseFiredAtMap, cooldownKey } from './engine-utils.js';
+import { getCooldownHours, parseFiredAtMap, cooldownKey, isQuietHour } from './engine-utils.js';
 
 type TriggerResult = {
 	vars: Record<string, string | number>;
@@ -242,6 +242,15 @@ export async function runWorkflowChecks(
 
 	const vehicleMap = new Map(vehicleList.map((v) => [v.id, v]));
 
+	// Scheduled runs only; skipped rules fire on the first run after quiet hours
+	const quietWindow = process.env.NOTIFY_QUIET_HOURS ?? '22-8';
+	const userList = userId
+		? []
+		: await db.query.users.findMany({ columns: { id: true, timezone: true } });
+	const quietUsers = new Set(
+		userList.filter((u) => isQuietHour(u.timezone, new Date(), quietWindow)).map((u) => u.id)
+	);
+
 	for (const vehicle of vehicleList) {
 		await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 	}
@@ -250,6 +259,7 @@ export async function runWorkflowChecks(
 	let fired = 0;
 
 	for (const rule of rules) {
+		if (quietUsers.has(rule.user_id)) continue;
 		const scopedVehicles = rule.vehicle_id
 			? vehicleMap.has(rule.vehicle_id)
 				? [vehicleMap.get(rule.vehicle_id)!]
