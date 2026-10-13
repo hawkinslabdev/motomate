@@ -11,8 +11,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const sub = await request.json();
 	if (!sub.endpoint || !sub.keys) error(400, 'Invalid subscription');
 
-	// Unscoped: unique endpoint constraint requires deleting stale cross-account row
-	await db.delete(push_subscriptions).where(eq(push_subscriptions.endpoint, sub.endpoint));
+	const existing = await db.query.push_subscriptions.findFirst({
+		where: eq(push_subscriptions.endpoint, sub.endpoint)
+	});
+	if (existing && existing.user_id !== locals.user.id) error(409, 'Endpoint already registered');
+	await db
+		.delete(push_subscriptions)
+		.where(
+			and(
+				eq(push_subscriptions.endpoint, sub.endpoint),
+				eq(push_subscriptions.user_id, locals.user.id)
+			)
+		);
 	await db.insert(push_subscriptions).values({
 		id: generateId(),
 		user_id: locals.user.id,
