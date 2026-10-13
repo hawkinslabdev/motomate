@@ -142,14 +142,8 @@
 				<div class="welcome-band" aria-hidden="true">
 					<img src="/favicon.svg" alt="" width="56" height="56" />
 					<svg viewBox="0 0 520 96" preserveAspectRatio="none">
-						<path
-							class="welcome-road"
-							d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30"
-						/>
-						<path
-							class="welcome-road-line"
-							d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30"
-						/>
+						<path class="welcome-road" d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30" />
+						<path class="welcome-road-line" d="M-10 92 C 90 70, 150 40, 250 52 S 400 84, 530 30" />
 					</svg>
 				</div>
 				<h1 class="step-title">{$_('onboarding.welcome.title')}</h1>
@@ -538,14 +532,10 @@
 		padding-top: var(--space-6);
 		overflow: hidden;
 		border-radius: 12px 12px 0 0;
-		background:
-			radial-gradient(120% 120% at 0% 0%, #3b82f6 0%, transparent 60%),
-			#2563eb;
+		background: radial-gradient(120% 120% at 0% 0%, #3b82f6 0%, transparent 60%), #2563eb;
 	}
 	:global([data-theme='dark']) .welcome-band {
-		background:
-			radial-gradient(120% 120% at 0% 0%, #2563eb 0%, transparent 60%),
-			#1e40af;
+		background: radial-gradient(120% 120% at 0% 0%, #2563eb 0%, transparent 60%), #1e40af;
 	}
 	.welcome-band img {
 		position: relative;
