@@ -65,7 +65,8 @@ export const load: PageServerLoad = async ({ locals, params, parent }) => {
 export const actions: Actions = {
 	update: async ({ request, locals, params }) => {
 		const formData = await request.formData();
-		const raw = Object.fromEntries(formData);
+		// Storage keys are server-assigned by updateAvatar only
+		const { cover_image_key: _coverKey, ...raw } = Object.fromEntries(formData);
 
 		const vehicle = await getVehicleById(params.id, locals.user!.id);
 		if (!vehicle) return fail(404, { error: 'Vehicle not found' });
