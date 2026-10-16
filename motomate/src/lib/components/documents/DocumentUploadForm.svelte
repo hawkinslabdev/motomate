@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dragFlag, isFileDrag } from '$lib/utils/drag.js';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import { sheet } from '$lib/stores/sheet.svelte.js';
@@ -18,6 +19,23 @@
 
 	let selectedFile = $state<File | null>(untrack(() => file ?? null));
 	let uploading = $state(false);
+	let dragging = $state(false);
+	const formDrag = dragFlag((v) => (dragging = v));
+
+	function handleDragOver(e: DragEvent) {
+		if (!isFileDrag(e)) return;
+		e.preventDefault();
+		e.stopPropagation();
+		formDrag.on();
+	}
+
+	function handleDrop(e: DragEvent) {
+		if (!isFileDrag(e)) return;
+		e.preventDefault();
+		e.stopPropagation();
+		formDrag.off();
+		selectedFile = e.dataTransfer?.files[0] ?? selectedFile;
+	}
 </script>
 
 <form
@@ -25,6 +43,9 @@
 	action="?/upload"
 	enctype="multipart/form-data"
 	class="upload-form"
+	class:upload-form--dragging={dragging}
+	ondragover={handleDragOver}
+	ondrop={handleDrop}
 	use:enhance={({ formData, cancel }) => {
 		if (!selectedFile) {
 			cancel();
@@ -75,12 +96,14 @@
 				<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
 				<path d="M14 2v6h6" />
 			</svg>
-			<span class="file-pick-label">{$_('documents.dropHintMobile')}</span>
+			<span class="file-pick-label file-pick-label--desktop">{$_('documents.dropHintDesktop')}</span
+			>
+			<span class="file-pick-label file-pick-label--mobile">{$_('documents.dropHintMobile')}</span>
 			<span class="file-pick-hint">{$_('documents.uploadHint')}</span>
 			<input
 				type="file"
 				accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
-				class="file-pick-input"
+				class="file-pick-input sr-only"
 				onchange={(e) => {
 					selectedFile = (e.target as HTMLInputElement).files?.[0] ?? null;
 				}}
@@ -195,9 +218,26 @@
 			background 0.15s;
 	}
 
-	.file-pick-zone:hover {
+	.file-pick-zone:hover,
+	.upload-form--dragging .file-pick-zone,
+	.upload-form--dragging .file-chip {
 		border-color: var(--accent);
 		background: color-mix(in srgb, var(--accent) 6%, var(--bg-subtle));
+	}
+	.file-pick-zone:focus-within {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.file-pick-label--mobile {
+		display: none;
+	}
+	@media (hover: none) and (pointer: coarse) {
+		.file-pick-label--desktop {
+			display: none;
+		}
+		.file-pick-label--mobile {
+			display: inline;
+		}
 	}
 
 	.file-pick-label {
@@ -208,10 +248,6 @@
 	.file-pick-hint {
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
-	}
-
-	.file-pick-input {
-		display: none;
 	}
 
 	.form-group {

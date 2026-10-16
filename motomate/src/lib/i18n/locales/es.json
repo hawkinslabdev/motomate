@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documentos",
 		"subtitle": "Almacena registros de servicio, fotos y papeles",
-		"uploadFile": "Subir un archivo",
 		"upload": "+ Subir",
-		"dropHintDesktop": "Suelta un archivo aquí o navega",
+		"dropHintDesktop": "Suelta un archivo aquí",
 		"dropHintMobile": "Toca para subir",
 		"uploadHint": "Imágenes, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "Archivo seleccionado",

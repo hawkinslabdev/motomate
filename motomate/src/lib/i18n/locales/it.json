@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documenti",
 		"subtitle": "Archivia documenti di servizio, foto e carta",
-		"uploadFile": "Carica un file",
 		"upload": "+ Carica",
-		"dropHintDesktop": "Trascina un file qui o sfoglia",
+		"dropHintDesktop": "Trascina un file qui",
 		"dropHintMobile": "Tocca per caricare",
 		"uploadHint": "Immagini, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "File selezionato",

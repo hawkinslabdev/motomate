@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documenten",
 		"subtitle": "Bewaar facturen, handleidingen, foto's en andere documenten",
-		"uploadFile": "Bestand uploaden",
 		"upload": "+ Uploaden",
-		"dropHintDesktop": "Sleep een bestand hier of browse",
+		"dropHintDesktop": "Sleep een bestand hierheen",
 		"dropHintMobile": "Tik om te uploaden",
 		"uploadHint": "Afbeeldingen, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "Geselecteerd bestand",

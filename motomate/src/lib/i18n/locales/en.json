@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documents",
 		"subtitle": "Store service records, photos, and papers",
-		"uploadFile": "Upload a file",
 		"upload": "+ Upload",
-		"dropHintDesktop": "Drop a file here or browse",
+		"dropHintDesktop": "Drop a file here",
 		"dropHintMobile": "Tap to upload a file",
 		"uploadHint": "Images, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "Selected file",

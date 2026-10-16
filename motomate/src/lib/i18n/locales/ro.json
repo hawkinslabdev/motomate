@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documente",
 		"subtitle": "Stochează fișe de service, fotografii și acte",
-		"uploadFile": "Încarcă un fișier",
 		"upload": "+ Încarcă",
-		"dropHintDesktop": "Trage un fișier aici sau răsfoiește",
+		"dropHintDesktop": "Trage un fișier aici",
 		"dropHintMobile": "Apasă pentru a încărca un fișier",
 		"uploadHint": "Imagini, PDF, Word, Excel - max. 10 MB",
 		"selectedFile": "Fișier selectat",

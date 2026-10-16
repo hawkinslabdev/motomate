@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { dragFlag, isFileDrag } from '$lib/utils/drag.js';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
@@ -188,14 +189,20 @@
 		});
 	}
 
-	function handleDrop(e: DragEvent) {
-		const file = e.dataTransfer?.files[0];
-		if (file) openUploadSheet(file);
+	const pageDrag = dragFlag((v) => (isDragging = v));
+
+	function handleDragOver(e: DragEvent) {
+		if (!isFileDrag(e)) return;
+		e.preventDefault();
+		if (!sheet.open) pageDrag.on();
 	}
 
-	function handleFileSelect(e: Event) {
-		const file = (e.target as HTMLInputElement).files?.[0];
-		if (file) openUploadSheet(file);
+	function handleDrop(e: DragEvent) {
+		if (!isFileDrag(e)) return;
+		e.preventDefault();
+		pageDrag.off();
+		const file = e.dataTransfer?.files[0];
+		if (file && !sheet.open) openUploadSheet(file);
 	}
 
 	function startEditName(docId: string, currentName: string) {
@@ -267,6 +274,8 @@
 
 <svelte:head><title>{$_('documents.title')} · {data.vehicle.name}</title></svelte:head>
 
+<svelte:window ondragover={handleDragOver} ondrop={handleDrop} />
+
 <div class="page-header">
 	<div class="page-header-text">
 		<h2 class="section-title">{$_('documents.title')}</h2>
@@ -279,42 +288,9 @@
 	</div>
 </div>
 
-<!-- Upload zone -->
-<label
-	class="upload-zone"
-	class:upload-zone--dragging={isDragging}
-	for="file-input"
-	aria-label={$_('documents.uploadFile')}
-	ondragover={(e) => {
-		e.preventDefault();
-		isDragging = true;
-	}}
-	ondragleave={() => (isDragging = false)}
-	ondrop={(e) => {
-		e.preventDefault();
-		isDragging = false;
-		handleDrop(e);
-	}}
->
-	<div class="upload-zone-content">
-		<span class="upload-zone-icon"
-			>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span
-		>
-		<p class="upload-zone-title upload-zone-title--desktop">
-			{$_('documents.dropHintDesktop')}
-		</p>
-		<p class="upload-zone-title upload-zone-title--mobile">{$_('documents.dropHintMobile')}</p>
-		<p class="upload-zone-hint">{$_('documents.uploadHint')}</p>
-	</div>
-	<input
-		id="file-input"
-		type="file"
-		name="file"
-		accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
-		class="upload-zone-input"
-		onchange={handleFileSelect}
-	/>
-</label>
+{#if isDragging}
+	<div class="drop-hint" aria-hidden="true">{$_('documents.dropHintDesktop')}</div>
+{/if}
 
 <!-- Filters -->
 <div class="filters">
@@ -599,59 +575,19 @@
 		margin: 0;
 	}
 
-	/* Upload zone */
-	.upload-zone {
-		display: block;
-		border: 2px dashed var(--border);
-		border-radius: 10px;
-		padding: var(--space-6) var(--space-4);
-		text-align: center;
-		background: var(--bg-subtle);
-		cursor: pointer;
-		transition:
-			border-color 0.15s,
-			background 0.15s;
-		margin-bottom: var(--space-5);
-	}
-	.upload-zone--dragging {
-		border-color: var(--accent);
-		background: color-mix(in srgb, var(--accent) 8%, var(--bg-subtle));
-	}
-	.upload-zone-content {
+	.drop-hint {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		gap: var(--space-2);
-		width: 100%;
-	}
-	.upload-zone-icon {
-		width: 32px;
-		height: 32px;
-		color: var(--text-muted);
-	}
-	.upload-zone-title {
-		font-size: var(--text-base);
-		color: var(--text-muted);
-		margin: 0;
-	}
-	.upload-zone-title--mobile {
-		display: none;
-	}
-	@media (hover: none) and (pointer: coarse) {
-		.upload-zone-title--desktop {
-			display: none;
-		}
-		.upload-zone-title--mobile {
-			display: block;
-		}
-	}
-	.upload-zone-hint {
-		font-size: var(--text-xs);
-		color: var(--text-subtle);
-		margin: 0;
-	}
-	.upload-zone-input {
-		display: none;
+		justify-content: center;
+		min-height: 6rem;
+		margin-bottom: var(--space-5);
+		border: 2px dashed var(--accent);
+		border-radius: 10px;
+		background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+		color: var(--accent);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		pointer-events: none;
 	}
 
 	.btn-primary {

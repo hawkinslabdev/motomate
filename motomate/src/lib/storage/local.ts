@@ -16,9 +16,11 @@ export class LocalStorageAdapter {
 	}
 
 	private filePath(key: string): string {
-		// Prevent path traversal
-		const safe = key.replace(/\.\./g, '').replace(/^\/+/, '');
-		return path.join(this.base, safe);
+		const root = path.resolve(this.base);
+		const fp = path.resolve(root, key.replace(/^\/+/, ''));
+		if (key.includes('\0') || !fp.startsWith(root + path.sep))
+			throw new Error('Invalid storage key');
+		return fp;
 	}
 
 	async put(key: string, body: Buffer | Uint8Array, _mime: string): Promise<void> {

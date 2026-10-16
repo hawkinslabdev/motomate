@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documents",
 		"subtitle": "Stockez les dossiers de service, photos et papeles",
-		"uploadFile": "Téléverser un fichier",
 		"upload": "+ Téléverser",
-		"dropHintDesktop": "Déposez un fichier ici ou parcourir",
+		"dropHintDesktop": "Déposez un fichier ici",
 		"dropHintMobile": "Appuyez pour téléverser",
 		"uploadHint": "Images, PDF, Word, Excel - max 10 Mo",
 		"selectedFile": "Fichier sélectionné",

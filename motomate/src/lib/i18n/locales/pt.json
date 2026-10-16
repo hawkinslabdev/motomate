@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Documentos",
 		"subtitle": "Guarda registos de serviço, fotos e papéis",
-		"uploadFile": "Carregar um ficheiro",
 		"upload": "+ Carregar",
-		"dropHintDesktop": "Arraste um ficheiro aqui ou navegue",
+		"dropHintDesktop": "Arraste um ficheiro para aqui",
 		"dropHintMobile": "Toque para carregar",
 		"uploadHint": "Imagens, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "Ficheiro selecionado",

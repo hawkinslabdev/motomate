@@ -816,9 +816,8 @@
 	"documents": {
 		"title": "Dokumente",
 		"subtitle": "Serviceunterlagen, Fotos und Papiere speichern",
-		"uploadFile": "Datei hochladen",
 		"upload": "+ Hochladen",
-		"dropHintDesktop": "Datei hier ablegen oder durchsuchen",
+		"dropHintDesktop": "Datei hier ablegen",
 		"dropHintMobile": "Tippen zum Hochladen",
 		"uploadHint": "Bilder, PDF, Word, Excel - max 10 MB",
 		"selectedFile": "Ausgewählte Datei",
