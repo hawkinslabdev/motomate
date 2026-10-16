@@ -240,8 +240,8 @@
 		},
 		"empty": {
 			"title": "Je garage is leeg",
-			"descriptionOnboarding": "Voeg je eerste motor of bromfiets toe om te beginnen.",
-			"descriptionActive": "Voeg een nieuw voertuig toe aan je collectie.",
+			"descriptionOnboarding": "Voeg je eerste voertuig toe om te beginnen.",
+			"descriptionActive": "Voertuigen die je toevoegt verschijnen hier.",
 			"submit": "+ Voertuig toevoegen"
 		},
 		"pushBanner": {
@@ -264,7 +264,7 @@
 		"unfavorite": "Uit favorieten verwijderen",
 		"empty": {
 			"title": "Je garage is leeg",
-			"description": "Voeg een nieuw voertuig toe aan je collectie."
+			"description": "Voertuigen die je toevoegt verschijnen hier."
 		}
 	},
 	"vehicle": {
@@ -312,8 +312,8 @@
 				"subtitle": "Al je gegevens voor {name} op een plek.",
 				"empty": {
 					"title": "Nog geen gegevens",
-					"description": "Registreer je eerste onderhoud of kilometerstand om de tijdlijn te starten.",
-					"usageDescription": "Registreer je eerste service of uurmeterstand om de tijdlijn te starten."
+					"description": "Onderhoud, kilometerstanden en notities verschijnen hier.",
+					"usageDescription": "Onderhoud, urenstanden en notities verschijnen hier."
 				},
 				"filter": {
 					"service": "Onderhoud",
@@ -583,7 +583,7 @@
 			"saved": "Notitie opgeslagen",
 			"empty": {
 				"title": "Nog geen notities",
-				"desc": "Houd bij wat belangrijk is: eigenaardigheden, aanpassingen, herinneringen of gewoon gedachten."
+				"desc": "Notities over dit voertuig verschijnen hier."
 			},
 			"delete": {
 				"title": "Notitie verwijderen",
@@ -632,7 +632,7 @@
 		"history": {
 			"title": "Servicegeschiedenis",
 			"noHistory": "Nog geen servicegeschiedenis",
-			"noHistoryDesc": "Log een service-item om het hier te zien.",
+			"noHistoryDesc": "Geregistreerd onderhoud verschijnt hier.",
 			"serviceEntry": "Service",
 			"task": "Taak",
 			"odometer": "Kilometerstand",
@@ -668,9 +668,9 @@
 		},
 		"empty": {
 			"title": "Nog geen onderhoudstaken",
-			"description": "Voeg aangepaste taken toe of voer de onboarding-wizard uit om voorkeuren in te stellen.",
+			"description": "Voeg een taak toe om een onderhoudsinterval bij te houden.",
 			"noMatch": "Geen taken gevonden",
-			"noMatchDesc": "Probeer een andere zoekterm of verwijder het filter."
+			"noMatchDesc": "Wijzig of wis de zoekopdracht."
 		},
 		"tracker": {
 			"every": "Elke {interval}",
@@ -802,7 +802,7 @@
 		},
 		"empty": {
 			"title": "Geen uitgaven geregistreerd",
-			"description": "Voeg je eerste uitgave toe om te beginnen met bijhouden."
+			"description": "Uitgaven voor dit voertuig verschijnen hier."
 		},
 		"col": {
 			"date": "Datum",
@@ -879,7 +879,7 @@
 		},
 		"empty": {
 			"title": "Geen documenten gevonden",
-			"description": "Upload documenten of pas je filters aan."
+			"description": "Upload een document of pas de filters aan."
 		},
 		"prevPage": "Vorige",
 		"nextPage": "Volgende",
@@ -1329,7 +1329,7 @@
 		"add": "Toevoegen",
 		"empty": {
 			"title": "Nog geen ritten",
-			"description": "Voeg je eerste rit toe om de geschiedenis te starten."
+			"description": "Ritten met dit voertuig verschijnen hier."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 dag} other {# dagen}}",
@@ -1380,7 +1380,7 @@
 		"filter": {
 			"search": "Ritten zoeken...",
 			"noResults": "Geen ritten gevonden",
-			"noResultsDesc": "Probeer een andere zoekterm of pas je filters aan.",
+			"noResultsDesc": "Wijzig of wis de zoekopdracht.",
 			"all": "Alle",
 			"past": "Verleden",
 			"upcoming": "Gepland"

@@ -240,8 +240,8 @@
 		},
 		"empty": {
 			"title": "Il tuo garage è vuoto",
-			"descriptionOnboarding": "Aggiungi la tua prima motocicletta o scooter per iniziare.",
-			"descriptionActive": "Aggiungi un nuovo veicolo alla tua collezione.",
+			"descriptionOnboarding": "Aggiungi il tuo primo veicolo per iniziare.",
+			"descriptionActive": "Qui compaiono i veicoli che aggiungi.",
 			"submit": "+ Aggiungi veicolo"
 		},
 		"pushBanner": {
@@ -264,7 +264,7 @@
 		"unfavorite": "Rimuovi dai preferiti",
 		"empty": {
 			"title": "Il tuo garage è vuoto",
-			"description": "Aggiungi un nuovo veicolo alla tua collezione."
+			"description": "Qui compaiono i veicoli che aggiungi."
 		}
 	},
 	"vehicle": {
@@ -312,8 +312,8 @@
 				"subtitle": "Tutti i tuoi dati per {name} in un unico posto.",
 				"empty": {
 					"title": "Nessuna cronologia ancora",
-					"description": "Registra la tua prima manutenzione o controllo del chilometraggio per avviare la cronologia.",
-					"usageDescription": "Registra il primo servizio o la lettura d'uso per avviare la cronologia."
+					"description": "Qui compaiono manutenzioni, letture del contachilometri e note.",
+					"usageDescription": "Qui compaiono manutenzioni, letture delle ore e note."
 				},
 				"filter": {
 					"service": "Manutenzione",
@@ -583,7 +583,7 @@
 			"saved": "Nota salvata",
 			"empty": {
 				"title": "Ancora nessuna nota",
-				"desc": "Tieni traccia di ciò che conta: particolarità, modifiche, promemoria o semplici pensieri."
+				"desc": "Qui compaiono le note su questo veicolo."
 			},
 			"delete": {
 				"title": "Elimina nota",
@@ -632,7 +632,7 @@
 		"history": {
 			"title": "Storico servizi",
 			"noHistory": "Nessuno storico servizi",
-			"noHistoryDesc": "Registra un intervento di servizio per visualizzarlo qui.",
+			"noHistoryDesc": "Qui compaiono le manutenzioni registrate.",
 			"serviceEntry": "Servizio",
 			"task": "Attività",
 			"odometer": "Chilometraggio",
@@ -668,9 +668,9 @@
 		},
 		"empty": {
 			"title": "Nessuna attività di manutenzione ancora",
-			"description": "Aggiungi attività personalizzate o esegui la configurazione guidata per impostare i preset.",
+			"description": "Aggiungi un'attività per seguire un intervallo di manutenzione.",
 			"noMatch": "Nessuna attività corrispondente",
-			"noMatchDesc": "Prova un altro termine di ricerca o cancella il filtro."
+			"noMatchDesc": "Modifica o cancella la ricerca."
 		},
 		"tracker": {
 			"status": {
@@ -802,7 +802,7 @@
 		},
 		"empty": {
 			"title": "Nessuna spesa registrata",
-			"description": "Aggiungi la tua prima spesa per iniziare a tracciare."
+			"description": "Qui compaiono le spese di questo veicolo."
 		},
 		"col": {
 			"date": "Data",
@@ -879,7 +879,7 @@
 		},
 		"empty": {
 			"title": "Nessun documento trovato",
-			"description": "Carica documenti o regola i filtri."
+			"description": "Carica un documento o modifica i filtri."
 		},
 		"prevPage": "Precedente",
 		"nextPage": "Successivo",
@@ -1329,7 +1329,7 @@
 		"add": "Aggiungi viaggio",
 		"empty": {
 			"title": "Nessun viaggio",
-			"description": "Registra il tuo primo viaggio per iniziare la cronologia."
+			"description": "Qui compaiono i viaggi di questo veicolo."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 giorno} other {# giorni}}",
@@ -1380,7 +1380,7 @@
 		"filter": {
 			"search": "Cerca viaggi...",
 			"noResults": "Nessun viaggio corrisponde alla ricerca.",
-			"noResultsDesc": "Prova un altro termine di ricerca o cancella il filtro.",
+			"noResultsDesc": "Modifica o cancella la ricerca.",
 			"all": "Tutti",
 			"past": "Passati",
 			"upcoming": "Pianificati"

@@ -89,7 +89,7 @@
 </div>
 
 {#if blocks.length === 0}
-	<EmptyState icon="📋" title={$_('settings.changelog.noContent')} />
+	<EmptyState road={false} title={$_('settings.changelog.noContent')} />
 {:else}
 	<div class="changelog">
 		{#each blocks as block (block.version)}

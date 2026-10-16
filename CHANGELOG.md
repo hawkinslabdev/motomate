@@ -6,6 +6,7 @@
 - Minor: generated profile avatars look different after the DiceBear 10 update
 - Minor: hide vehicle tabs per vehicle
 - Minor: the pinned document is redesigned and available on mobile
+- Minor: empty states are redesigned with shorter text
 - Fix: pinning a document or changing a vehicle avatar no longer resets the vehicle type and odometer unit
 - Fix: scheduled reminders, such as a missing mileage update, now wait until morning in your timezone instead of arriving at night (override with `NOTIFY_QUIET_HOURS` with a range `22-8` or  `off` to disable)
 - Fix: form fields and primary buttons have higher contrast, and the authentication pages have better keyboard and screen reader support (WCAG 2.2 AA)

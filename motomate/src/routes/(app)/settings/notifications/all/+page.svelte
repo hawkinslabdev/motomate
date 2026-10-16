@@ -88,7 +88,7 @@
 </div>
 
 {#if data.notifications.length === 0}
-	<EmptyState icon="🔔" title={$_('settings.notifications.empty')} />
+	<EmptyState road={false} title={$_('settings.notifications.empty')} />
 {:else}
 	<div class="notif-list">
 		{#each data.notifications as n}

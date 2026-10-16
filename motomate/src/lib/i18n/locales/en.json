@@ -240,8 +240,8 @@
 		},
 		"empty": {
 			"title": "Your garage is empty",
-			"descriptionOnboarding": "Add your first motorcycle or scooter to get started.",
-			"descriptionActive": "Add a new vehicle to your collection.",
+			"descriptionOnboarding": "Add your first vehicle to get started.",
+			"descriptionActive": "Vehicles you add appear here.",
 			"submit": "+ Add vehicle"
 		},
 		"pushBanner": {
@@ -264,7 +264,7 @@
 		"unfavorite": "Remove from favorites",
 		"empty": {
 			"title": "Your garage is empty",
-			"description": "Add a new vehicle to your collection."
+			"description": "Vehicles you add appear here."
 		}
 	},
 	"vehicle": {
@@ -320,8 +320,8 @@
 				"subtitle": "All your records for {name} in one place.",
 				"empty": {
 					"title": "No history yet",
-					"description": "Log your first service or odometer check-in to start the timeline.",
-					"usageDescription": "Log your first service or usage reading to start the timeline."
+					"description": "Services, odometer readings and notes appear here.",
+					"usageDescription": "Services, usage readings and notes appear here."
 				},
 				"filter": {
 					"service": "Maintenance",
@@ -583,7 +583,7 @@
 			"saved": "Note saved",
 			"empty": {
 				"title": "No notes yet",
-				"desc": "Keep track of anything that matters: quirks, mods, reminders, or just thoughts."
+				"desc": "Notes about this vehicle appear here."
 			},
 			"delete": {
 				"title": "Delete note",
@@ -632,7 +632,7 @@
 		"history": {
 			"title": "Service history",
 			"noHistory": "No service history yet",
-			"noHistoryDesc": "Log a service entry to see it here.",
+			"noHistoryDesc": "Logged services appear here.",
 			"serviceEntry": "Service",
 			"task": "Task",
 			"odometer": "Odometer",
@@ -668,9 +668,9 @@
 		},
 		"empty": {
 			"title": "No maintenance tasks yet",
-			"description": "Add custom tasks or run the onboarding wizard to set up presets.",
+			"description": "Add a task to track a service interval.",
 			"noMatch": "No tasks match your search",
-			"noMatchDesc": "Try a different search term or clear the filter."
+			"noMatchDesc": "Change or clear the search."
 		},
 		"tracker": {
 			"every": "Every {interval}",
@@ -802,7 +802,7 @@
 		},
 		"empty": {
 			"title": "No expenses recorded",
-			"description": "Add your first expense to start tracking."
+			"description": "Expenses for this vehicle appear here."
 		},
 		"col": {
 			"date": "Date",
@@ -879,7 +879,7 @@
 		},
 		"empty": {
 			"title": "No documents found",
-			"description": "Upload documents or adjust your filters."
+			"description": "Upload a document or change the filters."
 		},
 		"prevPage": "Previous",
 		"nextPage": "Next",
@@ -1297,7 +1297,7 @@
 		"add": "Add travel",
 		"empty": {
 			"title": "No travels yet",
-			"description": "Log your first ride to start your travel history."
+			"description": "Rides with this vehicle appear here."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 day} other {# days}}",
@@ -1348,7 +1348,7 @@
 		"filter": {
 			"search": "Search travels...",
 			"noResults": "No travels match your search.",
-			"noResultsDesc": "Try a different search term or clear the filter.",
+			"noResultsDesc": "Change or clear the search.",
 			"all": "All",
 			"past": "Past",
 			"upcoming": "Upcoming"

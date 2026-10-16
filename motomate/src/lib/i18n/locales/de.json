@@ -240,8 +240,8 @@
 		},
 		"empty": {
 			"title": "Deine Garage ist leer",
-			"descriptionOnboarding": "Füge dein erstes Motorrad oder deinen Roller hinzu, um zu beginnen.",
-			"descriptionActive": "Füge ein neues Fahrzeug zu deiner Sammlung hinzu.",
+			"descriptionOnboarding": "Füge dein erstes Fahrzeug hinzu, um zu beginnen.",
+			"descriptionActive": "Fahrzeuge, die du hinzufügst, erscheinen hier.",
 			"submit": "+ Fahrzeug hinzufügen"
 		},
 		"pushBanner": {
@@ -264,7 +264,7 @@
 		"unfavorite": "Aus Favoriten entfernen",
 		"empty": {
 			"title": "Deine Garage ist leer",
-			"description": "Füge ein neues Fahrzeug zu deiner Sammlung hinzu."
+			"description": "Fahrzeuge, die du hinzufügst, erscheinen hier."
 		}
 	},
 	"vehicle": {
@@ -312,8 +312,8 @@
 				"subtitle": "Alle deine Daten für {name} an einem Ort.",
 				"empty": {
 					"title": "Noch kein Verlauf",
-					"description": "Protokolliere deinen ersten Service oder Kilometerstand-Check-in, um die Zeitleiste zu starten.",
-					"usageDescription": "Erfasse deinen ersten Service oder Stundenstand, um die Zeitachse zu starten."
+					"description": "Wartungen, Kilometerstände und Notizen erscheinen hier.",
+					"usageDescription": "Wartungen, Betriebsstunden und Notizen erscheinen hier."
 				},
 				"filter": {
 					"service": "Wartung",
@@ -583,7 +583,7 @@
 			"saved": "Notiz gespeichert",
 			"empty": {
 				"title": "Noch keine Notizen",
-				"desc": "Halte alles fest, was wichtig ist: Eigenheiten, Umbauten, Erinnerungen oder einfach Gedanken."
+				"desc": "Notizen zu diesem Fahrzeug erscheinen hier."
 			},
 			"delete": {
 				"title": "Notiz löschen",
@@ -632,7 +632,7 @@
 		"history": {
 			"title": "Servicehistorie",
 			"noHistory": "Noch keine Servicehistorie",
-			"noHistoryDesc": "Protokolliere einen Serviceeintrag, um ihn hier zu sehen.",
+			"noHistoryDesc": "Erfasste Wartungen erscheinen hier.",
 			"serviceEntry": "Service",
 			"task": "Aufgabe",
 			"odometer": "Kilometerstand",
@@ -668,9 +668,9 @@
 		},
 		"empty": {
 			"title": "Noch keine Wartungsaufgaben",
-			"description": "Füge benutzerdefinierte Aufgaben hinzu oder führe den Onboarding-Assistenten aus, um Voreinstellungen einzurichten.",
+			"description": "Füge eine Aufgabe hinzu, um ein Wartungsintervall zu verfolgen.",
 			"noMatch": "Keine Aufgaben gefunden",
-			"noMatchDesc": "Versuch einen anderen Suchbegriff oder lösche den Filter."
+			"noMatchDesc": "Ändere oder lösche die Suche."
 		},
 		"tracker": {
 			"status": {
@@ -802,7 +802,7 @@
 		},
 		"empty": {
 			"title": "Keine Ausgaben erfasst",
-			"description": "Füge deine erste Ausgabe hinzu, um mit der Verfolgung zu beginnen."
+			"description": "Ausgaben für dieses Fahrzeug erscheinen hier."
 		},
 		"col": {
 			"date": "Datum",
@@ -879,7 +879,7 @@
 		},
 		"empty": {
 			"title": "Keine Dokumente gefunden",
-			"description": "Lade Dokumente hoch oder passe deine Filter an."
+			"description": "Lade ein Dokument hoch oder ändere die Filter."
 		},
 		"prevPage": "Zurück",
 		"nextPage": "Weiter",
@@ -1329,7 +1329,7 @@
 		"add": "Fahrt hinzufügen",
 		"empty": {
 			"title": "Noch keine Fahrten",
-			"description": "Erfasse deine erste Tour, um die Reisehistorie zu starten."
+			"description": "Fahrten mit diesem Fahrzeug erscheinen hier."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 Tag} other {# Tage}}",
@@ -1380,7 +1380,7 @@
 		"filter": {
 			"search": "Reisen suchen...",
 			"noResults": "Keine Reisen entsprechen deiner Suche.",
-			"noResultsDesc": "Versuche einen anderen Suchbegriff oder lösche den Filter.",
+			"noResultsDesc": "Ändere oder lösche die Suche.",
 			"all": "Alle",
 			"past": "Vergangen",
 			"upcoming": "Geplant"

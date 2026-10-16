@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
 	import VehicleCard from '$lib/components/ui/VehicleCard.svelte';
@@ -51,20 +52,12 @@
 </div>
 
 {#if data.vehicles.length === 0}
-	<div class="empty">
-		<svg class="empty-road" viewBox="0 0 200 56" aria-hidden="true">
-			<path class="empty-road-bed" d="M4 48 C 44 46, 60 16, 100 22 S 160 44, 196 10" />
-			<path class="empty-road-line" d="M4 48 C 44 46, 60 16, 100 22 S 160 44, 196 10" />
-		</svg>
-		{#if onboardingDone}
-			<p class="empty-title">{$_('vehicles.empty.title')}</p>
-			<p class="empty-desc">{$_('vehicles.empty.description')}</p>
-		{:else}
-			<p class="empty-title">{$_('vehicles.empty.title')}</p>
-			<p class="empty-desc">{$_('dashboard.empty.descriptionOnboarding')}</p>
-		{/if}
-		<a href="/vehicles/new" class="btn-primary">{$_('vehicles.add')}</a>
-	</div>
+	<EmptyState
+		title={$_('vehicles.empty.title')}
+		description={onboardingDone
+			? $_('vehicles.empty.description')
+			: $_('dashboard.empty.descriptionOnboarding')}
+	/>
 {:else}
 	<div class="vehicle-list">
 		{#each sortedVehicles as vehicle (vehicle.id)}
@@ -155,45 +148,6 @@
 		padding: 0 var(--space-6) var(--space-6);
 		max-width: 860px;
 		margin: 0 auto;
-	}
-
-	.empty {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: 5rem var(--space-6);
-	}
-	.empty-road {
-		width: 12.5rem;
-		height: 3.5rem;
-		margin-bottom: var(--space-5);
-		overflow: visible;
-	}
-	.empty-road-bed {
-		fill: none;
-		stroke: var(--bg-muted);
-		stroke-width: 14;
-		stroke-linecap: round;
-	}
-	.empty-road-line {
-		fill: none;
-		stroke: var(--accent);
-		stroke-width: 2;
-		stroke-linecap: round;
-		stroke-dasharray: 8 9;
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.5rem;
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0 0 1.25rem;
-		line-height: var(--leading-base);
 	}
 
 	@media (max-width: 640px) {

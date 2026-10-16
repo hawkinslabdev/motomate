@@ -202,7 +202,6 @@
 
 {#if data.notes.length === 0}
 	<EmptyState
-		icon="📝"
 		title={$_('vehicle.notes.empty.title')}
 		description={$_('vehicle.notes.empty.desc')}
 	/>

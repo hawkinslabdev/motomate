@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import type { PageData } from './$types';
 	import AttentionCard from '$lib/components/ui/AttentionCard.svelte';
 	import PushBanner from '$lib/components/ui/PushBanner.svelte';
@@ -260,17 +261,14 @@
 
 	{#if data.vehicles.length === 0}
 		<section class="dash-section">
-			<div class="empty">
-				<div class="empty-icon" aria-hidden="true">🏍</div>
-				{#if data.user.settings.onboarding_done}
-					<p class="empty-title">{$_('dashboard.empty.title')}</p>
-					<p class="empty-desc">{$_('dashboard.empty.descriptionActive')}</p>
-				{:else}
-					<p class="empty-title">{$_('dashboard.empty.title')}</p>
-					<p class="empty-desc">{$_('dashboard.empty.descriptionOnboarding')}</p>
-				{/if}
+			<EmptyState
+				title={$_('dashboard.empty.title')}
+				description={data.user.settings.onboarding_done
+					? $_('dashboard.empty.descriptionActive')
+					: $_('dashboard.empty.descriptionOnboarding')}
+			>
 				<a href="/vehicles/new" class="btn-primary">{$_('dashboard.empty.submit')}</a>
-			</div>
+			</EmptyState>
 		</section>
 	{/if}
 </div>
@@ -499,29 +497,6 @@
 	}
 
 	/* Empty state */
-	.empty {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: var(--space-10) var(--space-5);
-	}
-	.empty-icon {
-		font-size: 3rem;
-		margin-bottom: var(--space-4);
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0 0 var(--space-5);
-		line-height: var(--leading-base);
-	}
 	.btn-primary {
 		display: inline-flex;
 		align-items: center;

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { goto, beforeNavigate, afterNavigate } from '$app/navigation';
@@ -364,13 +365,7 @@
 
 <!-- Document list -->
 {#if data.docs.length === 0}
-	<div class="empty">
-		<span class="empty-icon"
-			>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`}</span
-		>
-		<p class="empty-title">{$_('documents.empty.title')}</p>
-		<p class="empty-desc">{$_('documents.empty.description')}</p>
-	</div>
+	<EmptyState title={$_('documents.empty.title')} description={$_('documents.empty.description')} />
 {:else if viewMode === 'table'}
 	<div class="doc-list">
 		{#each data.docs as doc}
@@ -916,30 +911,6 @@
 	}
 
 	/* Empty state */
-	.empty {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: 3rem 1.5rem;
-	}
-	.empty-icon {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-		opacity: 0.5;
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.5rem;
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-		line-height: var(--leading-base);
-	}
 
 	/* Edit name form */
 	.edit-name-form {

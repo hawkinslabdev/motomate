@@ -237,8 +237,8 @@
 		},
 		"empty": {
 			"title": "Garajul tău este gol",
-			"descriptionOnboarding": "Adaugă prima ta motocicletă sau scuter pentru a începe.",
-			"descriptionActive": "Adaugă un vehicul nou în colecția ta.",
+			"descriptionOnboarding": "Adaugă primul tău vehicul pentru a începe.",
+			"descriptionActive": "Aici apar vehiculele pe care le adaugi.",
 			"submit": "+ Adaugă vehicul"
 		},
 		"yearCost": {
@@ -264,7 +264,7 @@
 		"unfavorite": "Elimină din favorite",
 		"empty": {
 			"title": "Garajul tău este gol",
-			"description": "Adaugă un vehicul nou în colecția ta."
+			"description": "Aici apar vehiculele pe care le adaugi."
 		}
 	},
 	"vehicle": {
@@ -320,8 +320,8 @@
 				"subtitle": "Toate înregistrările pentru {name} într-un singur loc.",
 				"empty": {
 					"title": "Niciun istoric încă",
-					"description": "Înregistrează prima revizie sau o actualizare de odometru pentru a porni cronologia.",
-					"usageDescription": "Înregistrează prima revizie sau citire a utilizării pentru a porni cronologia."
+					"description": "Aici apar reviziile, citirile kilometrajului și notițele.",
+					"usageDescription": "Aici apar reviziile, citirile de ore și notițele."
 				},
 				"filter": {
 					"service": "Întreținere",
@@ -583,7 +583,7 @@
 			"saved": "Notă salvată",
 			"empty": {
 				"title": "Nicio notă deocamdată",
-				"desc": "Ține evidența a ceea ce contează: particularități, modificări, mementouri sau doar gânduri."
+				"desc": "Aici apar notițele despre acest vehicul."
 			},
 			"delete": {
 				"title": "Șterge nota",
@@ -632,7 +632,7 @@
 		"history": {
 			"title": "Istoric service",
 			"noHistory": "Niciun istoric de service încă",
-			"noHistoryDesc": "Înregistrează o intervenție de service pentru a o vedea aici.",
+			"noHistoryDesc": "Aici apar reviziile înregistrate.",
 			"serviceEntry": "Service",
 			"cost": "Cost",
 			"notes": "Note",
@@ -668,9 +668,9 @@
 		},
 		"empty": {
 			"title": "Nicio sarcină de întreținere încă",
-			"description": "Adaugă sarcini personalizate sau rulează asistentul de configurare inițială pentru a seta presetările.",
+			"description": "Adaugă o sarcină pentru a urmări un interval de revizie.",
 			"noMatch": "Nicio sarcină nu se potrivește căutării tale",
-			"noMatchDesc": "Încearcă un alt termen de căutare sau resetează filtrul."
+			"noMatchDesc": "Modifică sau șterge căutarea."
 		},
 		"tracker": {
 			"every": "La fiecare {interval}",
@@ -802,7 +802,7 @@
 		},
 		"empty": {
 			"title": "Nicio cheltuială înregistrată",
-			"description": "Adaugă prima ta cheltuială pentru a începe monitorizarea."
+			"description": "Aici apar cheltuielile acestui vehicul."
 		},
 		"col": {
 			"amount": "Sumă",
@@ -872,7 +872,7 @@
 		},
 		"empty": {
 			"title": "Nu s-au găsit documente",
-			"description": "Încarcă documente sau ajustează filtrele de căutare."
+			"description": "Încarcă un document sau modifică filtrele."
 		},
 		"prevPage": "Anterior",
 		"nextPage": "Următor",
@@ -1297,7 +1297,7 @@
 		"add": "Adaugă călătorie",
 		"empty": {
 			"title": "Nicio călătorie încă",
-			"description": "Înregistrează prima ta plimbare pentru a porni istoricul călătoriilor."
+			"description": "Aici apar călătoriile acestui vehicul."
 		},
 		"entry": {
 			"days": "{n, plural, =1 {1 zi} other {# zile}}",
@@ -1348,7 +1348,7 @@
 		"filter": {
 			"search": "Caută călătorii...",
 			"noResults": "Nicio călătorie nu se potrivește căutării tale.",
-			"noResultsDesc": "Încearcă un alt termen de căutare sau resetează filtrul.",
+			"noResultsDesc": "Modifică sau șterge căutarea.",
 			"all": "Toate",
 			"past": "Anterioare",
 			"upcoming": "Viitoare"

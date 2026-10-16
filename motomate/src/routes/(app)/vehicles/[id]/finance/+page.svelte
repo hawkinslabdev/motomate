@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import type { PageData } from './$types';
 	import type { MoneyTotal } from '$lib/utils/money.js';
 	import { untrack, tick } from 'svelte';
@@ -370,14 +371,7 @@
 
 <div class="page-content">
 	{#if !hasTransactions && !hasPurchasePrice}
-		<div class="empty-state">
-			<span class="empty-emoji">💰</span>
-			<p class="empty-title">{$_('finance.empty.title')}</p>
-			<p class="empty-desc">{$_('finance.empty.description')}</p>
-			<button type="button" class="btn-primary" onclick={openAddForm}>
-				+ {$_('finance.addExpense')}
-			</button>
-		</div>
+		<EmptyState title={$_('finance.empty.title')} description={$_('finance.empty.description')} />
 	{:else}
 		{#snippet moneyStat(total: MoneyTotal, showCount = false)}
 			{#if total.mixed}
@@ -1386,31 +1380,6 @@
 	}
 
 	/* Empty state */
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: 3rem 1.5rem;
-	}
-	.empty-emoji {
-		font-size: 3rem;
-		margin-bottom: 1rem;
-		opacity: 0.8;
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.5rem;
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-		line-height: var(--leading-base);
-		max-width: 320px;
-	}
 
 	/* Entry action menu */
 	.entry-actions {

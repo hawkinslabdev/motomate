@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
@@ -340,13 +341,11 @@
 <!-- Travel List -->
 {#if hasHistory}
 	{#if grouped.length === 0}
-		<div class="empty">
-			<span class="empty-icon"
-				>{@html `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`}</span
-			>
-			<p class="empty-title">{$_('travels.filter.noResults')}</p>
-			<p class="empty-desc">{$_('travels.filter.noResultsDesc')}</p>
-		</div>
+		<EmptyState
+			title={$_('travels.filter.noResults')}
+			description={$_('travels.filter.noResultsDesc')}
+			road={false}
+		/>
 	{:else}
 		<div class="travel-list">
 			{#each grouped as [ym, group]}
@@ -369,12 +368,7 @@
 		</div>
 	{/if}
 {:else}
-	<div class="empty-state">
-		<div class="empty-icon">🗺️</div>
-		<h2 class="empty-title">{$_('travels.empty.title')}</h2>
-		<p class="empty-desc">{$_('travels.empty.description')}</p>
-		<button type="button" class="btn-primary" onclick={openCreate}>+ {$_('travels.add')}</button>
-	</div>
+	<EmptyState title={$_('travels.empty.title')} description={$_('travels.empty.description')} />
 {/if}
 
 <!-- Create / Edit Modal -->
@@ -504,30 +498,6 @@
 	}
 
 	/* Empty search result */
-	.empty {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: 3rem 1.5rem;
-	}
-	.empty .empty-icon {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-		opacity: 0.5;
-	}
-	.empty .empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.5rem;
-	}
-	.empty .empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-		line-height: var(--leading-base);
-	}
 
 	/* Travel list */
 	.travel-list {
@@ -551,29 +521,4 @@
 	}
 
 	/* Empty state */
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		padding: var(--space-10) var(--space-4);
-		gap: var(--space-3);
-	}
-	.empty-icon {
-		font-size: 3rem;
-		line-height: 1;
-	}
-	.empty-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
-	.empty-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		line-height: var(--leading-base);
-		max-width: 320px;
-		margin: 0;
-	}
 </style>

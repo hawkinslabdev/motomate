@@ -445,11 +445,7 @@
 	<div class="page-header-text">
 		<h2 class="section-title">{$_('vehicle.detail.timeline.title')}</h2>
 		<p class="section-sub">
-			{#if data.logs.length === 0 && data.odoLogs.length === 0}
-				{emptyTimelineDescription}
-			{:else}
-				{$_('vehicle.detail.timeline.subtitle', { values: { name: data.vehicle.name } })}
-			{/if}
+			{$_('vehicle.detail.timeline.subtitle', { values: { name: data.vehicle.name } })}
 		</p>
 	</div>
 	<div class="page-actions">
@@ -750,7 +746,6 @@
 	<!-- Timeline -->
 	{#if !hasHistory}
 		<EmptyState
-			icon="📋"
 			title={$_('vehicle.detail.timeline.empty.title')}
 			description={emptyTimelineDescription}
 		/>
