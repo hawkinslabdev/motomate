@@ -4,6 +4,7 @@
 
 - Minor: the authentication pages have been redesigned
 - Minor: generated profile avatars look different after the DiceBear 10 update
+- Minor: hide vehicle tabs per vehicle
 - Fix: scheduled reminders, such as a missing mileage update, now wait until morning in your timezone instead of arriving at night (override with `NOTIFY_QUIET_HOURS` with a range `22-8` or  `off` to disable)
 - Fix: form fields and primary buttons have higher contrast, and the authentication pages have better keyboard and screen reader support (WCAG 2.2 AA)
 - Security: various api actions actions now require a vehicle parameter
