@@ -38,6 +38,20 @@
 	const vehicle = $derived(data.vehicle);
 	const locale = $derived(data.user?.settings?.locale ?? 'en');
 	const pinnedDoc = $derived(data.pinnedDoc);
+	const pinLabel = $derived(
+		vehicle.meta?.pinned_doc_label || pinnedDoc?.title || pinnedDoc?.name || ''
+	);
+	let pinTrigger: HTMLElement | null = null;
+
+	function togglePinPicker(e: MouseEvent) {
+		pinTrigger = e.currentTarget as HTMLElement;
+		showPinPicker = !showPinPicker;
+	}
+
+	function closePinPicker() {
+		showPinPicker = false;
+		pinTrigger?.focus();
+	}
 	const docList = $derived(data.docList);
 	const filteredDocList = $derived(
 		pinSearch.trim().length === 0
@@ -280,129 +294,186 @@
 					</div>
 				</div>
 
-				<div class="pin-widget" class:pin-widget--pinned={pinnedDoc !== null}>
+				<div class="pin-widget">
 					{#if pinnedDoc}
-						<a
-							href="/api/files?key={pinnedDoc.storage_key}"
-							target="_blank"
-							rel="noopener"
-							class="pin-content"
-							aria-label={vehicle.meta?.pinned_doc_label || pinnedDoc.title || pinnedDoc.name}
-						>
-							<span class="pin-doc-name"
-								>{vehicle.meta?.pinned_doc_label || pinnedDoc.title || pinnedDoc.name}</span
-							>
-						</a>
-
-						<div
-							class="pin-actions"
-							role="group"
-							aria-label={$_('vehicle.layout.pinnedDoc.actions')}
-						>
+						<div class="pin-card">
+							<span class="pin-card-type">{$_('documents.types.' + pinnedDoc.doc_type)}</span>
 							<a
 								href="/api/files?key={pinnedDoc.storage_key}"
 								target="_blank"
 								rel="noopener"
-								class="pin-action"
+								class="pin-card-name"
 								title={$_('vehicle.layout.pinnedDoc.openFile')}
 							>
-								<svg
-									width="11"
-									height="11"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									aria-hidden="true"
-								>
-									<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-									<polyline points="15 3 21 3 21 9" />
-									<line x1="10" y1="14" x2="21" y2="3" />
-								</svg>
+								{pinLabel}
 							</a>
-							<a
-								href="/vehicles/{vehicle.id}/documents?highlight={pinnedDoc.id}"
-								class="pin-action"
-								title={$_('vehicle.layout.pinnedDoc.viewInList')}
+							<div
+								class="pin-card-actions"
+								role="group"
+								aria-label={$_('vehicle.layout.pinnedDoc.actions')}
 							>
-								<svg
-									width="11"
-									height="11"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									aria-hidden="true"
+								<a
+									href="/api/files?key={pinnedDoc.storage_key}"
+									target="_blank"
+									rel="noopener"
+									class="pin-action"
+									aria-label={$_('vehicle.layout.pinnedDoc.openFile')}
+									title={$_('vehicle.layout.pinnedDoc.openFile')}
 								>
-									<line x1="8" y1="6" x2="21" y2="6" />
-									<line x1="8" y1="12" x2="21" y2="12" />
-									<line x1="8" y1="18" x2="21" y2="18" />
-									<line x1="3" y1="6" x2="3.01" y2="6" />
-									<line x1="3" y1="12" x2="3.01" y2="12" />
-									<line x1="3" y1="18" x2="3.01" y2="18" />
-								</svg>
-							</a>
-							<button
-								type="button"
-								class="pin-action"
-								onclick={() => (showPinPicker = !showPinPicker)}
-								title={$_('vehicle.layout.pinnedDoc.editPin')}
-							>
-								<svg
-									width="11"
-									height="11"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									aria-hidden="true"
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+										><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline
+											points="15 3 21 3 21 9"
+										/><line x1="10" y1="14" x2="21" y2="3" /></svg
+									>
+								</a>
+								<a
+									href="/vehicles/{vehicle.id}/documents?highlight={pinnedDoc.id}"
+									class="pin-action"
+									aria-label={$_('vehicle.layout.pinnedDoc.viewInList')}
+									title={$_('vehicle.layout.pinnedDoc.viewInList')}
 								>
-									<path d="M12 20h9" />
-									<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-								</svg>
-							</button>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+										><line x1="8" y1="6" x2="21" y2="6" /><line
+											x1="8"
+											y1="12"
+											x2="21"
+											y2="12"
+										/><line x1="8" y1="18" x2="21" y2="18" /><line
+											x1="3"
+											y1="6"
+											x2="3.01"
+											y2="6"
+										/><line x1="3" y1="12" x2="3.01" y2="12" /><line
+											x1="3"
+											y1="18"
+											x2="3.01"
+											y2="18"
+										/></svg
+									>
+								</a>
+								<button
+									type="button"
+									class="pin-action"
+									aria-haspopup="dialog"
+									aria-expanded={showPinPicker}
+									aria-label={$_('vehicle.layout.pinnedDoc.editPin')}
+									title={$_('vehicle.layout.pinnedDoc.editPin')}
+									onclick={togglePinPicker}
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+										><path d="M12 20h9" /><path
+											d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+										/></svg
+									>
+								</button>
+							</div>
 						</div>
 					{:else}
 						<button
 							type="button"
-							class="pin-content"
-							onclick={() => (showPinPicker = !showPinPicker)}
-							aria-label={$_('vehicle.layout.pinnedDoc.pin')}
+							class="pin-add"
+							aria-haspopup="dialog"
+							aria-expanded={showPinPicker}
+							onclick={togglePinPicker}
 						>
 							<svg
-								class="pin-empty-icon"
-								width="16"
-								height="16"
 								viewBox="0 0 24 24"
 								fill="none"
 								stroke="currentColor"
-								stroke-width="1.5"
+								stroke-width="1.75"
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								aria-hidden="true"
+								><line x1="12" y1="17" x2="12" y2="22" /><path
+									d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"
+								/></svg
 							>
-								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-								<polyline points="14 2 14 8 20 8" />
-								<line x1="16" y1="13" x2="8" y2="13" />
-								<line x1="16" y1="17" x2="8" y2="17" />
-							</svg>
-							<span class="pin-empty-label">{$_('vehicle.layout.pinnedDoc.pin')}</span>
+							<span>{$_('vehicle.layout.pinnedDoc.pin')}</span>
 						</button>
 					{/if}
+
+					<button
+						type="button"
+						class="pin-mobile"
+						class:pin-mobile--pinned={pinnedDoc !== null}
+						aria-haspopup="dialog"
+						aria-expanded={showPinPicker}
+						aria-label={pinnedDoc
+							? $_('vehicle.layout.pinnedDoc.editPin')
+							: $_('vehicle.layout.pinnedDoc.pin')}
+						onclick={togglePinPicker}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+							><line x1="12" y1="17" x2="12" y2="22" /><path
+								d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"
+							/></svg
+						>
+					</button>
 
 					{#if showPinPicker}
 						<div
 							class="pin-picker-overlay"
 							role="presentation"
-							onclick={() => (showPinPicker = false)}
+							onclick={() => closePinPicker()}
 						></div>
-						<div class="pin-picker" role="dialog" aria-label={$_('vehicle.layout.pinnedDoc.pin')}>
+						<div
+							class="pin-picker"
+							role="dialog"
+							aria-label={$_('vehicle.layout.pinnedDoc.pin')}
+							tabindex="-1"
+							onkeydown={(e) => e.key === 'Escape' && closePinPicker()}
+						>
+							{#if pinnedDoc}
+								<a
+									href="/api/files?key={pinnedDoc.storage_key}"
+									target="_blank"
+									rel="noopener"
+									class="pin-picker-open"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										aria-hidden="true"
+										><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline
+											points="15 3 21 3 21 9"
+										/><line x1="10" y1="14" x2="21" y2="3" /></svg
+									>
+									<span>{$_('vehicle.layout.pinnedDoc.openFile')}: {pinLabel}</span>
+								</a>
+								<div class="pin-picker-sep pin-picker-sep--mobile"></div>
+							{/if}
 							<div class="pin-picker-search">
 								<svg
 									class="pin-search-icon"
@@ -426,7 +497,6 @@
 									class="pin-search-input"
 									placeholder={$_('vehicle.layout.pinnedDoc.searchPlaceholder')}
 									autocomplete="off"
-									onkeydown={(e) => e.key === 'Escape' && (showPinPicker = false)}
 								/>
 								{#if pinSearch.length > 0}
 									<button
@@ -454,7 +524,7 @@
 									</button>
 								{/if}
 							</div>
-							<div class="pin-picker-list" role="menu">
+							<div class="pin-picker-list">
 								{#if docList.length === 0}
 									<p class="pin-picker-empty">{$_('vehicle.layout.pinnedDoc.noDocs')}</p>
 								{:else if filteredDocList.length === 0}
@@ -473,7 +543,6 @@
 												type="submit"
 												class="pin-picker-item"
 												class:pin-picker-item--active={pinnedDoc?.id === doc.id}
-												role="menuitem"
 											>
 												<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
 												<span class="pin-picker-name">{doc.title || doc.name}</span>
@@ -517,11 +586,7 @@
 									use:enhance={handlePinSubmit}
 								>
 									<input type="hidden" name="doc_id" value="" />
-									<button
-										type="submit"
-										class="pin-picker-item pin-picker-item--remove"
-										role="menuitem"
-									>
+									<button type="submit" class="pin-picker-item pin-picker-item--remove">
 										{$_('vehicle.layout.pinnedDoc.remove')}
 									</button>
 								</form>
@@ -1202,140 +1267,156 @@
 		position: relative;
 		margin-left: auto;
 		flex-shrink: 0;
-		align-self: stretch;
+		align-self: flex-start;
+	}
+	.pin-card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		width: 13rem;
+		padding: var(--space-3) var(--space-3) var(--space-2) var(--space-4);
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: 10px;
+	}
+	.pin-card-type {
+		font-size: var(--text-xs);
+		color: var(--text-subtle);
+	}
+	.pin-card-name {
+		font-size: var(--text-sm);
+		font-weight: 500;
+		line-height: var(--leading-snug);
+		color: var(--text);
+		text-decoration: none;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		overflow-wrap: anywhere;
+	}
+	.pin-card-name:hover {
+		color: var(--accent);
+	}
+	.pin-card-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: var(--space-1);
+		margin-right: calc(var(--space-1) * -1);
+	}
+	.pin-action {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		border: none;
+		border-radius: 8px;
+		background: none;
+		color: var(--text-muted);
+		cursor: pointer;
+	}
+	.pin-action svg {
+		width: 14px;
+		height: 14px;
+	}
+	.pin-action:hover,
+	.pin-action[aria-expanded='true'] {
+		background: var(--bg-muted);
+		color: var(--text);
+	}
+	.pin-add {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		min-height: 36px;
+		padding: 0 var(--space-3);
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		background: none;
+		color: var(--text-muted);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		font-family: var(--font-sans);
+		cursor: pointer;
+	}
+	.pin-add svg {
+		width: 15px;
+		height: 15px;
+	}
+	.pin-add:hover,
+	.pin-add[aria-expanded='true'] {
+		background: var(--bg-muted);
+		color: var(--text);
+	}
+	.pin-mobile {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border: 1px solid var(--border);
+		border-radius: 50%;
+		background: none;
+		color: var(--text-muted);
+		cursor: pointer;
+	}
+	.pin-mobile svg {
+		width: 18px;
+		height: 18px;
+	}
+	.pin-mobile--pinned {
+		color: var(--accent);
+		background: var(--accent-subtle);
+		border-color: transparent;
+	}
+	.pin-action:focus-visible,
+	.pin-add:focus-visible,
+	.pin-mobile:focus-visible,
+	.pin-card-name:focus-visible,
+	.pin-picker-open:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.pin-picker-open {
+		display: none;
+		align-items: center;
+		gap: var(--space-2);
+		padding: 0.75rem 0.875rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.pin-picker-open svg {
+		width: 14px;
+		height: 14px;
+		flex-shrink: 0;
+	}
+	.pin-picker-open span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.pin-picker-sep--mobile {
+		display: none;
 	}
 	@media (max-width: 639px) {
 		.pin-widget {
+			align-self: center;
+		}
+		.pin-card,
+		.pin-add {
 			display: none;
 		}
-	}
-	.pin-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 0.375rem;
-		width: 112px;
-		height: 100%;
-		border: 1px dashed var(--border);
-		border-radius: 8px;
-		background: transparent;
-		cursor: pointer;
-		padding: 0.75rem;
-		transition:
-			border-color 0.2s ease,
-			background 0.2s ease,
-			color 0.2s ease;
-		color: var(--text-subtle);
-		text-align: center;
-		font-family: var(--font-sans);
-	}
-	.pin-content:hover {
-		border-color: var(--accent);
-		color: var(--text-muted);
-		background: var(--accent-subtle);
-	}
-	.pin-widget--pinned .pin-content {
-		border-style: solid;
-		border-color: var(--border);
-		background: transparent;
-		align-items: flex-start;
-		justify-content: flex-start;
-		padding-top: 0.875rem;
-		width: 152px;
-		text-align: left;
-	}
-	.pin-widget--pinned .pin-content:hover {
-		border-color: var(--border-strong);
-		background: var(--bg-subtle);
-	}
-	.pin-empty-icon {
-		color: inherit;
-		flex-shrink: 0;
-		transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-	}
-	.pin-content:hover .pin-empty-icon {
-		transform: translateY(-3px) rotate(-6deg);
-	}
-	.pin-empty-label {
-		font-size: var(--text-xs);
-		font-weight: 400;
-		letter-spacing: 0.02em;
-		color: inherit;
-		line-height: var(--leading-snug);
-	}
-	.pin-doc-name {
-		font-size: var(--text-sm);
-		font-weight: 400;
-		color: var(--text-muted);
-		line-height: var(--leading-snug);
-		display: -webkit-box;
-		-webkit-line-clamp: 4;
-		line-clamp: 4;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		word-break: break-word;
-	}
-	.pin-widget--pinned .pin-content:hover .pin-doc-name {
-		color: var(--text);
-	}
-	.pin-actions {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 36px;
-		display: flex;
-		align-items: flex-end;
-		justify-content: center;
-		gap: 0.25rem;
-		padding: 0 0.5rem 0.375rem;
-		background: linear-gradient(
-			to bottom,
-			transparent 0%,
-			color-mix(in srgb, var(--bg-subtle) 70%, transparent) 50%,
-			var(--bg-subtle) 100%
-		);
-		border-bottom-left-radius: 7px;
-		border-bottom-right-radius: 7px;
-		opacity: 0;
-		transform: translateY(4px);
-		transition:
-			opacity 0.2s ease,
-			transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-		pointer-events: none;
-	}
-	.pin-widget--pinned:hover .pin-actions {
-		opacity: 1;
-		transform: translateY(0);
-		pointer-events: all;
-	}
-	.pin-action {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 22px;
-		height: 22px;
-		border-radius: 4px;
-		background: var(--bg);
-		border: 1px solid var(--border);
-		color: var(--text-subtle);
-		text-decoration: none;
-		transition:
-			color 0.15s,
-			border-color 0.15s,
-			background 0.15s,
-			transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
-		flex-shrink: 0;
-	}
-	.pin-action:hover {
-		color: var(--accent);
-		border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-		background: var(--accent-subtle);
-		transform: scale(1.1);
-	}
-	.pin-action:active {
-		transform: scale(0.95);
+		.pin-mobile,
+		.pin-picker-open {
+			display: flex;
+		}
+		.pin-picker-sep--mobile {
+			display: block;
+		}
 	}
 	.pin-picker-overlay {
 		position: fixed;
@@ -1351,7 +1432,7 @@
 		border-radius: 10px;
 		box-shadow: 0 4px 20px color-mix(in srgb, var(--text) 12%, transparent);
 		z-index: 30;
-		width: 300px;
+		width: min(300px, calc(100vw - 2rem));
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
