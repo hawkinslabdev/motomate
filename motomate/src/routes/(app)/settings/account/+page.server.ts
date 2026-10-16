@@ -15,6 +15,7 @@ import { getOidcConfig } from '$lib/auth/oidc.js';
 import { locales as localeMap } from '$lib/i18n/locales.js';
 
 type AccountErrors = {
+	auth: { login: { errors: { rateLimited: string } } };
 	settings: {
 		account: {
 			email: { errors: { invalid: string; sameAsCurrent: string; alreadyInUse: string } };
@@ -63,8 +64,13 @@ export const actions: Actions = {
 		const record = await getUserById(user.id);
 		const proof = await verifyReauth(record, String(data.current_password ?? ''));
 		if (proof !== 'ok') {
-			return fail(400, {
-				emailError: proof === 'stepup' ? passwordErrors.reauthRequired : passwordErrors.incorrect
+			return fail(proof === 'limited' ? 429 : 400, {
+				emailError:
+					proof === 'limited'
+						? messages.auth.login.errors.rateLimited
+						: proof === 'stepup'
+							? passwordErrors.reauthRequired
+							: passwordErrors.incorrect
 			});
 		}
 
@@ -109,13 +115,15 @@ export const actions: Actions = {
 
 		const proof = await verifyReauth(fullUser, currentPassword);
 		if (proof !== 'ok') {
-			return fail(400, {
+			return fail(proof === 'limited' ? 429 : 400, {
 				passwordError:
-					proof === 'stepup'
-						? fullUser?.settings?.oidc_sub
-							? errors.reauthRequired
-							: errors.noPasswordSet
-						: errors.incorrect
+					proof === 'limited'
+						? messages.auth.login.errors.rateLimited
+						: proof === 'stepup'
+							? fullUser?.settings?.oidc_sub
+								? errors.reauthRequired
+								: errors.noPasswordSet
+							: errors.incorrect
 			});
 		}
 
@@ -148,8 +156,13 @@ export const actions: Actions = {
 		const errors = messages.settings.account.password.errors;
 		const proof = await verifyReauth(record, String(data.current_password ?? ''));
 		if (proof !== 'ok') {
-			return fail(400, {
-				deleteError: proof === 'stepup' ? errors.reauthRequired : errors.incorrect
+			return fail(proof === 'limited' ? 429 : 400, {
+				deleteError:
+					proof === 'limited'
+						? messages.auth.login.errors.rateLimited
+						: proof === 'stepup'
+							? errors.reauthRequired
+							: errors.incorrect
 			});
 		}
 

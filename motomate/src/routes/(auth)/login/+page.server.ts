@@ -179,9 +179,17 @@ export const actions: Actions = {
 
 		const smtp = isSmtpConfigured();
 		if (user) {
-			const token = await createMagicLinkToken(user.id);
-			if (smtp) await sendMagicLinkEmail(parsed.data.email, token);
-			else logMagicLink(parsed.data.email, token);
+			const { id } = user;
+			const email = parsed.data.email;
+			setImmediate(async () => {
+				try {
+					const token = await createMagicLinkToken(id);
+					if (smtp) await sendMagicLinkEmail(email, token);
+					else logMagicLink(email, token);
+				} catch (e) {
+					console.error(`${ts()} [MotoMate] Magic link failed:`, e);
+				}
+			});
 		}
 
 		return { magic: true, logged: !smtp };

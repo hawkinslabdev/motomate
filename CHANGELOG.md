@@ -15,6 +15,8 @@
 - Security: vehicle edit form no longer accepts a cover image key from the request
 - Security: push subscription endpoint registered by another account is rejected
 - Security: the login locale ignores prototype keys
+- Security: local storage rejects file keys that resolve outside the upload folder
+- Security: hardened sign-in and account settings
 - Security: update various dependencies
 
 ## 0.6.1

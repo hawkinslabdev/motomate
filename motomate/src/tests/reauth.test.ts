@@ -65,6 +65,16 @@ describe('verifyReauth', () => {
 	it('refuses a missing record rather than reading it as passwordless', async () => {
 		expect(await verifyReauth(undefined, PASSWORD)).toBe('stepup');
 	});
+
+	it('stops checking passwords after 10 guesses, even the correct one', async () => {
+		const record = {
+			id: 'u-limit',
+			password_hash: await hash(PASSWORD, ARGON2_OPTS),
+			settings: {}
+		};
+		for (let i = 0; i < 10; i++) expect(await verifyReauth(record, `guess-${i}`)).toBe('password');
+		expect(await verifyReauth(record, PASSWORD)).toBe('limited');
+	});
 });
 
 describe('settings persistence', () => {
