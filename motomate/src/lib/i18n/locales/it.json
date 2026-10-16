@@ -501,6 +501,10 @@
 					"confirm": "Ripristina",
 					"cancel": "Mantieni archiviato"
 				},
+				"tabs": {
+					"title": "Schede",
+					"desc": "Mostra o nascondi le schede del tuo veicolo."
+				},
 				"report": {
 					"title": "Libretto di manutenzione",
 					"desc": "Scarica una copia fisica della tua storia manutentiva completa.",

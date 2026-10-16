@@ -21,7 +21,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		id: v.id,
 		name: v.name,
 		type: v.type,
-		meta: v.meta as { avatar_emoji?: string } | null
+		meta: v.meta as { avatar_emoji?: string; hidden_tabs?: string[] } | null
 	}));
 
 	const unreadCount = await getUnreadCount(locals.user.id);

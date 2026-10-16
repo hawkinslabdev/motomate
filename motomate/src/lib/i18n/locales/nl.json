@@ -501,6 +501,10 @@
 					"confirm": "Herstellen",
 					"cancel": "Gearchiveerd houden"
 				},
+				"tabs": {
+					"title": "Tabbladen",
+					"desc": "Toon of verberg tabbladen voor jouw voertuig."
+				},
 				"report": {
 					"title": "Onderhoudsboekje",
 					"desc": "Download een fysiek kopie van jouw volledige onderhoudshistorie.",

@@ -19,7 +19,7 @@ import { getStorage } from '$lib/storage/index.js';
 import { mirrorPut, mirrorDelete } from '$lib/server/integrations.js';
 import type { VehicleMeta } from '$lib/db/schema.js';
 import { db } from '$lib/db/index.js';
-import { vehicles } from '$lib/db/schema.js';
+import { HIDEABLE_VEHICLE_TABS, vehicles } from '$lib/db/schema.js';
 import { serverT } from '$lib/i18n/server.js';
 import { getMeasurementBasis, isDistanceUnit, isMeasurementUnit } from '$lib/utils/measurement.js';
 
@@ -323,5 +323,18 @@ export const actions: Actions = {
 
 		await updateVehicle(vehicleId, user.id, { meta: newMeta });
 		return { pinned: true };
+	},
+
+	setTabs: async ({ request, locals, params }) => {
+		const user = locals.user!;
+		const formData = await request.formData();
+		const visible = formData.getAll('tab').map(String);
+
+		const vehicle = await getVehicleById(params.id, user.id);
+		if (!vehicle) return fail(404, { error: 'Not found' });
+
+		const hidden_tabs = HIDEABLE_VEHICLE_TABS.filter((t) => !visible.includes(t));
+		await updateVehicle(params.id, user.id, { meta: { ...(vehicle.meta ?? {}), hidden_tabs } });
+		return { tabsSaved: true };
 	}
 };

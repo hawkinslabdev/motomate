@@ -480,6 +480,10 @@
 					"confirm": "Restore",
 					"cancel": "Keep archived"
 				},
+				"tabs": {
+					"title": "Tabs",
+					"desc": "Show or hide tabs for your vehicle."
+				},
 				"report": {
 					"title": "Maintenance report",
 					"desc": "Download a physical copy of your complete service history.",

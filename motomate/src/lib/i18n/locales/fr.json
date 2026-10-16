@@ -501,6 +501,10 @@
 					"confirm": "Restaurer",
 					"cancel": "Garder archivé"
 				},
+				"tabs": {
+					"title": "Onglets",
+					"desc": "Affichez ou masquez les onglets de votre véhicule."
+				},
 				"report": {
 					"title": "Carnet d'entretien",
 					"desc": "Téléchargez une copie physique de votre historique d'entretien complet.",

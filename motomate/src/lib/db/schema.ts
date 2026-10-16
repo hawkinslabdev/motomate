@@ -8,6 +8,8 @@ import {
 } from '../utils/measurement.js';
 
 export const VEHICLE_TYPES = ['motorcycle', 'scooter', 'bike', 'other'] as const;
+export const HIDEABLE_VEHICLE_TABS = ['documents', 'finance', 'notes', 'travels'] as const;
+export type HideableVehicleTab = (typeof HIDEABLE_VEHICLE_TABS)[number];
 export const TRACKER_STATUSES = ['ok', 'due', 'overdue'] as const;
 export const FINANCE_CATEGORIES = [
 	'maintenance',
@@ -129,6 +131,7 @@ export type VehicleMeta = {
 	avatar_emoji?: string;
 	pinned_doc_id?: string;
 	pinned_doc_label?: string;
+	hidden_tabs?: HideableVehicleTab[];
 };
 
 export type PartNumbers = string[];

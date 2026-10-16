@@ -78,6 +78,9 @@ function hydrateOdometerLog(log: OdometerLog): OdometerLog {
 
 export async function createVehicle(userId: string, input: unknown): Promise<Vehicle> {
 	const parsed = CreateVehicleSchema.parse(input);
+	if (parsed.type === 'bike' && !parsed.meta.hidden_tabs) {
+		parsed.meta.hidden_tabs = ['travels'];
+	}
 	const id = generateId();
 	const row: InsertVehicle = {
 		...parsed,

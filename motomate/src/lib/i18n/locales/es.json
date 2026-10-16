@@ -501,6 +501,10 @@
 					"confirm": "Restaurar",
 					"cancel": "Mantener archivado"
 				},
+				"tabs": {
+					"title": "Pestañas",
+					"desc": "Muestra u oculta las pestañas de tu vehículo."
+				},
 				"report": {
 					"title": "Libro de mantenimiento",
 					"desc": "Descarga una copia física de tu historial de mantenimiento completo.",

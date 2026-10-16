@@ -501,6 +501,10 @@
 					"confirm": "Restaurar",
 					"cancel": "Manter arquivado"
 				},
+				"tabs": {
+					"title": "Separadores",
+					"desc": "Mostra ou oculta os separadores do teu veículo."
+				},
 				"report": {
 					"title": "Livro de manutenção",
 					"desc": "Descarrega uma cópia física do teu histórico de manutenção completo.",

@@ -480,6 +480,10 @@
 					"confirm": "Restaurează",
 					"cancel": "Păstrează arhivat"
 				},
+				"tabs": {
+					"title": "File",
+					"desc": "Afișează sau ascunde filele vehiculului tău."
+				},
 				"report": {
 					"title": "Raport de întreținere",
 					"desc": "Descarcă o copie fizică a istoricului tău complet de service.",

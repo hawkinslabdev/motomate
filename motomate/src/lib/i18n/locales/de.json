@@ -501,6 +501,10 @@
 					"confirm": "Wiederherstellen",
 					"cancel": "Archiviert lassen"
 				},
+				"tabs": {
+					"title": "Tabs",
+					"desc": "Tabs für dein Fahrzeug ein- oder ausblenden."
+				},
 				"report": {
 					"title": "Wartungsheft",
 					"desc": "Lade eine physische Kopie deiner vollständigen Wartungshistorie herunter.",

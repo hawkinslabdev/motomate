@@ -5,6 +5,7 @@
 	import { tick } from 'svelte';
 	import { formatNumber } from '$lib/utils/format.js';
 	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
+	import { HIDEABLE_VEHICLE_TABS } from '$lib/db/schema.js';
 	import { _, waitLocale } from '$lib/i18n';
 	import type { LayoutData } from './$types';
 
@@ -127,6 +128,38 @@
 			?.id ?? 'timeline'
 	);
 
+	const visibleTabs = $derived.by(() => {
+		const hidden: string[] = vehicle.meta?.hidden_tabs ?? [];
+		return tabs.filter((t) => !hidden.includes(t.id) || t.id === activeTabId);
+	});
+
+	let tabsOverflowEnd = $state(false);
+	let tabMenuOpen = $state(false);
+	let tabMenuBtn: HTMLButtonElement | undefined = $state();
+
+	function closeTabMenu(refocus = false) {
+		tabMenuOpen = false;
+		if (refocus) tabMenuBtn?.focus();
+	}
+
+	function handleTabMenuWindowClick(e: MouseEvent) {
+		if (tabMenuOpen && !(e.target as Element).closest('.tab-menu')) closeTabMenu();
+	}
+
+	function handleTabMenuKeydown(e: KeyboardEvent) {
+		if (tabMenuOpen && e.key === 'Escape') closeTabMenu(true);
+	}
+
+	function updateTabsFade() {
+		if (!tabsEl) return;
+		tabsOverflowEnd = tabsEl.scrollLeft + tabsEl.clientWidth < tabsEl.scrollWidth - 1;
+	}
+
+	$effect(() => {
+		void visibleTabs;
+		tick().then(updateTabsFade);
+	});
+
 	$effect(() => {
 		void activeTabId;
 		tick().then(() => {
@@ -200,6 +233,12 @@
 		}
 	}
 </script>
+
+<svelte:window
+	onresize={updateTabsFade}
+	onclick={handleTabMenuWindowClick}
+	onkeydown={handleTabMenuKeydown}
+/>
 
 <div class="vehicle-detail">
 	<div class="vehicle-header">
@@ -493,23 +532,75 @@
 			</div>
 		</div>
 
-		<nav class="vehicle-tabs" bind:this={tabsEl} aria-label={$_('vehicle.sectionsNav')}>
-			{#each tabs as tab}
-				<a
-					href={tab.href}
-					class="vtab"
-					class:vtab--active={activeTabId === tab.id}
-					aria-current={activeTabId === tab.id ? 'page' : undefined}
+		<div class="vehicle-tabs-bar">
+			<nav
+				class="vehicle-tabs"
+				class:vehicle-tabs--fade={tabsOverflowEnd}
+				bind:this={tabsEl}
+				onscroll={updateTabsFade}
+				aria-label={$_('vehicle.sectionsNav')}
+			>
+				{#each visibleTabs as tab (tab.id)}
+					<a
+						href={tab.href}
+						class="vtab"
+						class:vtab--active={activeTabId === tab.id}
+						aria-current={activeTabId === tab.id ? 'page' : undefined}
+					>
+						{$_(tab.labelKey)}
+						{#if tab.id === 'maintenance' && data.attentionCount > 0}
+							<span class="vtab-badge">
+								{data.attentionCount > 9 ? '9+' : data.attentionCount}
+							</span>
+						{/if}
+					</a>
+				{/each}
+			</nav>
+			<div class="tab-menu">
+				<button
+					type="button"
+					class="tab-menu-btn"
+					bind:this={tabMenuBtn}
+					aria-haspopup="true"
+					aria-expanded={tabMenuOpen}
+					aria-label={$_('vehicle.edit.settings.tabs.title')}
+					onclick={() => (tabMenuOpen = !tabMenuOpen)}
 				>
-					{$_(tab.labelKey)}
-					{#if tab.id === 'maintenance' && data.attentionCount > 0}
-						<span class="vtab-badge">
-							{data.attentionCount > 9 ? '9+' : data.attentionCount}
-						</span>
-					{/if}
-				</a>
-			{/each}
-		</nav>
+					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<circle cx="5" cy="12" r="1.75" />
+						<circle cx="12" cy="12" r="1.75" />
+						<circle cx="19" cy="12" r="1.75" />
+					</svg>
+				</button>
+				{#if tabMenuOpen}
+					<form
+						class="tab-menu-panel"
+						method="POST"
+						action="/vehicles/{vehicle.id}/edit?/setTabs"
+						use:enhance={() =>
+							async ({ update }) => {
+								await update({ reset: false });
+							}}
+					>
+						<p class="tab-menu-title">{$_('vehicle.edit.settings.tabs.title')}</p>
+						{#each HIDEABLE_VEHICLE_TABS as tab (tab)}
+							<label class="tab-switch">
+								<span>{$_(`vehicle.layout.tabs.${tab}`)}</span>
+								<input
+									type="checkbox"
+									role="switch"
+									name="tab"
+									value={tab}
+									checked={!(vehicle.meta?.hidden_tabs ?? []).includes(tab)}
+									onchange={(e) => e.currentTarget.form?.requestSubmit()}
+								/>
+							</label>
+						{/each}
+						<p class="tab-menu-desc">{$_('vehicle.edit.settings.tabs.desc')}</p>
+					</form>
+				{/if}
+			</div>
+		</div>
 	</div>
 
 	<div class="vehicle-content" class:loading={navigating.to !== null}>
@@ -714,14 +805,137 @@
 	}
 
 	/* Tabs */
-	.vehicle-tabs {
+	.vehicle-tabs-bar {
 		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 		padding: 0 1.5rem;
 		max-width: 860px;
 		margin: 0 auto;
 	}
+	.vehicle-tabs {
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+	}
+	.vehicle-tabs::-webkit-scrollbar {
+		display: none;
+	}
+	.tab-menu {
+		position: relative;
+		flex-shrink: 0;
+	}
+	.tab-menu-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: none;
+		border: none;
+		border-radius: 10px;
+		color: var(--text-muted);
+		cursor: pointer;
+	}
+	.tab-menu-btn svg {
+		width: 18px;
+		height: 18px;
+	}
+	.tab-menu-btn:hover,
+	.tab-menu-btn[aria-expanded='true'] {
+		color: var(--text);
+		background: var(--bg-muted);
+	}
+	.tab-menu-btn:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.tab-menu-panel {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		margin-top: 4px;
+		width: 16rem;
+		padding: var(--space-3) var(--space-4);
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-radius: 14px;
+		box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+		z-index: 50;
+	}
+	.tab-menu-title {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--text);
+		margin: 0 0 var(--space-1);
+	}
+	.tab-menu-desc {
+		font-size: var(--text-xs);
+		line-height: var(--leading-snug);
+		color: var(--text-muted);
+		margin: var(--space-2) 0 0;
+	}
+	.tab-switch {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-4);
+		min-height: 44px;
+		font-size: var(--text-sm);
+		color: var(--text);
+		cursor: pointer;
+	}
+	.tab-switch + .tab-switch {
+		border-top: 1px solid var(--border);
+	}
+	.tab-switch input {
+		appearance: none;
+		position: relative;
+		width: 2.25rem;
+		height: 1.25rem;
+		margin: 0;
+		border-radius: 999px;
+		background: var(--text-muted);
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: background 0.15s;
+	}
+	.tab-switch input::after {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: calc(1.25rem - 4px);
+		height: calc(1.25rem - 4px);
+		border-radius: 50%;
+		background: #fff;
+		transition: transform 0.15s;
+	}
+	.tab-switch input:checked {
+		background: var(--accent);
+	}
+	.tab-switch input:checked::after {
+		transform: translateX(1rem);
+	}
+	.tab-switch input:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tab-switch input,
+		.tab-switch input::after {
+			transition: none;
+		}
+	}
+	.vehicle-tabs--fade {
+		mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent);
+	}
 	.vtab {
 		display: inline-flex;
+		flex-shrink: 0;
 		align-items: center;
 		gap: 0.3rem;
 		padding: 0.625rem 1rem;
@@ -782,14 +996,8 @@
 		.vehicle-content {
 			padding: 1rem 1rem 1.5rem;
 		}
-		.vehicle-tabs {
-			padding: 0 1rem;
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-			scrollbar-width: none;
-		}
-		.vehicle-tabs::-webkit-scrollbar {
-			display: none;
+		.vehicle-tabs-bar {
+			padding: 0 0.5rem 0 1rem;
 		}
 		.odo-num {
 			font-size: var(--text-2xl);

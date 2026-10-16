@@ -1,5 +1,10 @@
 import { z } from 'zod';
-import { DOC_TYPES, FINANCE_CATEGORIES, VEHICLE_TYPES } from '../db/schema.js';
+import {
+	DOC_TYPES,
+	FINANCE_CATEGORIES,
+	HIDEABLE_VEHICLE_TABS,
+	VEHICLE_TYPES
+} from '../db/schema.js';
 import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, MEASUREMENT_UNITS } from '../utils/measurement.js';
 
 const MeasurementUnitSchema = z.enum(MEASUREMENT_UNITS);
@@ -206,7 +211,8 @@ const VehicleMetaSchema = z.object({
 	fuel_type: z.enum(['petrol', 'diesel', 'electric', 'hybrid']).optional(),
 	avatar_emoji: optStr(10),
 	pinned_doc_id: optStr(50),
-	pinned_doc_label: optStr(80)
+	pinned_doc_label: optStr(80),
+	hidden_tabs: z.array(z.enum(HIDEABLE_VEHICLE_TABS)).max(HIDEABLE_VEHICLE_TABS.length).optional()
 });
 
 export const CreateVehicleSchema = z.object({
