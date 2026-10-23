@@ -27,6 +27,7 @@ jobs:
           [[ $VERSION =~ ^v ]] || VERSION="v${VERSION}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "version_bare=${VERSION#v}" >> $GITHUB_OUTPUT
+          echo "version_minor=$(echo "${VERSION#v}" | cut -d. -f1,2)" >> $GITHUB_OUTPUT
 
       - name: Extract changelog entry
         run: |
@@ -41,7 +42,8 @@ jobs:
         run: |
           VERSION="${{ steps.get_tag.outputs.version }}"
           REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          PINNED_COMPOSE=$(sed "s|image: ghcr.io/hawkinslabdev/motomate:latest|image: ghcr.io/${REPO}:${VERSION}|" docker-compose.yml)
+          MINOR="${{ steps.get_tag.outputs.version_minor }}"
+          PINNED_COMPOSE=$(sed "s|image: ghcr.io/hawkinslabdev/motomate:latest|image: ghcr.io/${REPO}:${MINOR}|" docker-compose.yml)
           {
             echo "## Changes"
             echo ""
@@ -57,7 +59,7 @@ jobs:
             echo "docker compose pull && docker compose up -d"
             echo '```'
             echo ""
-            echo "Or pin to this exact version:"
+            echo "Or pin to the ${MINOR} release line:"
             echo ""
             echo '```yaml'
             echo "$PINNED_COMPOSE"
