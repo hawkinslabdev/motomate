@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.3
+
+- Security: update markdown-it and various dependencies
+- Security: rebuild on Node.js 24.22.1 (undici 7.30.1)
+- Security: outbound connections no longer trust the eMudhra emSign root CA (CVE-2026-114406)
+
 ## 0.6.2
 
 - Minor: the authentication pages have been redesigned
