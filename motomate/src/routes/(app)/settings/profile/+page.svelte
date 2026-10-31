@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
-	import type { User } from '$lib/db/schema.js';
-	import { _ } from '$lib/i18n';
-	import { SUPPORTED_LANGUAGES } from '$lib/i18n/locales.js';
+	import { refreshAll } from '$app/navigation';
+	import type { User } from '#lib/db/schema.js';
+	import { _ } from '#lib/i18n/index.js';
+	import { SUPPORTED_LANGUAGES } from '#lib/i18n/locales.js';
 	import {
 		DEFAULT_ODOMETER_UNIT,
 		DISTANCE_UNITS,
 		getDistanceUnitTranslationKey,
 		isDistanceUnit,
 		type DistanceUnit
-	} from '$lib/utils/measurement.js';
+	} from '#lib/utils/measurement.js';
 	import { untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { dicebearUri, parseAvatarSeed, randomAvatarSeed } from '$lib/utils/dicebear.js';
-	import { resolveTheme, readStoredTheme } from '$lib/utils/theme.js';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import { browser } from '$app/env';
+	import { dicebearUri, parseAvatarSeed, randomAvatarSeed } from '#lib/utils/dicebear.js';
+	import { resolveTheme, readStoredTheme } from '#lib/utils/theme.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 
 	let { data, form } = $props<{
 		data: { user: User };
@@ -157,7 +157,7 @@
 	}
 </script>
 
-<svelte:head><title>{$_('settings.profile.title')} &middot; Settings</title></svelte:head>
+<svelte:head><title>{$_('settings.profile.title')} · Settings</title></svelte:head>
 
 <div class="intro">
 	<h2 class="section-title">{$_('settings.profile.title')}</h2>
@@ -313,15 +313,17 @@
 					onclick={() => (showAttribution = !showAttribution)}
 				>
 					<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-						<circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.25" />
+						<circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.25"
+						></circle>
+
 						<path
 							d="M6.2 6.1a1.85 1.85 0 0 1 3.6.55c0 1.25-1.8 1.6-1.8 2.85"
 							fill="none"
 							stroke="currentColor"
 							stroke-width="1.25"
 							stroke-linecap="round"
-						/>
-						<circle cx="8" cy="11.6" r="0.8" fill="currentColor" />
+						></path>
+						<circle cx="8" cy="11.6" r="0.8" fill="currentColor"></circle>
 					</svg>
 				</button>
 			</div>
@@ -330,7 +332,9 @@
 					{#each AVATAR_CREDITS as c (c.artist)}
 						<li>
 							<a href={c.artistUrl} target="_blank" rel="noopener noreferrer">{c.artist}</a>
-							&middot;
+
+							·
+
 							<a href={c.licenseUrl} target="_blank" rel="noopener noreferrer">{c.license}</a>
 						</li>
 					{/each}
@@ -346,7 +350,7 @@
 							return async ({ update }) => {
 								await update();
 								gridSeeds = [seed, ...gridSeeds.filter((s) => s !== seed).slice(0, 8)];
-								await invalidateAll();
+								await refreshAll();
 							};
 						}}
 					>

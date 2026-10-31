@@ -3,14 +3,14 @@
 	import { tick, untrack } from 'svelte';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { formatCurrency, formatMoneyTotal, formatNumber } from '$lib/utils/format.js';
-	import { primaryCurrency, totalByCurrency } from '$lib/utils/money.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
-	import { _ } from '$lib/i18n';
-	import LineChart from '$lib/components/charts/LineChart.svelte';
-	import BarChart from '$lib/components/charts/BarChart.svelte';
-	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
-	import VehicleAvatar from '$lib/components/ui/VehicleAvatar.svelte';
+	import { formatCurrency, formatMoneyTotal, formatNumber } from '#lib/utils/format.js';
+	import { primaryCurrency, totalByCurrency } from '#lib/utils/money.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
+	import { _ } from '#lib/i18n/index.js';
+	import LineChart from '#lib/components/charts/LineChart.svelte';
+	import BarChart from '#lib/components/charts/BarChart.svelte';
+	import ViewToggle from '#lib/components/ui/ViewToggle.svelte';
+	import VehicleAvatar from '#lib/components/ui/VehicleAvatar.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -60,14 +60,12 @@
 			.filter((l) => !cutoffDate || l.recorded_at >= cutoffDate)
 			.sort((a, b) => a.recorded_at.localeCompare(b.recorded_at))
 	);
-
 	const filteredFinance = $derived(
 		data.expenses
 			.filter((t) => selectedVehicleId === 'all' || t.vehicle_id === selectedVehicleId)
 			.filter((t) => !cutoffDate || t.performed_at >= cutoffDate)
 			.sort((a, b) => a.performed_at.localeCompare(b.performed_at))
 	);
-
 	const filteredServices = $derived(
 		data.serviceLogs
 			.filter((s) => selectedVehicleId === 'all' || s.vehicle_id === selectedVehicleId)
@@ -219,7 +217,11 @@
 	const prefsSync = createPrefsSync('insights');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		void [selectedVehicleId, timeRange, mileageMode, costMode, showServiceEvents];
@@ -266,8 +268,8 @@
 								stroke-linejoin="round"
 								aria-hidden="true"
 							>
-								<path d="M7 17L17 7" />
-								<path d="M7 7h10v10" />
+								<path d="M7 17L17 7"></path>
+								<path d="M7 7h10v10"></path>
 							</svg>
 						</a>
 					</div>

@@ -2,9 +2,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import {
 	getFinanceTransactionById,
 	deleteFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
-import { apiError, ok } from '$lib/api/response.js';
-import { requireAuth, requireWrite, guardVehicle } from '$lib/api/guards.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { apiError, ok } from '#lib/api/response.js';
+import { requireAuth, requireWrite, guardVehicle } from '#lib/api/guards.js';
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
 	const authErr = requireAuth(locals);

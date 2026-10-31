@@ -1,10 +1,10 @@
 import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest';
 
-vi.mock('$lib/db/index.js', async () => {
+vi.mock('#lib/db/index.js', async () => {
 	const { default: Database } = await import('better-sqlite3');
 	const { drizzle } = await import('drizzle-orm/better-sqlite3');
 	const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
-	const schema = await import('$lib/db/schema.js');
+	const schema = await import('#lib/db/schema.js');
 	const sqlite = new Database(':memory:');
 	sqlite.pragma('foreign_keys = ON');
 	const db = drizzle(sqlite, { schema });
@@ -12,8 +12,8 @@ vi.mock('$lib/db/index.js', async () => {
 	return { db, sqlite };
 });
 
-import { db, sqlite } from '$lib/db/index.js';
-import { users, vehicles } from '$lib/db/schema.js';
+import { db, sqlite } from '#lib/db/index.js';
+import { users, vehicles } from '#lib/db/schema.js';
 import { load } from '../routes/(app)/settings/workflows/+page.server.js';
 
 const USER = 'u_picker';

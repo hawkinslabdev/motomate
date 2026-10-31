@@ -8,11 +8,11 @@ import {
 	getUserByEmail,
 	updateUserSettings,
 	deleteUser
-} from '$lib/db/repositories/users.js';
-import { lucia } from '$lib/auth/index.js';
-import { ARGON2_OPTS, isReauthActive, verifyReauth } from '$lib/auth/reauth.js';
-import { getOidcConfig } from '$lib/auth/oidc.js';
-import { locales as localeMap } from '$lib/i18n/locales.js';
+} from '#lib/db/repositories/users.js';
+import { lucia } from '#lib/auth/index.js';
+import { ARGON2_OPTS, isReauthActive, verifyReauth } from '#lib/auth/reauth.js';
+import { getOidcConfig } from '#lib/auth/oidc.js';
+import { locales as localeMap } from '#lib/i18n/locales.js';
 
 type AccountErrors = {
 	auth: { login: { errors: { rateLimited: string } } };

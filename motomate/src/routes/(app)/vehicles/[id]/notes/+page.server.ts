@@ -6,7 +6,7 @@ import {
 	createNote,
 	updateNote,
 	deleteNote
-} from '$lib/db/repositories/notes.js';
+} from '#lib/db/repositories/notes.js';
 
 const noteSchema = z.object({
 	title: z.string().max(200).optional(),

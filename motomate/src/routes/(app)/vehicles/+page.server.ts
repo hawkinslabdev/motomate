@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { updateUserSettings, getUserById } from '$lib/db/repositories/users.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { updateUserSettings, getUserById } from '#lib/db/repositories/users.js';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) throw redirect(302, '/login');
@@ -15,7 +15,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { error: 'Missing vehicle id' });
-		const { archiveVehicle } = await import('$lib/db/repositories/vehicles.js');
+		const { archiveVehicle } = await import('#lib/db/repositories/vehicles.js');
 		await archiveVehicle(id, locals.user!.id);
 		return { success: true };
 	},
@@ -23,7 +23,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const id = String(data.get('id') ?? '');
 		if (!id) return fail(400, { error: 'Missing vehicle id' });
-		const { unarchiveVehicle } = await import('$lib/db/repositories/vehicles.js');
+		const { unarchiveVehicle } = await import('#lib/db/repositories/vehicles.js');
 		await unarchiveVehicle(id, locals.user!.id);
 		return { success: true };
 	},

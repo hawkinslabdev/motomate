@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page, navigating } from '$app/state';
 	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
+	import { refreshAll } from '$app/navigation';
 	import { tick } from 'svelte';
-	import { formatNumber } from '$lib/utils/format.js';
-	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
-	import { HIDEABLE_VEHICLE_TABS } from '$lib/db/schema.js';
-	import { _, waitLocale } from '$lib/i18n';
+	import { formatNumber } from '#lib/utils/format.js';
+	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
+	import { HIDEABLE_VEHICLE_TABS } from '#lib/db/schema.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
 	import type { LayoutData } from './$types';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
@@ -216,25 +216,25 @@
 
 	const handlePinSubmit = () => {
 		return async ({ update }: { update: any }) => {
-			await update();
-			await invalidateAll();
+			await update({ navigate: false });
+			await refreshAll();
 			showPinPicker = false;
 		};
 	};
 
 	const handleLabelSave = () => {
 		return async ({ update }: { update: any }) => {
-			await update();
-			await invalidateAll();
+			await update({ navigate: false });
+			await refreshAll();
 		};
 	};
 
 	const handleAvatarSubmit = () => {
 		return async ({ update }: { update: any }) => {
 			// update() handles the background data refresh
-			await update();
-			// invalidateAll() ensures the layout load function re-runs
-			await invalidateAll();
+			await update({ navigate: false });
+			// refreshAll() ensures the layout load function re-runs
+			await refreshAll();
 			// Force img re-render by bumping the cache buster
 			avatarCacheBuster++;
 			showAvatarPopover = false;
@@ -644,7 +644,7 @@
 						action="/vehicles/{vehicle.id}/edit?/setTabs"
 						use:enhance={() =>
 							async ({ update }) => {
-								await update({ reset: false });
+								await update({ reset: false, navigate: false });
 							}}
 					>
 						<p class="tab-menu-title">{$_('vehicle.edit.settings.tabs.title')}</p>

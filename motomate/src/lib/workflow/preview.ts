@@ -1,15 +1,15 @@
 import { and, eq } from 'drizzle-orm';
-import type { RuleTrigger } from '$lib/db/schema.js';
-import { db } from '$lib/db/index.js';
-import { documents } from '$lib/db/schema.js';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import { type NextFireInfo, nextCalendarOccurrence } from '$lib/workflow/preview-core.js';
+import type { RuleTrigger } from '#lib/db/schema.js';
+import { db } from '#lib/db/index.js';
+import { documents } from '#lib/db/schema.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import { type NextFireInfo, nextCalendarOccurrence } from '#lib/workflow/preview-core.js';
 import {
 	evaluateDateTrigger,
 	evaluateMaintenanceTrigger,
 	normalizeWorkflowTrigger
-} from '$lib/workflow/triggers.js';
+} from '#lib/workflow/triggers.js';
 
 function toUtcDate(sqliteStr: string): Date {
 	const iso = sqliteStr.includes('T') ? sqliteStr : sqliteStr.replace(' ', 'T');

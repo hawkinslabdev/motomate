@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertDistanceValue, resolveDistanceUnitPreference } from '$lib/utils/measurement.js';
+import { convertDistanceValue, resolveDistanceUnitPreference } from '#lib/utils/measurement.js';
 
 describe('resolveDistanceUnitPreference', () => {
 	it('preserves a valid user distance preference', () => {

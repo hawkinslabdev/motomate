@@ -7,12 +7,12 @@ import {
 	deleteDocument,
 	renameDocument,
 	getDocumentsByIds
-} from '$lib/db/repositories/documents.js';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
-import { getTravelsByVehicle } from '$lib/db/repositories/travels.js';
-import { getStorage } from '$lib/storage/index.js';
-import { onDocumentCreated, onDocumentRenamed, mirrorDelete } from '$lib/server/integrations.js';
-import { attachmentStorageKey } from '$lib/utils/storage.js';
+} from '#lib/db/repositories/documents.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
+import { getTravelsByVehicle } from '#lib/db/repositories/travels.js';
+import { getStorage } from '#lib/storage/index.js';
+import { onDocumentCreated, onDocumentRenamed, mirrorDelete } from '#lib/server/integrations.js';
+import { attachmentStorageKey } from '#lib/utils/storage.js';
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const PER_PAGE = 10;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
+	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
 
 	let {
 		vehicle,

@@ -1,10 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: new Proxy({}, { get: (_, k: string) => process.env[k] ?? 'x'.repeat(32) })
-}));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$lib/auth/index.js', () => ({
+vi.mock(
+	'$app/env/private',
+	() =>
+		new Proxy(new Proxy({}, { get: (_, k: string) => process.env[k] ?? 'x'.repeat(32) }), {
+			has: () => true
+		})
+);
+vi.mock('$app/env/public', () => new Proxy({}, { has: () => true }));
+vi.mock('#lib/auth/index.js', () => ({
 	lucia: {
 		sessionCookieName: 'session',
 		validateSession: vi.fn(async () => ({
@@ -13,15 +17,15 @@ vi.mock('$lib/auth/index.js', () => ({
 		}))
 	}
 }));
-vi.mock('$lib/server/scheduler.js', () => ({ initScheduler: vi.fn() }));
-vi.mock('$lib/db/repositories/api-keys.js', () => ({
+vi.mock('#lib/server/scheduler.js', () => ({ initScheduler: vi.fn() }));
+vi.mock('#lib/db/repositories/api-keys.js', () => ({
 	findUserByApiKey: vi.fn(),
 	updateKeyLastUsed: vi.fn()
 }));
-vi.mock('$lib/server/secrets.js', () => ({ redactCredentials: (u: unknown) => u }));
-vi.mock('$lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
+vi.mock('#lib/server/secrets.js', () => ({ redactCredentials: (u: unknown) => u }));
+vi.mock('#lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
 
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
 import { handle } from '../hooks.server.js';
 
 const resolve = vi.fn(async () => new Response('ok'));

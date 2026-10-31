@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import { _ } from '$lib/i18n';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { _ } from '#lib/i18n/index.js';
 </script>
 
 <div class="toast-stack" aria-live="polite" aria-atomic="false">

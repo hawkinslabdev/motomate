@@ -3,7 +3,7 @@ import {
 	paperlessResolveTag,
 	paperlessResolveCorrespondent,
 	paperlessPost
-} from '$lib/server/paperless.js';
+} from '#lib/server/paperless.js';
 
 // IP literal so assertSafeUrl's dns.lookup resolves without touching the network (see url-guard.test.ts).
 const cfg = { url: 'http://127.0.0.1:8123', token: 'tok' };

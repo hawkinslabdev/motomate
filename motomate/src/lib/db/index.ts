@@ -2,14 +2,13 @@ import { createRequire } from 'module';
 import type BetterSqlite3Constructor from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as schema from './schema.js';
-import { env } from '$env/dynamic/private';
+import { DATABASE_URL } from '$app/env/private';
 
 // createRequire prevents Rollup from bundling better-sqlite3; bundling inlines CJS that references __filename which crashes in ESM.
 const _require = createRequire(import.meta.url);
+
 const Database = _require('better-sqlite3') as unknown as typeof BetterSqlite3Constructor;
-
-const dbPath = env.DATABASE_URL ?? './data/motomate.db';
-
+const dbPath = DATABASE_URL ?? './data/motomate.db';
 const sqlite = new Database(dbPath);
 
 sqlite.pragma('journal_mode = WAL');

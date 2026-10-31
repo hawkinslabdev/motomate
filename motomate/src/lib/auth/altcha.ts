@@ -1,10 +1,11 @@
 import crypto from 'crypto';
-import { env } from '$env/dynamic/private';
+import { ALTCHA_HMAC_KEY, AUTH_SECRET } from '$app/env/private';
 
 export function getAltchaKey(): string {
-	if (env.ALTCHA_HMAC_KEY) return env.ALTCHA_HMAC_KEY;
+	if (ALTCHA_HMAC_KEY) return ALTCHA_HMAC_KEY;
+
 	return crypto
-		.createHmac('sha256', env.AUTH_SECRET ?? '')
+		.createHmac('sha256', AUTH_SECRET ?? '')
 		.update('altcha')
 		.digest('hex');
 }

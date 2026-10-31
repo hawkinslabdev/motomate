@@ -1,11 +1,11 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
-import { getStorage } from '$lib/storage/index.js';
-import { mirrorPut, mirrorDelete } from '$lib/server/integrations.js';
-import type { UserSettings } from '$lib/db/schema.js';
-import type { OdometerUnit } from '$lib/utils/measurement.js';
-import { isValidAvatarSeed } from '$lib/utils/dicebear.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
+import { getStorage } from '#lib/storage/index.js';
+import { mirrorPut, mirrorDelete } from '#lib/server/integrations.js';
+import type { UserSettings } from '#lib/db/schema.js';
+import type { OdometerUnit } from '#lib/utils/measurement.js';
+import { isValidAvatarSeed } from '#lib/utils/dicebear.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_AVATAR_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);

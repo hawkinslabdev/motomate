@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
-	import { _ } from '$lib/i18n';
-	import { formatDateShort } from '$lib/utils/format.js';
-	import type { ApiKey } from '$lib/db/schema.js';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import { refreshAll } from '$app/navigation';
+	import { _ } from '#lib/i18n/index.js';
+	import { formatDateShort } from '#lib/utils/format.js';
+	import type { ApiKey } from '#lib/db/schema.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 
 	let { data, form } = $props<{
 		data: { keys: Omit<ApiKey, 'key_hash'>[]; locale: string };
@@ -130,7 +130,7 @@
 										use:enhance={() =>
 											async ({ update }) => {
 												await update();
-												await invalidateAll();
+												await refreshAll();
 											}}
 									>
 										<input type="hidden" name="key_id" value={key.id} />
@@ -151,7 +151,7 @@
 										use:enhance={() =>
 											async ({ update }) => {
 												await update();
-												await invalidateAll();
+												await refreshAll();
 											}}
 									>
 										<input type="hidden" name="key_id" value={key.id} />
@@ -190,7 +190,7 @@
 								use:enhance={() =>
 									async ({ update }) => {
 										await update();
-										await invalidateAll();
+										await refreshAll();
 									}}
 							>
 								<input type="hidden" name="key_id" value={key.id} />
@@ -206,7 +206,7 @@
 										use:enhance={() =>
 											async ({ update }) => {
 												await update();
-												await invalidateAll();
+												await refreshAll();
 											}}
 									>
 										<input type="hidden" name="key_id" value={key.id} />
@@ -268,7 +268,7 @@
 				return async ({ update }) => {
 					await update();
 					creating = false;
-					await invalidateAll();
+					await refreshAll();
 				};
 			}}
 		>

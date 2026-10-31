@@ -7,11 +7,11 @@ import {
 	toggleWorkflowRule,
 	updateWorkflowRuleExcludedVehicles,
 	updateWorkflowRuleTrigger
-} from '$lib/db/repositories/workflow.js';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import { RuleTriggerSchema } from '$lib/validators/schemas.js';
-import { computeNextFireInfo } from '$lib/workflow/preview.js';
+} from '#lib/db/repositories/workflow.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import { RuleTriggerSchema } from '#lib/validators/schemas.js';
+import { computeNextFireInfo } from '#lib/workflow/preview.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const userId = locals.user!.id;

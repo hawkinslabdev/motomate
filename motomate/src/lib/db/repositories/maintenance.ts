@@ -22,7 +22,7 @@ import {
 	type MeasurementValue
 } from '../../utils/measurement.js';
 
-import { locales } from '$lib/i18n/locales.js';
+import { locales } from '#lib/i18n/locales.js';
 
 type ResolvedTemplateInterval = {
 	interval_measurement: number | null;

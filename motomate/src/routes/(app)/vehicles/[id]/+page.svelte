@@ -1,26 +1,26 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { replaceState, beforeNavigate } from '$app/navigation';
+	import { goto, beforeNavigate } from '$app/navigation';
 	import { untrack, tick } from 'svelte';
 	import type { PageData } from './$types';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import { _, waitLocale } from '$lib/i18n';
-	import { quickAdd } from '$lib/stores/quickAdd.svelte.js';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
-	import TransactionForm from '$lib/components/finance/TransactionForm.svelte';
-	import NoteForm from '$lib/components/vehicle/NoteForm.svelte';
-	import OdometerForm from '$lib/components/vehicle/OdometerForm.svelte';
-	import ServiceLogForm from '$lib/components/vehicle/ServiceLogForm.svelte';
-	import ServiceLogEditForm from '$lib/components/vehicle/ServiceLogEditForm.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { quickAdd } from '#lib/stores/quickAdd.svelte.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
+	import TransactionForm from '#lib/components/finance/TransactionForm.svelte';
+	import NoteForm from '#lib/components/vehicle/NoteForm.svelte';
+	import OdometerForm from '#lib/components/vehicle/OdometerForm.svelte';
+	import ServiceLogForm from '#lib/components/vehicle/ServiceLogForm.svelte';
+	import ServiceLogEditForm from '#lib/components/vehicle/ServiceLogEditForm.svelte';
 	import {
 		formatDateShort,
 		formatYearMonth,
 		formatNumber,
 		formatMeasurement,
 		formatCurrency
-	} from '$lib/utils/format.js';
+	} from '#lib/utils/format.js';
 
 	let { data, form }: { data: PageData; form: Record<string, unknown> | null } = $props();
 
@@ -175,9 +175,9 @@
 		const quick = page.url.searchParams.get('quick');
 		if (quick === 'service' || quick === 'odometer' || quick === 'note') {
 			openSheet(quick);
-			const url = new URL(page.url);
+			const url = new URL(page.url.href);
 			url.searchParams.delete('quick');
-			tick().then(() => replaceState(url, page.state));
+			tick().then(() => goto(url, { shallow: true, replace: true, state: page.state }));
 		}
 	});
 
@@ -244,7 +244,11 @@
 	const prefsSync = createPrefsSync('timeline');
 	let _prefFirstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		window.addEventListener('beforeunload', prefsSync.flush);
@@ -274,12 +278,40 @@
 
 	// Combined timeline (newest first)
 	type Entry =
-		| { kind: 'service'; date: string; odometer: number; log: (typeof data.logs)[0] }
-		| { kind: 'odometer'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
-		| { kind: 'note'; date: string; odometer: number; log: (typeof data.odoLogs)[0] }
-		| { kind: 'reminder'; date: string; odometer: number; log: (typeof data.logs)[0] }
-		| { kind: 'travel'; date: string; travel: (typeof data.travelEntries)[0] }
-		| { kind: 'finance'; date: string; tx: (typeof data.financeEntries)[0] };
+		| {
+				kind: 'service';
+				date: string;
+				odometer: number;
+				log: (typeof data.logs)[0];
+		  }
+		| {
+				kind: 'odometer';
+				date: string;
+				odometer: number;
+				log: (typeof data.odoLogs)[0];
+		  }
+		| {
+				kind: 'note';
+				date: string;
+				odometer: number;
+				log: (typeof data.odoLogs)[0];
+		  }
+		| {
+				kind: 'reminder';
+				date: string;
+				odometer: number;
+				log: (typeof data.logs)[0];
+		  }
+		| {
+				kind: 'travel';
+				date: string;
+				travel: (typeof data.travelEntries)[0];
+		  }
+		| {
+				kind: 'finance';
+				date: string;
+				tx: (typeof data.financeEntries)[0];
+		  };
 
 	const allEntries = $derived.by((): Entry[] => {
 		const entries: Entry[] = [];
@@ -307,6 +339,7 @@
 					}))
 			);
 		}
+
 		entries.push(
 			...(data.odoLogs
 				.map((log: (typeof data.odoLogs)[number]) => {
@@ -321,6 +354,7 @@
 				})
 				.filter(Boolean) as Entry[])
 		);
+
 		if (filters.travel) {
 			entries.push(
 				...data.travelEntries.map((t: (typeof data.travelEntries)[number]) => ({
@@ -469,15 +503,15 @@
 					stroke-linejoin="round"
 					aria-hidden="true"
 				>
-					<line x1="4" y1="21" x2="4" y2="14" />
-					<line x1="4" y1="10" x2="4" y2="3" />
-					<line x1="12" y1="21" x2="12" y2="12" />
-					<line x1="12" y1="8" x2="12" y2="3" />
-					<line x1="20" y1="21" x2="20" y2="16" />
-					<line x1="20" y1="12" x2="20" y2="3" />
-					<line x1="1" y1="14" x2="7" y2="14" />
-					<line x1="9" y1="8" x2="15" y2="8" />
-					<line x1="17" y1="16" x2="23" y2="16" />
+					<line x1="4" y1="21" x2="4" y2="14"></line>
+					<line x1="4" y1="10" x2="4" y2="3"></line>
+					<line x1="12" y1="21" x2="12" y2="12"></line>
+					<line x1="12" y1="8" x2="12" y2="3"></line>
+					<line x1="20" y1="21" x2="20" y2="16"></line>
+					<line x1="20" y1="12" x2="20" y2="3"></line>
+					<line x1="1" y1="14" x2="7" y2="14"></line>
+					<line x1="9" y1="8" x2="15" y2="8"></line>
+					<line x1="17" y1="16" x2="23" y2="16"></line>
 				</svg>
 				{#if filtersNonDefault}
 					<span class="filter-active-dot" aria-hidden="true"></span>
@@ -506,8 +540,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{$_('vehicle.detail.timeline.filter.service')}</span>
 					</button>
@@ -527,8 +562,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{readingFilterLabel}</span>
 					</button>
@@ -548,8 +584,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{$_('vehicle.detail.timeline.filter.notes')}</span>
 					</button>
@@ -569,8 +606,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{$_('vehicle.detail.timeline.filter.travels')}</span>
 					</button>
@@ -591,8 +629,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{$_('vehicle.detail.timeline.filter.finance')}</span>
 					</button>
@@ -612,8 +651,9 @@
 									stroke-width="2.5"
 									stroke-linecap="round"
 									stroke-linejoin="round"
-									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" /></svg
-								>{/if}
+									aria-hidden="true"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5"></polyline></svg
+								>
+							{/if}
 						</span>
 						<span class="filter-label">{$_('vehicle.detail.timeline.filter.reminders')}</span>
 					</button>
@@ -624,11 +664,12 @@
 		<button
 			class="btn-primary"
 			onclick={() => (isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen))}
+			>+ {$_('common.add')}</button
 		>
-			+ {$_('common.add')}
-		</button>
+
 		{#if !isMobile && menuOpen}
 			<div class="add-menu-backdrop" role="presentation" onclick={() => (menuOpen = false)}></div>
+
 			<div class="add-menu-dropdown">
 				{#each addMenuOrder as key, i (key)}
 					{@const cfg = addMenuConfig[key]}
@@ -753,6 +794,7 @@
 		<!-- Single backdrop for all entry menus -->
 		{#if entryMenu !== null}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
+
 			<div class="entry-backdrop" onclick={() => (entryMenu = null)} onkeydown={() => {}}></div>
 		{/if}
 

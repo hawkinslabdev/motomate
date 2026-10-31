@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import type { PageData } from './$types';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatDateTime } from '$lib/utils/format';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatDateTime } from '#lib/utils/format.js';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -25,10 +25,10 @@
 	}
 
 	function navTo(p: number, f?: string) {
-		const u = new URL($page.url);
+		const u = new URL(page.url.href);
 		u.searchParams.set('page', String(p));
 		u.searchParams.set('filter', f ?? data.filter);
-		goto(u.toString(), { replaceState: false });
+		goto(u.toString());
 	}
 
 	function setFilter(f: string) {

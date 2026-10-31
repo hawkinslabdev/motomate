@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { DOC_TYPES, FINANCE_CATEGORIES, TRACKER_STATUSES, VEHICLE_TYPES } from '$lib/db/schema.js';
-import { UPCOMING_DAYS, UPCOMING_DISTANCE, UPCOMING_HOURS } from '$lib/api/attention.js';
+import { DOC_TYPES, FINANCE_CATEGORIES, TRACKER_STATUSES, VEHICLE_TYPES } from '#lib/db/schema.js';
+import { UPCOMING_DAYS, UPCOMING_DISTANCE, UPCOMING_HOURS } from '#lib/api/attention.js';
 
 const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '0.0.0';
 

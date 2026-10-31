@@ -1,10 +1,10 @@
 import { vi, describe, it, expect, afterAll } from 'vitest';
 
-vi.mock('$lib/db/index.js', async () => {
+vi.mock('#lib/db/index.js', async () => {
 	const { default: Database } = await import('better-sqlite3');
 	const { drizzle } = await import('drizzle-orm/better-sqlite3');
 	const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
-	const schema = await import('$lib/db/schema.js');
+	const schema = await import('#lib/db/schema.js');
 	const sqlite = new Database(':memory:');
 	sqlite.pragma('foreign_keys = ON');
 	const db = drizzle(sqlite, { schema });
@@ -13,11 +13,11 @@ vi.mock('$lib/db/index.js', async () => {
 });
 
 import { eq } from 'drizzle-orm';
-import { db, sqlite } from '$lib/db/index.js';
-import { users, vehicles, workflow_rules, notifications } from '$lib/db/schema.js';
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
-import { generateId } from '$lib/utils/id.js';
-import type { RuleTrigger } from '$lib/db/schema.js';
+import { db, sqlite } from '#lib/db/index.js';
+import { users, vehicles, workflow_rules, notifications } from '#lib/db/schema.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
+import { generateId } from '#lib/utils/id.js';
+import type { RuleTrigger } from '#lib/db/schema.js';
 
 const staleCreatedAt = new Date(Date.now() - 30 * 86_400_000).toISOString();
 

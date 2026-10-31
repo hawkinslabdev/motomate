@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { getContext, onMount, untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { _ } from '$lib/i18n';
+	import { browser } from '$app/env';
+	import { _ } from '#lib/i18n/index.js';
 
 	const altchaCtx = getContext<{ locale: string }>('altcha-locale');
 
@@ -43,7 +43,7 @@
 	});
 </script>
 
-<svelte:head><title>Log in &middot; MotoMate</title></svelte:head>
+<svelte:head><title>Log in · MotoMate</title></svelte:head>
 
 <div class="page-header">
 	<h1 class="page-title">{$_('auth.login.title')}</h1>
@@ -62,8 +62,8 @@
 			stroke-linejoin="round"
 			aria-hidden="true"
 		>
-			<rect width="20" height="16" x="2" y="4" rx="2" />
-			<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+			<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+			<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
 		</svg>
 		<div class="notice-content">
 			<p class="notice-text">
@@ -167,8 +167,9 @@
 								stroke-linejoin="round"
 								aria-hidden="true"
 							>
-								<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-								<circle cx="12" cy="12" r="3" />
+								<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
+
+								<circle cx="12" cy="12" r="3"></circle>
 							</svg>
 						{:else}
 							<svg
@@ -182,8 +183,8 @@
 							>
 								<path
 									d="M9.9 4.24A9.94 9.94 0 0 1 12 4c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.94 3.94M6.5 6.5C3.6 8.28 2 12 2 12s3.5 7 10 7a9.9 9.9 0 0 0 4.15-.9M9.9 14.1a3 3 0 1 0 4.2-4.2"
-								/>
-								<path d="M2 2l20 20" />
+								></path>
+								<path d="M2 2l20 20"></path>
 							</svg>
 						{/if}
 					</button>
@@ -282,8 +283,8 @@
 				stroke-linejoin="round"
 				aria-hidden="true"
 			>
-				<circle cx="8" cy="15" r="4" />
-				<path d="M10.5 12.5 19 4M17 6l2 2M14 9l2 2" />
+				<circle cx="8" cy="15" r="4"></circle>
+				<path d="M10.5 12.5 19 4M17 6l2 2M14 9l2 2"></path>
 			</svg>
 			{data.oidcName}
 		</a>

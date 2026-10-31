@@ -7,10 +7,10 @@ import {
 	redirectUri,
 	oidcCookie,
 	safeReturnPath
-} from '$lib/auth/oidc.js';
-import { isSecureCookie } from '$lib/auth/index.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
-import { ts } from '$lib/server/log.js';
+} from '#lib/auth/oidc.js';
+import { isSecureCookie } from '#lib/auth/index.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
+import { ts } from '#lib/server/log.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, url, locals, getClientAddress }) => {
@@ -64,5 +64,5 @@ export const GET: RequestHandler = async ({ cookies, url, locals, getClientAddre
 	// provider must honour prompt
 	if (stepUp) authUrl.searchParams.set('prompt', 'login');
 
-	redirect(302, authUrl.toString());
+	redirect(302, authUrl.toString(), { external: true });
 };

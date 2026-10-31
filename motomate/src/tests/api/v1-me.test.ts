@@ -1,21 +1,20 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/server/download-token.js', () => ({
+vi.mock('#lib/server/download-token.js', () => ({
 	createDownloadToken: vi.fn(),
 	tokenExpiresAt: vi.fn()
 }));
 
-vi.mock('$env/dynamic/private', () => ({
-	env: { DATABASE_URL: ':memory:' }
-}));
+vi.mock('$app/env/private', () => new Proxy({ DATABASE_URL: ':memory:' }, { has: () => true }));
 
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_APP_URL: 'http://localhost:5173' }
-}));
+vi.mock(
+	'$app/env/public',
+	() => new Proxy({ PUBLIC_APP_URL: 'http://localhost:5173' }, { has: () => true })
+);
 
 import { GET as getMe } from '../../routes/api/v1/me/+server.js';
 import { GET as getDownload } from '../../routes/api/v1/me/download/+server.js';
-import { createDownloadToken, tokenExpiresAt } from '$lib/server/download-token.js';
+import { createDownloadToken, tokenExpiresAt } from '#lib/server/download-token.js';
 
 const mockUser = {
 	id: 'u_1',

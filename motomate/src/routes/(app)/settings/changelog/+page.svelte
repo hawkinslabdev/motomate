@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { _ } from '$lib/i18n';
-	import Button from '$lib/components/ui/Button.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import { _ } from '#lib/i18n/index.js';
+	import Button from '#lib/components/ui/Button.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 
 	let { data } = $props<{ data: PageData }>();
 

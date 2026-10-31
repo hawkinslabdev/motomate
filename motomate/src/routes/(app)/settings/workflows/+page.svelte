@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
-	import type { RuleTrigger } from '$lib/db/schema.js';
-	import type { NextFireInfo } from '$lib/workflow/preview-core.js';
-	import { lastFiredAt } from '$lib/workflow/engine-utils.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatDateTime, formatDateLong } from '$lib/utils/format';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import type { RuleTrigger } from '#lib/db/schema.js';
+	import type { NextFireInfo } from '#lib/workflow/preview-core.js';
+	import { lastFiredAt } from '#lib/workflow/engine-utils.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatDateTime, formatDateLong } from '#lib/utils/format.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import Modal from '#lib/components/ui/Modal.svelte';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 
 	let { data } = $props<{ data: PageData }>();
 

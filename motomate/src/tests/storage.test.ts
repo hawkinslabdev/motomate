@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { attachmentStorageKey, downloadFilename } from '$lib/utils/storage.js';
+import { attachmentStorageKey, downloadFilename } from '#lib/utils/storage.js';
 
 describe('attachmentStorageKey', () => {
 	it('namespaces the key by user and vehicle', () => {

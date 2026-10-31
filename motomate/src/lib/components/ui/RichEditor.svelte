@@ -4,7 +4,7 @@
 	import StarterKit from '@tiptap/starter-kit';
 	import Link from '@tiptap/extension-link';
 	import { Markdown } from 'tiptap-markdown';
-	import { _ } from '$lib/i18n';
+	import { _ } from '#lib/i18n/index.js';
 
 	interface DocRecord {
 		id: string;

@@ -3,9 +3,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import {
 	getFinanceTransactionsByVehicle,
 	createFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
-import { ApiFinanceTransactionSchema } from '$lib/validators/schemas.js';
-import { apiError, ok } from '$lib/api/response.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { ApiFinanceTransactionSchema } from '#lib/validators/schemas.js';
+import { apiError, ok } from '#lib/api/response.js';
 import {
 	requireAuth,
 	requireWrite,
@@ -13,7 +13,7 @@ import {
 	parseBody,
 	parsePage,
 	userCurrency
-} from '$lib/api/guards.js';
+} from '#lib/api/guards.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const authErr = requireAuth(locals);

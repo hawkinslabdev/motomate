@@ -1,3 +1,5 @@
+import adapter from '@sveltejs/adapter-node';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
@@ -17,8 +19,15 @@ function resolveVersion(): string {
 }
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
-	define: {
-		__APP_VERSION__: JSON.stringify(resolveVersion())
-	}
+	plugins: [
+		tailwindcss(),
+		sveltekit({
+			preprocess: vitePreprocess(),
+			adapter: adapter(),
+			// CSRF is enforced in hooks.server.ts instead: it covers every method and content type, not
+			// just form posts, and matches on hostname so a TLS-terminating proxy cannot 403 real users.
+			csrf: { trustedOrigins: ['*'] }
+		})
+	],
+	define: { __APP_VERSION__: JSON.stringify(resolveVersion()) }
 });

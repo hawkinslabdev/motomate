@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { _ } from '$lib/i18n';
+	import { _ } from '#lib/i18n/index.js';
 
 	interface Props {
 		open: boolean;

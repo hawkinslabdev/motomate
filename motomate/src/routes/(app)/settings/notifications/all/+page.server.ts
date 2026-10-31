@@ -7,7 +7,7 @@ import {
 	markRead,
 	deleteNotification,
 	deleteReadNotifications
-} from '$lib/workflow/channels/inapp.js';
+} from '#lib/workflow/channels/inapp.js';
 
 const PER_PAGE = 20;
 

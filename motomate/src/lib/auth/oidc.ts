@@ -1,6 +1,15 @@
 import crypto from 'crypto';
-import { env } from '$env/dynamic/private';
-import { env as pubEnv } from '$env/dynamic/public';
+
+import {
+	OIDC_ISSUER,
+	OIDC_CLIENT_ID,
+	OIDC_CLIENT_SECRET,
+	OIDC_SCOPES,
+	OIDC_NAME,
+	OIDC_TRUST_UNVERIFIED_EMAIL
+} from '$app/env/private';
+
+import { PUBLIC_APP_URL } from '$app/env/public';
 import { ts } from '../server/log.js';
 
 type OidcConfig = {
@@ -24,19 +33,19 @@ const DISCOVERY_TTL = 60 * 60_000;
 let _discoveryCache: { issuer: string; at: number; doc: OidcDiscovery } | null = null;
 
 export function getOidcConfig(): OidcConfig | null {
-	if (!env.OIDC_ISSUER || !env.OIDC_CLIENT_ID || !env.OIDC_CLIENT_SECRET) return null;
+	if (!OIDC_ISSUER || !OIDC_CLIENT_ID || !OIDC_CLIENT_SECRET) return null;
 	return {
-		issuer: env.OIDC_ISSUER.replace(/\/$/, ''),
-		clientId: env.OIDC_CLIENT_ID,
-		clientSecret: env.OIDC_CLIENT_SECRET,
-		scopes: env.OIDC_SCOPES ?? 'openid email profile',
-		name: env.OIDC_NAME ?? 'SSO',
-		trustUnverifiedEmail: env.OIDC_TRUST_UNVERIFIED_EMAIL === 'true'
+		issuer: OIDC_ISSUER.replace(/\/$/, ''),
+		clientId: OIDC_CLIENT_ID,
+		clientSecret: OIDC_CLIENT_SECRET,
+		scopes: OIDC_SCOPES ?? 'openid email profile',
+		name: OIDC_NAME ?? 'SSO',
+		trustUnverifiedEmail: OIDC_TRUST_UNVERIFIED_EMAIL === 'true'
 	};
 }
 
 export function appOrigin(url: URL): string {
-	return (pubEnv.PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
+	return (PUBLIC_APP_URL || url.origin).replace(/\/$/, '');
 }
 
 // attempt for prefix to set these cookies host-only, which prevents apps on shared parent domains from cojoining? them

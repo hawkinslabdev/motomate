@@ -1,8 +1,8 @@
 import webpush from 'web-push';
-import { db } from '$lib/db/index.js';
-import { push_subscriptions } from '$lib/db/schema.js';
+import { db } from '#lib/db/index.js';
+import { push_subscriptions } from '#lib/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { getVapidConfig } from '$lib/server/vapid.js';
+import { getVapidConfig } from '#lib/server/vapid.js';
 
 export async function dispatchPush(userId: string, title: string, body: string): Promise<void> {
 	const { publicKey, privateKey, subject } = getVapidConfig();

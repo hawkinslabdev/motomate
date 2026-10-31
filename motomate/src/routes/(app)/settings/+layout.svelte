@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { _, waitLocale } from '$lib/i18n';
+	import { page } from '$app/state';
+	import { _, waitLocale } from '#lib/i18n/index.js';
 	let { children } = $props<{ children?: import('svelte').Snippet }>();
 
 	$effect(() => {
@@ -20,9 +20,8 @@
 	];
 
 	let navOpen = $state(false);
-
 	const activeLabelKey = $derived(
-		tabs.find((tab) => tab.href === $page.url.pathname)?.labelKey ?? 'settings.title'
+		tabs.find((tab) => tab.href === page.url.pathname)?.labelKey ?? 'settings.title'
 	);
 
 	function closeNav() {
@@ -45,7 +44,7 @@
 		<a
 			href={tab.href}
 			class="settings-nav-link"
-			class:settings-nav-link--active={$page.url.pathname === tab.href}
+			class:settings-nav-link--active={page.url.pathname === tab.href}
 			onclick={onLinkClick}
 		>
 			{$_(tab.labelKey)}
@@ -62,7 +61,7 @@
 		onclick={onLinkClick}
 	>
 		<span>{$_('settings.nav.reportIssue')}</span>
-		&nbsp;
+
 		<svg
 			viewBox="0 0 24 24"
 			fill="none"
@@ -81,7 +80,7 @@
 	<a
 		href="/settings/changelog"
 		class="settings-nav-version"
-		class:settings-nav-version--active={$page.url.pathname === '/settings/changelog'}
+		class:settings-nav-version--active={page.url.pathname === '/settings/changelog'}
 		data-tooltip={$_('settings.nav.changelog')}
 		onclick={onLinkClick}>v{appVersion}</a
 	>
@@ -113,9 +112,9 @@
 					stroke-linecap="round"
 					aria-hidden="true"
 				>
-					<line x1="4" y1="7" x2="20" y2="7" />
-					<line x1="4" y1="12" x2="20" y2="12" />
-					<line x1="4" y1="17" x2="20" y2="17" />
+					<line x1="4" y1="7" x2="20" y2="7"></line>
+					<line x1="4" y1="12" x2="20" y2="12"></line>
+					<line x1="4" y1="17" x2="20" y2="17"></line>
 				</svg>
 				<span class="settings-nav-trigger-label">{$_(activeLabelKey)}</span>
 				<svg
@@ -126,10 +125,8 @@
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					aria-hidden="true"
+					aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg
 				>
-					<polyline points="6 9 12 15 18 9" />
-				</svg>
 			</button>
 
 			{#if navOpen}

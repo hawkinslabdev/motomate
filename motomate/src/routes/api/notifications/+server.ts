@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { markRead, markAllRead, getNotifications } from '$lib/workflow/channels/inapp.js';
+import { markRead, markAllRead, getNotifications } from '#lib/workflow/channels/inapp.js';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
 	if (!locals.user) error(401);

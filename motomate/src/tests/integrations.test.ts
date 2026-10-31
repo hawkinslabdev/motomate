@@ -1,31 +1,32 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: { AUTH_SECRET: 'test-secret-at-least-32-characters-long' }
-}));
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock(
+	'$app/env/private',
+	() => new Proxy({ AUTH_SECRET: 'test-secret-at-least-32-characters-long' }, { has: () => true })
+);
+vi.mock('#lib/db/repositories/users.js', () => ({
 	getUserById: vi.fn(),
 	getUserIdsWithIntegrations: vi.fn(async () => []),
 	updateUserSettings: vi.fn()
 }));
-vi.mock('$lib/db/repositories/documents.js', () => ({ getDocumentsByUser: vi.fn() }));
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/documents.js', () => ({ getDocumentsByUser: vi.fn() }));
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehiclesByUser: vi.fn(),
 	getVehicleById: vi.fn()
 }));
-vi.mock('$lib/workflow/channels/inapp.js', () => ({
+vi.mock('#lib/workflow/channels/inapp.js', () => ({
 	raiseSystemAlert: vi.fn(async () => {}),
 	clearSystemAlert: vi.fn(async () => {})
 }));
-vi.mock('$lib/storage/index.js', () => ({ getStorage: vi.fn() }));
-vi.mock('$lib/storage/s3.js', async (original) => ({
+vi.mock('#lib/storage/index.js', () => ({ getStorage: vi.fn() }));
+vi.mock('#lib/storage/s3.js', async (original) => ({
 	...(await original<Record<string, unknown>>()),
 	s3Put: vi.fn(),
 	s3Exists: vi.fn(),
 	s3MarkDeleted: vi.fn(),
 	s3Test: vi.fn()
 }));
-vi.mock('$lib/server/paperless.js', async (original) => ({
+vi.mock('#lib/server/paperless.js', async (original) => ({
 	...(await original<Record<string, unknown>>()),
 	paperlessPost: vi.fn(),
 	paperlessTest: vi.fn(),
@@ -40,12 +41,12 @@ import {
 	getUserById,
 	getUserIdsWithIntegrations,
 	updateUserSettings
-} from '$lib/db/repositories/users.js';
-import { getDocumentsByUser } from '$lib/db/repositories/documents.js';
-import { getVehiclesByUser, getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { raiseSystemAlert, clearSystemAlert } from '$lib/workflow/channels/inapp.js';
-import { getStorage } from '$lib/storage/index.js';
-import { s3Put, s3Exists, s3ClientConfig } from '$lib/storage/s3.js';
+} from '#lib/db/repositories/users.js';
+import { getDocumentsByUser } from '#lib/db/repositories/documents.js';
+import { getVehiclesByUser, getVehicleById } from '#lib/db/repositories/vehicles.js';
+import { raiseSystemAlert, clearSystemAlert } from '#lib/workflow/channels/inapp.js';
+import { getStorage } from '#lib/storage/index.js';
+import { s3Put, s3Exists, s3ClientConfig } from '#lib/storage/s3.js';
 import {
 	paperlessPost,
 	paperlessResolveTag,
@@ -54,15 +55,15 @@ import {
 	paperlessFindId,
 	paperlessUpdateTitle,
 	PaperlessRejection
-} from '$lib/server/paperless.js';
-import { encryptSecret, decryptSecret, redactCredentials } from '$lib/server/secrets.js';
+} from '#lib/server/paperless.js';
+import { encryptSecret, decryptSecret, redactCredentials } from '#lib/server/secrets.js';
 import {
 	resolveIntegrations,
 	syncAll,
 	runIntegrationSync,
 	onDocumentRenamed
-} from '$lib/server/integrations.js';
-import type { UserSettings } from '$lib/db/schema.js';
+} from '#lib/server/integrations.js';
+import type { UserSettings } from '#lib/db/schema.js';
 
 function settings(overrides: Record<string, unknown> = {}): UserSettings {
 	return {

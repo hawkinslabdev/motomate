@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatNumber } from '$lib/utils/format.js';
+	import { formatNumber } from '#lib/utils/format.js';
 
 	let {
 		bars,

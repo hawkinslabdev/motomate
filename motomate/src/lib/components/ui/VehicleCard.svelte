@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { formatNumber } from '$lib/utils/format.js';
-	import { _ } from '$lib/i18n';
-	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
+	import { formatNumber } from '#lib/utils/format.js';
+	import { _ } from '#lib/i18n/index.js';
+	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
 
 	let {
 		vehicle,

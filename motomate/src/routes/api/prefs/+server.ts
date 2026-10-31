@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
-import type { PagePrefs } from '$lib/db/schema.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
+import type { PagePrefs } from '#lib/db/schema.js';
 
 export const PATCH: RequestHandler = async ({ locals, request }) => {
 	if (!locals.user) throw error(401, 'Unauthorized');

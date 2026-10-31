@@ -1,16 +1,16 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { db } from '$lib/db/index.js';
+import { db } from '#lib/db/index.js';
 import {
 	workflow_rules,
 	active_trackers,
 	vehicles,
 	documents,
 	odometer_logs
-} from '$lib/db/schema.js';
+} from '#lib/db/schema.js';
 import { renderTemplate } from './rules.js';
-import { serverT } from '$lib/i18n/server.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import type { RuleTrigger, RuleNotification, Vehicle } from '$lib/db/schema.js';
+import { serverT } from '#lib/i18n/server.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import type { RuleTrigger, RuleNotification, Vehicle } from '#lib/db/schema.js';
 import {
 	buildMaintenanceNotificationVars,
 	evaluateDateTrigger,

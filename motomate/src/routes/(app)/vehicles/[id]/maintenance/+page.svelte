@@ -1,29 +1,29 @@
 <script lang="ts">
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { beforeNavigate, replaceState } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { PageData } from './$types';
-	import TrackerCard from '$lib/components/ui/TrackerCard.svelte';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
-	import ColumnPicker from '$lib/components/ui/ColumnPicker.svelte';
-	import AddTrackerForm from '$lib/components/maintenance/AddTrackerForm.svelte';
-	import EditTrackerForm from '$lib/components/maintenance/EditTrackerForm.svelte';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
-	import { compareTrackerStatus } from '$lib/utils/tracker-status.js';
-	import ServiceLogEditForm from '$lib/components/vehicle/ServiceLogEditForm.svelte';
+	import TrackerCard from '#lib/components/ui/TrackerCard.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import ViewToggle from '#lib/components/ui/ViewToggle.svelte';
+	import ColumnPicker from '#lib/components/ui/ColumnPicker.svelte';
+	import AddTrackerForm from '#lib/components/maintenance/AddTrackerForm.svelte';
+	import EditTrackerForm from '#lib/components/maintenance/EditTrackerForm.svelte';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
+	import { compareTrackerStatus } from '#lib/utils/tracker-status.js';
+	import ServiceLogEditForm from '#lib/components/vehicle/ServiceLogEditForm.svelte';
 	import {
 		formatMeasurement,
 		formatDateShort,
 		formatCurrency,
 		formatYearMonth
-	} from '$lib/utils/format.js';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
+	} from '#lib/utils/format.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
 
 	let {
 		data,
@@ -53,14 +53,13 @@
 		const logId = page.url.searchParams.get('log');
 		if (logId && data.trackers.some((t) => t.id === logId)) {
 			loggingTracker = logId;
-			const url = new URL(page.url);
+			const url = new URL(page.url.href);
 			url.searchParams.delete('log');
-			tick().then(() => replaceState(url, page.state));
+			tick().then(() => goto(url, { shallow: true, replace: true, state: page.state }));
 			setTimeout(() => {
-				document.querySelector(`[data-log-form="${logId}"]`)?.scrollIntoView({
-					behavior: 'smooth',
-					block: 'center'
-				});
+				document
+					.querySelector(`[data-log-form="${logId}"]`)
+					?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			}, 50);
 		}
 	});
@@ -98,7 +97,11 @@
 	const prefsSync = createPrefsSync('maintenance');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		const s = sortBy;
@@ -412,6 +415,7 @@
 								return data.trackers.find((t) => t.id === log.tracker_id)?.template.name ?? '';
 							}
 							const first = (log.serviced_tracker_ids ?? [])[0];
+
 							return first ? (data.trackers.find((t) => t.id === first)?.template.name ?? '') : '';
 						};
 						return getName(a).localeCompare(getName(b));
@@ -570,6 +574,7 @@
 											const getName = (l: typeof a) => {
 												if (l.tracker_id) return data.trackers.find((t) => t.id === l.tracker_id)?.template.name ?? '';
 												const first = (l.serviced_tracker_ids ?? [])[0];
+
 												return first ? (data.trackers.find((t) => t.id === first)?.template.name ?? '') : '';
 											};
 											cmp = getName(a).localeCompare(getName(b));
@@ -708,6 +713,7 @@
 							<button role="menuitem" class="tracker-menu-item" onclick={() => startEditTracker(t)}
 								>{$_('common.edit')}</button
 							>
+
 							<button
 								role="menuitem"
 								class="tracker-menu-item tracker-menu-item--danger"
@@ -836,6 +842,7 @@
 										skippingTracker = { id: t.id, name: t.template.name };
 									}}>{$_('maintenance.skip.button')}</button
 								>
+
 								<button type="button" class="btn-ghost" onclick={() => (loggingTracker = null)}
 									>{$_('common.cancel')}</button
 								>

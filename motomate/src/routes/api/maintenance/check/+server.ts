@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
 
 export const POST: RequestHandler = async ({ locals }) => {
 	if (!locals.user) error(401, 'Unauthorized');

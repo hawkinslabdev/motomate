@@ -1,11 +1,11 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 import crypto from 'crypto';
-import { env as pubEnv } from '$env/dynamic/public';
-import { getStorage } from '$lib/storage/index.js';
-import { getDocumentByStorageKey } from '$lib/db/repositories/documents.js';
-import { getVehicleByCoverImageKey } from '$lib/db/repositories/vehicles.js';
-import { downloadFilename } from '$lib/utils/storage.js';
+import { PUBLIC_DEMO_ENABLED } from '$app/env/public';
+import { getStorage } from '#lib/storage/index.js';
+import { getDocumentByStorageKey } from '#lib/db/repositories/documents.js';
+import { getVehicleByCoverImageKey } from '#lib/db/repositories/vehicles.js';
+import { downloadFilename } from '#lib/utils/storage.js';
 
 // renders in browser, cannot run scripts
 const INLINE_TYPES: Record<string, string> = {
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url, locals, request }) => {
 	const isDemo = key.startsWith('demo/');
 
 	// Demo assets are only accessible when demo mode is explicitly enabled
-	if (isDemo && pubEnv.PUBLIC_DEMO_ENABLED !== 'true') error(404, 'File not found');
+	if (isDemo && PUBLIC_DEMO_ENABLED !== 'true') error(404, 'File not found');
 
 	// Resolve document record once
 	let docRecord: Awaited<ReturnType<typeof getDocumentByStorageKey>> = undefined;

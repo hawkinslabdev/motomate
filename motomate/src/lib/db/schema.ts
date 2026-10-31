@@ -38,7 +38,7 @@ export type NotificationChannels = {
 	home_assistant?: { enabled: boolean; webhook_url?: string };
 };
 
-// Credentials are encrypted at rest (see $lib/server/secrets.js) thus wont' leave the serverrr
+// Credentials are encrypted at rest (see #lib/server/secrets.js) thus wont' leave the serverrr
 export type Integrations = {
 	s3?: {
 		enabled: boolean;

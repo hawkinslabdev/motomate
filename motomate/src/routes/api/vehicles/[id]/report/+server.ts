@@ -1,13 +1,13 @@
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
-import { getTrackersByVehicle } from '$lib/db/repositories/maintenance.js';
-import { getDocumentsByIds } from '$lib/db/repositories/documents.js';
-import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
-import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
-import { getStorage } from '$lib/storage/index.js';
-import { buildMaintenanceReport } from '$lib/pdf/maintenance-report.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
+import { getTrackersByVehicle } from '#lib/db/repositories/maintenance.js';
+import { getDocumentsByIds } from '#lib/db/repositories/documents.js';
+import { getFinanceTransactionsByVehicle } from '#lib/db/repositories/finance-transactions.js';
+import { getNotesByVehicle } from '#lib/db/repositories/notes.js';
+import { getStorage } from '#lib/storage/index.js';
+import { buildMaintenanceReport } from '#lib/pdf/maintenance-report.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	if (!locals.user) error(401, 'Unauthorized');

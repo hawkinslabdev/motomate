@@ -1,17 +1,17 @@
 <script lang="ts">
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import type { PageData } from './$types';
-	import AttentionCard from '$lib/components/ui/AttentionCard.svelte';
-	import PushBanner from '$lib/components/ui/PushBanner.svelte';
+	import AttentionCard from '#lib/components/ui/AttentionCard.svelte';
+	import PushBanner from '#lib/components/ui/PushBanner.svelte';
 	import {
 		formatCurrency,
 		formatDateShort,
 		formatMeasurement,
 		formatMoneyTotal,
 		formatNumber
-	} from '$lib/utils/format.js';
-	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
-	import { _ } from '$lib/i18n';
+	} from '#lib/utils/format.js';
+	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
+	import { _ } from '#lib/i18n/index.js';
 
 	let { data } = $props<{ data: PageData }>();
 

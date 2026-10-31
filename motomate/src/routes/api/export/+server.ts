@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { generateJsonExport, generateZipExport } from '$lib/server/export.js';
+import { generateJsonExport, generateZipExport } from '#lib/server/export.js';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
 	if (!locals.user) error(401, 'Unauthorized');

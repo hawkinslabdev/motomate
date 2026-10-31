@@ -1,8 +1,8 @@
 import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { getTrackersByVehicle } from '$lib/db/repositories/maintenance.js';
-import { getDocumentsByVehicle } from '$lib/db/repositories/documents.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
+import { getTrackersByVehicle } from '#lib/db/repositories/maintenance.js';
+import { getDocumentsByVehicle } from '#lib/db/repositories/documents.js';
 
 export const load: LayoutServerLoad = async ({ params, locals }) => {
 	const vehicle = await getVehicleById(params.id, locals.user!.id);

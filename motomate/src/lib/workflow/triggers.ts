@@ -1,4 +1,4 @@
-import type { ActiveTracker, RuleTrigger, TaskTemplate, Vehicle } from '$lib/db/schema.js';
+import type { ActiveTracker, RuleTrigger, TaskTemplate, Vehicle } from '#lib/db/schema.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
 	areMeasurementsComparable,
@@ -9,7 +9,7 @@ import {
 	type MeasurementBasis,
 	type MeasurementUnit,
 	type MeasurementValue
-} from '$lib/utils/measurement.js';
+} from '#lib/utils/measurement.js';
 
 export type WorkflowMaintenanceTrigger = {
 	kind: 'maintenance';

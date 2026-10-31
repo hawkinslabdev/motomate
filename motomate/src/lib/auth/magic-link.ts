@@ -3,12 +3,12 @@ import { db } from '../db/index.js';
 import { magic_link_tokens } from '../db/schema.js';
 import { eq, and, isNull } from 'drizzle-orm';
 import { generateId } from '../utils/id.js';
-import { env } from '$env/dynamic/private';
-import { env as pubEnv } from '$env/dynamic/public';
+import { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM } from '$app/env/private';
+import { PUBLIC_APP_URL } from '$app/env/public';
 import { ts } from '../server/log.js';
 
 export function isSmtpConfigured(): boolean {
-	return !!env.SMTP_HOST;
+	return !!SMTP_HOST;
 }
 
 // Generate a secure random token, store its hash, return the raw token
@@ -52,7 +52,7 @@ export async function verifyMagicLinkToken(token: string): Promise<string | null
 }
 
 export function magicLinkUrl(token: string): string {
-	const appUrl = (pubEnv.PUBLIC_APP_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+	const appUrl = (PUBLIC_APP_URL ?? 'http://localhost:5173').replace(/\/$/, '');
 	return `${appUrl}/magic-link?token=${token}`;
 }
 
@@ -70,14 +70,14 @@ export async function sendMagicLinkEmail(email: string, token: string): Promise<
 	const nodemailer = await import('nodemailer');
 
 	const transporter = nodemailer.default.createTransport({
-		host: env.SMTP_HOST || 'localhost',
-		port: parseInt(env.SMTP_PORT ?? '587'),
-		secure: env.SMTP_PORT === '465',
-		auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined
+		host: SMTP_HOST || 'localhost',
+		port: parseInt(SMTP_PORT ?? '587'),
+		secure: SMTP_PORT === '465',
+		auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASS } : undefined
 	});
 
 	await transporter.sendMail({
-		from: env.SMTP_FROM ?? 'noreply@motomate.local',
+		from: SMTP_FROM ?? 'noreply@motomate.local',
 		to: email,
 		subject: 'Your MotoMate login link',
 		text: `Click the link below to log in (expires in 15 minutes):\n\n${link}\n\nIf you didn't request this, you can ignore this email.`,

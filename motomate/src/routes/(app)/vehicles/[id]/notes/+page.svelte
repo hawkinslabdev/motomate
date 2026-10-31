@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatYearMonth } from '$lib/utils/format.js';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatYearMonth } from '#lib/utils/format.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
 	import type { PageData } from './$types';
-	import VehicleNoteForm from '$lib/components/vehicle/VehicleNoteForm.svelte';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
-	import ColumnPicker from '$lib/components/ui/ColumnPicker.svelte';
+	import VehicleNoteForm from '#lib/components/vehicle/VehicleNoteForm.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import ViewToggle from '#lib/components/ui/ViewToggle.svelte';
+	import ColumnPicker from '#lib/components/ui/ColumnPicker.svelte';
 
 	let { data, form }: { data: PageData; form: Record<string, unknown> | null } = $props();
 
@@ -45,7 +45,11 @@
 	const prefsSync = createPrefsSync('notes');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		const s = sortBy;

@@ -1,15 +1,15 @@
-import { lucia } from '$lib/auth/index.js';
 import { error, json } from '@sveltejs/kit';
-import type { Handle } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { env as pubEnv } from '$env/dynamic/public';
-import { initScheduler } from '$lib/server/scheduler.js';
-import { findUserByApiKey, updateKeyLastUsed } from '$lib/db/repositories/api-keys.js';
-import { redactCredentials } from '$lib/server/secrets.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { lucia } from '#lib/auth/index.js';
+import { AUTH_SECRET } from '$app/env/private';
+import { PUBLIC_APP_URL, PUBLIC_DEMO_ENABLED } from '$app/env/public';
+import { initScheduler } from '#lib/server/scheduler.js';
+import { findUserByApiKey, updateKeyLastUsed } from '#lib/db/repositories/api-keys.js';
+import { redactCredentials } from '#lib/server/secrets.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
 
-if (!env.AUTH_SECRET) {
+if (!AUTH_SECRET) {
 	throw new Error(
 		'[MotoMate] AUTH_SECRET is not set. Set a random secret (min 32 chars) in your .env file before starting the server.'
 	);
@@ -39,9 +39,8 @@ const PLACEHOLDER_SECRETS = new Set([
 	'secret'
 ]);
 
-const SECRET_IS_PLACEHOLDER = PLACEHOLDER_SECRETS.has(env.AUTH_SECRET);
-const SECRET_IS_SHORT = env.AUTH_SECRET.length < 32;
-
+const SECRET_IS_PLACEHOLDER = PLACEHOLDER_SECRETS.has(AUTH_SECRET);
+const SECRET_IS_SHORT = AUTH_SECRET.length < 32;
 const WEAK_SECRET_MESSAGE =
 	'AUTH_SECRET uses an insecure default or is under 32 characters, risking forged downloads and token exports. Update it via `openssl rand -hex 32` (note: this clears stored S3 and paperless credentials; re-add them in Settings).';
 
@@ -58,7 +57,7 @@ let _secretChecked = false;
 async function checkSecret(): Promise<void> {
 	_secretChecked = true;
 	if (!SECRET_IS_SHORT) return;
-	const { hasAnyUser } = await import('$lib/db/repositories/users.js');
+	const { hasAnyUser } = await import('#lib/db/repositories/users.js');
 	if (await hasAnyUser()) {
 		console.warn(`${new Date().toLocaleString('sv')} [MotoMate] WARNING: ${WEAK_SECRET_MESSAGE}`);
 		return;
@@ -85,6 +84,7 @@ export function isOriginTrusted(
 ): boolean {
 	const claimed =
 		origin && origin !== 'null' && origin !== 'undefined' ? origin : (referer ?? null);
+
 	if (!claimed) return false;
 
 	const claimedHost = hostnameOf(claimed);
@@ -99,7 +99,7 @@ function buildCorsHeaders(requestOrigin: string | null): Record<string, string> 
 	const configuredOrigins = process.env.PUBLIC_APP_ORIGINS
 		? process.env.PUBLIC_APP_ORIGINS.split(',')
 		: [];
-	const appUrl = pubEnv.PUBLIC_APP_URL ?? '';
+	const appUrl = PUBLIC_APP_URL ?? '';
 	const appOrigins: string[] = [];
 	if (appUrl) {
 		try {
@@ -171,9 +171,9 @@ function denyAnonymous(event: Parameters<Handle>[0]['event']): Response | null {
 export const handle: Handle = async ({ event, resolve }) => {
 	if (!_secretChecked) await checkSecret();
 
-	if (!_demoSeeded && pubEnv.PUBLIC_DEMO_ENABLED === 'true') {
+	if (!_demoSeeded && PUBLIC_DEMO_ENABLED === 'true') {
 		_demoSeeded = true;
-		const { seedDemo } = await import('$lib/db/demo-seed.js');
+		const { seedDemo } = await import('#lib/db/demo-seed.js');
 		await seedDemo();
 	}
 
@@ -241,7 +241,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	if (
-		pubEnv.PUBLIC_DEMO_ENABLED === 'true' &&
+		PUBLIC_DEMO_ENABLED === 'true' &&
 		event.request.method !== 'GET' &&
 		event.request.method !== 'HEAD' &&
 		!event.url.pathname.startsWith('/login') &&

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ok, list, apiError, requireUser } from '$lib/api/response.js';
+import { ok, list, apiError, requireUser } from '#lib/api/response.js';
 
 describe('ok()', () => {
 	it('wraps data in { data } with 200', async () => {

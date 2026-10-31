@@ -1,9 +1,9 @@
 import { vi, describe, it, expect } from 'vitest';
 
-vi.mock('$lib/server/url-guard.js', () => ({ assertSafeUrl: vi.fn() }));
+vi.mock('#lib/server/url-guard.js', () => ({ assertSafeUrl: vi.fn() }));
 
 import { GET } from '../../routes/api/spec/+server.js';
-import { dispatchWebhook } from '$lib/workflow/channels/webhook.js';
+import { dispatchWebhook } from '#lib/workflow/channels/webhook.js';
 
 async function spec() {
 	return (await GET({} as any)).json();

@@ -1,12 +1,12 @@
 import { vi, describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from '$lib/db/schema.js';
+import * as schema from '#lib/db/schema.js';
 
 let sqlite: InstanceType<typeof Database>;
 let db: ReturnType<typeof drizzle<typeof schema>>;
 
-vi.mock('$lib/db/index.js', () => ({
+vi.mock('#lib/db/index.js', () => ({
 	get db() {
 		return db;
 	},
@@ -15,7 +15,7 @@ vi.mock('$lib/db/index.js', () => ({
 	}
 }));
 
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
+vi.mock('$app/env/private', () => new Proxy({}, { has: () => true }));
 
 import {
 	createApiKey,
@@ -26,7 +26,7 @@ import {
 	restoreApiKey,
 	deleteApiKey,
 	updateKeyLastUsed
-} from '$lib/db/repositories/api-keys.js';
+} from '#lib/db/repositories/api-keys.js';
 
 const UID = 'u_api_test';
 

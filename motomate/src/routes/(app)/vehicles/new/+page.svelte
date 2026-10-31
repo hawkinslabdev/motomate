@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
-	import { _ } from '$lib/i18n';
+	import { _ } from '#lib/i18n/index.js';
 	import {
 		DEFAULT_ODOMETER_UNIT,
 		MEASUREMENT_UNITS,
 		getMeasurementUnitTranslationKey
-	} from '$lib/utils/measurement.js';
+	} from '#lib/utils/measurement.js';
 
 	let { data, form } = $props<{
 		data: { defaultOdometerUnit: 'km' | 'mi' };

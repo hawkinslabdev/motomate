@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { browser } from '$app/environment';
-	import { readStoredLocale, setLocale, _ } from '$lib/i18n';
-	import { SUPPORTED_LANGUAGES } from '$lib/i18n/locales.js';
+	import { browser } from '$app/env';
+	import { readStoredLocale, setLocale, _ } from '#lib/i18n/index.js';
+	import { SUPPORTED_LANGUAGES } from '#lib/i18n/locales.js';
 	import { onMount, setContext, untrack, type Snippet } from 'svelte';
 	import 'altcha/i18n';
 	import type {} from 'altcha/types/svelte';
-	import { resolveTheme, readStoredTheme, persistTheme } from '$lib/utils/theme.js';
-	import Sun from '$lib/components/icons/Sun.svelte';
-	import Moon from '$lib/components/icons/Moon.svelte';
+	import { resolveTheme, readStoredTheme, persistTheme } from '#lib/utils/theme.js';
+	import Sun from '#lib/components/icons/Sun.svelte';
+	import Moon from '#lib/components/icons/Moon.svelte';
 
 	let { children, demoMode = false }: { children: Snippet; demoMode?: boolean } = $props();
 
@@ -130,7 +130,7 @@
 	onclick={(e) => {
 		if (langMenuOpen && !(e.target as Element).closest('.lang-toggle-wrap')) openLangMenu(false);
 	}}
-/>
+></svelte:document>
 <div class="auth-shell">
 	<aside class="auth-hero select-none">
 		<div class="hero-brand">
@@ -148,25 +148,28 @@
 			aria-hidden="true"
 		>
 			<g class="road-contours">
-				<path d="M-20 120 C 90 80, 170 150, 280 110 S 470 40, 620 90" />
-				<path d="M-20 165 C 100 125, 180 195, 290 155 S 480 85, 620 135" />
-				<path d="M-20 210 C 110 172, 190 240, 300 200 S 490 130, 620 180" />
-				<path d="M-20 255 C 120 220, 200 285, 310 245 S 500 175, 620 225" />
+				<path d="M-20 120 C 90 80, 170 150, 280 110 S 470 40, 620 90"></path>
+
+				<path d="M-20 165 C 100 125, 180 195, 290 155 S 480 85, 620 135"></path>
+
+				<path d="M-20 210 C 110 172, 190 240, 300 200 S 490 130, 620 180"></path>
+
+				<path d="M-20 255 C 120 220, 200 285, 310 245 S 500 175, 620 225"></path>
 			</g>
 			<path
 				class="road-bed"
 				pathLength="1"
 				d="M-30 440 C 60 400, 120 330, 220 330 S 340 390, 420 330 S 520 210, 640 200"
-			/>
+			></path>
 			<path
 				id="auth-road"
 				class="road-line"
 				d="M-30 440 C 60 400, 120 330, 220 330 S 340 390, 420 330 S 520 210, 640 200"
-			/>
+			></path>
 			{#if riding}
 				<g class="road-rider">
-					<circle r="16" class="rider-halo" />
-					<circle r="6" class="rider-core" />
+					<circle r="16" class="rider-halo"></circle>
+					<circle r="6" class="rider-core"></circle>
 					<animateMotion
 						dur="4s"
 						begin="1.2s"
@@ -175,10 +178,8 @@
 						keyPoints="0;1"
 						keyTimes="0;1"
 						calcMode="spline"
-						keySplines="0.45 0 0.55 1"
+						keySplines="0.45 0 0.55 1"><mpath href="#auth-road"></mpath></animateMotion
 					>
-						<mpath href="#auth-road" />
-					</animateMotion>
 				</g>
 			{/if}
 		</svg>
@@ -209,10 +210,10 @@
 						stroke-linejoin="round"
 						aria-hidden="true"
 					>
-						<circle cx="12" cy="12" r="10" />
+						<circle cx="12" cy="12" r="10"></circle>
 						<path
 							d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-						/>
+						></path>
 					</svg>
 				</button>
 				{#if langMenuOpen}
@@ -272,7 +273,7 @@
 				<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
 					<path
 						d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-					/>
+					></path>
 				</svg>
 				GitHub
 			</a>
@@ -282,9 +283,10 @@
 				rel="noopener noreferrer"
 				class="footer-link"
 			>
-				<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
-					<path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z" />
-				</svg>
+				<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"
+					><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"></path></svg
+				>
+
 				Feedback
 			</a>
 		</footer>

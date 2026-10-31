@@ -1,17 +1,18 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: { AUTH_SECRET: 'test-secret-32-chars-minimum-ok!' }
-}));
-vi.mock('$env/dynamic/public', () => ({ env: { PUBLIC_DEMO_ENABLED: 'false' } }));
-vi.mock('$lib/storage/index.js', () => ({ getStorage: vi.fn() }));
-vi.mock('$lib/db/repositories/documents.js', () => ({ getDocumentByStorageKey: vi.fn() }));
-vi.mock('$lib/db/repositories/vehicles.js', () => ({ getVehicleByCoverImageKey: vi.fn() }));
+vi.mock(
+	'$app/env/private',
+	() => new Proxy({ AUTH_SECRET: 'test-secret-32-chars-minimum-ok!' }, { has: () => true })
+);
+vi.mock('$app/env/public', () => new Proxy({ PUBLIC_DEMO_ENABLED: 'false' }, { has: () => true }));
+vi.mock('#lib/storage/index.js', () => ({ getStorage: vi.fn() }));
+vi.mock('#lib/db/repositories/documents.js', () => ({ getDocumentByStorageKey: vi.fn() }));
+vi.mock('#lib/db/repositories/vehicles.js', () => ({ getVehicleByCoverImageKey: vi.fn() }));
 
 import { GET } from '../../routes/api/files/+server.js';
-import { getStorage } from '$lib/storage/index.js';
-import { getDocumentByStorageKey } from '$lib/db/repositories/documents.js';
-import { getVehicleByCoverImageKey } from '$lib/db/repositories/vehicles.js';
+import { getStorage } from '#lib/storage/index.js';
+import { getDocumentByStorageKey } from '#lib/db/repositories/documents.js';
+import { getVehicleByCoverImageKey } from '#lib/db/repositories/vehicles.js';
 
 const DOC_KEY = 'files/u1/doc1.pdf';
 const VEHICLE_NAMESPACED_DOC_KEY = 'files/u1/v1/doc1.pdf';

@@ -8,20 +8,20 @@ import {
 	getVehicleById,
 	updateOdometer,
 	insertOdometerLog
-} from '$lib/db/repositories/vehicles.js';
+} from '#lib/db/repositories/vehicles.js';
 import {
 	recomputeTrackerStatuses,
 	getTrackersByVehicle
-} from '$lib/db/repositories/maintenance.js';
-import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
-import { UpdateVehicleSchema } from '$lib/validators/schemas.js';
-import { getStorage } from '$lib/storage/index.js';
-import { mirrorPut, mirrorDelete } from '$lib/server/integrations.js';
-import type { VehicleMeta } from '$lib/db/schema.js';
-import { db } from '$lib/db/index.js';
-import { HIDEABLE_VEHICLE_TABS, vehicles } from '$lib/db/schema.js';
-import { serverT } from '$lib/i18n/server.js';
-import { getMeasurementBasis, isDistanceUnit, isMeasurementUnit } from '$lib/utils/measurement.js';
+} from '#lib/db/repositories/maintenance.js';
+import { getNotesByVehicle } from '#lib/db/repositories/notes.js';
+import { UpdateVehicleSchema } from '#lib/validators/schemas.js';
+import { getStorage } from '#lib/storage/index.js';
+import { mirrorPut, mirrorDelete } from '#lib/server/integrations.js';
+import type { VehicleMeta } from '#lib/db/schema.js';
+import { db } from '#lib/db/index.js';
+import { HIDEABLE_VEHICLE_TABS, vehicles } from '#lib/db/schema.js';
+import { serverT } from '#lib/i18n/server.js';
+import { getMeasurementBasis, isDistanceUnit, isMeasurementUnit } from '#lib/utils/measurement.js';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2 MB
 

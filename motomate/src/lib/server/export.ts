@@ -1,13 +1,13 @@
 import { zipSync, strToU8 } from 'fflate';
-import { getVehiclesByUser, getOdometerLogs } from '$lib/db/repositories/vehicles.js';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
-import { getTrackersByVehicle, getTemplatesByUser } from '$lib/db/repositories/maintenance.js';
-import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
-import { getDocumentsByVehicle } from '$lib/db/repositories/documents.js';
-import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
-import { getWorkflowRulesByUser } from '$lib/db/repositories/workflow.js';
-import { getNotifications } from '$lib/workflow/channels/inapp.js';
-import { getStorage } from '$lib/storage/index.js';
+import { getVehiclesByUser, getOdometerLogs } from '#lib/db/repositories/vehicles.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
+import { getTrackersByVehicle, getTemplatesByUser } from '#lib/db/repositories/maintenance.js';
+import { getFinanceTransactionsByVehicle } from '#lib/db/repositories/finance-transactions.js';
+import { getDocumentsByVehicle } from '#lib/db/repositories/documents.js';
+import { getNotesByVehicle } from '#lib/db/repositories/notes.js';
+import { getWorkflowRulesByUser } from '#lib/db/repositories/workflow.js';
+import { getNotifications } from '#lib/workflow/channels/inapp.js';
+import { getStorage } from '#lib/storage/index.js';
 
 // Integration credentials are never part of a data export.
 function sanitizeProfile(profile: Record<string, unknown>): Record<string, unknown> {

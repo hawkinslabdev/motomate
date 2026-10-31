@@ -1,22 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$lib/auth/index.js', () => ({
+vi.mock('$app/env/private', () => new Proxy({}, { has: () => true }));
+vi.mock('$app/env/public', () => new Proxy({}, { has: () => true }));
+vi.mock('#lib/auth/index.js', () => ({
 	lucia: { createSession: vi.fn(), createSessionCookie: vi.fn() }
 }));
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock('#lib/db/repositories/users.js', () => ({
 	getUserByEmail: vi.fn(async () => undefined),
 	createUser: vi.fn(),
 	updateUserSettings: vi.fn()
 }));
-vi.mock('$lib/auth/registration.js', () => ({ isRegistrationOpen: vi.fn(async () => false) }));
-vi.mock('$lib/auth/magic-link.js', () => ({
+vi.mock('#lib/auth/registration.js', () => ({ isRegistrationOpen: vi.fn(async () => false) }));
+vi.mock('#lib/auth/magic-link.js', () => ({
 	createMagicLinkToken: vi.fn(),
 	sendMagicLinkEmail: vi.fn(),
 	isSmtpConfigured: vi.fn(() => false)
 }));
-vi.mock('$lib/auth/altcha.js', () => ({ verifyAltcha: vi.fn(async () => true) }));
+vi.mock('#lib/auth/altcha.js', () => ({ verifyAltcha: vi.fn(async () => true) }));
 
 import { actions } from '../routes/(auth)/login/+page.server.js';
 

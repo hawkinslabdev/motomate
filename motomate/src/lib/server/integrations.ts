@@ -2,12 +2,12 @@ import {
 	getUserById,
 	getUserIdsWithIntegrations,
 	updateUserSettings
-} from '$lib/db/repositories/users.js';
-import { getDocumentsByUser } from '$lib/db/repositories/documents.js';
-import { getVehiclesByUser, getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { raiseSystemAlert, clearSystemAlert } from '$lib/workflow/channels/inapp.js';
-import { getStorage } from '$lib/storage/index.js';
-import { s3Put, s3Exists, s3MarkDeleted, type S3Config } from '$lib/storage/s3.js';
+} from '#lib/db/repositories/users.js';
+import { getDocumentsByUser } from '#lib/db/repositories/documents.js';
+import { getVehiclesByUser, getVehicleById } from '#lib/db/repositories/vehicles.js';
+import { raiseSystemAlert, clearSystemAlert } from '#lib/workflow/channels/inapp.js';
+import { getStorage } from '#lib/storage/index.js';
+import { s3Put, s3Exists, s3MarkDeleted, type S3Config } from '#lib/storage/s3.js';
 import {
 	paperlessPost,
 	paperlessSupports,
@@ -20,8 +20,8 @@ import {
 	type PaperlessConfig
 } from './paperless.js';
 import { decryptSecret } from './secrets.js';
-import { serverT } from '$lib/i18n/server.js';
-import type { Document, Integrations, User, UserSettings } from '$lib/db/schema.js';
+import { serverT } from '#lib/i18n/server.js';
+import type { Document, Integrations, User, UserSettings } from '#lib/db/schema.js';
 
 export type IntegrationTarget = 's3' | 'paperless';
 

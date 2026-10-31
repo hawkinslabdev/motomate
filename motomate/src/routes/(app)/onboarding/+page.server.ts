@@ -1,21 +1,21 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { createVehicle, insertOdometerLog } from '$lib/db/repositories/vehicles.js';
+import { createVehicle, insertOdometerLog } from '#lib/db/repositories/vehicles.js';
 import {
 	seedPresetsForVehicle,
 	updateTrackerAfterService
-} from '$lib/db/repositories/maintenance.js';
-import { createServiceLog } from '$lib/db/repositories/service-logs.js';
-import { markOnboardingDone, updateUserSettings } from '$lib/db/repositories/users.js';
-import { seedPresetRulesForUser } from '$lib/db/repositories/workflow.js';
-import { locales as localeMap } from '$lib/i18n/locales.js';
+} from '#lib/db/repositories/maintenance.js';
+import { createServiceLog } from '#lib/db/repositories/service-logs.js';
+import { markOnboardingDone, updateUserSettings } from '#lib/db/repositories/users.js';
+import { seedPresetRulesForUser } from '#lib/db/repositories/workflow.js';
+import { locales as localeMap } from '#lib/i18n/locales.js';
 import {
 	DEFAULT_ODOMETER_UNIT,
 	getMeasurementBasis,
 	isDistanceUnit,
 	isMeasurementUnit,
 	resolveDistanceUnitPreference
-} from '$lib/utils/measurement.js';
+} from '#lib/utils/measurement.js';
 
 type LocaleMessages = {
 	onboarding: {

@@ -1,13 +1,13 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehicleById: vi.fn(),
 	recomputeCurrentOdometer: vi.fn(),
 	getOdometerLogs: vi.fn(),
 	insertOdometerLog: vi.fn(),
 	deleteOdometerLog: vi.fn()
 }));
-vi.mock('$lib/db/repositories/maintenance.js', () => ({
+vi.mock('#lib/db/repositories/maintenance.js', () => ({
 	recomputeTrackerStatuses: vi.fn()
 }));
 
@@ -22,8 +22,8 @@ import {
 	getOdometerLogs,
 	insertOdometerLog,
 	deleteOdometerLog
-} from '$lib/db/repositories/vehicles.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
+} from '#lib/db/repositories/vehicles.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
 
 const mockUser = { id: 'u_1', settings: {} } as any;
 const mockVehicle = { id: 'v_1', user_id: 'u_1', odometer_unit: 'km' } as any;

@@ -80,5 +80,9 @@
 	},
 	"allowScripts": {
 		"better-sqlite3@13.0.3": true
+	},
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
 	}
 }

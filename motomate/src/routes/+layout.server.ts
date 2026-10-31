@@ -1,6 +1,6 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_DEMO_ENABLED } from '$app/env/public';
 import type { LayoutServerLoad } from './$types';
-import { supportedLocales } from '$lib/i18n/locales.js';
+import { supportedLocales } from '#lib/i18n/locales.js';
 
 function localeFromAcceptLanguage(header: string | null): string {
 	if (!header) return 'en';
@@ -13,7 +13,7 @@ function localeFromAcceptLanguage(header: string | null): string {
 
 export const load: LayoutServerLoad = async ({ locals, request, cookies }) => {
 	// Demo mode forces English so one visitor's locale does not carry over to the next
-	if (env.PUBLIC_DEMO_ENABLED === 'true' && locals.user) {
+	if (PUBLIC_DEMO_ENABLED === 'true' && locals.user) {
 		return { user: locals.user, locale: 'en' };
 	}
 

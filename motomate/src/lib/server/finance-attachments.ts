@@ -1,7 +1,7 @@
-import { createDocument } from '$lib/db/repositories/documents.js';
-import { getStorage } from '$lib/storage/index.js';
+import { createDocument } from '#lib/db/repositories/documents.js';
+import { getStorage } from '#lib/storage/index.js';
 import { onDocumentCreated } from './integrations.js';
-import { attachmentStorageKey } from '$lib/utils/storage.js';
+import { attachmentStorageKey } from '#lib/utils/storage.js';
 
 export const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024; // 10 MB
 

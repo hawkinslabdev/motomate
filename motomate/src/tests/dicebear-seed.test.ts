@@ -5,7 +5,7 @@ import {
 	isValidAvatarSeed,
 	parseAvatarSeed,
 	randomAvatarSeed
-} from '$lib/utils/dicebear.js';
+} from '#lib/utils/dicebear.js';
 
 describe('avatar seeds', () => {
 	it('reads a bare seed from before styles as fun-emoji', () => {

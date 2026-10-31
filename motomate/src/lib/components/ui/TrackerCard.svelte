@@ -4,10 +4,10 @@
 		formatDateShort,
 		formatCurrency,
 		formatYearMonth
-	} from '$lib/utils/format';
-	import { _, waitLocale } from '$lib/i18n';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement';
-	import type { MeasurementUnit } from '$lib/utils/measurement';
+	} from '#lib/utils/format.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
+	import type { MeasurementUnit } from '#lib/utils/measurement.js';
 
 	type ServiceLog = {
 		id: string;

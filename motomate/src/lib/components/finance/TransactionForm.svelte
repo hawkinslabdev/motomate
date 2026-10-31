@@ -2,11 +2,11 @@
 	import { enhance } from '$app/forms';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { untrack } from 'svelte';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
-	import { drafts } from '$lib/stores/drafts.svelte.js';
-	import DraftBanner from '$lib/components/ui/DraftBanner.svelte';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
+	import { drafts } from '#lib/stores/drafts.svelte.js';
+	import DraftBanner from '#lib/components/ui/DraftBanner.svelte';
 
 	interface DocRecord {
 		id: string;

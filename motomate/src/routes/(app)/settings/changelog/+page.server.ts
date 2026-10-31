@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 

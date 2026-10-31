@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { getAltchaKey } from '$lib/auth/altcha.js';
+import { getAltchaKey } from '#lib/auth/altcha.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {

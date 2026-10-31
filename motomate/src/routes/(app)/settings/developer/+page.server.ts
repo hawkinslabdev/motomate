@@ -7,8 +7,8 @@ import {
 	rotateApiKey,
 	restoreApiKey,
 	deleteApiKey
-} from '$lib/db/repositories/api-keys.js';
-import { CreateApiKeySchema } from '$lib/validators/schemas.js';
+} from '#lib/db/repositories/api-keys.js';
+import { CreateApiKeySchema } from '#lib/validators/schemas.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const keys = await listApiKeys(locals.user!.id);

@@ -4,7 +4,7 @@ import {
 	getServiceLogsByVehicle,
 	createServiceLog,
 	deleteServiceLog
-} from '$lib/db/repositories/service-logs.js';
+} from '#lib/db/repositories/service-logs.js';
 import {
 	getOdometerLogs,
 	insertOdometerLog,
@@ -13,28 +13,28 @@ import {
 	deleteOdometerLog,
 	recomputeCurrentOdometer,
 	getVehicleById
-} from '$lib/db/repositories/vehicles.js';
+} from '#lib/db/repositories/vehicles.js';
 import {
 	getTrackersByVehicle,
 	recomputeTrackerStatuses
-} from '$lib/db/repositories/maintenance.js';
-import { isReminderTracker } from '$lib/utils/reminder-only.js';
-import { getDocumentsByVehicle, createDocument } from '$lib/db/repositories/documents.js';
-import { getStorage } from '$lib/storage/index.js';
-import { onDocumentCreated } from '$lib/server/integrations.js';
-import { attachmentStorageKey } from '$lib/utils/storage.js';
-import { CreateServiceLogSchema } from '$lib/validators/schemas.js';
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
-import { applyServiceLogEdit } from '$lib/server/service-log-edit.js';
-import { getTravelsForTimeline } from '$lib/db/repositories/travels.js';
+} from '#lib/db/repositories/maintenance.js';
+import { isReminderTracker } from '#lib/utils/reminder-only.js';
+import { getDocumentsByVehicle, createDocument } from '#lib/db/repositories/documents.js';
+import { getStorage } from '#lib/storage/index.js';
+import { onDocumentCreated } from '#lib/server/integrations.js';
+import { attachmentStorageKey } from '#lib/utils/storage.js';
+import { CreateServiceLogSchema } from '#lib/validators/schemas.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
+import { applyServiceLogEdit } from '#lib/server/service-log-edit.js';
+import { getTravelsForTimeline } from '#lib/db/repositories/travels.js';
 import {
 	getFinanceTransactionsByVehicle,
 	createFinanceTransaction,
 	updateFinanceTransaction,
 	updateFinanceTransactionAttachments,
 	deleteFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
-import { collectAttachmentIds, MAX_ATTACHMENT_SIZE } from '$lib/server/finance-attachments.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { collectAttachmentIds, MAX_ATTACHMENT_SIZE } from '#lib/server/finance-attachments.js';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
-	import { _ } from '$lib/i18n';
+	import { browser } from '$app/env';
+	import { _ } from '#lib/i18n/index.js';
 
 	interface GpxFile {
 		travelId: string;
@@ -232,9 +232,9 @@
 					const markers: any[] = [];
 					layer.eachLayer((child: any) => {
 						const collect = (l: any) => {
-							if (typeof l.getLatLngs === 'function')
-								polys.push(l); // Polyline
-							else if (typeof l.getLatLng === 'function') markers.push(l); // Marker
+							if (typeof l.getLatLngs === 'function') polys.push(l);
+							else // Polyline
+							if (typeof l.getLatLng === 'function') markers.push(l); // Marker
 						};
 						if (typeof child.eachLayer === 'function') {
 							child.eachLayer(collect); // FeatureGroup > go one level deeper

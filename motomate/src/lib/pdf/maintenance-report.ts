@@ -9,9 +9,9 @@ import type {
 	Document as DocRecord,
 	FinanceTransaction,
 	VehicleNote
-} from '$lib/db/schema.js';
+} from '#lib/db/schema.js';
 
-import { locales, supportedLocales } from '$lib/i18n/locales.js';
+import { locales, supportedLocales } from '#lib/i18n/locales.js';
 
 type PDFDoc = InstanceType<typeof PDFDocumentClass>;
 

@@ -1,9 +1,9 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehicleById: vi.fn()
 }));
-vi.mock('$lib/db/repositories/finance-transactions.js', () => ({
+vi.mock('#lib/db/repositories/finance-transactions.js', () => ({
 	getFinanceTransactionsByVehicle: vi.fn(),
 	createFinanceTransaction: vi.fn(),
 	getFinanceTransactionById: vi.fn(),
@@ -15,13 +15,13 @@ import {
 	POST as createTx
 } from '../../routes/api/v1/vehicles/[id]/finance/+server.js';
 import { DELETE as deleteTx } from '../../routes/api/v1/vehicles/[id]/finance/[transactionId]/+server.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
 import {
 	getFinanceTransactionsByVehicle,
 	createFinanceTransaction,
 	getFinanceTransactionById,
 	deleteFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
+} from '#lib/db/repositories/finance-transactions.js';
 
 const mockUser = { id: 'u_1', settings: { currency: 'EUR' } } as any;
 const mockVehicle = { id: 'v_1', user_id: 'u_1', odometer_unit: 'km' } as any;

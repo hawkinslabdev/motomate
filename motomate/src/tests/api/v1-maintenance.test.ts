@@ -1,20 +1,20 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehicleById: vi.fn(),
 	recomputeCurrentOdometer: vi.fn()
 }));
-vi.mock('$lib/db/repositories/maintenance.js', () => ({
+vi.mock('#lib/db/repositories/maintenance.js', () => ({
 	getTrackersByVehicle: vi.fn(),
 	recomputeTrackerStatuses: vi.fn()
 }));
 
 import { GET as listTrackers } from '../../routes/api/v1/vehicles/[id]/maintenance/+server.js';
-import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById, recomputeCurrentOdometer } from '#lib/db/repositories/vehicles.js';
 import {
 	getTrackersByVehicle,
 	recomputeTrackerStatuses
-} from '$lib/db/repositories/maintenance.js';
+} from '#lib/db/repositories/maintenance.js';
 
 const mockUser = { id: 'u_1' } as any;
 const mockVehicle = { id: 'v_1', user_id: 'u_1' } as any;

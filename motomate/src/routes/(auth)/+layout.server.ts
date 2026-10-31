@@ -1,6 +1,6 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_DEMO_ENABLED } from '$app/env/public';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async () => {
-	return { demoMode: env.PUBLIC_DEMO_ENABLED === 'true' };
+	return { demoMode: PUBLIC_DEMO_ENABLED === 'true' };
 };

@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
-import { lucia, isSecureCookie } from '$lib/auth/index.js';
-import { endSessionUrl, oidcCookie } from '$lib/auth/oidc.js';
-import { isReauthActive } from '$lib/auth/reauth.js';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
+import { lucia, isSecureCookie } from '#lib/auth/index.js';
+import { endSessionUrl, oidcCookie } from '#lib/auth/oidc.js';
+import { isReauthActive } from '#lib/auth/reauth.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ locals, cookies, url }) => {

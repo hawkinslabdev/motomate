@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/public';
+import { PUBLIC_DEMO_ENABLED } from '$app/env/public';
 import type { LayoutServerLoad } from './$types';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { getUnreadCount } from '$lib/workflow/channels/inapp.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { getUnreadCount } from '#lib/workflow/channels/inapp.js';
 
 export const load: LayoutServerLoad = async ({ locals, url }) => {
 	if (!locals.user) throw redirect(302, '/login');
@@ -30,6 +30,6 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		user: locals.user,
 		vehicles,
 		unreadCount,
-		demoMode: env.PUBLIC_DEMO_ENABLED === 'true'
+		demoMode: PUBLIC_DEMO_ENABLED === 'true'
 	};
 };

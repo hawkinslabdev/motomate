@@ -5,7 +5,7 @@ import {
 	cooldownKey,
 	lastFiredAt,
 	isQuietHour
-} from '$lib/workflow/engine-utils.js';
+} from '#lib/workflow/engine-utils.js';
 
 function hoursAgo(h: number): string {
 	return new Date(Date.now() - h * 3_600_000).toISOString();
