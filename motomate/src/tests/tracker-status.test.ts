@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareTrackerStatus } from '$lib/utils/tracker-status.js';
+import { compareTrackerStatus } from '#lib/utils/tracker-status.js';
 
 describe('compareTrackerStatus', () => {
 	it('sorts overdue before due before ok', () => {

@@ -1,4 +1,4 @@
-import type { RuleTrigger, RuleNotification } from '$lib/db/schema.js';
+import type { RuleTrigger, RuleNotification } from '#lib/db/schema.js';
 
 export interface PresetRule {
 	name: string;

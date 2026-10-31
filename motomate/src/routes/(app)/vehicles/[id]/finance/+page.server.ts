@@ -1,17 +1,17 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
 import {
 	getFinanceTransactionsByVehicle,
 	createFinanceTransaction,
 	updateFinanceTransaction,
 	updateFinanceTransactionAttachments,
 	deleteFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
-import { getDocumentsByVehicle } from '$lib/db/repositories/documents.js';
-import { totalByCurrency, type CurrencyAmount, type MoneyTotal } from '$lib/utils/money.js';
-import { collectAttachmentIds } from '$lib/server/finance-attachments.js';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { getDocumentsByVehicle } from '#lib/db/repositories/documents.js';
+import { totalByCurrency, type CurrencyAmount, type MoneyTotal } from '#lib/utils/money.js';
+import { collectAttachmentIds } from '#lib/server/finance-attachments.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
 
 export const load: PageServerLoad = async ({ parent, params, locals }) => {
 	const { vehicle } = await parent();

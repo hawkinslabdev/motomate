@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { dragFlag, isFileDrag } from '$lib/utils/drag.js';
+	import { dragFlag, isFileDrag } from '#lib/utils/drag.js';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
 
 	let {
 		vehicleId: _vehicleId,

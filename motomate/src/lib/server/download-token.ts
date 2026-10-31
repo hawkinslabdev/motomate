@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { env } from '$env/dynamic/private';
+import { AUTH_SECRET } from '$app/env/private';
 
 const TTL_MS = 15 * 60 * 1000;
 
@@ -10,7 +10,7 @@ interface TokenPayload {
 }
 
 function secret(): string {
-	return env.AUTH_SECRET!;
+	return AUTH_SECRET!;
 }
 
 export function createDownloadToken(userId: string, format: 'json' | 'zip'): string {

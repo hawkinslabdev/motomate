@@ -1,9 +1,9 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehicleById: vi.fn()
 }));
-vi.mock('$lib/db/repositories/notes.js', () => ({
+vi.mock('#lib/db/repositories/notes.js', () => ({
 	getNotesByVehicle: vi.fn(),
 	createNote: vi.fn(),
 	getNoteById: vi.fn(),
@@ -20,14 +20,14 @@ import {
 	PATCH as updateNoteHandler,
 	DELETE as deleteNoteHandler
 } from '../../routes/api/v1/vehicles/[id]/notes/[noteId]/+server.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
 import {
 	getNotesByVehicle,
 	createNote,
 	getNoteById,
 	updateNote,
 	deleteNote
-} from '$lib/db/repositories/notes.js';
+} from '#lib/db/repositories/notes.js';
 
 const mockUser = { id: 'u_1', settings: { currency: 'EUR' } } as any;
 const mockVehicle = { id: 'v_1', user_id: 'u_1' } as any;

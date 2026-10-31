@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isReminderTracker } from '$lib/utils/reminder-only.js';
+import { isReminderTracker } from '#lib/utils/reminder-only.js';
 
 describe('isReminderTracker', () => {
 	it('returns true for reminder_only tracker', () => {

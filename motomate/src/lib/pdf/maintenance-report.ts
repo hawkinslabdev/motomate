@@ -9,9 +9,10 @@ import type {
 	Document as DocRecord,
 	FinanceTransaction,
 	VehicleNote
-} from '$lib/db/schema.js';
+} from '#lib/db/schema.js';
 
-import { locales, supportedLocales } from '$lib/i18n/locales.js';
+import { locales, supportedLocales } from '#lib/i18n/locales.js';
+import { formatCurrency, formatNumber } from '#lib/utils/format.js';
 
 type PDFDoc = InstanceType<typeof PDFDocumentClass>;
 
@@ -108,7 +109,8 @@ const FALLBACK_TRANSLATIONS: ReportTranslations = {
 };
 
 function loadTranslations(locale: string): ReportTranslations {
-	const lang = (supportedLocales as string[]).includes(locale) ? locale : 'en';
+	const base = locale.split('-')[0];
+	const lang = (supportedLocales as string[]).includes(base) ? base : 'en';
 	const json = locales[lang as keyof typeof locales] as Record<string, unknown> | undefined;
 	const loaded = (json as any)?.vehicle?.edit?.settings?.report?.pdf as
 		Partial<ReportTranslations> | undefined;
@@ -128,8 +130,11 @@ function registerFonts(doc: PDFDoc): void {
 	}
 }
 
+// The embedded fonts have no U+202F glyph
+const pdfSpaces = (s: string) => s.replace(/\u202f/g, '\u00a0');
+
 function fmtNum(value: number, locale: string): string {
-	return new Intl.NumberFormat(locale).format(value);
+	return pdfSpaces(formatNumber(value, locale));
 }
 
 function fmtDate(iso: string, locale: string): string {
@@ -158,7 +163,7 @@ function fmtDateShort(iso: string, locale: string): string {
 
 function fmtCurrency(cents: number, currency: string, locale: string): string {
 	try {
-		return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(cents / 100);
+		return pdfSpaces(formatCurrency(cents, currency, locale));
 	} catch {
 		return `${(cents / 100).toFixed(2)} ${currency}`;
 	}

@@ -1,7 +1,7 @@
-import { db } from '$lib/db/index.js';
-import { notifications } from '$lib/db/schema.js';
+import { db } from '#lib/db/index.js';
+import { notifications } from '#lib/db/schema.js';
 import { eq, count, and, isNull, isNotNull } from 'drizzle-orm';
-import { generateId } from '$lib/utils/id.js';
+import { generateId } from '#lib/utils/id.js';
 
 export async function dispatchInApp(
 	userId: string,

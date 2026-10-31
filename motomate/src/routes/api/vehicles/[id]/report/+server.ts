@@ -1,15 +1,16 @@
+import { browserNumberFormat, formatLocale } from '#lib/utils/format.js';
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
-import { getTrackersByVehicle } from '$lib/db/repositories/maintenance.js';
-import { getDocumentsByIds } from '$lib/db/repositories/documents.js';
-import { getFinanceTransactionsByVehicle } from '$lib/db/repositories/finance-transactions.js';
-import { getNotesByVehicle } from '$lib/db/repositories/notes.js';
-import { getStorage } from '$lib/storage/index.js';
-import { buildMaintenanceReport } from '$lib/pdf/maintenance-report.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
+import { getTrackersByVehicle } from '#lib/db/repositories/maintenance.js';
+import { getDocumentsByIds } from '#lib/db/repositories/documents.js';
+import { getFinanceTransactionsByVehicle } from '#lib/db/repositories/finance-transactions.js';
+import { getNotesByVehicle } from '#lib/db/repositories/notes.js';
+import { getStorage } from '#lib/storage/index.js';
+import { buildMaintenanceReport } from '#lib/pdf/maintenance-report.js';
 
-export const GET: RequestHandler = async ({ locals, params, url }) => {
+export const GET: RequestHandler = async ({ locals, params, url, request }) => {
 	if (!locals.user) error(401, 'Unauthorized');
 
 	const vehicle = await getVehicleById(params.id, locals.user.id);
@@ -52,7 +53,11 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 		);
 	}
 
-	const locale = locals.user.settings?.locale ?? 'en';
+	const locale = formatLocale(
+		locals.user.settings?.locale ?? 'en',
+		locals.user.settings?.number_format ??
+			browserNumberFormat(request.headers.get('accept-language'))
+	);
 	const excludedTrackerIds =
 		(locals.user.settings?.page_prefs?.maintenance_report_pdf?.[params.id] as
 			string[] | undefined) ?? [];

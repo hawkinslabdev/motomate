@@ -1,13 +1,13 @@
 <script lang="ts">
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import { refreshAll } from '$app/navigation';
 	import type { PageData } from './$types';
-	import VehicleCard from '$lib/components/ui/VehicleCard.svelte';
-	import { _ } from '$lib/i18n';
+	import VehicleCard from '#lib/components/ui/VehicleCard.svelte';
+	import { _ } from '#lib/i18n/index.js';
 
 	let { data }: { data: PageData } = $props();
 
-	const locale = $derived((data as any).user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const onboardingDone = $derived((data as any).user?.settings?.onboarding_done ?? false);
 	const favoriteVehicleId = $derived((data as any).user?.settings?.favorite_vehicle ?? null);
 
@@ -30,7 +30,7 @@
 			method: 'POST',
 			body: formData
 		});
-		invalidateAll();
+		refreshAll();
 	}
 </script>
 

@@ -3,9 +3,10 @@ import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: new Proxy({}, { get: (_, k: string) => process.env[k] })
-}));
+vi.mock(
+	'$app/env/private',
+	() => new Proxy(new Proxy({}, { get: (_, k: string) => process.env[k] }), { has: () => true })
+);
 
 let dir: string;
 
@@ -26,7 +27,7 @@ describe('getVapidConfig', () => {
 	it('prefers complete env keys over generating a pair', async () => {
 		process.env.VAPID_PUBLIC_KEY = 'env-public';
 		process.env.VAPID_PRIVATE_KEY = 'env-private';
-		const { getVapidConfig } = await import('$lib/server/vapid.js');
+		const { getVapidConfig } = await import('#lib/server/vapid.js');
 
 		const config = getVapidConfig();
 
@@ -36,7 +37,7 @@ describe('getVapidConfig', () => {
 	});
 
 	it('generates and persists a key pair when no env keys are set, then reuses it', async () => {
-		const { getVapidConfig } = await import('$lib/server/vapid.js');
+		const { getVapidConfig } = await import('#lib/server/vapid.js');
 
 		const first = getVapidConfig();
 		expect(first.publicKey).toBeTruthy();
@@ -56,7 +57,7 @@ describe('getVapidConfig', () => {
 			join(dir, 'vapid.json'),
 			JSON.stringify({ publicKey: 'stored-public', privateKey: 'stored-private' })
 		);
-		const { getVapidConfig } = await import('$lib/server/vapid.js');
+		const { getVapidConfig } = await import('#lib/server/vapid.js');
 
 		const config = getVapidConfig();
 
@@ -66,7 +67,7 @@ describe('getVapidConfig', () => {
 
 	it('falls back to a persistent/generated pair when only one env key is set', async () => {
 		process.env.VAPID_PUBLIC_KEY = 'env-public-only';
-		const { getVapidConfig } = await import('$lib/server/vapid.js');
+		const { getVapidConfig } = await import('#lib/server/vapid.js');
 
 		const config = getVapidConfig();
 
@@ -75,7 +76,7 @@ describe('getVapidConfig', () => {
 	});
 
 	it('defaults subject to mailto:admin@localhost when unset', async () => {
-		const { getVapidConfig } = await import('$lib/server/vapid.js');
+		const { getVapidConfig } = await import('#lib/server/vapid.js');
 		expect(getVapidConfig().subject).toBe('mailto:admin@localhost');
 	});
 });

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { formatDateShort, formatCurrency } from '$lib/utils/format.js';
-	import { _ } from '$lib/i18n';
-	import type { Travel } from '$lib/db/schema.js';
+	import { formatDateShort, formatCurrency } from '#lib/utils/format.js';
+	import { _ } from '#lib/i18n/index.js';
+	import type { Travel } from '#lib/db/schema.js';
 
 	interface Props {
 		travel: Travel;

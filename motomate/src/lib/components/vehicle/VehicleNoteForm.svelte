@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { renderMarkdown } from '$lib/utils/markdown.js';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { drafts } from '$lib/stores/drafts.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import DraftBanner from '$lib/components/ui/DraftBanner.svelte';
-	import RichEditor from '$lib/components/ui/RichEditor.svelte';
+	import { renderMarkdown } from '#lib/utils/markdown.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { drafts } from '#lib/stores/drafts.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import DraftBanner from '#lib/components/ui/DraftBanner.svelte';
+	import RichEditor from '#lib/components/ui/RichEditor.svelte';
 
 	interface DocRecord {
 		id: string;

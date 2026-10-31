@@ -1,6 +1,6 @@
 import { apiError } from './response.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
-import type { Vehicle } from '$lib/db/schema.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
+import type { Vehicle } from '#lib/db/schema.js';
 import type { User } from 'lucia';
 
 export function requireAuth(locals: App.Locals): Response | null {

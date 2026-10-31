@@ -1,21 +1,21 @@
 <script lang="ts">
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import type { PageData } from './$types';
-	import type { MoneyTotal } from '$lib/utils/money.js';
+	import type { MoneyTotal } from '#lib/utils/money.js';
 	import { untrack, tick } from 'svelte';
 	import { page } from '$app/state';
-	import { replaceState, beforeNavigate } from '$app/navigation';
-	import { formatCurrency, formatDateShort, formatMeasurement } from '$lib/utils/format.js';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
-	import ColumnPicker from '$lib/components/ui/ColumnPicker.svelte';
-	import TransactionForm from '$lib/components/finance/TransactionForm.svelte';
-	import { _, waitLocale } from '$lib/i18n';
-	import { quickAdd } from '$lib/stores/quickAdd.svelte.js';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
+	import { goto, beforeNavigate } from '$app/navigation';
+	import { formatCurrency, formatDateShort, formatMeasurement } from '#lib/utils/format.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import ViewToggle from '#lib/components/ui/ViewToggle.svelte';
+	import ColumnPicker from '#lib/components/ui/ColumnPicker.svelte';
+	import TransactionForm from '#lib/components/finance/TransactionForm.svelte';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { quickAdd } from '#lib/stores/quickAdd.svelte.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
 
 	let {
 		data,
@@ -66,9 +66,9 @@
 	$effect(() => {
 		if (page.url.searchParams.get('quick') === 'finance') {
 			openAddForm();
-			const url = new URL(page.url);
+			const url = new URL(page.url.href);
 			url.searchParams.delete('quick');
-			tick().then(() => replaceState(url, page.state));
+			tick().then(() => goto(url, { shallow: true, replace: true, state: page.state }));
 		}
 	});
 
@@ -88,12 +88,12 @@
 					?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			});
 		}
-		const url = new URL(page.url);
+		const url = new URL(page.url.href);
 		url.searchParams.delete('edit');
-		replaceState(url, page.state);
+		goto(url, { shallow: true, replace: true, state: page.state });
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived(data.currency || 'EUR');
 	const isHoursVehicle = $derived(data.vehicle.odometer_unit === 'h');
 	const unitLabel = $derived($_(getMeasurementUnitTranslationKey(data.vehicle.odometer_unit)));
@@ -206,7 +206,6 @@
 	const totalFinancePages = $derived(
 		Math.max(1, Math.ceil(sortedTransactions.length / FINANCE_PAGE_SIZE))
 	);
-
 	const pagedTransactions = $derived(
 		sortedTransactions.slice((financePage - 1) * FINANCE_PAGE_SIZE, financePage * FINANCE_PAGE_SIZE)
 	);
@@ -235,7 +234,11 @@
 	const prefsSync = createPrefsSync('finance');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		const g = groupBy;
@@ -299,6 +302,7 @@
 		if (tx.type === 'finance' && tx.category) {
 			return getCategoryLabel(tx.category);
 		}
+
 		return (
 			tx.notes?.split('\n')[0] ??
 			(tx.type === 'service' ? $_('finance.serviceEntry') : $_('finance.expense'))
@@ -469,34 +473,29 @@
 							type="button"
 							class="grouping-btn"
 							class:grouping-btn--active={groupBy === 'category'}
-							onclick={() => (groupBy = 'category')}
+							onclick={() => (groupBy = 'category')}>{$_('finance.groupCategory')}</button
 						>
-							{$_('finance.groupCategory')}
-						</button>
+
 						<button
 							type="button"
 							class="grouping-btn"
 							class:grouping-btn--active={groupBy === 'year'}
-							onclick={() => (groupBy = 'year')}
+							onclick={() => (groupBy = 'year')}>{$_('finance.groupYear')}</button
 						>
-							{$_('finance.groupYear')}
-						</button>
+
 						<button
 							type="button"
 							class="grouping-btn"
 							class:grouping-btn--active={groupBy === 'description'}
-							onclick={() => (groupBy = 'description')}
+							onclick={() => (groupBy = 'description')}>{$_('finance.groupDescription')}</button
 						>
-							{$_('finance.groupDescription')}
-						</button>
+
 						<button
 							type="button"
 							class="grouping-btn"
 							class:grouping-btn--active={groupBy === 'none'}
-							onclick={() => (groupBy = 'none')}
+							onclick={() => (groupBy = 'none')}>{$_('finance.groupNone')}</button
 						>
-							{$_('finance.groupNone')}
-						</button>
 					</div>
 				</div>
 				<div class="view-controls">
@@ -578,7 +577,7 @@
 										{#if (col.key === 'date' || col.key === 'category' || col.key === 'amount') && financeSortBy === col.key}
 											<span class="sort-arrow">{financeSortDir === 'asc' ? '↑' : '↓'}</span>
 										{/if}
-										<span class="drag-handle" aria-hidden="true">&#10815;</span>
+										<span class="drag-handle" aria-hidden="true">⨿</span>
 									</th>
 								{/each}
 								<th class="tx-th tx-th--center"></th>

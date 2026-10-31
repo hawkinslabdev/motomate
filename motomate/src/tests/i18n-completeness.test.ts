@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { locales } from '$lib/i18n/locales.js';
+import { locales } from '#lib/i18n/locales.js';
 
 type Tree = { [key: string]: Tree | string };
 

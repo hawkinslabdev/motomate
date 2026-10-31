@@ -1,19 +1,19 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({
 	getVehicleById: vi.fn(),
 	recomputeCurrentOdometer: vi.fn()
 }));
-vi.mock('$lib/db/repositories/service-logs.js', () => ({
+vi.mock('#lib/db/repositories/service-logs.js', () => ({
 	getServiceLogsByVehicle: vi.fn(),
 	createServiceLog: vi.fn(),
 	getServiceLogById: vi.fn(),
 	deleteServiceLog: vi.fn()
 }));
-vi.mock('$lib/db/repositories/maintenance.js', () => ({
+vi.mock('#lib/db/repositories/maintenance.js', () => ({
 	recomputeTrackerStatuses: vi.fn()
 }));
-vi.mock('$lib/workflow/engine.js', () => ({
+vi.mock('#lib/workflow/engine.js', () => ({
 	runWorkflowChecks: vi.fn().mockReturnValue(Promise.resolve({}))
 }));
 
@@ -25,14 +25,14 @@ import {
 	GET as getLog,
 	DELETE as deleteLog
 } from '../../routes/api/v1/vehicles/[id]/service-logs/[logId]/+server.js';
-import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById, recomputeCurrentOdometer } from '#lib/db/repositories/vehicles.js';
 import {
 	getServiceLogsByVehicle,
 	createServiceLog,
 	getServiceLogById,
 	deleteServiceLog
-} from '$lib/db/repositories/service-logs.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
+} from '#lib/db/repositories/service-logs.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
 
 const mockUser = { id: 'u_1', settings: { currency: 'EUR', locale: 'en' } } as any;
 const mockVehicle = {

@@ -1,10 +1,10 @@
 import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest';
 
-vi.mock('$lib/db/index.js', async () => {
+vi.mock('#lib/db/index.js', async () => {
 	const { default: Database } = await import('better-sqlite3');
 	const { drizzle } = await import('drizzle-orm/better-sqlite3');
 	const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
-	const schema = await import('$lib/db/schema.js');
+	const schema = await import('#lib/db/schema.js');
 	const sqlite = new Database(':memory:');
 	sqlite.pragma('foreign_keys = ON');
 	const db = drizzle(sqlite, { schema });
@@ -12,13 +12,13 @@ vi.mock('$lib/db/index.js', async () => {
 	return { db, sqlite };
 });
 
-import { db, sqlite } from '$lib/db/index.js';
-import { users, vehicles, service_logs, documents, odometer_logs } from '$lib/db/schema.js';
-import { createServiceLog } from '$lib/db/repositories/service-logs.js';
-import { createDocument } from '$lib/db/repositories/documents.js';
-import { createFinanceTransaction } from '$lib/db/repositories/finance-transactions.js';
-import { insertOdometerLog } from '$lib/db/repositories/vehicles.js';
-import { createTaskTemplate } from '$lib/db/repositories/maintenance.js';
+import { db, sqlite } from '#lib/db/index.js';
+import { users, vehicles, service_logs, documents, odometer_logs } from '#lib/db/schema.js';
+import { createServiceLog } from '#lib/db/repositories/service-logs.js';
+import { createDocument } from '#lib/db/repositories/documents.js';
+import { createFinanceTransaction } from '#lib/db/repositories/finance-transactions.js';
+import { insertOdometerLog } from '#lib/db/repositories/vehicles.js';
+import { createTaskTemplate } from '#lib/db/repositories/maintenance.js';
 
 const VEHICLE = 'v_1';
 

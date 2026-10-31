@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getNoteById, updateNote, deleteNote } from '$lib/db/repositories/notes.js';
-import { apiError, ok } from '$lib/api/response.js';
-import { requireAuth, requireWrite, guardVehicle, parseBody } from '$lib/api/guards.js';
+import { getNoteById, updateNote, deleteNote } from '#lib/db/repositories/notes.js';
+import { apiError, ok } from '#lib/api/response.js';
+import { requireAuth, requireWrite, guardVehicle, parseBody } from '#lib/api/guards.js';
 import { z } from 'zod';
 
 const UpdateNoteSchema = z.object({

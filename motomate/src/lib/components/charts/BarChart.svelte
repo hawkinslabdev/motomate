@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { formatNumber } from '$lib/utils/format.js';
+	import { formatNumber } from '#lib/utils/format.js';
 
 	let {
 		bars,
-		formatValue = (v: number) => formatNumber(v, 'en'),
+		formatValue = (v: number) => formatNumber(v, locale),
 		accentColor = 'var(--accent)',
 		height = 200,
 		locale = 'en',

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatNumber } from '$lib/utils/format.js';
+	import { formatNumber } from '#lib/utils/format.js';
 
 	interface Point {
 		label: string;
@@ -14,7 +14,7 @@
 	let {
 		points,
 		events = [],
-		formatValue = (v: number) => formatNumber(v, 'en'),
+		formatValue = (v: number) => formatNumber(v, locale),
 		accentColor = 'var(--accent)',
 		height = 200,
 		locale = 'en',

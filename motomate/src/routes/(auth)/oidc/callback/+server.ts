@@ -8,18 +8,18 @@ import {
 	redirectUri,
 	oidcCookie,
 	safeReturnPath
-} from '$lib/auth/oidc.js';
-import { lucia, isSecureCookie } from '$lib/auth/index.js';
+} from '#lib/auth/oidc.js';
+import { lucia, isSecureCookie } from '#lib/auth/index.js';
 import {
 	getUserByEmail,
 	getUserByOidcSub,
 	createUser,
 	updateUserSettings
-} from '$lib/db/repositories/users.js';
-import { isOidcSignupOpen } from '$lib/auth/registration.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
-import { reauthExpiry } from '$lib/auth/reauth.js';
-import { ts } from '$lib/server/log.js';
+} from '#lib/db/repositories/users.js';
+import { isOidcSignupOpen } from '#lib/auth/registration.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
+import { reauthExpiry } from '#lib/auth/reauth.js';
+import { ts } from '#lib/server/log.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddress }) => {

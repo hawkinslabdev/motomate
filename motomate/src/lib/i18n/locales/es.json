@@ -891,8 +891,10 @@
 		"profile": {
 			"title": "Preferencias",
 			"display": "Pantalla",
-			"language": "Idioma y región",
+			"language": "Idioma",
 			"currency": "Moneda",
+			"numberFormat": "Formato numérico",
+			"numberFormatAuto": "Automático",
 			"odometerUnit": "Unidad del odómetro",
 			"saved": "Preferencias guardadas",
 			"submit": "Guardar preferencias",

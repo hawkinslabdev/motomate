@@ -3,9 +3,9 @@ import os from 'os';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
+vi.mock('$app/env/private', () => new Proxy({}, { has: () => true }));
 
-import { LocalStorageAdapter } from '$lib/storage/local.js';
+import { LocalStorageAdapter } from '#lib/storage/local.js';
 
 describe('LocalStorageAdapter path containment', () => {
 	it('reads keys inside the base and rejects keys that escape it', async () => {

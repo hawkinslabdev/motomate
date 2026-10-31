@@ -1,8 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { deleteOdometerLog } from '$lib/db/repositories/vehicles.js';
-import { ok } from '$lib/api/response.js';
-import { requireAuth, requireWrite, guardVehicle } from '$lib/api/guards.js';
-import { syncOdometer } from '$lib/api/effects.js';
+import { deleteOdometerLog } from '#lib/db/repositories/vehicles.js';
+import { ok } from '#lib/api/response.js';
+import { requireAuth, requireWrite, guardVehicle } from '#lib/api/guards.js';
+import { syncOdometer } from '#lib/api/effects.js';
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
 	const authErr = requireAuth(locals);

@@ -1,8 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { verifyDownloadToken } from '$lib/server/download-token.js';
-import { generateJsonExport, generateZipExport } from '$lib/server/export.js';
-import { getUserById } from '$lib/db/repositories/users.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
+import { verifyDownloadToken } from '#lib/server/download-token.js';
+import { generateJsonExport, generateZipExport } from '#lib/server/export.js';
+import { getUserById } from '#lib/db/repositories/users.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const payload = verifyDownloadToken(params.token!);

@@ -1,10 +1,10 @@
 import {
 	updateServiceLog,
 	updateServiceLogAttachments
-} from '$lib/db/repositories/service-logs.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import { getVehicleById, recomputeCurrentOdometer } from '$lib/db/repositories/vehicles.js';
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
+} from '#lib/db/repositories/service-logs.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import { getVehicleById, recomputeCurrentOdometer } from '#lib/db/repositories/vehicles.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
 import { collectAttachmentIds } from './finance-attachments.js';
 
 export type ServiceLogEditResult = { warning?: string } | { error: string; status: number };

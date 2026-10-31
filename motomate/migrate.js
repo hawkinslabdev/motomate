@@ -1,11 +1,13 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import { resolve } from 'path';
+import { mkdirSync } from 'fs';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 export function runMigrations({ logger = console.log } = {}) {
 	const url = process.env.DATABASE_URL ?? './data/motomate.db';
+	mkdirSync(dirname(url), { recursive: true });
 	const sqlite = new Database(url);
 
 	try {

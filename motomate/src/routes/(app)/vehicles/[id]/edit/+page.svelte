@@ -2,18 +2,18 @@
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatNumber } from '$lib/utils/format.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import Modal from '#lib/components/ui/Modal.svelte';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatNumber } from '#lib/utils/format.js';
 	import {
 		convertDistanceValue,
 		DISTANCE_UNITS,
 		getDistanceUnitTranslationKey,
 		getMeasurementUnitTranslationKey,
 		type DistanceUnit
-	} from '$lib/utils/measurement.js';
+	} from '#lib/utils/measurement.js';
 
 	let {
 		data,
@@ -86,7 +86,7 @@
 	);
 	const canConvertDistanceUnit = $derived(data.vehicle.odometer_unit !== 'h');
 	const distanceUnitChanged = $derived(selectedDistanceUnit !== data.vehicle.odometer_unit);
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived(data.user?.settings?.currency ?? 'EUR');
 	const convertedCurrentReading = $derived(
 		canConvertDistanceUnit

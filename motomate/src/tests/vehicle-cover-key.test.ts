@@ -1,22 +1,22 @@
 import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest';
 
-vi.mock('$lib/db/index.js', async () => {
+vi.mock('#lib/db/index.js', async () => {
 	const { default: Database } = await import('better-sqlite3');
 	const { drizzle } = await import('drizzle-orm/better-sqlite3');
 	const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
-	const schema = await import('$lib/db/schema.js');
+	const schema = await import('#lib/db/schema.js');
 	const sqlite = new Database(':memory:');
 	sqlite.pragma('foreign_keys = ON');
 	const db = drizzle(sqlite, { schema });
 	migrate(db, { migrationsFolder: 'drizzle' });
 	return { db, sqlite };
 });
-vi.mock('$lib/server/integrations.js', () => ({ mirrorPut: vi.fn(), mirrorDelete: vi.fn() }));
-vi.mock('$lib/storage/index.js', () => ({ getStorage: vi.fn() }));
+vi.mock('#lib/server/integrations.js', () => ({ mirrorPut: vi.fn(), mirrorDelete: vi.fn() }));
+vi.mock('#lib/storage/index.js', () => ({ getStorage: vi.fn() }));
 
 import { eq } from 'drizzle-orm';
-import { db, sqlite } from '$lib/db/index.js';
-import { users, vehicles } from '$lib/db/schema.js';
+import { db, sqlite } from '#lib/db/index.js';
+import { users, vehicles } from '#lib/db/schema.js';
 import { actions } from '../routes/(app)/vehicles/[id]/edit/+page.server.js';
 
 const OWN_KEY = 'avatars/u_attacker/v_1.png';

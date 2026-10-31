@@ -1,35 +1,40 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: {
-		OIDC_ISSUER: 'https://idp.example.com',
-		OIDC_CLIENT_ID: 'motomate',
-		OIDC_CLIENT_SECRET: 'shhh',
-		OIDC_NAME: 'Authelia'
-	}
-}));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$lib/auth/index.js', () => ({
+vi.mock(
+	'$app/env/private',
+	() =>
+		new Proxy(
+			{
+				OIDC_ISSUER: 'https://idp.example.com',
+				OIDC_CLIENT_ID: 'motomate',
+				OIDC_CLIENT_SECRET: 'shhh',
+				OIDC_NAME: 'Authelia'
+			},
+			{ has: () => true }
+		)
+);
+vi.mock('$app/env/public', () => new Proxy({}, { has: () => true }));
+vi.mock('#lib/auth/index.js', () => ({
 	isSecureCookie: false,
 	lucia: {
 		createSession: vi.fn(async () => ({ id: 's_new' })),
 		createSessionCookie: () => ({ name: 'session', value: 's_new', attributes: {} })
 	}
 }));
-vi.mock('$lib/auth/rate-limit.js', () => ({ rateLimit: () => true }));
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock('#lib/auth/rate-limit.js', () => ({ rateLimit: () => true }));
+vi.mock('#lib/db/repositories/users.js', () => ({
 	getUserByEmail: vi.fn(),
 	getUserByOidcSub: vi.fn(),
 	createUser: vi.fn(),
 	updateUserSettings: vi.fn(async () => {})
 }));
-vi.mock('$lib/auth/registration.js', () => ({ isOidcSignupOpen: vi.fn(async () => false) }));
+vi.mock('#lib/auth/registration.js', () => ({ isOidcSignupOpen: vi.fn(async () => false) }));
 
 import { GET as loginGet } from '../routes/(auth)/oidc/login/+server.js';
 import { GET as callbackGet } from '../routes/(auth)/oidc/callback/+server.js';
-import { safeReturnPath } from '$lib/auth/oidc.js';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
-import { isReauthActive } from '$lib/auth/reauth.js';
+import { safeReturnPath } from '#lib/auth/oidc.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
+import { isReauthActive } from '#lib/auth/reauth.js';
 
 const DISCOVERY = {
 	issuer: 'https://idp.example.com',

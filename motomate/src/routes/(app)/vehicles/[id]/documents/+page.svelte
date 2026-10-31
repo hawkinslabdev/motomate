@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { dragFlag, isFileDrag } from '$lib/utils/drag.js';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import { dragFlag, isFileDrag } from '#lib/utils/drag.js';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { goto, beforeNavigate, afterNavigate } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { page } from '$app/state';
 	import type { PageData } from './$types';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import ViewToggle from '$lib/components/ui/ViewToggle.svelte';
-	import ColumnPicker from '$lib/components/ui/ColumnPicker.svelte';
-	import DocumentUploadForm from '$lib/components/documents/DocumentUploadForm.svelte';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
+	import ViewToggle from '#lib/components/ui/ViewToggle.svelte';
+	import ColumnPicker from '#lib/components/ui/ColumnPicker.svelte';
+	import DocumentUploadForm from '#lib/components/documents/DocumentUploadForm.svelte';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
 
 	let {
 		data,
@@ -46,6 +46,7 @@
 				'newest'
 		)
 	);
+
 	let viewMode = $state<'table' | 'timeline'>(
 		untrack(() => {
 			const stored = data.page_prefs?.viewMode;
@@ -77,7 +78,11 @@
 	const prefsSync = createPrefsSync('documents');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		const s = sortBy;
@@ -93,7 +98,9 @@
 	let _restoreFocusEl: HTMLElement | null = null;
 	let _restoreCursorPos: number | null = null;
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if (_restoreFocusEl) {
 			(_restoreFocusEl as HTMLInputElement).focus();
 			if (_restoreCursorPos !== null) {
@@ -113,14 +120,14 @@
 			_restoreFocusEl = focused;
 			_restoreCursorPos = focused.selectionStart ?? null;
 		}
-		const u = new URL(page.url);
+		const u = new URL(page.url.href);
 		u.searchParams.set('page', '1');
 		if (searchQuery.trim()) u.searchParams.set('search', searchQuery.trim());
 		else u.searchParams.delete('search');
 		if (categoryFilter !== 'all') u.searchParams.set('type', categoryFilter);
 		else u.searchParams.delete('type');
 		u.searchParams.set('sort', sortBy);
-		goto(u.toString(), { replaceState: true, noScroll: true });
+		goto(u.toString(), { replace: true, reset: false });
 	}
 
 	let _searchTimer: ReturnType<typeof setTimeout>;
@@ -216,9 +223,9 @@
 	}
 
 	function navTo(p: number) {
-		const u = new URL(page.url);
+		const u = new URL(page.url.href);
 		u.searchParams.set('page', String(p));
-		goto(u.toString(), { replaceState: false });
+		goto(u.toString());
 	}
 
 	const highlightId = $derived(page.url.searchParams.get('highlight') ?? null);
@@ -232,7 +239,8 @@
 	}
 
 	// After navigation, so SvelteKit's own scroll reset does not cancel ours
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
 		if (!highlightId) return;
 		tick().then(() => {
 			document
@@ -365,7 +373,7 @@
 								if (next) titleOverrides[id] = next;
 								return async ({ result, update }) => {
 									if (result.type === 'failure') delete titleOverrides[id];
-									await update({ invalidateAll: false });
+									await update({ refreshAll: false });
 								};
 							}}
 						>

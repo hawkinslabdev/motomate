@@ -891,8 +891,10 @@
 		"profile": {
 			"title": "Preferenze",
 			"display": "Display",
-			"language": "Lingua e regione",
+			"language": "Lingua",
 			"currency": "Valuta",
+			"numberFormat": "Formato numerico",
+			"numberFormatAuto": "Automatico",
 			"odometerUnit": "Unità contachilometri",
 			"saved": "Preferenze salvate",
 			"submit": "Salva preferenze",

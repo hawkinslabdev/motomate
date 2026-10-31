@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { hash } from '@node-rs/argon2';
-import { ARGON2_OPTS, isReauthActive, reauthExpiry, verifyReauth } from '$lib/auth/reauth.js';
-import { UserSettingsSchema } from '$lib/validators/schemas.js';
+import { ARGON2_OPTS, isReauthActive, reauthExpiry, verifyReauth } from '#lib/auth/reauth.js';
+import { UserSettingsSchema } from '#lib/validators/schemas.js';
 
 const PASSWORD = 'the-real-password';
 const open = () => new Date(Date.now() + 60_000).toISOString();

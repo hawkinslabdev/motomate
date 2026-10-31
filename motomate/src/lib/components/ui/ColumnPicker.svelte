@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { _, waitLocale } from '$lib/i18n';
+	import { _, waitLocale } from '#lib/i18n/index.js';
 
 	interface Column {
 		key: string;

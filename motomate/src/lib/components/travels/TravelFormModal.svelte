@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { _ } from '$lib/i18n';
-	import type { Travel } from '$lib/db/schema.js';
+	import { _ } from '#lib/i18n/index.js';
+	import type { Travel } from '#lib/db/schema.js';
 
 	interface GpxDoc {
 		id: string;

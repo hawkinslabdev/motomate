@@ -1,38 +1,38 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/documents.js', () => ({
+vi.mock('#lib/db/repositories/documents.js', () => ({
 	createDocument: vi.fn(),
 	getDocumentsByVehicle: vi.fn()
 }));
-vi.mock('$lib/server/integrations.js', () => ({
+vi.mock('#lib/server/integrations.js', () => ({
 	onDocumentCreated: vi.fn(),
 	mirrorPut: vi.fn(),
 	mirrorDelete: vi.fn()
 }));
-vi.mock('$lib/storage/index.js', () => ({
+vi.mock('#lib/storage/index.js', () => ({
 	getStorage: vi.fn()
 }));
-vi.mock('$lib/db/repositories/finance-transactions.js', () => ({
+vi.mock('#lib/db/repositories/finance-transactions.js', () => ({
 	getFinanceTransactionsByVehicle: vi.fn(),
 	createFinanceTransaction: vi.fn(),
 	updateFinanceTransaction: vi.fn(),
 	updateFinanceTransactionAttachments: vi.fn(),
 	deleteFinanceTransaction: vi.fn()
 }));
-vi.mock('$lib/db/repositories/service-logs.js', () => ({
+vi.mock('#lib/db/repositories/service-logs.js', () => ({
 	getServiceLogsByVehicle: vi.fn()
 }));
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock('#lib/db/repositories/users.js', () => ({
 	updateUserSettings: vi.fn()
 }));
 
-import { createDocument } from '$lib/db/repositories/documents.js';
-import { getStorage } from '$lib/storage/index.js';
+import { createDocument } from '#lib/db/repositories/documents.js';
+import { getStorage } from '#lib/storage/index.js';
 import {
 	updateFinanceTransaction,
 	updateFinanceTransactionAttachments
-} from '$lib/db/repositories/finance-transactions.js';
-import { collectAttachmentIds } from '$lib/server/finance-attachments.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { collectAttachmentIds } from '#lib/server/finance-attachments.js';
 import { actions } from '../routes/(app)/vehicles/[id]/finance/+page.server.js';
 
 const put = vi.fn();

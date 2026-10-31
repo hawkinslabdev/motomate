@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _ } from '$lib/i18n';
+	import { browser } from '$app/env';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _ } from '#lib/i18n/index.js';
 
 	function close() {
 		sheet.closeSheet();
@@ -52,10 +52,8 @@
 					fill="none"
 					stroke="currentColor"
 					stroke-width="1.5"
-					stroke-linecap="round"
+					stroke-linecap="round"><path d="M3 3l10 10M13 3L3 13"></path></svg
 				>
-					<path d="M3 3l10 10M13 3L3 13" />
-				</svg>
 			</button>
 		</div>
 

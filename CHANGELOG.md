@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.4
+
+- Minor: choose a number format under Settings, Preferences, or keep Automatic to follow the browser region
+- Minor: migrate to SvelteKit 3
+- Fix: numbers in the PDF report and notifications use the selected number format
+- Fix: the app and `npm run db:migrate` create the database folder when it is missing
+
 ## 0.6.3
 
 - Security: update markdown-it and various dependencies

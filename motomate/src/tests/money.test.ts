@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { primaryCurrency, totalByCurrency } from '$lib/utils/money.js';
+import { primaryCurrency, totalByCurrency } from '#lib/utils/money.js';
 
 describe('totalByCurrency', () => {
 	it('collapses an empty set to zero in the fallback currency', () => {

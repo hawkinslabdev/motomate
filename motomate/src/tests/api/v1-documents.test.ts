@@ -1,17 +1,17 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-vi.mock('$lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
-vi.mock('$lib/db/repositories/documents.js', () => ({
+vi.mock('#lib/db/repositories/vehicles.js', () => ({ getVehicleById: vi.fn() }));
+vi.mock('#lib/db/repositories/documents.js', () => ({
 	getDocumentsByVehicle: vi.fn(),
 	getDocumentsByVehicleTotal: vi.fn()
 }));
 
 import { GET } from '../../routes/api/v1/vehicles/[id]/documents/+server.js';
-import { getVehicleById } from '$lib/db/repositories/vehicles.js';
+import { getVehicleById } from '#lib/db/repositories/vehicles.js';
 import {
 	getDocumentsByVehicle,
 	getDocumentsByVehicleTotal
-} from '$lib/db/repositories/documents.js';
+} from '#lib/db/repositories/documents.js';
 
 const user = { id: 'u_1', settings: {} } as any;
 const doc = {
@@ -64,7 +64,7 @@ describe('GET /vehicles/:id/documents', () => {
 
 describe('parsePage', () => {
 	it('clamps garbage and negative values', async () => {
-		const { parsePage } = await import('$lib/api/guards.js');
+		const { parsePage } = await import('#lib/api/guards.js');
 		expect(parsePage(new URL('http://x?limit=abc&offset=-5'))).toEqual({ limit: 50, offset: 0 });
 		expect(parsePage(new URL('http://x?limit=9999&offset=3'))).toEqual({ limit: 200, offset: 3 });
 	});

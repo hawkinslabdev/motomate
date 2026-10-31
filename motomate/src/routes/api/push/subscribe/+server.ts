@@ -1,10 +1,10 @@
-import { json, error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/db/index.js';
-import { push_subscriptions } from '$lib/db/schema.js';
-import { generateId } from '$lib/utils/id.js';
+import { db } from '#lib/db/index.js';
+import { push_subscriptions } from '#lib/db/schema.js';
+import { generateId } from '#lib/utils/id.js';
 import { and, eq } from 'drizzle-orm';
-import { updateUserSettings } from '$lib/db/repositories/users.js';
+import { updateUserSettings } from '#lib/db/repositories/users.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.user) error(401);
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		});
 	}
 
-	return json({ ok: true });
+	return Response.json({ ok: true });
 };
 
 export const DELETE: RequestHandler = async ({ request, locals }) => {
@@ -49,5 +49,5 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
 		.where(
 			and(eq(push_subscriptions.endpoint, endpoint), eq(push_subscriptions.user_id, locals.user.id))
 		);
-	return json({ ok: true });
+	return Response.json({ ok: true });
 };

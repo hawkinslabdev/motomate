@@ -1,19 +1,11 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
-/// <reference types="@sveltejs/kit" />
-
-import { build, files, version } from '$service-worker';
-
-const sw =
-	/** @type {ServiceWorkerGlobalScope} */ /** @type {unknown} */ globalThis.self as ServiceWorkerGlobalScope;
+import { version } from '$app/env';
+import { assets, immutable } from '$app/manifest';
+import { asset } from '$app/paths';
+import { self as sw } from '$app/service-worker';
 
 const CACHE = `motomate-${version}`;
 
-const ASSETS = [
-	...build, // hashed app bundles
-	...files // static/ directory
-];
+const ASSETS = [...immutable.map((f) => `/${f.path}`), ...assets.map((f) => asset(f.path))];
 
 sw.addEventListener('install', (event) => {
 	async function precache() {

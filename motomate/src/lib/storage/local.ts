@@ -1,8 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { env } from '$env/dynamic/private';
+import { STORAGE_LOCAL_PATH } from '$app/env/private';
 
-const BASE_PATH = env.STORAGE_LOCAL_PATH ?? './uploads';
+const BASE_PATH = STORAGE_LOCAL_PATH ?? './uploads';
 
 async function ensureDir(dir: string): Promise<void> {
 	await fs.mkdir(dir, { recursive: true });

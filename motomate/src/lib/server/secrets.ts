@@ -1,11 +1,11 @@
 import crypto from 'crypto';
-import { env } from '$env/dynamic/private';
-import type { Integrations, UserSettings } from '$lib/db/schema.js';
+import { AUTH_SECRET } from '$app/env/private';
+import type { Integrations, UserSettings } from '#lib/db/schema.js';
 
 const PREFIX = 'enc:v1:';
 
 function key(): Buffer {
-	const secret = env.AUTH_SECRET;
+	const secret = AUTH_SECRET;
 	if (!secret) throw new Error('AUTH_SECRET is required to store integration credentials');
 	return crypto.createHash('sha256').update(secret).digest();
 }

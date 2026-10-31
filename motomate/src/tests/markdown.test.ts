@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderMarkdown } from '$lib/utils/markdown.js';
+import { renderMarkdown } from '#lib/utils/markdown.js';
 
 describe('renderMarkdown', () => {
 	it('escapes raw html blocks', () => {

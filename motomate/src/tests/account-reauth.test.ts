@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({ env: {} }));
-vi.mock('$env/dynamic/public', () => ({ env: {} }));
-vi.mock('$lib/auth/index.js', () => ({
+vi.mock('$app/env/private', () => new Proxy({}, { has: () => true }));
+vi.mock('$app/env/public', () => new Proxy({}, { has: () => true }));
+vi.mock('#lib/auth/index.js', () => ({
 	lucia: {
 		invalidateSession: vi.fn(async () => {}),
 		invalidateUserSessions: vi.fn(async () => {}),
@@ -10,7 +10,7 @@ vi.mock('$lib/auth/index.js', () => ({
 		createSessionCookie: () => ({ name: 'session', value: 's_new', attributes: {} })
 	}
 }));
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock('#lib/db/repositories/users.js', () => ({
 	getUserById: vi.fn(),
 	getUserByEmail: vi.fn(async () => undefined),
 	updateUserEmail: vi.fn(async () => {}),
@@ -20,7 +20,7 @@ vi.mock('$lib/db/repositories/users.js', () => ({
 }));
 
 import { actions } from '../routes/(app)/settings/account/+page.server.js';
-import { getUserById, updateUserEmail, deleteUser } from '$lib/db/repositories/users.js';
+import { getUserById, updateUserEmail, deleteUser } from '#lib/db/repositories/users.js';
 import { hash } from '@node-rs/argon2';
 
 const ARGON2_OPTS = { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 };

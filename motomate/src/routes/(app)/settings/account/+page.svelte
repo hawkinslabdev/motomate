@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { User } from '$lib/db/schema.js';
-	import { _ } from '$lib/i18n';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import type { User } from '#lib/db/schema.js';
+	import { _ } from '#lib/i18n/index.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 
 	let { data, form } = $props<{
 		data: {

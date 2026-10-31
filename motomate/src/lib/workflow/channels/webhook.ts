@@ -1,4 +1,4 @@
-import { assertSafeUrl } from '$lib/server/url-guard.js';
+import { assertSafeUrl } from '#lib/server/url-guard.js';
 
 export async function dispatchWebhook(
 	url: string,

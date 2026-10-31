@@ -1,11 +1,10 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import {
 	getFinanceTransactionsByVehicle,
 	createFinanceTransaction
-} from '$lib/db/repositories/finance-transactions.js';
-import { ApiFinanceTransactionSchema } from '$lib/validators/schemas.js';
-import { apiError, ok } from '$lib/api/response.js';
+} from '#lib/db/repositories/finance-transactions.js';
+import { ApiFinanceTransactionSchema } from '#lib/validators/schemas.js';
+import { apiError, ok } from '#lib/api/response.js';
 import {
 	requireAuth,
 	requireWrite,
@@ -13,7 +12,7 @@ import {
 	parseBody,
 	parsePage,
 	userCurrency
-} from '$lib/api/guards.js';
+} from '#lib/api/guards.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const authErr = requireAuth(locals);
@@ -26,7 +25,7 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const all = await getFinanceTransactionsByVehicle(params.id!, locals.user!.id);
 	const total_cents = all.reduce((sum, t) => sum + t.amount_cents, 0);
 
-	return json({ data: all.slice(offset, offset + limit), total: all.length, total_cents });
+	return Response.json({ data: all.slice(offset, offset + limit), total: all.length, total_cents });
 };
 
 export const POST: RequestHandler = async ({ locals, params, request }) => {

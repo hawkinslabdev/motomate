@@ -1,18 +1,18 @@
 <script lang="ts">
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
-	import { replaceState, beforeNavigate } from '$app/navigation';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatYearMonth } from '$lib/utils/format.js';
-	import { createPrefsSync } from '$lib/utils/prefs-sync.js';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import TravelEntry from '$lib/components/travels/TravelEntry.svelte';
-	import TravelFormModal from '$lib/components/travels/TravelFormModal.svelte';
-	import TravelMap from '$lib/components/travels/TravelMap.svelte';
-	import type { Travel } from '$lib/db/schema.js';
+	import { goto, beforeNavigate } from '$app/navigation';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatYearMonth } from '#lib/utils/format.js';
+	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import TravelEntry from '#lib/components/travels/TravelEntry.svelte';
+	import TravelFormModal from '#lib/components/travels/TravelFormModal.svelte';
+	import TravelMap from '#lib/components/travels/TravelMap.svelte';
+	import type { Travel } from '#lib/db/schema.js';
 
 	interface GpxDoc {
 		id: string;
@@ -28,7 +28,7 @@
 		waitLocale();
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived((data.user as any)?.settings?.currency ?? 'EUR');
 
 	// Modal / dialog state
@@ -84,18 +84,18 @@
 		if (editId) {
 			const t = data.travels.find((t: Travel) => t.id === editId);
 			if (t) openEdit(t);
-			const url = new URL(page.url);
+			const url = new URL(page.url.href);
 			url.searchParams.delete('edit');
-			tick().then(() => replaceState(url, page.state));
+			tick().then(() => goto(url, { shallow: true, replace: true, state: page.state }));
 			return;
 		}
 		const deleteId = page.url.searchParams.get('delete');
 		if (deleteId) {
 			const t = data.travels.find((t: Travel) => t.id === deleteId);
 			if (t) deletingTravel = t;
-			const url = new URL(page.url);
+			const url = new URL(page.url.href);
 			url.searchParams.delete('delete');
-			tick().then(() => replaceState(url, page.state));
+			tick().then(() => goto(url, { shallow: true, replace: true, state: page.state }));
 		}
 	});
 
@@ -112,7 +112,11 @@
 	const prefsSync = createPrefsSync('travels');
 	let _firstRun = true;
 
-	beforeNavigate(() => prefsSync.flush());
+	beforeNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
+		return prefsSync.flush();
+	});
 
 	$effect(() => {
 		const s = sortBy;
@@ -209,6 +213,7 @@
 	const gpxFiles = $derived(
 		data.travels.flatMap((t: Travel) => {
 			const excluded = (t.excluded_gpx_days as number[]) ?? [];
+
 			return (t.gpx_document_ids as (string | null)[])
 				.filter(
 					(docId, i): docId is string => !!docId && !!data.gpxUrls[docId] && !excluded.includes(i)

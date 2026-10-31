@@ -2,9 +2,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import {
 	getDocumentsByVehicle,
 	getDocumentsByVehicleTotal
-} from '$lib/db/repositories/documents.js';
-import { list } from '$lib/api/response.js';
-import { requireAuth, guardVehicle, parsePage } from '$lib/api/guards.js';
+} from '#lib/db/repositories/documents.js';
+import { list } from '#lib/api/response.js';
+import { requireAuth, guardVehicle, parsePage } from '#lib/api/guards.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const authErr = requireAuth(locals);

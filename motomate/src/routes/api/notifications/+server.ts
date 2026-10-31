@@ -1,6 +1,6 @@
-import { json, error } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { markRead, markAllRead, getNotifications } from '$lib/workflow/channels/inapp.js';
+import { markRead, markAllRead, getNotifications } from '#lib/workflow/channels/inapp.js';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
 	if (!locals.user) error(401);
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 	const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(rawLimit, 1), 10) : 3;
 	const filter = url.searchParams.get('filter') === 'unread' ? 'unread' : 'all';
 	const items = await getNotifications(locals.user.id, limit, 0, filter);
-	return json(items);
+	return Response.json(items);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -19,5 +19,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	} else if (id) {
 		await markRead(id, locals.user.id);
 	}
-	return json({ ok: true });
+	return Response.json({ ok: true });
 };

@@ -1,10 +1,10 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { getTrackersByVehicle } from '$lib/db/repositories/maintenance.js';
-import { requireAuth } from '$lib/api/guards.js';
-import { syncOdometer } from '$lib/api/effects.js';
-import { categorizeTrackers } from '$lib/api/attention.js';
-import { ok } from '$lib/api/response.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { getTrackersByVehicle } from '#lib/db/repositories/maintenance.js';
+import { requireAuth } from '#lib/api/guards.js';
+import { syncOdometer } from '#lib/api/effects.js';
+import { categorizeTrackers } from '#lib/api/attention.js';
+import { ok } from '#lib/api/response.js';
 
 export const GET: RequestHandler = async ({ locals }) => {
 	const authErr = requireAuth(locals);

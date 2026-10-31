@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { assertSafeUrl } from '$lib/server/url-guard.js';
+import { assertSafeUrl } from '#lib/server/url-guard.js';
 
 // IP literals only, so nothing here touches the network.
 describe('assertSafeUrl', () => {

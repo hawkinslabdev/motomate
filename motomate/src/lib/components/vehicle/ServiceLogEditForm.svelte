@@ -2,10 +2,10 @@
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import { SvelteSet } from 'svelte/reactivity';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
-	import type { ActiveTracker, TaskTemplate } from '$lib/db/schema.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
+	import type { ActiveTracker, TaskTemplate } from '#lib/db/schema.js';
 
 	type Tracker = ActiveTracker & { template: TaskTemplate };
 	interface DocRecord {

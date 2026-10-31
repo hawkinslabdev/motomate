@@ -1,11 +1,11 @@
 import type { PageServerLoad } from './$types';
-import { getVehiclesByUser } from '$lib/db/repositories/vehicles.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import { getRecentLogsAcrossVehicles } from '$lib/db/repositories/service-logs.js';
-import { getVehicleExpenses } from '$lib/db/repositories/finance-transactions.js';
-import { getUnreadCount } from '$lib/workflow/channels/inapp.js';
-import { totalByCurrency } from '$lib/utils/money.js';
-import { getVapidConfig } from '$lib/server/vapid.js';
+import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import { getRecentLogsAcrossVehicles } from '#lib/db/repositories/service-logs.js';
+import { getVehicleExpenses } from '#lib/db/repositories/finance-transactions.js';
+import { getUnreadCount } from '#lib/workflow/channels/inapp.js';
+import { totalByCurrency } from '#lib/utils/money.js';
+import { getVapidConfig } from '#lib/server/vapid.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;

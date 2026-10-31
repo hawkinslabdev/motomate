@@ -1,9 +1,9 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getOdometerLogs, insertOdometerLog } from '$lib/db/repositories/vehicles.js';
-import { ApiOdometerSchema } from '$lib/validators/schemas.js';
-import { apiError, list, ok } from '$lib/api/response.js';
-import { requireAuth, requireWrite, guardVehicle, parseBody, parsePage } from '$lib/api/guards.js';
-import { syncOdometer } from '$lib/api/effects.js';
+import { getOdometerLogs, insertOdometerLog } from '#lib/db/repositories/vehicles.js';
+import { ApiOdometerSchema } from '#lib/validators/schemas.js';
+import { apiError, list, ok } from '#lib/api/response.js';
+import { requireAuth, requireWrite, guardVehicle, parseBody, parsePage } from '#lib/api/guards.js';
+import { syncOdometer } from '#lib/api/effects.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const authErr = requireAuth(locals);

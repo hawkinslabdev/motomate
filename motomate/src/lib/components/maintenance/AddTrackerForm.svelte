@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { getMeasurementUnitTranslationKey } from '$lib/utils/measurement.js';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
 
 	let {
 		vehicleId: _vehicleId,

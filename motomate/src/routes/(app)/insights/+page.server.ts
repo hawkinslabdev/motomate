@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
-import { getVehiclesByUser, getOdometerLogs } from '$lib/db/repositories/vehicles.js';
-import { getVehicleExpenses } from '$lib/db/repositories/finance-transactions.js';
-import { getServiceLogsByVehicle } from '$lib/db/repositories/service-logs.js';
+import { getVehiclesByUser, getOdometerLogs } from '#lib/db/repositories/vehicles.js';
+import { getVehicleExpenses } from '#lib/db/repositories/finance-transactions.js';
+import { getServiceLogsByVehicle } from '#lib/db/repositories/service-logs.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;

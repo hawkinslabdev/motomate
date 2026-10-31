@@ -1,16 +1,16 @@
 import { eq, and, isNull } from 'drizzle-orm';
-import { db } from '$lib/db/index.js';
+import { db } from '#lib/db/index.js';
 import {
 	workflow_rules,
 	active_trackers,
 	vehicles,
 	documents,
 	odometer_logs
-} from '$lib/db/schema.js';
+} from '#lib/db/schema.js';
 import { renderTemplate } from './rules.js';
-import { serverT } from '$lib/i18n/server.js';
-import { recomputeTrackerStatuses } from '$lib/db/repositories/maintenance.js';
-import type { RuleTrigger, RuleNotification, Vehicle } from '$lib/db/schema.js';
+import { serverT } from '#lib/i18n/server.js';
+import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
+import type { RuleTrigger, RuleNotification, Vehicle } from '#lib/db/schema.js';
 import {
 	buildMaintenanceNotificationVars,
 	evaluateDateTrigger,
@@ -18,6 +18,7 @@ import {
 	normalizeWorkflowTrigger
 } from './triggers.js';
 import { getCooldownHours, parseFiredAtMap, cooldownKey, isQuietHour } from './engine-utils.js';
+import { formatLocale, formatNumber } from '#lib/utils/format.js';
 
 type TriggerResult = {
 	vars: Record<string, string | number>;
@@ -57,8 +58,18 @@ async function dispatchNotification(
 	});
 
 	const locale = user?.settings?.locale ?? 'en';
-	const title = renderTemplate(await serverT(notification.title, locale), vars);
-	const body = renderTemplate(await serverT(notification.body, locale), vars);
+	const numLocale = formatLocale(
+		locale,
+		user?.settings?.number_format ?? user?.settings?.detected_number_format
+	);
+	const shown = Object.fromEntries(
+		Object.entries(vars).map(([k, v]) => [
+			k,
+			typeof v === 'number' ? formatNumber(v, numLocale) : v
+		])
+	);
+	const title = renderTemplate(await serverT(notification.title, locale), shown);
+	const body = renderTemplate(await serverT(notification.body, locale), shown);
 	const channels = user?.settings?.notification_channels ?? {};
 	const vehicleName = String(vars.vehicle_name ?? '');
 

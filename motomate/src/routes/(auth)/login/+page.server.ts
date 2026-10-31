@@ -1,22 +1,22 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { lucia } from '$lib/auth/index.js';
-import { getUserByEmail, createUser, updateUserSettings } from '$lib/db/repositories/users.js';
-import { env as pubEnv } from '$env/dynamic/public';
-import { isRegistrationOpen } from '$lib/auth/registration.js';
+import { lucia } from '#lib/auth/index.js';
+import { getUserByEmail, createUser, updateUserSettings } from '#lib/db/repositories/users.js';
+import { PUBLIC_DEMO_ENABLED } from '$app/env/public';
+import { isRegistrationOpen } from '#lib/auth/registration.js';
 import {
 	createMagicLinkToken,
 	sendMagicLinkEmail,
 	logMagicLink,
 	isSmtpConfigured
-} from '$lib/auth/magic-link.js';
-import { verifyAltcha } from '$lib/auth/altcha.js';
-import { getOidcConfig } from '$lib/auth/oidc.js';
-import { LoginSchema, MagicLinkRequestSchema } from '$lib/validators/schemas.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
-import { ts } from '$lib/server/log.js';
+} from '#lib/auth/magic-link.js';
+import { verifyAltcha } from '#lib/auth/altcha.js';
+import { getOidcConfig } from '#lib/auth/oidc.js';
+import { LoginSchema, MagicLinkRequestSchema } from '#lib/validators/schemas.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
+import { ts } from '#lib/server/log.js';
 import type { Actions, PageServerLoad } from './$types';
 import { hash, verify } from '@node-rs/argon2';
-import { locales as localeMap } from '$lib/i18n/locales.js';
+import { locales as localeMap } from '#lib/i18n/locales.js';
 
 type AuthErrors = {
 	auth: {
@@ -103,7 +103,7 @@ export const actions: Actions = {
 			return fail(400, { error: errors.invalidCredentials, email: parsed.data.email });
 		}
 
-		if (pubEnv.PUBLIC_DEMO_ENABLED === 'true') {
+		if (PUBLIC_DEMO_ENABLED === 'true') {
 			// Demo mode: always reset locale to English so shared account is never mutated by visitor browser locale.
 			if (user.settings?.locale !== 'en') {
 				await updateUserSettings(user.id, { locale: 'en' });
@@ -120,6 +120,7 @@ export const actions: Actions = {
 			) {
 				settingsPatch.theme = rawTheme;
 			}
+
 			if (
 				rawLocale &&
 				rawLocale !== 'en' &&

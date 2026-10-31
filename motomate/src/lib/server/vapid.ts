@@ -1,15 +1,15 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import webpush from 'web-push';
-import { env } from '$env/dynamic/private';
 
-const KEYS_PATH = join(dirname(env.DATABASE_URL ?? './data/motomate.db'), 'vapid.json');
+import { DATABASE_URL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT } from '$app/env/private';
+
+const KEYS_PATH = join(dirname(DATABASE_URL ?? './data/motomate.db'), 'vapid.json');
 
 interface VapidKeyPair {
 	publicKey: string;
 	privateKey: string;
 }
-
 interface VapidConfig extends VapidKeyPair {
 	subject: string;
 }
@@ -42,22 +42,22 @@ function loadOrGenerateKeys(): VapidKeyPair {
 export function getVapidConfig(): VapidConfig {
 	if (cached) return cached;
 
-	const hasEnvKeys = Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY);
+	const hasEnvKeys = Boolean(VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY);
 
-	if (!hasEnvKeys && (env.VAPID_PUBLIC_KEY || env.VAPID_PRIVATE_KEY)) {
+	if (!hasEnvKeys && (VAPID_PUBLIC_KEY || VAPID_PRIVATE_KEY)) {
 		console.warn(
 			'[MotoMate] Incomplete VAPID configuration in .env. Falling back to persistent/generated key pair.'
 		);
 	}
 
 	const { publicKey, privateKey } = hasEnvKeys
-		? { publicKey: env.VAPID_PUBLIC_KEY!, privateKey: env.VAPID_PRIVATE_KEY! }
+		? { publicKey: VAPID_PUBLIC_KEY!, privateKey: VAPID_PRIVATE_KEY! }
 		: loadOrGenerateKeys();
 
 	cached = {
 		publicKey,
 		privateKey,
-		subject: env.VAPID_SUBJECT || 'mailto:admin@localhost'
+		subject: VAPID_SUBJECT || 'mailto:admin@localhost'
 	};
 
 	return cached;

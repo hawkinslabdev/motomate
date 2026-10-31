@@ -1,5 +1,5 @@
 import { normalizeWorkflowTrigger } from './triggers.js';
-import type { RuleTrigger } from '$lib/db/schema.js';
+import type { RuleTrigger } from '#lib/db/schema.js';
 
 export function getCooldownHours(trigger: RuleTrigger): number {
 	const t = normalizeWorkflowTrigger(trigger);

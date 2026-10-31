@@ -1,25 +1,25 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { tick, untrack } from 'svelte';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
-	import { _, setUserLocale } from '$lib/i18n';
-	import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '$lib/utils/measurement.js';
-	import { defaultVehicleEmoji } from '$lib/utils/vehicle-avatar.js';
-	import NotificationBell from '$lib/components/ui/NotificationBell.svelte';
-	import Toast from '$lib/components/ui/Toast.svelte';
-	import ShortcutsModal from '$lib/components/ui/ShortcutsModal.svelte';
-	import ConfirmDialog from '$lib/components/ui/ConfirmDialog.svelte';
-	import AppSheet from '$lib/components/ui/AppSheet.svelte';
-	import { quickAdd } from '$lib/stores/quickAdd.svelte.js';
-	import { drafts } from '$lib/stores/drafts.svelte.js';
-	import { dicebearUri } from '$lib/utils/dicebear.js';
-	import { resolveTheme, readStoredTheme, persistTheme } from '$lib/utils/theme.js';
+	import { _, setUserLocale } from '#lib/i18n/index.js';
+	import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '#lib/utils/measurement.js';
+	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
+	import NotificationBell from '#lib/components/ui/NotificationBell.svelte';
+	import Toast from '#lib/components/ui/Toast.svelte';
+	import ShortcutsModal from '#lib/components/ui/ShortcutsModal.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
+	import AppSheet from '#lib/components/ui/AppSheet.svelte';
+	import { quickAdd } from '#lib/stores/quickAdd.svelte.js';
+	import { drafts } from '#lib/stores/drafts.svelte.js';
+	import { dicebearUri } from '#lib/utils/dicebear.js';
+	import { resolveTheme, readStoredTheme, persistTheme } from '#lib/utils/theme.js';
 
-	import Sun from '$lib/components/icons/Sun.svelte';
-	import Moon from '$lib/components/icons/Moon.svelte';
-	import Monitor from '$lib/components/icons/Monitor.svelte';
+	import Sun from '#lib/components/icons/Sun.svelte';
+	import Moon from '#lib/components/icons/Moon.svelte';
+	import Monitor from '#lib/components/icons/Monitor.svelte';
 
 	type NavVehicle = {
 		id: string;
@@ -391,7 +391,7 @@
 <div class="app-shell">
 	<div class="demo-banner" class:active={data.demoMode}>
 		{#if data.demoMode}
-			Demo mode: changes are disabled &middot; intended for demonstration purposes only.
+			Demo mode: changes are disabled · intended for demonstration purposes only.
 		{/if}
 	</div>
 	<header class="topnav">
@@ -510,12 +510,8 @@
 														stroke-linecap="round"
 														aria-hidden="true"
 													>
-														<line x1="18" y1="6" x2="6" y2="18" /><line
-															x1="6"
-															y1="6"
-															x2="18"
-															y2="18"
-														/>
+														<line x1="18" y1="6" x2="6" y2="18"></line>
+														<line x1="6" y1="6" x2="18" y2="18"></line>
 													</svg>
 												</button>
 											</div>
@@ -537,10 +533,9 @@
 											stroke-width="2"
 											stroke-linecap="round"
 											stroke-linejoin="round"
-											aria-hidden="true"
+											aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg
 										>
-											<polyline points="20 6 9 17 4 12" />
-										</svg>
+
 										{$_('layout.notifications.clearAll')}
 									</button>
 								{/if}
@@ -557,10 +552,8 @@
 										stroke-width="2"
 										stroke-linecap="round"
 										stroke-linejoin="round"
-										aria-hidden="true"
+										aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 									>
-										<polyline points="9 18 15 12 9 6" />
-									</svg>
 								</a>
 							</div>
 						</div>
@@ -600,6 +593,7 @@
 							<a href="/settings" class="avatar-menu-item" onclick={() => (avatarMenuOpen = false)}
 								>{$_('layout.nav.settings')}</a
 							>
+
 							<button
 								type="button"
 								class="avatar-menu-item avatar-menu-item--danger"
@@ -636,8 +630,8 @@
 				stroke-linejoin="round"
 				aria-hidden="true"
 			>
-				<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-				<polyline points="9 22 9 12 15 12 15 22" />
+				<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+				<polyline points="9 22 9 12 15 12 15 22"></polyline>
 			</svg>
 			<span class="tab-label sr-only">{$_('layout.nav.dashboard')}</span>
 		</a>
@@ -657,8 +651,8 @@
 					stroke-linecap="round"
 					aria-hidden="true"
 				>
-					<line x1="12" y1="5" x2="12" y2="19" />
-					<line x1="5" y1="12" x2="19" y2="12" />
+					<line x1="12" y1="5" x2="12" y2="19"></line>
+					<line x1="5" y1="12" x2="19" y2="12"></line>
 				</svg>
 			</button>
 		</div>
@@ -682,9 +676,9 @@
 			>
 				<path
 					d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.3 1 12.1 1 13v3c0 .6.4 1 1 1h2"
-				/>
-				<circle cx="7" cy="17" r="2" />
-				<circle cx="17" cy="17" r="2" />
+				></path>
+				<circle cx="7" cy="17" r="2"></circle>
+				<circle cx="17" cy="17" r="2"></circle>
 			</svg>
 			<span class="tab-label sr-only">{$_('layout.nav.garage')}</span>
 		</a>
@@ -725,8 +719,10 @@
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-							><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg
 						>
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
 					</button>
 				</div>
 				<p class="sheet-sub">{$_('layout.addEntry.chooseVehicle')}</p>
@@ -749,7 +745,7 @@
 								stroke-width="2"
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+								aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 							>
 						</button>
 					{/each}
@@ -769,7 +765,7 @@
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-							stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg
+							stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg
 						>
 						{$_('common.back')}
 					</button>
@@ -783,8 +779,10 @@
 							stroke="currentColor"
 							stroke-width="2"
 							stroke-linecap="round"
-							><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg
 						>
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
 					</button>
 				</div>
 				<p class="sheet-sub">{$_('layout.addEntry.whatLogging')}</p>
@@ -799,10 +797,11 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								aria-hidden="true"
-								><path
-									d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
-								/></svg
 							>
+								<path
+									d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+								></path>
+							</svg>
 						</span>
 						<span class="type-text">
 							<span class="type-label">{$_('layout.addEntry.maintenance')}</span>
@@ -816,7 +815,7 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+							aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 						>
 					</button>
 					<button class="pick-item pick-item--type" onclick={() => quickAddNavigate('odometer')}>
@@ -828,8 +827,11 @@
 								stroke-width="1.75"
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></svg
+								aria-hidden="true"
 							>
+								<circle cx="12" cy="12" r="10"></circle>
+								<path d="M12 8v4l3 3"></path>
+							</svg>
 						</span>
 						<span class="type-text">
 							<span class="type-label">{$_('layout.addEntry.mileage')}</span>
@@ -843,7 +845,7 @@
 							stroke-width="2"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+							aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 						>
 					</button>
 					{#if !selectedVehicle?.meta?.hidden_tabs?.includes('notes')}
@@ -857,15 +859,14 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									aria-hidden="true"
-									><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline
-										points="14 2 14 8 20 8"
-									/><line x1="16" y1="13" x2="8" y2="13" /><line
-										x1="16"
-										y1="17"
-										x2="8"
-										y2="17"
-									/><polyline points="10 9 9 9 8 9" /></svg
 								>
+									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+
+									<polyline points="14 2 14 8 20 8"></polyline>
+									<line x1="16" y1="13" x2="8" y2="13"></line>
+									<line x1="16" y1="17" x2="8" y2="17"></line>
+									<polyline points="10 9 9 9 8 9"></polyline>
+								</svg>
 							</span>
 							<span class="type-text">
 								<span class="type-label">{$_('vehicle.forms.writeNote')}</span>
@@ -879,7 +880,7 @@
 								stroke-width="2"
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+								aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 							>
 						</button>
 					{/if}
@@ -894,10 +895,11 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									aria-hidden="true"
-									><line x1="12" y1="1" x2="12" y2="23" /><path
-										d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
-									/></svg
 								>
+									<line x1="12" y1="1" x2="12" y2="23"></line>
+
+									<path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+								</svg>
 							</span>
 							<span class="type-text">
 								<span class="type-label">{$_('layout.addEntry.finance')}</span>
@@ -911,7 +913,7 @@
 								stroke-width="2"
 								stroke-linecap="round"
 								stroke-linejoin="round"
-								aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg
+								aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg
 							>
 						</button>
 					{/if}

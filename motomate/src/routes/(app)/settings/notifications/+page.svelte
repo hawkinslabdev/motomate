@@ -2,9 +2,9 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { untrack } from 'svelte';
-	import { _, waitLocale } from '$lib/i18n';
-	import { formatDateTime } from '$lib/utils/format';
-	import { toasts } from '$lib/stores/toasts.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatDateTime } from '#lib/utils/format.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 
 	let { data } = $props<{ data: PageData }>();
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { getContext, untrack } from 'svelte';
-	import { browser } from '$app/environment';
-	import { _ } from '$lib/i18n';
+	import { browser } from '$app/env';
+	import { _ } from '#lib/i18n/index.js';
 
 	const altchaCtx = getContext<{ locale: string }>('altcha-locale');
 
@@ -20,12 +20,11 @@
 	const mismatch = $derived(confirmValue.length > 0 && confirmValue !== passwordValue);
 </script>
 
-<svelte:head
-	><title
-		>{data.registrationDisabled ? $_('auth.register.closedTitle') : $_('auth.register.title')} &middot;
-		MotoMate</title
-	></svelte:head
->
+<svelte:head>
+	<title
+		>{data.registrationDisabled ? $_('auth.register.closedTitle') : $_('auth.register.title')} · MotoMate</title
+	>
+</svelte:head>
 
 {#if data.registrationDisabled}
 	<div class="page-header">
@@ -134,10 +133,14 @@
 				<div class="altcha-skeleton" aria-hidden="true"></div>
 			{/if}
 		{/if}
+
 		<button type="submit" class="btn-primary" disabled={mismatch || loading || !altchaVerified}>
-			{#if loading}<span class="spinner" aria-hidden="true"></span>{/if}
-			{$_('auth.register.submit')}</button
-		>
+			{#if loading}
+				<span class="spinner" aria-hidden="true"></span>
+			{/if}
+
+			{$_('auth.register.submit')}
+		</button>
 	</form>
 
 	<p class="footer-link">

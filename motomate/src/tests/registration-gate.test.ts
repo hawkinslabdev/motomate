@@ -1,15 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: new Proxy({}, { get: (_, k: string) => process.env[k] })
-}));
+vi.mock(
+	'$app/env/private',
+	() => new Proxy(new Proxy({}, { get: (_, k: string) => process.env[k] }), { has: () => true })
+);
 
-vi.mock('$lib/db/repositories/users.js', () => ({
+vi.mock('#lib/db/repositories/users.js', () => ({
 	hasAnyUser: vi.fn()
 }));
 
-import { isRegistrationOpen } from '$lib/auth/registration.js';
-import { hasAnyUser } from '$lib/db/repositories/users.js';
+import { isRegistrationOpen } from '#lib/auth/registration.js';
+import { hasAnyUser } from '#lib/db/repositories/users.js';
 
 describe('isRegistrationOpen', () => {
 	beforeEach(() => {

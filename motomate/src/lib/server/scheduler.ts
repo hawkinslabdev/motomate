@@ -1,6 +1,6 @@
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
 import { runIntegrationSync } from './integrations.js';
-import { sqlite } from '$lib/db/index.js';
+import { sqlite } from '#lib/db/index.js';
 import { ts } from './log.js';
 
 const DEFAULT_INTERVAL_HOURS = 1;

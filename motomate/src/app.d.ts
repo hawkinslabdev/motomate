@@ -7,7 +7,7 @@ declare global {
 			session: Session | null;
 			isApiKeyAuth?: boolean;
 			apiKeyId?: string;
-			apiKeyScope?: import('$lib/db/schema').ApiKeyScope;
+			apiKeyScope?: import('#lib/db/schema.js').ApiKeyScope;
 		}
 		interface Error {
 			message: string;

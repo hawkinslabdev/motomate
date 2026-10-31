@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { _ } from '$lib/i18n';
-	import AuthShell from '$lib/components/auth/AuthShell.svelte';
+	import { _ } from '#lib/i18n/index.js';
+	import AuthShell from '#lib/components/auth/AuthShell.svelte';
 
 	const notFound = $derived(page.status === 404);
 </script>

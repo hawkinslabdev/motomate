@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: new Proxy({}, { get: (_, k: string) => process.env[k] })
-}));
+vi.mock(
+	'$app/env/private',
+	() => new Proxy(new Proxy({}, { get: (_, k: string) => process.env[k] }), { has: () => true })
+);
 
-vi.mock('$env/dynamic/public', () => ({
-	env: new Proxy({}, { get: (_, k: string) => process.env[k] })
-}));
+vi.mock(
+	'$app/env/public',
+	() => new Proxy(new Proxy({}, { get: (_, k: string) => process.env[k] }), { has: () => true })
+);
 
 import {
 	getOidcConfig,
@@ -16,7 +18,7 @@ import {
 	discoverOidc,
 	endSessionUrl,
 	oidcCookie
-} from '$lib/auth/oidc.js';
+} from '#lib/auth/oidc.js';
 
 function discoveryDoc(issuer: string) {
 	return {

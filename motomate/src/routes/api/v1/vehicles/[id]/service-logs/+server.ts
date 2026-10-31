@@ -1,8 +1,8 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getServiceLogsByVehicle, createServiceLog } from '$lib/db/repositories/service-logs.js';
-import { runWorkflowChecks } from '$lib/workflow/engine.js';
-import { ApiServiceLogSchema } from '$lib/validators/schemas.js';
-import { apiError, list, ok } from '$lib/api/response.js';
+import { getServiceLogsByVehicle, createServiceLog } from '#lib/db/repositories/service-logs.js';
+import { runWorkflowChecks } from '#lib/workflow/engine.js';
+import { ApiServiceLogSchema } from '#lib/validators/schemas.js';
+import { apiError, list, ok } from '#lib/api/response.js';
 import {
 	requireAuth,
 	requireWrite,
@@ -10,8 +10,8 @@ import {
 	parseBody,
 	parsePage,
 	userCurrency
-} from '$lib/api/guards.js';
-import { syncOdometer } from '$lib/api/effects.js';
+} from '#lib/api/guards.js';
+import { syncOdometer } from '#lib/api/effects.js';
 
 export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const authErr = requireAuth(locals);

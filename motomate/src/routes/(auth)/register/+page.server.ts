@@ -1,14 +1,14 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { hash } from '@node-rs/argon2';
-import { lucia } from '$lib/auth/index.js';
-import { getUserByEmail, createUser } from '$lib/db/repositories/users.js';
-import { isRegistrationOpen } from '$lib/auth/registration.js';
-import { CreateUserSchema } from '$lib/validators/schemas.js';
-import { rateLimit } from '$lib/auth/rate-limit.js';
-import { verifyAltcha } from '$lib/auth/altcha.js';
-import type { UserSettings } from '$lib/db/schema.js';
+import { lucia } from '#lib/auth/index.js';
+import { getUserByEmail, createUser } from '#lib/db/repositories/users.js';
+import { isRegistrationOpen } from '#lib/auth/registration.js';
+import { CreateUserSchema } from '#lib/validators/schemas.js';
+import { rateLimit } from '#lib/auth/rate-limit.js';
+import { verifyAltcha } from '#lib/auth/altcha.js';
+import type { UserSettings } from '#lib/db/schema.js';
 import type { Actions, PageServerLoad } from './$types';
-import { locales as localeMap } from '$lib/i18n/locales.js';
+import { locales as localeMap } from '#lib/i18n/locales.js';
 
 type RegisterMessages = {
 	auth: {

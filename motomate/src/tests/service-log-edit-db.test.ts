@@ -1,29 +1,29 @@
 import { vi, describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 
 // Real SQLite built from the shipped migrations; only object storage is faked
-vi.mock('$lib/db/index.js', async () => {
+vi.mock('#lib/db/index.js', async () => {
 	const { default: Database } = await import('better-sqlite3');
 	const { drizzle } = await import('drizzle-orm/better-sqlite3');
 	const { migrate } = await import('drizzle-orm/better-sqlite3/migrator');
-	const schema = await import('$lib/db/schema.js');
+	const schema = await import('#lib/db/schema.js');
 	const sqlite = new Database(':memory:');
 	sqlite.pragma('foreign_keys = ON');
 	const db = drizzle(sqlite, { schema });
 	migrate(db, { migrationsFolder: 'drizzle' });
 	return { db, sqlite };
 });
-vi.mock('$lib/server/integrations.js', () => ({
+vi.mock('#lib/server/integrations.js', () => ({
 	onDocumentCreated: vi.fn(),
 	mirrorPut: vi.fn(),
 	mirrorDelete: vi.fn()
 }));
-vi.mock('$lib/storage/index.js', () => ({ getStorage: vi.fn() }));
-vi.mock('$lib/workflow/engine.js', () => ({
+vi.mock('#lib/storage/index.js', () => ({ getStorage: vi.fn() }));
+vi.mock('#lib/workflow/engine.js', () => ({
 	runWorkflowChecks: vi.fn().mockResolvedValue(undefined)
 }));
 
 import { eq } from 'drizzle-orm';
-import { db, sqlite } from '$lib/db/index.js';
+import { db, sqlite } from '#lib/db/index.js';
 import {
 	users,
 	vehicles,
@@ -31,8 +31,8 @@ import {
 	service_logs,
 	task_templates,
 	active_trackers
-} from '$lib/db/schema.js';
-import { getStorage } from '$lib/storage/index.js';
+} from '#lib/db/schema.js';
+import { getStorage } from '#lib/storage/index.js';
 import { actions as timelineActions } from '../routes/(app)/vehicles/[id]/+page.server.js';
 import { actions as maintenanceActions } from '../routes/(app)/vehicles/[id]/maintenance/+page.server.js';
 
@@ -280,7 +280,7 @@ describe('trackers follow the newest service log, not the edited one', () => {
 			odometer_at_service: 12000,
 			currency: 'EUR'
 		});
-		const { deleteServiceLog } = await import('$lib/db/repositories/service-logs.js');
+		const { deleteServiceLog } = await import('#lib/db/repositories/service-logs.js');
 		await deleteServiceLog(NEWER, VEHICLE, OWNER);
 
 		const chain = await db.query.active_trackers.findFirst({

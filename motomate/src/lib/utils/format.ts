@@ -4,6 +4,45 @@ import type { MoneyTotal } from './money.js';
 const _numFmtCache = new Map<string, Intl.NumberFormat>();
 const _currFmtCache = new Map<string, Intl.NumberFormat>();
 
+export const NUMBER_FORMATS = ['dot', 'comma', 'space'] as const;
+export type NumberFormat = (typeof NUMBER_FORMATS)[number];
+
+const SEPARATORS: Record<NumberFormat, { group: string; decimal: string }> = {
+	dot: { group: '.', decimal: ',' },
+	comma: { group: ',', decimal: '.' },
+	space: { group: '\u202f', decimal: ',' }
+};
+
+/* The number format rides along as a BCP 47 private-use subtag, which Intl ignores */
+export function formatLocale(locale: string, numberFormat?: NumberFormat | null): string {
+	return numberFormat ? `${locale}-x-${numberFormat}` : locale;
+}
+
+/* Read the number format from the first Accept-Language tag; null keeps the language default */
+export function browserNumberFormat(acceptLanguage: string | null): NumberFormat | null {
+	const tag = acceptLanguage?.split(/[,;]/)[0].trim();
+	if (!tag) return null;
+	try {
+		const group = new Intl.NumberFormat(tag).formatToParts(10000.5).find((p) => p.type === 'group');
+		if (group?.value === ',') return 'comma';
+		if (group?.value === '.') return 'dot';
+		if (group && /\s/.test(group.value)) return 'space';
+	} catch {
+		/* invalid tag */
+	}
+	return null;
+}
+
+function applySeparators(fmt: Intl.NumberFormat, value: number, locale: string): string {
+	const style = NUMBER_FORMATS.find((f) => locale.endsWith(`-x-${f}`));
+	if (!style) return fmt.format(value);
+	const sep = SEPARATORS[style];
+	return fmt
+		.formatToParts(value)
+		.map((p) => (p.type === 'group' ? sep.group : p.type === 'decimal' ? sep.decimal : p.value))
+		.join('');
+}
+
 /* Format odometer with thousand-seperators */
 export function formatNumber(value: number, locale = 'en'): string {
 	let fmt = _numFmtCache.get(locale);
@@ -11,7 +50,7 @@ export function formatNumber(value: number, locale = 'en'): string {
 		fmt = new Intl.NumberFormat(locale);
 		_numFmtCache.set(locale, fmt);
 	}
-	return fmt.format(value);
+	return applySeparators(fmt, value, locale);
 }
 
 /* Format a measurement reading with unit token */
@@ -32,7 +71,7 @@ export function formatCurrency(cents: number, currency = 'EUR', locale = 'en'): 
 		});
 		_currFmtCache.set(key, fmt);
 	}
-	return fmt.format(cents / 100);
+	return applySeparators(fmt, cents / 100, locale);
 }
 
 /* Format a currency-grouped total; mixed currencies render as subtotals joined by a middot */

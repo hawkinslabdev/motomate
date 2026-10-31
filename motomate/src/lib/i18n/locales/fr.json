@@ -891,8 +891,10 @@
 		"profile": {
 			"title": "Préférences",
 			"display": "Affichage",
-			"language": "Langue et région",
+			"language": "Langue",
 			"currency": "Devise",
+			"numberFormat": "Format des nombres",
+			"numberFormatAuto": "Automatique",
 			"odometerUnit": "Unité du compteur",
 			"saved": "Préférences enregistrées",
 			"submit": "Enregistrer les préférences",

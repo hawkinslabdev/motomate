@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { sheet } from '$lib/stores/sheet.svelte.js';
-	import { _, waitLocale } from '$lib/i18n';
-	import { drafts } from '$lib/stores/drafts.svelte.js';
-	import DraftBanner from '$lib/components/ui/DraftBanner.svelte';
+	import { sheet } from '#lib/stores/sheet.svelte.js';
+	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { drafts } from '#lib/stores/drafts.svelte.js';
+	import DraftBanner from '#lib/components/ui/DraftBanner.svelte';
 
 	let {
 		today,

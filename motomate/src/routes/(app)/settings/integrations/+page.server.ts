@@ -1,13 +1,13 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getUserById, updateUserSettings } from '$lib/db/repositories/users.js';
-import { IntegrationsSchema } from '$lib/validators/schemas.js';
-import { encryptSecret, decryptSecret } from '$lib/server/secrets.js';
-import { syncAll } from '$lib/server/integrations.js';
-import { s3Test } from '$lib/storage/s3.js';
-import { paperlessTest } from '$lib/server/paperless.js';
-import { clearSystemAlert } from '$lib/workflow/channels/inapp.js';
-import type { Integrations } from '$lib/db/schema.js';
+import { getUserById, updateUserSettings } from '#lib/db/repositories/users.js';
+import { IntegrationsSchema } from '#lib/validators/schemas.js';
+import { encryptSecret, decryptSecret } from '#lib/server/secrets.js';
+import { syncAll } from '#lib/server/integrations.js';
+import { s3Test } from '#lib/storage/s3.js';
+import { paperlessTest } from '#lib/server/paperless.js';
+import { clearSystemAlert } from '#lib/workflow/channels/inapp.js';
+import type { Integrations } from '#lib/db/schema.js';
 
 async function currentIntegrations(userId: string): Promise<Integrations> {
 	const user = await getUserById(userId);

@@ -7,16 +7,16 @@ import {
 	updateTravel,
 	deleteTravel,
 	isDocumentReferencedByOtherTravels
-} from '$lib/db/repositories/travels.js';
+} from '#lib/db/repositories/travels.js';
 import {
 	createDocument,
 	deleteDocument,
 	getDocumentsByIds,
 	getRouteDocumentsByVehicle
-} from '$lib/db/repositories/documents.js';
-import { getStorage } from '$lib/storage/index.js';
-import { onDocumentCreated, mirrorDelete } from '$lib/server/integrations.js';
-import { attachmentStorageKey, fileUrl } from '$lib/utils/storage.js';
+} from '#lib/db/repositories/documents.js';
+import { getStorage } from '#lib/storage/index.js';
+import { onDocumentCreated, mirrorDelete } from '#lib/server/integrations.js';
+import { attachmentStorageKey, fileUrl } from '#lib/utils/storage.js';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();

@@ -1,14 +1,15 @@
 import { vi, describe, it, expect } from 'vitest';
 
-vi.mock('$env/dynamic/private', () => ({
-	env: { AUTH_SECRET: 'test-secret-32-chars-minimum-ok!' }
-}));
+vi.mock(
+	'$app/env/private',
+	() => new Proxy({ AUTH_SECRET: 'test-secret-32-chars-minimum-ok!' }, { has: () => true })
+);
 
 import {
 	createDownloadToken,
 	verifyDownloadToken,
 	tokenExpiresAt
-} from '$lib/server/download-token.js';
+} from '#lib/server/download-token.js';
 
 const USER_ID = 'u_test';
 

@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 const DRAFT_VERSION = 1;
 const TTL_MS = 7 * 24 * 60 * 60 * 1000;

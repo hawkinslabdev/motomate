@@ -38,7 +38,7 @@ export type NotificationChannels = {
 	home_assistant?: { enabled: boolean; webhook_url?: string };
 };
 
-// Credentials are encrypted at rest (see $lib/server/secrets.js) thus wont' leave the serverrr
+// Credentials are encrypted at rest (see #lib/server/secrets.js) thus wont' leave the serverrr
 export type Integrations = {
 	s3?: {
 		enabled: boolean;
@@ -110,6 +110,8 @@ export type UserSettings = {
 	currency: string; // 'EUR', 'GBP', etc.
 	odometer_unit: OdometerUnit;
 	locale: string;
+	number_format?: 'dot' | 'comma' | 'space' | null;
+	detected_number_format?: 'dot' | 'comma' | 'space' | null;
 	display_name?: string | null;
 	notification_channels?: NotificationChannels;
 	favorite_vehicle?: string | null;
