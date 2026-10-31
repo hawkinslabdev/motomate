@@ -6,6 +6,7 @@ import {
 	VEHICLE_TYPES
 } from '../db/schema.js';
 import { DEFAULT_ODOMETER_UNIT, DISTANCE_UNITS, MEASUREMENT_UNITS } from '../utils/measurement.js';
+import { NUMBER_FORMATS } from '../utils/format.js';
 
 const MeasurementUnitSchema = z.enum(MEASUREMENT_UNITS);
 const DistanceUnitSchema = z.enum(DISTANCE_UNITS);
@@ -171,6 +172,8 @@ export const UserSettingsSchema = z.object({
 	currency: z.string().length(3).default('EUR'),
 	odometer_unit: DistanceUnitSchema.default(DEFAULT_ODOMETER_UNIT),
 	locale: z.string().default('en'),
+	number_format: z.enum(NUMBER_FORMATS).nullable().optional(),
+	detected_number_format: z.enum(NUMBER_FORMATS).nullable().optional(),
 	display_name: z.string().min(1).max(80).trim().nullable().optional(),
 	notification_channels: NotificationChannelsSchema,
 	favorite_vehicle: z.string().nonempty().max(64).nullable().optional(),

@@ -28,7 +28,7 @@
 		waitLocale();
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const unit = $derived(data.vehicle.odometer_unit);
 	const isHoursVehicle = $derived(unit === 'h');
 	const updateReadingTitle = $derived(

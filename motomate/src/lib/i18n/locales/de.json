@@ -891,8 +891,10 @@
 		"profile": {
 			"title": "Einstellungen",
 			"display": "Anzeige",
-			"language": "Sprache & Region",
+			"language": "Sprache",
 			"currency": "Währung",
+			"numberFormat": "Zahlenformat",
+			"numberFormatAuto": "Automatisch",
 			"odometerUnit": "Kilometerstand-Einheit",
 			"saved": "Einstellungen gespeichert",
 			"submit": "Einstellungen speichern",

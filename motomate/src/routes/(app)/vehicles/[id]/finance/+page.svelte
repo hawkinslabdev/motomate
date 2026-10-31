@@ -93,7 +93,7 @@
 		goto(url, { shallow: true, replace: true, state: page.state });
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived(data.currency || 'EUR');
 	const isHoursVehicle = $derived(data.vehicle.odometer_unit === 'h');
 	const unitLabel = $derived($_(getMeasurementUnitTranslationKey(data.vehicle.odometer_unit)));

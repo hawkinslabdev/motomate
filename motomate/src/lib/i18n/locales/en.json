@@ -904,8 +904,10 @@
 		"profile": {
 			"title": "Preferences",
 			"display": "Display",
-			"language": "Language & region",
+			"language": "Language",
 			"currency": "Currency",
+			"numberFormat": "Number format",
+			"numberFormatAuto": "Automatic",
 			"odometerUnit": "Odometer unit",
 			"saved": "Preferences saved",
 			"submit": "Save preferences",

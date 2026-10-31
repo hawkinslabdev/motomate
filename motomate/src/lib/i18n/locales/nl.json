@@ -891,8 +891,10 @@
 		"profile": {
 			"title": "Voorkeuren",
 			"display": "Weergave",
-			"language": "Taal & regio",
+			"language": "Taal",
 			"currency": "Valuta",
+			"numberFormat": "Getalnotatie",
+			"numberFormatAuto": "Automatisch",
 			"odometerUnit": "Eenheid",
 			"saved": "Voorkeuren opgeslagen",
 			"submit": "Voorkeuren opslaan",

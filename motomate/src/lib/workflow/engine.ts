@@ -18,6 +18,7 @@ import {
 	normalizeWorkflowTrigger
 } from './triggers.js';
 import { getCooldownHours, parseFiredAtMap, cooldownKey, isQuietHour } from './engine-utils.js';
+import { formatLocale, formatNumber } from '#lib/utils/format.js';
 
 type TriggerResult = {
 	vars: Record<string, string | number>;
@@ -57,8 +58,18 @@ async function dispatchNotification(
 	});
 
 	const locale = user?.settings?.locale ?? 'en';
-	const title = renderTemplate(await serverT(notification.title, locale), vars);
-	const body = renderTemplate(await serverT(notification.body, locale), vars);
+	const numLocale = formatLocale(
+		locale,
+		user?.settings?.number_format ?? user?.settings?.detected_number_format
+	);
+	const shown = Object.fromEntries(
+		Object.entries(vars).map(([k, v]) => [
+			k,
+			typeof v === 'number' ? formatNumber(v, numLocale) : v
+		])
+	);
+	const title = renderTemplate(await serverT(notification.title, locale), shown);
+	const body = renderTemplate(await serverT(notification.body, locale), shown);
 	const channels = user?.settings?.notification_channels ?? {};
 	const vehicleName = String(vars.vehicle_name ?? '');
 

@@ -110,6 +110,8 @@ export type UserSettings = {
 	currency: string; // 'EUR', 'GBP', etc.
 	odometer_unit: OdometerUnit;
 	locale: string;
+	number_format?: 'dot' | 'comma' | 'space' | null;
+	detected_number_format?: 'dot' | 'comma' | 'space' | null;
 	display_name?: string | null;
 	notification_channels?: NotificationChannels;
 	favorite_vehicle?: string | null;

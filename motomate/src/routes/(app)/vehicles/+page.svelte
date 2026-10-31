@@ -7,7 +7,7 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const locale = $derived((data as any).user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const onboardingDone = $derived((data as any).user?.settings?.onboarding_done ?? false);
 	const favoriteVehicleId = $derived((data as any).user?.settings?.favorite_vehicle ?? null);
 

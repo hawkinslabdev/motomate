@@ -14,7 +14,7 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const locale = $derived(data.user.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived(data.user.settings?.currency ?? 'EUR');
 
 	let selectedVehicleId = $state<string>(untrack(() => data.page_prefs?.vehicleId ?? 'all'));

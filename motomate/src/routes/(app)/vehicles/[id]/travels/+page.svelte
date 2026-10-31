@@ -28,7 +28,7 @@
 		waitLocale();
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived((data.user as any)?.settings?.currency ?? 'EUR');
 
 	// Modal / dialog state

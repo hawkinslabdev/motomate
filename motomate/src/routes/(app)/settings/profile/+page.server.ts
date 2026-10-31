@@ -1,3 +1,4 @@
+import { NUMBER_FORMATS } from '#lib/utils/format.js';
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { updateUserSettings } from '#lib/db/repositories/users.js';
@@ -40,6 +41,8 @@ export const actions: Actions = {
 		if ('currency' in data) patch.currency = String(data.currency);
 		if ('odometer_unit' in data) patch.odometer_unit = data.odometer_unit as OdometerUnit;
 		if ('locale' in data) patch.locale = String(data.locale);
+		if ('number_format' in data)
+			patch.number_format = NUMBER_FORMATS.find((f) => f === data.number_format) ?? null;
 		if ('display_name' in data) patch.display_name = String(data.display_name).trim() || null;
 		await updateUserSettings(locals.user!.id, patch);
 		return { savedPrefs: true };

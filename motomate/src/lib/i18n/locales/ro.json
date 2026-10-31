@@ -904,8 +904,10 @@
 		"profile": {
 			"title": "Preferințe",
 			"display": "Afișare",
-			"language": "Limbă și regiune",
+			"language": "Limbă",
 			"currency": "Monedă",
+			"numberFormat": "Format numeric",
+			"numberFormatAuto": "Automat",
 			"odometerUnit": "Unitate odometru",
 			"saved": "Preferințe salvate",
 			"submit": "Salvează preferințele",

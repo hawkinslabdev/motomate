@@ -3,7 +3,7 @@
 
 	let {
 		bars,
-		formatValue = (v: number) => formatNumber(v, 'en'),
+		formatValue = (v: number) => formatNumber(v, locale),
 		accentColor = 'var(--accent)',
 		height = 200,
 		locale = 'en',

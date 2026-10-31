@@ -86,7 +86,7 @@
 	);
 	const canConvertDistanceUnit = $derived(data.vehicle.odometer_unit !== 'h');
 	const distanceUnitChanged = $derived(selectedDistanceUnit !== data.vehicle.odometer_unit);
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const currency = $derived(data.user?.settings?.currency ?? 'EUR');
 	const convertedCurrentReading = $derived(
 		canConvertDistanceUnit

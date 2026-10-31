@@ -36,7 +36,7 @@
 
 	// Derived logic
 	const vehicle = $derived(data.vehicle);
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const pinnedDoc = $derived(data.pinnedDoc);
 	const pinLabel = $derived(
 		vehicle.meta?.pinned_doc_label || pinnedDoc?.title || pinnedDoc?.name || ''

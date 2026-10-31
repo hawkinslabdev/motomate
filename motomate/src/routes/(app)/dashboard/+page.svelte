@@ -29,7 +29,7 @@
 			!locallyDismissed
 	);
 
-	const currentLocale = $derived(data.user.settings.locale ?? 'en');
+	const currentLocale = $derived(data.formatLocale);
 	const _currency = $derived(data.user.settings.currency ?? 'EUR');
 
 	const hour = new Date().getHours();

@@ -370,7 +370,7 @@
 						</div>
 					</div>
 					<div class="summary-odo">
-						<span class="summary-odo-val">{formatNumber(odometer, $locale ?? 'en')}</span>
+						<span class="summary-odo-val">{formatNumber(odometer, data.formatLocale)}</span>
 						<span class="summary-odo-unit">{odometerUnit}</span>
 					</div>
 					<div class="summary-presets">

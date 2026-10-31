@@ -4,6 +4,7 @@
 	import type { User } from '#lib/db/schema.js';
 	import { _ } from '#lib/i18n/index.js';
 	import { SUPPORTED_LANGUAGES } from '#lib/i18n/locales.js';
+	import { NUMBER_FORMATS, formatLocale, formatNumber } from '#lib/utils/format.js';
 	import {
 		DEFAULT_ODOMETER_UNIT,
 		DISTANCE_UNITS,
@@ -235,6 +236,20 @@
 			<select name="currency" class="input">
 				{#each [['EUR', '€ Euro'], ['GBP', '£ Pound'], ['CHF', 'CHF Franc'], ['USD', '$ Dollar']] as [val, label]}
 					<option value={val} selected={data.user.settings.currency === val}>{label}</option>
+				{/each}
+			</select>
+		</label>
+
+		<label class="field">
+			<span class="field-label">{$_('settings.profile.numberFormat')}</span>
+			<select name="number_format" class="input">
+				<option value="" selected={!data.user.settings.number_format}
+					>{$_('settings.profile.numberFormatAuto')}</option
+				>
+				{#each NUMBER_FORMATS as format (format)}
+					<option value={format} selected={data.user.settings.number_format === format}
+						>{formatNumber(1234.56, formatLocale('en', format))}</option
+					>
 				{/each}
 			</select>
 		</label>

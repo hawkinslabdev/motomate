@@ -37,7 +37,7 @@
 		waitLocale();
 	});
 
-	const locale = $derived(data.user?.settings?.locale ?? 'en');
+	const locale = $derived(data.formatLocale);
 	const isHoursVehicle = $derived(data.vehicle.odometer_unit === 'h');
 	const unitLabel = $derived($_(getMeasurementUnitTranslationKey(data.vehicle.odometer_unit)));
 	const measurementFieldLabel = $derived(
