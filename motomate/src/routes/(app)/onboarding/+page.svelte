@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { _, locale } from '#lib/i18n/index.js';
+	import { _ } from '#lib/i18n/index.js';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import { formatNumber } from '#lib/utils/format.js';
