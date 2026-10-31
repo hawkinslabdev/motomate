@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { DOC_TYPES, FINANCE_CATEGORIES, TRACKER_STATUSES, VEHICLE_TYPES } from '#lib/db/schema.js';
 import { UPCOMING_DAYS, UPCOMING_DISTANCE, UPCOMING_HOURS } from '#lib/api/attention.js';
@@ -1003,7 +1002,7 @@ const spec = {
 };
 
 export const GET: RequestHandler = async () => {
-	return json(spec, {
+	return Response.json(spec, {
 		headers: {
 			'Cache-Control': 'public, max-age=300'
 		}

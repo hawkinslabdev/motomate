@@ -1,4 +1,4 @@
-import { error, json } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit/hooks';
 import { lucia } from '#lib/auth/index.js';
 import { AUTH_SECRET } from '$app/env/private';
@@ -28,7 +28,7 @@ function checkRateLimit(pathname: string, userId: string): Response | null {
 	const limit = RATE_LIMITS[pathname];
 	if (!limit) return null;
 	if (rateLimit(`${pathname}:${userId}`, limit.max, limit.windowMs)) return null;
-	return json({ error: 'Too many attempts', code: 'RATE_LIMITED' }, { status: 429 });
+	return Response.json({ error: 'Too many attempts', code: 'RATE_LIMITED' }, { status: 429 });
 }
 
 // Signs file URLs and export tokens, keys ALTCHA, and derives the integration-credential key.
@@ -160,7 +160,7 @@ function isVehicleScopedRoute(routeId: string | null): boolean {
 function denyAnonymous(event: Parameters<Handle>[0]['event']): Response | null {
 	if (event.locals.user || isPublicRoute(event.route.id)) return null;
 	if (event.url.pathname.startsWith('/api/')) {
-		return json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 });
+		return Response.json({ error: 'Unauthorized', code: 'UNAUTHORIZED' }, { status: 401 });
 	}
 	if (SAFE_METHODS.has(event.request.method)) {
 		return new Response(null, { status: 303, headers: { Location: '/login' } });
@@ -193,7 +193,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			if (result) {
 				// read keys never mutate
 				if (result.scope === 'read' && !SAFE_METHODS.has(event.request.method)) {
-					return json(
+					return Response.json(
 						{ error: 'Forbidden: read-only key', code: 'FORBIDDEN' },
 						{ status: 403, headers: { 'Access-Control-Allow-Origin': '*' } }
 					);

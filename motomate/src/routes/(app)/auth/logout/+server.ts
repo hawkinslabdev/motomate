@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import { lucia, isSecureCookie } from '#lib/auth/index.js';
 import { endSessionUrl, oidcCookie } from '#lib/auth/oidc.js';
 import { isReauthActive } from '#lib/auth/reauth.js';
@@ -23,5 +22,5 @@ export const POST: RequestHandler = async ({ locals, cookies, url }) => {
 	}
 
 	const target = wasOidc ? await endSessionUrl(url, idToken) : null;
-	return json({ redirect: target ?? '/login' });
+	return Response.json({ redirect: target ?? '/login' });
 };

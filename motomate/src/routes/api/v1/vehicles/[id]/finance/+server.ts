@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import {
 	getFinanceTransactionsByVehicle,
@@ -26,7 +25,7 @@ export const GET: RequestHandler = async ({ locals, params, url }) => {
 	const all = await getFinanceTransactionsByVehicle(params.id!, locals.user!.id);
 	const total_cents = all.reduce((sum, t) => sum + t.amount_cents, 0);
 
-	return json({ data: all.slice(offset, offset + limit), total: all.length, total_cents });
+	return Response.json({ data: all.slice(offset, offset + limit), total: all.length, total_cents });
 };
 
 export const POST: RequestHandler = async ({ locals, params, request }) => {
