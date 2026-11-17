@@ -1168,7 +1168,7 @@
 				"expiryNone": "Sin vencimiento",
 				"prefix": "Clave",
 				"expires": "Vence",
-				"neverExpires": "Nunca",
+				"neverExpires": "No vence",
 				"lastUsed": "Último uso",
 				"neverUsed": "nunca",
 				"revoke": "Revocar",
@@ -1192,7 +1192,10 @@
 				"deleteKey": "Eliminar",
 				"deleteKeyConfirm": "Confirmar eliminación",
 				"restoreKey": "Restaurar",
-				"errorNameTaken": "Ese nombre ya está en uso."
+				"errorNameTaken": "Ese nombre ya está en uso.",
+				"expiresOn": "Vence el {date}",
+				"expiredOn": "Venció el {date}",
+				"newKey": "Nueva clave"
 			},
 			"docs": {
 				"title": "Documentación API",

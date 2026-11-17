@@ -980,7 +980,7 @@
 				"title": "Dit account verwijderen",
 				"desc": "Verwijdert permanent je account en al je voertuigen, servicegeschiedenis en documenten. Dit kan je niet ongedaan maken.",
 				"btn": "Account verwijderen",
-				"confirm": "Typ {email} ter bevestiging",
+				"confirm": "Type {email} ter bevestiging",
 				"errors": {
 					"mismatch": "Dat komt niet overeen met je e-mailadres."
 				},
@@ -1168,7 +1168,7 @@
 				"expiryNone": "Nooit verlopen",
 				"prefix": "Sleutel",
 				"expires": "Verloopt",
-				"neverExpires": "Nooit",
+				"neverExpires": "Verloopt nooit",
 				"lastUsed": "Laatste gebruik",
 				"neverUsed": "nooit",
 				"revoke": "Intrekken",
@@ -1192,7 +1192,10 @@
 				"deleteKey": "Verwijderen",
 				"deleteKeyConfirm": "Verwijdering bevestigen",
 				"restoreKey": "Herstellen",
-				"errorNameTaken": "Die naam is al in gebruik."
+				"errorNameTaken": "Die naam is al in gebruik.",
+				"expiresOn": "Verloopt {date}",
+				"expiredOn": "Verlopen {date}",
+				"newKey": "Nieuwe sleutel"
 			},
 			"docs": {
 				"title": "API-documentatie",

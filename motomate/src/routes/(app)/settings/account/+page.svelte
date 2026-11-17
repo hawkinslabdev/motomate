@@ -352,7 +352,12 @@
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
 			{@render proofField('delete', 'danger-field')}
 			<div class="field danger-field">
-				<label class="field-label" for="delete-confirm">
+				<label
+					class="field-label no-copy"
+					for="delete-confirm"
+					oncopy={(e) => e.preventDefault()}
+					oncut={(e) => e.preventDefault()}
+				>
 					{$_('settings.account.delete.confirm', { values: { email: data.user.email } })}
 				</label>
 				<input
@@ -365,6 +370,8 @@
 					spellcheck="false"
 					class="input"
 					bind:value={confirmEmail}
+					onpaste={(e) => e.preventDefault()}
+					ondrop={(e) => e.preventDefault()}
 					required
 				/>
 			</div>
@@ -681,5 +688,9 @@
 		.danger-box {
 			width: 100%;
 		}
+	}
+	.no-copy {
+		user-select: none;
+		-webkit-user-select: none;
 	}
 </style>

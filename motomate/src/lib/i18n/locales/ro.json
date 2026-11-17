@@ -1168,7 +1168,7 @@
 				"expiryNone": "Fără expirare",
 				"prefix": "Cheie",
 				"expires": "Expiră",
-				"neverExpires": "Niciodată",
+				"neverExpires": "Nu expiră",
 				"lastUsed": "Ultima utilizare",
 				"neverUsed": "niciodată",
 				"revoke": "Revocă",
@@ -1192,7 +1192,10 @@
 				"deleteKey": "Șterge",
 				"deleteKeyConfirm": "Confirmă ștergerea",
 				"restoreKey": "Restaurează",
-				"errorNameTaken": "Acest nume este deja utilizat."
+				"errorNameTaken": "Acest nume este deja utilizat.",
+				"expiresOn": "Expiră la {date}",
+				"expiredOn": "A expirat la {date}",
+				"newKey": "Cheie nouă"
 			},
 			"docs": {
 				"title": "Documentație API",

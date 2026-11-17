@@ -1168,7 +1168,7 @@
 				"expiryNone": "Kein Ablauf",
 				"prefix": "Schlüssel",
 				"expires": "Ablauf",
-				"neverExpires": "Nie",
+				"neverExpires": "Läuft nie ab",
 				"lastUsed": "Zuletzt verwendet",
 				"neverUsed": "nie",
 				"revoke": "Widerrufen",
@@ -1192,7 +1192,10 @@
 				"deleteKey": "Löschen",
 				"deleteKeyConfirm": "Löschen bestätigen",
 				"restoreKey": "Wiederherstellen",
-				"errorNameTaken": "Dieser Name wird bereits verwendet."
+				"errorNameTaken": "Dieser Name wird bereits verwendet.",
+				"expiresOn": "Läuft ab am {date}",
+				"expiredOn": "Abgelaufen am {date}",
+				"newKey": "Neuer Schlüssel"
 			},
 			"docs": {
 				"title": "API-Dokumentation",

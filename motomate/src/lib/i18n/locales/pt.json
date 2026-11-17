@@ -1168,7 +1168,7 @@
 				"expiryNone": "Sem expiração",
 				"prefix": "Chave",
 				"expires": "Expira",
-				"neverExpires": "Nunca",
+				"neverExpires": "Não expira",
 				"lastUsed": "Último uso",
 				"neverUsed": "nunca",
 				"revoke": "Revogar",
@@ -1192,7 +1192,10 @@
 				"deleteKey": "Eliminar",
 				"deleteKeyConfirm": "Confirmar eliminação",
 				"restoreKey": "Restaurar",
-				"errorNameTaken": "Esse nome já está em uso."
+				"errorNameTaken": "Esse nome já está em uso.",
+				"expiresOn": "Expira a {date}",
+				"expiredOn": "Expirou a {date}",
+				"newKey": "Nova chave"
 			},
 			"docs": {
 				"title": "Documentação API",
