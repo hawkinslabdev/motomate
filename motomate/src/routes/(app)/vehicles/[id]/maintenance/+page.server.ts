@@ -170,6 +170,9 @@ export const actions: Actions = {
 
 		const reminderOnly = raw.reminder_only === 'true';
 
+		const vehicle = await getVehicleById(params.id, locals.user!.id);
+		if (!vehicle) return fail(404, { trackerError: 'Vehicle not found' });
+
 		await updateTrackerState(id, params.id, {
 			name,
 			description,
@@ -182,15 +185,14 @@ export const actions: Actions = {
 			reminder_only: reminderOnly
 		});
 
-		const vehicle = await getVehicleById(params.id, locals.user!.id);
-		if (vehicle) await recomputeTrackerStatuses(params.id, vehicle.current_odometer);
+		await recomputeTrackerStatuses(params.id, vehicle.current_odometer);
 
 		return { trackerUpdated: true };
 	},
 
-	deleteTracker: async ({ request, params }) => {
+	deleteTracker: async ({ request, locals, params }) => {
 		const raw = Object.fromEntries(await request.formData());
-		await deleteTracker(String(raw.id), params.id);
+		await deleteTracker(String(raw.id), params.id, locals.user!.id);
 		return { trackerDeleted: true };
 	},
 

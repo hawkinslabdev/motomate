@@ -2,6 +2,7 @@ import { eq, and, desc, lte, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { travels } from '../schema.js';
 import { getVehicleById } from './vehicles.js';
+import { ownedDocumentIds } from './documents.js';
 import type { Travel, InsertTravel } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 
@@ -34,10 +35,12 @@ export async function createTravel(userId: string, input: CreateTravelInput): Pr
 	const vehicle = await getVehicleById(input.vehicle_id, userId);
 	if (!vehicle) throw new Error('Vehicle not found');
 
+	const owned = await ownedDocumentIds(input.gpx_document_ids, userId);
 	const id = generateId();
 	const now = new Date().toISOString();
 	const row: InsertTravel = {
 		...input,
+		gpx_document_ids: input.gpx_document_ids.map((d) => (d && owned.has(d) ? d : null)),
 		id,
 		user_id: userId,
 		remark: input.remark ?? null,
@@ -74,9 +77,14 @@ export async function updateTravel(
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
 	const now = new Date().toISOString();
+	const patch = { ...input, updated_at: now };
+	if (input.gpx_document_ids) {
+		const owned = await ownedDocumentIds(input.gpx_document_ids, userId);
+		patch.gpx_document_ids = input.gpx_document_ids.map((d) => (d && owned.has(d) ? d : null));
+	}
 	await db
 		.update(travels)
-		.set({ ...input, updated_at: now })
+		.set(patch)
 		.where(and(eq(travels.id, id), eq(travels.vehicle_id, vehicleId)));
 }
 

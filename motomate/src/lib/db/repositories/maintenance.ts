@@ -905,7 +905,12 @@ export async function resyncTrackersFromServiceLogs(
 	}
 }
 
-export async function deleteTracker(trackerId: string, vehicleId: string): Promise<void> {
+export async function deleteTracker(
+	trackerId: string,
+	vehicleId: string,
+	userId: string
+): Promise<void> {
+	if (!(await getVehicleById(vehicleId, userId))) return;
 	await db
 		.delete(active_trackers)
 		.where(and(eq(active_trackers.id, trackerId), eq(active_trackers.vehicle_id, vehicleId)));

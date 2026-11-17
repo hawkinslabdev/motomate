@@ -4,6 +4,7 @@ import { service_logs } from '../schema.js';
 import { CreateServiceLogSchema } from '../../validators/schemas.js';
 import { resyncTrackersFromServiceLogs } from './maintenance.js';
 import { updateOdometer, getVehicleById } from './vehicles.js';
+import { ownedDocumentIds } from './documents.js';
 import { active_trackers, task_templates } from '../schema.js';
 import type { InsertServiceLog, ServiceLog } from '../schema.js';
 import { generateId } from '../../utils/id.js';
@@ -12,6 +13,14 @@ import {
 	isDistanceMeasurementValue,
 	resolveMeasurementValue
 } from '../../utils/measurement.js';
+
+async function vehicleTrackerIds(vehicleId: string): Promise<Set<string>> {
+	const rows = await db.query.active_trackers.findMany({
+		where: eq(active_trackers.vehicle_id, vehicleId),
+		columns: { id: true }
+	});
+	return new Set(rows.map((t) => t.id));
+}
 
 function hydrateServiceLog(log: ServiceLog): ServiceLog {
 	return {
@@ -27,6 +36,13 @@ export async function createServiceLog(
 	const parsed = CreateServiceLogSchema.parse(input);
 	const vehicle = await getVehicleById(parsed.vehicle_id, userId);
 	if (!vehicle) throw new Error('Vehicle not found');
+	const [trackers, docs] = await Promise.all([
+		vehicleTrackerIds(parsed.vehicle_id),
+		ownedDocumentIds(parsed.attachments, userId)
+	]);
+	if (parsed.tracker_id && !trackers.has(parsed.tracker_id)) parsed.tracker_id = undefined;
+	parsed.serviced_tracker_ids = parsed.serviced_tracker_ids.filter((t) => trackers.has(t));
+	parsed.attachments = parsed.attachments.filter((d) => docs.has(d));
 	const id = generateId();
 	const row: InsertServiceLog = {
 		...parsed,
@@ -136,6 +152,10 @@ export async function updateServiceLog(
 	});
 	if (!before) return;
 	const patch: Partial<InsertServiceLog> = { ...data };
+	if (data.serviced_tracker_ids) {
+		const trackers = await vehicleTrackerIds(vehicleId);
+		patch.serviced_tracker_ids = data.serviced_tracker_ids.filter((t) => trackers.has(t));
+	}
 	if (data.odometer_at_service !== undefined) {
 		patch.measurement_at_service = data.odometer_at_service;
 		patch.measurement_unit = vehicle.odometer_unit;
@@ -149,7 +169,7 @@ export async function updateServiceLog(
 	await resyncTrackersFromServiceLogs(vehicleId, [
 		before.tracker_id,
 		...before.serviced_tracker_ids,
-		...(data.serviced_tracker_ids ?? [])
+		...(patch.serviced_tracker_ids ?? [])
 	]);
 }
 
@@ -182,8 +202,9 @@ export async function updateServiceLogAttachments(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const owned = await ownedDocumentIds(documentIds, userId);
 	db.update(service_logs)
-		.set({ attachments: documentIds })
+		.set({ attachments: documentIds.filter((d) => owned.has(d)) })
 		.where(and(eq(service_logs.id, id), eq(service_logs.vehicle_id, vehicleId)))
 		.run();
 }

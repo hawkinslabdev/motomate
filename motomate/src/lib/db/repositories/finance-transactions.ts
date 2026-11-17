@@ -3,6 +3,7 @@ import { db } from '../index.js';
 import { finance_transactions } from '../schema.js';
 import { getVehicleById } from './vehicles.js';
 import { getServiceLogsByVehicle } from './service-logs.js';
+import { ownedDocumentIds } from './documents.js';
 import type { InsertFinanceTransaction, FinanceTransaction } from '../schema.js';
 import { generateId } from '../../utils/id.js';
 
@@ -28,10 +29,13 @@ export async function createFinanceTransaction(
 ): Promise<FinanceTransaction> {
 	const vehicle = await getVehicleById(input.vehicle_id, userId);
 	if (!vehicle) throw new Error('Vehicle not found');
+	const attachments = (input.attachments as string[] | undefined) ?? [];
+	const owned = await ownedDocumentIds(attachments, userId);
 	const id = generateId();
 	const now = new Date().toISOString();
 	const row: InsertFinanceTransaction = {
 		...input,
+		attachments: attachments.filter((d) => owned.has(d)),
 		id,
 		user_id: userId,
 		measurement_at_transaction: input.odometer_at_transaction,
@@ -138,10 +142,11 @@ export async function updateFinanceTransactionAttachments(
 ): Promise<void> {
 	const vehicle = await getVehicleById(vehicleId, userId);
 	if (!vehicle) return;
+	const owned = await ownedDocumentIds(documentIds, userId);
 	const now = new Date().toISOString();
 	await db
 		.update(finance_transactions)
-		.set({ attachments: documentIds, updated_at: now })
+		.set({ attachments: documentIds.filter((d) => owned.has(d)), updated_at: now })
 		.where(and(eq(finance_transactions.id, id), eq(finance_transactions.vehicle_id, vehicleId)));
 }
 

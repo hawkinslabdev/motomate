@@ -1,14 +1,16 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { and, eq } from 'drizzle-orm';
 import {
 	updateVehicle,
 	deleteVehicle,
 	convertVehicleDistanceUnit,
 	getVehicleById,
 	updateOdometer,
-	insertOdometerLog
+	insertOdometerLog,
+	archiveVehicle,
+	unarchiveVehicle
 } from '#lib/db/repositories/vehicles.js';
+import { getDocumentsByIds } from '#lib/db/repositories/documents.js';
 import {
 	recomputeTrackerStatuses,
 	getTrackersByVehicle
@@ -18,8 +20,7 @@ import { UpdateVehicleSchema } from '#lib/validators/schemas.js';
 import { getStorage } from '#lib/storage/index.js';
 import { mirrorPut, mirrorDelete } from '#lib/server/integrations.js';
 import type { VehicleMeta } from '#lib/db/schema.js';
-import { db } from '#lib/db/index.js';
-import { HIDEABLE_VEHICLE_TABS, vehicles } from '#lib/db/schema.js';
+import { HIDEABLE_VEHICLE_TABS } from '#lib/db/schema.js';
 import { serverT } from '#lib/i18n/server.js';
 import { getMeasurementBasis, isDistanceUnit, isMeasurementUnit } from '#lib/utils/measurement.js';
 
@@ -186,32 +187,16 @@ export const actions: Actions = {
 			}
 		}
 
-		// Archive vehicle and update sold price
-		await db
-			.update(vehicles)
-			.set({
-				archived_at: new Date().toISOString(),
-				sold_price_cents: soldPriceCents,
-				sold_price_currency:
-					soldPriceCents !== null ? (locals.user!.settings?.currency ?? 'EUR') : null,
-				updated_at: new Date().toISOString()
-			})
-			.where(and(eq(vehicles.id, params.id), eq(vehicles.user_id, locals.user!.id)));
+		await archiveVehicle(params.id, locals.user!.id, {
+			cents: soldPriceCents,
+			currency: soldPriceCents !== null ? (locals.user!.settings?.currency ?? 'EUR') : null
+		});
 
 		redirect(302, '/vehicles?archived=1');
 	},
 
 	unarchive: async ({ locals, params }) => {
-		// Unarchive vehicle and reset sold price (since it's no longer sold)
-		await db
-			.update(vehicles)
-			.set({
-				archived_at: null,
-				sold_price_cents: null,
-				sold_price_currency: null,
-				updated_at: new Date().toISOString()
-			})
-			.where(and(eq(vehicles.id, params.id), eq(vehicles.user_id, locals.user!.id)));
+		await unarchiveVehicle(params.id, locals.user!.id);
 
 		return { unarchived: true };
 	},
@@ -313,6 +298,9 @@ export const actions: Actions = {
 
 		const vehicle = await getVehicleById(vehicleId, user.id);
 		if (!vehicle) return fail(404, { error: 'Not found' });
+		if (docId && !(await getDocumentsByIds([docId], user.id)).length) {
+			return fail(404, { error: 'Not found' });
+		}
 
 		const currentMeta: VehicleMeta = vehicle.meta ?? {};
 		const newMeta: VehicleMeta = {

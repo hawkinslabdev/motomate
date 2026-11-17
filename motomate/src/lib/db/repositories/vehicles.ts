@@ -305,17 +305,31 @@ export async function convertVehicleDistanceUnit(
 	return true;
 }
 
-export async function archiveVehicle(id: string, userId: string): Promise<void> {
+export async function archiveVehicle(
+	id: string,
+	userId: string,
+	sold?: { cents: number | null; currency: string | null }
+): Promise<void> {
+	const now = new Date().toISOString();
 	await db
 		.update(vehicles)
-		.set({ archived_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+		.set({
+			archived_at: now,
+			updated_at: now,
+			...(sold && { sold_price_cents: sold.cents, sold_price_currency: sold.currency })
+		})
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
 export async function unarchiveVehicle(id: string, userId: string): Promise<void> {
 	await db
 		.update(vehicles)
-		.set({ archived_at: null, updated_at: new Date().toISOString() })
+		.set({
+			archived_at: null,
+			sold_price_cents: null,
+			sold_price_currency: null,
+			updated_at: new Date().toISOString()
+		})
 		.where(and(eq(vehicles.id, id), eq(vehicles.user_id, userId)));
 }
 
