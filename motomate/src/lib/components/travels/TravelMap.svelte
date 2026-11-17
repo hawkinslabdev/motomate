@@ -41,12 +41,13 @@
 	let loading = $state(true);
 	let error = $state(false);
 
-	const COLOR_SELECTED = '#2563eb'; // --accent
-	const COLOR_DEFAULT = '#9ca3af'; // --text-subtle
+	const token = (name: string) =>
+		getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 	function getColor(travelId: string) {
-		if (selectedTravelIds.length === 0) return COLOR_SELECTED;
-		return selectedTravelIds.includes(travelId) ? COLOR_SELECTED : COLOR_DEFAULT;
+		if (selectedTravelIds.length === 0 || selectedTravelIds.includes(travelId))
+			return token('--accent');
+		return token('--text-subtle');
 	}
 	function getOpacity(travelId: string) {
 		if (selectedTravelIds.length === 0) return 0.85;
@@ -425,16 +426,16 @@
 	}
 
 	:global(.gpx-endpoint-marker--start) {
-		background: #16a34a;
+		background: var(--status-ok);
 	}
 
 	:global(.gpx-endpoint-marker--end) {
-		background: #dc2626;
+		background: var(--status-overdue);
 	}
 
 	:global(.gpx-num-label) {
-		background: #2563eb;
-		color: #fff;
+		background: var(--accent);
+		color: var(--accent-fg);
 		font-size: 11px;
 		font-weight: 600;
 		font-family: var(--font-mono, monospace);
@@ -447,5 +448,24 @@
 		border: 2px solid #fff;
 		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 		pointer-events: none;
+	}
+
+	:global(:root[data-theme='dark'] .leaflet-tile-pane) {
+		filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+	}
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light']) .leaflet-tile-pane) {
+			filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+		}
+	}
+	:global(.leaflet-container .leaflet-bar a),
+	:global(.leaflet-container .leaflet-bar a:hover) {
+		background: var(--bg);
+		color: var(--text);
+		border-color: var(--border);
+	}
+	:global(.leaflet-container .leaflet-control-attribution) {
+		background: color-mix(in srgb, var(--bg) 80%, transparent);
+		color: var(--text-muted);
 	}
 </style>

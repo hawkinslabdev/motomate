@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instância de demonstração",
+		"demoNotSaved": "Modo de demonstração: as entradas não são guardadas.",
+		"demoDisabled": "Desativado no modo de demonstração",
+		"demoBanner": "Modo de demonstração: as alterações estão desativadas e servem apenas para demonstração.",
+		"download": "Transferir",
+		"downloadNamed": "Transferir {name}",
+		"removeNamed": "Remover {name}",
+		"sortBy": "Ordenar por",
+		"filter": "Filtrar",
+		"unsavedChanges": "Tem alterações não guardadas. Sair desta página?",
 		"save": "Guardar",
 		"cancel": "Cancelar",
 		"delete": "Eliminar",
@@ -130,7 +140,7 @@
 			"title": "Que tipo de veículo?"
 		},
 		"details": {
-			"title": "Conta-nos sobre o teu {vehicleType}",
+			"title": "Fale-nos do seu veículo",
 			"name": "Alcunha",
 			"make": "Marca",
 			"model": "Modelo",
@@ -139,8 +149,8 @@
 			"licensePlate": "Matrícula",
 			"placeholders": {
 				"name": "ex. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "ex. Honda",
+				"model": "ex. CB500F",
 				"vin": "opcional",
 				"licensePlate": "ex. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Tudo o que vale a pena guardar, sem estar ligado a um serviço ou viagem.",
 			"new": "Adicionar nota",
 			"edit": "Editar nota",
+			"docCount": "{count, plural, one {# documento} other {# documentos}}",
 			"untitled": "Sem título",
 			"saved": "Nota guardada",
 			"empty": {
@@ -904,6 +915,7 @@
 			"avatarRemove": "Remover",
 			"avatarUpdated": "Foto de perfil atualizada",
 			"avatarDicebear": "Escolher um avatar",
+			"avatarOption": "Opção de avatar {n}",
 			"avatarShuffle": "Misturar",
 			"avatarCredits": "Créditos dos avatares",
 			"subtitle": "Foto de perfil, nome de exibição, idioma, moeda, unidade e tema.",

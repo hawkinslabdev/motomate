@@ -329,13 +329,6 @@
 </div>
 
 <style>
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.intro {
 		margin-bottom: var(--space-5);
 	}

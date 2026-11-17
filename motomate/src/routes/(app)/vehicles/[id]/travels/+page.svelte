@@ -292,6 +292,8 @@
 	);
 </script>
 
+<svelte:head><title>{$_('travels.title')} · {data.vehicle.name}</title></svelte:head>
+
 <!-- Page Header -->
 <div class="page-header">
 	<div class="page-header-text">
@@ -324,12 +326,12 @@
 			/>
 		</div>
 		<div class="filter-controls">
-			<select bind:value={filterBy} class="filter-select">
+			<select bind:value={filterBy} class="filter-select" aria-label={$_('common.filter')}>
 				<option value="all">{$_('travels.filter.all')}</option>
 				<option value="past">{$_('travels.filter.past')}</option>
 				<option value="upcoming">{$_('travels.filter.upcoming')}</option>
 			</select>
-			<select bind:value={sortBy} class="filter-select">
+			<select bind:value={sortBy} class="filter-select" aria-label={$_('common.sortBy')}>
 				<option value="newest">{$_('documents.sort.newest')}</option>
 				<option value="oldest">{$_('documents.sort.oldest')}</option>
 				<option value="name">{$_('documents.sort.name')}</option>
@@ -439,12 +441,6 @@
 		flex-direction: column;
 		gap: 0.25rem;
 	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
 	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -518,12 +514,13 @@
 		font-size: var(--text-xs);
 		font-weight: 500;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		padding-bottom: var(--space-2);
 		border-bottom: 1px solid var(--border);
 		margin-bottom: 0;
 	}
 
 	/* Empty state */
+	.month-label::first-letter {
+		text-transform: uppercase;
+	}
 </style>

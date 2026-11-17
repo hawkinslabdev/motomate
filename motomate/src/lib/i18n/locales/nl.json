@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Demo-omgeving",
+		"demoNotSaved": "Demomodus: invoer wordt niet opgeslagen.",
+		"demoDisabled": "Uitgeschakeld in demomodus",
+		"demoBanner": "Demomodus: wijzigingen zijn uitgeschakeld en alleen bedoeld als demonstratie.",
+		"download": "Downloaden",
+		"downloadNamed": "{name} downloaden",
+		"removeNamed": "{name} verwijderen",
+		"sortBy": "Sorteren op",
+		"filter": "Filteren",
+		"unsavedChanges": "Je hebt niet-opgeslagen wijzigingen. Deze pagina verlaten?",
 		"save": "Opslaan",
 		"cancel": "Annuleren",
 		"delete": "Verwijderen",
@@ -130,7 +140,7 @@
 			"title": "Welk type voertuig?"
 		},
 		"details": {
-			"title": "Vertel ons over je {vehicleType}",
+			"title": "Vertel ons over je voertuig",
 			"name": "Bijnaam",
 			"make": "Merk",
 			"model": "Model",
@@ -139,8 +149,8 @@
 			"licensePlate": "Kenteken",
 			"placeholders": {
 				"name": "bijv. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "bijv. Honda",
+				"model": "bijv. CB500F",
 				"vin": "optioneel",
 				"licensePlate": "bijv. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Alles wat het waard is om te bewaren, los van de tijdlijn",
 			"new": "Notitie toevoegen",
 			"edit": "Notitie bewerken",
+			"docCount": "{count, plural, one {# document} other {# documenten}}",
 			"untitled": "Naamloos",
 			"saved": "Notitie opgeslagen",
 			"empty": {
@@ -904,6 +915,7 @@
 			"avatarRemove": "Verwijderen",
 			"avatarUpdated": "Profielfoto bijgewerkt",
 			"avatarDicebear": "Kies een avatar",
+			"avatarOption": "Avataroptie {n}",
 			"avatarShuffle": "Shufflen",
 			"avatarCredits": "Avatarbronnen",
 			"subtitle": "Profielfoto, weergavenaam, taal, valuta, eenheid en thema.",

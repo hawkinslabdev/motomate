@@ -14,6 +14,7 @@
 	import DocumentUploadForm from '#lib/components/documents/DocumentUploadForm.svelte';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { formatDateShort, formatNumber, formatYearMonth } from '#lib/utils/format.js';
 	import { sheet } from '#lib/stores/sheet.svelte.js';
 	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
 
@@ -152,22 +153,15 @@
 	function formatSize(bytes: number) {
 		if (bytes < 1024) return `${bytes} B`;
 		if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+		return `${formatNumber(Math.round(bytes / 104857.6) / 10, locale)} MB`;
 	}
 
 	function formatDate(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString(locale, {
-			day: 'numeric',
-			month: 'short',
-			year: 'numeric'
-		});
+		return formatDateShort(dateStr.slice(0, 10), locale);
 	}
 
-	function formatYearMonth(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString(locale, {
-			month: 'long',
-			year: 'numeric'
-		});
+	function formatMonthHeading(dateStr: string) {
+		return formatYearMonth(dateStr.slice(0, 7), locale);
 	}
 
 	function isExpiringSoon(dateStr: string | null) {
@@ -252,7 +246,7 @@
 	const timelineDocs = $derived(() => {
 		const grouped: Record<string, typeof data.docs> = {};
 		for (const doc of data.docs) {
-			const month = formatYearMonth(doc.created_at);
+			const month = formatMonthHeading(doc.created_at);
 			if (!grouped[month]) grouped[month] = [];
 			grouped[month].push(doc);
 		}
@@ -316,7 +310,12 @@
 			<option value={val}>{label}</option>
 		{/snippet}
 
-		<select bind:value={categoryFilter} onchange={applyFilters} class="filter-select">
+		<select
+			bind:value={categoryFilter}
+			onchange={applyFilters}
+			class="filter-select"
+			aria-label={$_('common.filter')}
+		>
 			{@render optionItem('all', $_('documents.allTypes'))}
 
 			<optgroup label="──────────"></optgroup>
@@ -326,7 +325,12 @@
 			{/each}
 		</select>
 
-		<select bind:value={sortBy} onchange={applyFilters} class="filter-select">
+		<select
+			bind:value={sortBy}
+			onchange={applyFilters}
+			class="filter-select"
+			aria-label={$_('common.sortBy')}
+		>
 			<option value="newest">{$_('documents.sort.newest')}</option>
 			<option value="oldest">{$_('documents.sort.oldest')}</option>
 			<option value="name">{$_('documents.sort.name')}</option>
@@ -571,12 +575,6 @@
 		flex-direction: column;
 		gap: 0.25rem;
 	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
 	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -788,8 +786,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		margin-bottom: var(--space-2);
 	}
 	.timeline-entry {
@@ -961,7 +957,7 @@
 		}
 		.filter-controls {
 			display: grid;
-			grid-template-columns: 1fr 1fr auto;
+			grid-template-columns: 1fr 1fr;
 			gap: 0.5rem;
 		}
 		.filter-select {
@@ -972,6 +968,7 @@
 			display: flex;
 			align-items: center;
 			gap: var(--space-2);
+			grid-column: 1 / -1;
 		}
 		.doc-row {
 			align-items: flex-start;
@@ -988,5 +985,8 @@
 			padding: 0.5rem 0.75rem;
 			min-height: 40px;
 		}
+	}
+	.month-label::first-letter {
+		text-transform: uppercase;
 	}
 </style>

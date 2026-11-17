@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { formatYearMonth } from '#lib/utils/format.js';
 	import { formatNumber } from '#lib/utils/format.js';
 
 	interface Point {
@@ -69,7 +70,7 @@
 
 	function formatMonthLabel(ym: string, loc: string): string {
 		try {
-			return new Date(ym + '-01').toLocaleDateString(loc, { month: 'short', year: 'numeric' });
+			return formatYearMonth(ym, loc, 'short');
 		} catch {
 			return ym;
 		}
@@ -182,7 +183,7 @@
 <div class="chart-wrap">
 	<svg
 		bind:this={svgEl}
-		role="img"
+		role="group"
 		aria-label={ariaLabel}
 		viewBox="0 0 {W} {height}"
 		width="100%"

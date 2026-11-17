@@ -69,6 +69,7 @@
 	let historyTracker = $state<string | null>(null);
 	let viewMode = $state<'current' | 'forecast' | 'history'>('current');
 	let searchQuery = $state('');
+	let filtersOpen = $state(false);
 	let sortBy = $state<'status' | 'name' | 'last'>(
 		untrack(() => data.page_prefs?.sortBy ?? 'status')
 	);
@@ -347,11 +348,43 @@
 		>
 			{$_('maintenance.addTask.button')}
 		</button>
+		{#if sortedTrackers.length > 0 || viewMode === 'history'}
+			<button
+				type="button"
+				class="btn-ghost filters-toggle"
+				class:filters-toggle--active={!!searchQuery}
+				onclick={() => (filtersOpen = !filtersOpen)}
+				aria-label={$_('common.filter')}
+				aria-expanded={filtersOpen}
+			>
+				<svg
+					width="15"
+					height="15"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<line x1="4" y1="21" x2="4" y2="14"></line>
+					<line x1="4" y1="10" x2="4" y2="3"></line>
+					<line x1="12" y1="21" x2="12" y2="12"></line>
+					<line x1="12" y1="8" x2="12" y2="3"></line>
+					<line x1="20" y1="21" x2="20" y2="16"></line>
+					<line x1="20" y1="12" x2="20" y2="3"></line>
+					<line x1="1" y1="14" x2="7" y2="14"></line>
+					<line x1="9" y1="8" x2="15" y2="8"></line>
+					<line x1="17" y1="16" x2="23" y2="16"></line>
+				</svg>
+			</button>
+		{/if}
 	</div>
 </div>
 
 {#if sortedTrackers.length > 0 || searchQuery || viewMode === 'history'}
-	<div class="filters">
+	<div class="filters" class:filters--closed={!filtersOpen && !searchQuery}>
 		<div class="search-box">
 			<input
 				type="text"
@@ -362,12 +395,12 @@
 		</div>
 		<div class="filter-controls">
 			{#if viewMode === 'history'}
-				<select bind:value={historySortBy} class="filter-select">
+				<select bind:value={historySortBy} class="filter-select" aria-label={$_('common.sortBy')}>
 					<option value="date">{$_('maintenance.filter.sortDate')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
 				</select>
 			{:else if viewMode === 'current'}
-				<select bind:value={sortBy} class="filter-select">
+				<select bind:value={sortBy} class="filter-select" aria-label={$_('common.sortBy')}>
 					<option value="status">{$_('maintenance.filter.sortStatus')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
 					<option value="last">{$_('maintenance.filter.sortLast')}</option>
@@ -727,7 +760,11 @@
 				</div>
 
 				<!-- Log service entry form -->
-				<div class="expand-wrap" class:open={loggingTracker === t.id}>
+				<div
+					class="expand-wrap"
+					class:open={loggingTracker === t.id}
+					inert={loggingTracker !== t.id}
+				>
 					<div class="expand-inner">
 						<form
 							method="POST"
@@ -829,7 +866,7 @@
 							</label>
 							<div class="log-actions">
 								{#if (data as any).demoMode}
-									<p class="demo-form-note">Demo mode: entries are not saved.</p>
+									<p class="demo-form-note">{$_('common.demoNotSaved')}</p>
 								{/if}
 								<button type="submit" class="btn-primary"
 									>{$_('vehicle.forms.submit.service')}</button
@@ -924,12 +961,6 @@
 		gap: var(--space-2);
 		align-items: center;
 		flex-shrink: 0;
-	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
 	}
 	.section-sub {
 		font-size: var(--text-sm);
@@ -1320,8 +1351,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		flex-shrink: 0;
 	}
 	.timeline-month-line {
@@ -1472,5 +1501,28 @@
 			padding: 0.375rem 0.5rem;
 			font-size: var(--text-xs);
 		}
+	}
+	.filters-toggle {
+		display: none;
+		min-width: 44px;
+		min-height: 44px;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+	}
+	.filters-toggle--active {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	@media (max-width: 640px) {
+		.filters-toggle {
+			display: flex;
+		}
+		.filters--closed {
+			display: none;
+		}
+	}
+	.timeline-month-name::first-letter {
+		text-transform: uppercase;
 	}
 </style>

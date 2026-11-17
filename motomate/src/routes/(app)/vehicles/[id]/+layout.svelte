@@ -289,7 +289,11 @@
 							· {vehicle.license_plate}{/if}
 					</div>
 					<div class="odo-display">
-						<span class="odo-num">{formatNumber(displayOdo, locale)}</span>
+						<span class="odo-num"
+							>{#each formatNumber(displayOdo, locale).split(/(\D)/) as part}{#if /\D/.test(part)}<span
+										class="odo-sep">{part}</span
+									>{:else}{part}{/if}{/each}</span
+						>
 						<span class="odo-unit">{vehicle.odometer_unit}</span>
 					</div>
 				</div>
@@ -839,8 +843,6 @@
 		background: var(--bg-muted);
 		color: var(--text-subtle);
 		border: 1px solid var(--border);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 	.vehicle-subtitle {
 		font-size: var(--text-sm);
@@ -863,6 +865,9 @@
 		font-weight: 600;
 		color: var(--text);
 		line-height: 1;
+	}
+	.odo-sep {
+		margin-inline: -0.2em;
 	}
 	.odo-unit {
 		font-size: var(--text-sm);
@@ -1609,8 +1614,11 @@
 		font-size: var(--text-xs);
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		flex-shrink: 0;
+	}
+	.vehicle-content :global(.section-title) {
+		font-size: var(--text-lg);
+		margin: 0;
+		letter-spacing: normal;
 	}
 </style>

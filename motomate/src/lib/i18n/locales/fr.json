@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instance de démo",
+		"demoNotSaved": "Mode démo : les entrées ne sont pas enregistrées.",
+		"demoDisabled": "Désactivé en mode démo",
+		"demoBanner": "Mode démo : les modifications sont désactivées et servent uniquement à la démonstration.",
+		"download": "Télécharger",
+		"downloadNamed": "Télécharger {name}",
+		"removeNamed": "Retirer {name}",
+		"sortBy": "Trier par",
+		"filter": "Filtrer",
+		"unsavedChanges": "Vous avez des modifications non enregistrées. Quitter cette page ?",
 		"save": "Enregistrer",
 		"cancel": "Annuler",
 		"delete": "Supprimer",
@@ -130,7 +140,7 @@
 			"title": "Quel type de véhicule ?"
 		},
 		"details": {
-			"title": "Parlez-nous de votre {vehicleType}",
+			"title": "Parlez-nous de votre véhicule",
 			"name": "Surnom",
 			"make": "Marque",
 			"model": "Modèle",
@@ -139,8 +149,8 @@
 			"licensePlate": "Plaque d'immatriculation",
 			"placeholders": {
 				"name": "ex. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "ex. Honda",
+				"model": "ex. CB500F",
 				"vin": "optionnel",
 				"licensePlate": "ex. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Tout ce qui vaut la peine d'être conservé, sans lien avec un service ou un trajet.",
 			"new": "Ajouter une note",
 			"edit": "Modifier la note",
+			"docCount": "{count, plural, one {# document} other {# documents}}",
 			"untitled": "Sans titre",
 			"saved": "Note enregistrée",
 			"empty": {
@@ -904,6 +915,7 @@
 			"avatarRemove": "Supprimer",
 			"avatarUpdated": "Photo de profil mise à jour",
 			"avatarDicebear": "Choisir un avatar",
+			"avatarOption": "Option d’avatar {n}",
 			"avatarShuffle": "Mélanger",
 			"avatarCredits": "Crédits des avatars",
 			"subtitle": "Photo de profil, nom affiché, langue, devise, unité et thème.",

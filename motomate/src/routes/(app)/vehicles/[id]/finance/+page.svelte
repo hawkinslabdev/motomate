@@ -800,6 +800,8 @@
 										class="entry-menu-btn entry-menu-btn--stub"
 										style="opacity: 0;"
 										aria-hidden="true"
+										tabindex="-1"
+										disabled
 									>
 										⋮
 									</button>
@@ -997,12 +999,6 @@
 		flex-direction: column;
 		gap: 0.25rem;
 	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
 	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -1047,17 +1043,14 @@
 	}
 	.invest-card--hint {
 		border-style: dashed;
-		opacity: 0.8;
 	}
 	.invest-card--profit-loss {
 		border-width: 2px;
 	}
 	.invest-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin-bottom: 0.5rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 	.invest-amount {
 		flex: 1;
@@ -1215,11 +1208,9 @@
 		padding: var(--space-2);
 	}
 	.col-context-title {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		padding: 0.25rem var(--space-2) 0.375rem;
 	}
 	.col-context-item {
@@ -1287,11 +1278,9 @@
 		margin-top: var(--space-6);
 	}
 	.section-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		margin: 0;
 	}
 
@@ -1478,8 +1467,6 @@
 		font-size: 10px;
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 	}
 	.doc-chip-name {
 		color: var(--text);

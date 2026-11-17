@@ -2,7 +2,7 @@
 	import { untrack } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { _, waitLocale } from '#lib/i18n/index.js';
-	import { formatYearMonth } from '#lib/utils/format.js';
+	import { formatDateShort, formatYearMonth } from '#lib/utils/format.js';
 	import { sheet } from '#lib/stores/sheet.svelte.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
@@ -141,11 +141,7 @@
 	}
 
 	function formatDate(iso: string): string {
-		return new Date(iso).toLocaleDateString(data.user?.settings?.locale ?? 'en', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
+		return formatDateShort(iso.slice(0, 10), data.user?.settings?.locale ?? 'en');
 	}
 
 	function resolvedDocRefs(note: (typeof data.notes)[number]) {
@@ -220,7 +216,7 @@
 			/>
 		</div>
 		<div class="filter-controls">
-			<select class="filter-select" bind:value={sortBy}>
+			<select class="filter-select" bind:value={sortBy} aria-label={$_('common.sortBy')}>
 				<option value="newest">{$_('documents.sort.newest')}</option>
 				<option value="oldest">{$_('documents.sort.oldest')}</option>
 				<option value="name">{$_('documents.sort.name')}</option>
@@ -273,23 +269,22 @@
 								{#if noteExcerpt(note.content)}
 									<div class="note-excerpt">{noteExcerpt(note.content)}</div>
 								{/if}
-								{#if docs.length > 0}
-									<div class="note-doc-refs">
-										{#each docs as doc}
-											<a
-												href="/api/files?key={doc.storage_key}"
-												target="_blank"
-												rel="noopener noreferrer"
-												class="doc-chip"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-												<span class="doc-chip-name">{doc.title || doc.name}</span>
-											</a>
-										{/each}
-									</div>
-								{/if}
 							</div>
+							{#if docs.length > 0}
+								<div class="note-doc-refs">
+									{#each docs as doc}
+										<a
+											href="/api/files?key={doc.storage_key}"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="doc-chip"
+										>
+											<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+											<span class="doc-chip-name">{doc.title || doc.name}</span>
+										</a>
+									{/each}
+								</div>
+							{/if}
 							<div class="note-meta">
 								<span class="note-date">{formatDate(note.updated_at)}</span>
 								<div class="note-actions">
@@ -324,19 +319,13 @@
 				{@const hasExcerpt = !!rowExcerpt}
 				{@const hasDate = !!notesColumnVisible.date}
 				{@const hasDocs = !!(notesColumnVisible.documents && docs.length > 0)}
-				<div
-					class="note-row"
-					role="button"
-					tabindex="0"
-					onclick={() => openViewNote(note)}
-					onkeydown={(e) => e.key === 'Enter' && openViewNote(note)}
-				>
-					<div class="note-row-info">
-						<div class="note-row-name">
+				<div class="note-row">
+					<button type="button" class="note-row-info" onclick={() => openViewNote(note)}>
+						<span class="note-row-name">
 							{note.title || $_('vehicle.notes.untitled')}
-						</div>
+						</span>
 						{#if hasExcerpt || hasDate || hasDocs}
-							<div class="note-row-meta">
+							<span class="note-row-meta">
 								{#if hasExcerpt}
 									<span class="note-row-excerpt">{rowExcerpt}</span>
 								{/if}
@@ -347,23 +336,17 @@
 								{#if hasDocs && hasDate}<span class="sep">·</span>{/if}
 								{#if hasDocs}
 									<span class="note-row-docs"
-										>{docs.length}
-										{docs.length === 1
-											? $_('documents.title').toLowerCase().replace(/s$/, '')
-											: $_('documents.title').toLowerCase()}</span
+										>{$_('vehicle.notes.docCount', { values: { count: docs.length } })}</span
 									>
 								{/if}
-							</div>
+							</span>
 						{/if}
-					</div>
+					</button>
 					<div class="note-row-actions">
 						<button
 							type="button"
 							class="note-action-btn"
-							onclick={(e) => {
-								e.stopPropagation();
-								openEditNote(note);
-							}}
+							onclick={() => openEditNote(note)}
 							aria-label={$_('common.edit')}
 						>
 							{$_('common.edit')}
@@ -371,10 +354,7 @@
 						<button
 							type="button"
 							class="note-action-btn note-action-btn--danger"
-							onclick={(e) => {
-								e.stopPropagation();
-								deletingId = note.id;
-							}}
+							onclick={() => (deletingId = note.id)}
 							aria-label={$_('common.delete')}
 						>
 							{$_('common.delete')}
@@ -429,13 +409,6 @@
 		gap: 0.25rem;
 	}
 
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
-
 	.section-sub {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -488,8 +461,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		flex-shrink: 0;
 	}
 
@@ -525,6 +496,17 @@
 	.note-row-info {
 		flex: 1;
 		min-width: 0;
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+	.note-row-name,
+	.note-row-meta {
+		display: block;
 	}
 
 	.note-row-name {
@@ -647,8 +629,6 @@
 		font-size: 10px;
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 	}
 
 	.doc-chip:hover .doc-chip-type {
@@ -727,5 +707,8 @@
 			justify-content: space-between;
 			width: 100%;
 		}
+	}
+	.timeline-month-name::first-letter {
+		text-transform: uppercase;
 	}
 </style>

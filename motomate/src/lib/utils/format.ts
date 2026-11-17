@@ -93,7 +93,7 @@ export function formatDateShort(dateStr: string, locale = 'en'): string {
 	const opts: Intl.DateTimeFormatOptions = {
 		day: 'numeric',
 		month: 'short',
-		...(includeYear && { year: '2-digit' })
+		...(includeYear && { year: 'numeric' })
 	};
 	return d.toLocaleDateString(locale, opts);
 }
@@ -122,7 +122,11 @@ export function formatDateTime(dateStr: string, locale = 'en', timezone?: string
 }
 
 /* Format a year-month string like "2024-01" as "January 2024" */
-export function formatYearMonth(ym: string, locale = 'en'): string {
+export function formatYearMonth(
+	ym: string,
+	locale = 'en',
+	month: 'long' | 'short' = 'long'
+): string {
 	const [y, m] = ym.split('-');
-	return new Date(+y, +m - 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+	return new Date(+y, +m - 1).toLocaleDateString(locale, { month, year: 'numeric' });
 }

@@ -11,18 +11,6 @@
 	const onboardingDone = $derived((data as any).user?.settings?.onboarding_done ?? false);
 	const favoriteVehicleId = $derived((data as any).user?.settings?.favorite_vehicle ?? null);
 
-	const sortedVehicles = $derived.by(() => {
-		const list = [...data.vehicles];
-		if (favoriteVehicleId) {
-			list.sort((a, b) => {
-				if (a.id === favoriteVehicleId) return -1;
-				if (b.id === favoriteVehicleId) return 1;
-				return 0;
-			});
-		}
-		return list;
-	});
-
 	async function handleFavorite(vehicleId: string) {
 		const formData = new FormData();
 		formData.set('vehicle_id', vehicleId === favoriteVehicleId ? '' : vehicleId);
@@ -60,7 +48,7 @@
 	/>
 {:else}
 	<div class="vehicle-list">
-		{#each sortedVehicles as vehicle (vehicle.id)}
+		{#each data.vehicles as vehicle (vehicle.id)}
 			<div class="vehicle-row">
 				<VehicleCard
 					{vehicle}

@@ -1,4 +1,6 @@
 import { error } from '@sveltejs/kit';
+import { stringify } from 'devalue';
+import { locales } from '#lib/i18n/locales.js';
 import { installConsoleFormat } from '../console-format.js';
 import type { Handle } from '@sveltejs/kit/hooks';
 import { lucia } from '#lib/auth/index.js';
@@ -253,11 +255,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 		!event.url.pathname.startsWith('/api/v1/') &&
 		event.url.pathname !== '/auth/logout'
 	) {
+		const locale = (event.locals.user?.settings?.locale ?? 'en') as keyof typeof locales;
+		const error = (locales[locale] ?? locales.en).common.demoDisabled;
 		if (event.request.headers.get('x-sveltekit-action') === 'true') {
-			return new Response(JSON.stringify({ type: 'success', status: 200 }), {
-				status: 200,
-				headers: { 'content-type': 'application/json' }
-			});
+			return Response.json({ type: 'failure', status: 403, data: stringify({ error }) });
+		}
+		if (!event.request.headers.get('accept')?.includes('text/html')) {
+			return Response.json({ ok: false, error }, { status: 403 });
 		}
 		return new Response(null, { status: 303, headers: { Location: event.url.pathname } });
 	}

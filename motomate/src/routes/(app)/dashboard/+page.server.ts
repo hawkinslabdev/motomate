@@ -1,5 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { favoriteFirst } from '#lib/utils/favorite.js';
 import { recomputeTrackerStatuses } from '#lib/db/repositories/maintenance.js';
 import { getRecentLogsAcrossVehicles } from '#lib/db/repositories/service-logs.js';
 import { getVehicleExpenses } from '#lib/db/repositories/finance-transactions.js';
@@ -9,7 +10,7 @@ import { getVapidConfig } from '#lib/server/vapid.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;
-	const vehicles = await getVehiclesByUser(user.id);
+	const vehicles = favoriteFirst(await getVehiclesByUser(user.id), user.settings?.favorite_vehicle);
 	const vehicleIds = vehicles.map((v) => v.id);
 
 	const yearStart = new Date().getFullYear() + '-01-01';

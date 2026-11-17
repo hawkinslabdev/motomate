@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Demo instance",
+		"demoNotSaved": "Demo mode: entries are not saved.",
+		"demoDisabled": "Disabled in demo mode",
+		"demoBanner": "Demo mode: changes are disabled and only meant for demonstration.",
+		"download": "Download",
+		"downloadNamed": "Download {name}",
+		"removeNamed": "Remove {name}",
+		"sortBy": "Sort by",
+		"filter": "Filter",
+		"unsavedChanges": "You have unsaved changes. Leave this page?",
 		"save": "Save",
 		"cancel": "Cancel",
 		"delete": "Delete",
@@ -130,7 +140,7 @@
 			"title": "What kind of vehicle?"
 		},
 		"details": {
-			"title": "Tell us about your {vehicleType}",
+			"title": "Tell us about your vehicle",
 			"name": "Nickname",
 			"make": "Make",
 			"model": "Model",
@@ -139,8 +149,8 @@
 			"licensePlate": "License plate",
 			"placeholders": {
 				"name": "e.g. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "e.g. Honda",
+				"model": "e.g. CB500F",
 				"vin": "optional",
 				"licensePlate": "e.g. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Anything worth keeping, not tied to a service or ride",
 			"new": "Add note",
 			"edit": "Edit note",
+			"docCount": "{count, plural, one {# document} other {# documents}}",
 			"untitled": "Untitled note",
 			"saved": "Note saved",
 			"empty": {
@@ -681,7 +692,7 @@
 				"due": "due",
 				"overdue": "overdue"
 			},
-			"logNow": "Log now -",
+			"logNow": "Log now →",
 			"edit": "Edit",
 			"delete": "Delete",
 			"notScheduled": "Not scheduled",
@@ -917,6 +928,7 @@
 			"avatarRemove": "Remove",
 			"avatarUpdated": "Profile picture updated",
 			"avatarDicebear": "Choose an avatar",
+			"avatarOption": "Avatar option {n}",
 			"avatarShuffle": "Shuffle",
 			"avatarCredits": "Avatar credits",
 			"subtitle": "Profile photo, display name, language, currency, unit and theme.",

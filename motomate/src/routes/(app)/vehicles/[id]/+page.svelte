@@ -813,7 +813,11 @@
 							{@const log = entry.log}
 							{@const attached = resolvedAttachments(log)}
 							<div class="timeline-entry">
-								<div class="entry-icon" title="Service" aria-hidden="true"></div>
+								<div
+									class="entry-icon"
+									title={$_('vehicle.detail.timeline.filter.service')}
+									aria-hidden="true"
+								></div>
 								<div class="entry-body">
 									<div class="entry-title">
 										{log.notes?.split('\n')[0] ?? $_('vehicle.detail.serviceEntry')}
@@ -899,7 +903,11 @@
 						{:else if entry.kind === 'note'}
 							{@const log = entry.log}
 							<div class="timeline-entry note-entry">
-								<div class="entry-icon" title="Note" aria-hidden="true"></div>
+								<div
+									class="entry-icon"
+									title={$_('vehicle.detail.timeline.filter.notes')}
+									aria-hidden="true"
+								></div>
 								<div class="entry-body">
 									<div class="entry-title note-entry">{log.remark}</div>
 								</div>
@@ -953,7 +961,11 @@
 						{:else if entry.kind === 'travel'}
 							{@const t = entry.travel}
 							<div class="timeline-entry travel-entry">
-								<div class="entry-icon" title="Travel" aria-hidden="true"></div>
+								<div
+									class="entry-icon"
+									title={$_('vehicle.detail.timeline.filter.travels')}
+									aria-hidden="true"
+								></div>
 								<div class="entry-body">
 									<div class="entry-title">{t.title}</div>
 									<div class="entry-meta">
@@ -1067,7 +1079,11 @@
 							{@const trackerName = data.trackers.find((t) => t.id === log.tracker_id)?.template
 								.name}
 							<div class="timeline-entry reminder-entry">
-								<div class="entry-icon" title="Reminder" aria-hidden="true"></div>
+								<div
+									class="entry-icon"
+									title={$_('vehicle.detail.timeline.filter.reminders')}
+									aria-hidden="true"
+								></div>
 								<div class="entry-body">
 									<div class="entry-title">
 										{trackerName ?? $_('vehicle.detail.timeline.reminder.label')}
@@ -1236,12 +1252,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
-	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
 	}
 	.section-sub {
 		font-size: var(--text-sm);
@@ -1466,11 +1476,9 @@
 		margin-bottom: 0.625rem;
 	}
 	.section-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 	}
 	.upcoming-list {
 		display: flex;
@@ -1579,8 +1587,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		white-space: nowrap;
 		flex-shrink: 0;
 	}
@@ -1838,8 +1844,6 @@
 		font-size: 10px;
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 	}
 	.doc-chip-name {
 		color: var(--text);
@@ -1861,5 +1865,8 @@
 	.doc-chip--link .doc-chip-type,
 	.doc-chip--link .doc-chip-name {
 		color: inherit;
+	}
+	.month-label::first-letter {
+		text-transform: uppercase;
 	}
 </style>

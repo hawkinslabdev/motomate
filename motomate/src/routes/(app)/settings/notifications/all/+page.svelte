@@ -43,7 +43,7 @@
 <a href="/settings/notifications" class="back-link">{$_('settings.notifications.title')}</a>
 
 <div class="intro">
-	<h2 class="section-title">{$_('settings.notifications.allTitle')}</h2>
+	<h2 class="section-title section-title--keep">{$_('settings.notifications.allTitle')}</h2>
 	<div class="intro-actions">
 		{#if hasUnread}
 			<form method="POST" action="?/markAllRead" use:enhance>
@@ -252,14 +252,9 @@
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		align-items: flex-start;
-		opacity: 0.6;
-		transition: opacity 0.1s;
 	}
 	.notif-row:first-child {
 		border-top: 1px solid var(--border);
-	}
-	.notif-row--unread {
-		opacity: 1;
 	}
 	.notif-dot {
 		width: 6px;

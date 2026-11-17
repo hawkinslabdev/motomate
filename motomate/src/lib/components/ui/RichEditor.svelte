@@ -490,7 +490,7 @@
 	}
 
 	.tb-bold {
-		font-weight: 700;
+		font-weight: 600;
 	}
 	.tb-italic {
 		font-style: italic;
@@ -619,8 +619,6 @@
 		font-size: 10px;
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 		flex-shrink: 0;
 		min-width: 44px;
 	}

@@ -258,11 +258,9 @@
 	}
 	.footer-link a {
 		color: var(--accent);
-		text-decoration: none;
-		transition: color 150ms ease;
-	}
-	.footer-link a:hover {
 		text-decoration: underline;
+		text-underline-offset: 0.15em;
+		transition: color 150ms ease;
 	}
 	.footer-link a:focus-visible {
 		outline: 2px solid var(--accent);

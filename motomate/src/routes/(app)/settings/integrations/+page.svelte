@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Toggle from '#lib/components/ui/Toggle.svelte';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import { _, waitLocale } from '#lib/i18n/index.js';
@@ -98,16 +99,7 @@
 				<span class="channel-name">{$_('settings.integrations.s3.label')}</span>
 				<span class="channel-desc">{$_('settings.integrations.s3.description')}</span>
 			</div>
-			<button
-				type="button"
-				class="toggle-btn"
-				class:toggle-btn--on={s3Enabled}
-				onclick={() => (s3Enabled = !s3Enabled)}
-				aria-label={$_('settings.integrations.s3.label')}
-				aria-pressed={s3Enabled}
-			>
-				<span class="toggle-thumb"></span>
-			</button>
+			<Toggle bind:checked={s3Enabled} label={$_('settings.integrations.s3.label')} />
 		</div>
 
 		{#if s3Enabled}
@@ -233,16 +225,7 @@
 				<span class="channel-name">{$_('settings.integrations.paperless.label')}</span>
 				<span class="channel-desc">{$_('settings.integrations.paperless.description')}</span>
 			</div>
-			<button
-				type="button"
-				class="toggle-btn"
-				class:toggle-btn--on={paperlessEnabled}
-				onclick={() => (paperlessEnabled = !paperlessEnabled)}
-				aria-label={$_('settings.integrations.paperless.label')}
-				aria-pressed={paperlessEnabled}
-			>
-				<span class="toggle-thumb"></span>
-			</button>
+			<Toggle bind:checked={paperlessEnabled} label={$_('settings.integrations.paperless.label')} />
 		</div>
 
 		{#if paperlessEnabled}
@@ -409,14 +392,6 @@
 		margin-bottom: var(--space-5);
 	}
 
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
-
 	.section-desc {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -467,38 +442,6 @@
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		line-height: var(--leading-snug);
-	}
-
-	.toggle-btn {
-		width: 2.25rem;
-		height: 1.25rem;
-		border-radius: 999px;
-		border: none;
-		cursor: pointer;
-		background: var(--border-strong);
-		position: relative;
-		flex-shrink: 0;
-		margin-top: 0.125rem;
-		transition: background 0.15s;
-	}
-
-	.toggle-btn--on {
-		background: var(--accent);
-	}
-
-	.toggle-btn--on .toggle-thumb {
-		transform: translateX(1rem);
-	}
-
-	.toggle-thumb {
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		width: calc(1.25rem - 4px);
-		height: calc(1.25rem - 4px);
-		border-radius: 50%;
-		background: #fff;
-		transition: transform 0.15s;
 	}
 
 	.channel-fields {

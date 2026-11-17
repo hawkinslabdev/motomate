@@ -630,11 +630,16 @@
 		gap: var(--space-2);
 		cursor: pointer;
 	}
+	@media (pointer: coarse) {
+		.events-toggle {
+			min-height: 44px;
+		}
+	}
 
 	.events-checkbox {
 		accent-color: var(--accent);
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 	}
 
 	.events-label {

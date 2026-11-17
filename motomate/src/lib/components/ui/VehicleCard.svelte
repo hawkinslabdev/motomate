@@ -176,8 +176,6 @@
 		background: var(--bg-muted);
 		color: var(--text-subtle);
 		border: 1px solid var(--border);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		white-space: nowrap;
 	}
 	.vehicle-meta {

@@ -40,15 +40,15 @@
 	--border-input: #d1d5db;
 	--border-input-hover: #868b94;
 	--text: #111827;
-	--text-muted: #6b7280;
-	--text-subtle: #9ca3af;
+	--text-muted: #5f6673;
+	--text-subtle: #676e7b;
 	--accent: #2563eb;
 	--accent-hover: #1d4ed8;
 	--accent-subtle: #eff6ff;
 	--accent-fg: #ffffff;
-	--status-ok: #16a34a;
-	--status-due: #d97706;
-	--status-overdue: #dc2626;
+	--status-ok: #15803d;
+	--status-due: #b45309;
+	--status-overdue: #c81e1e;
 	--status-overdue-fg: #ffffff;
 
 	/* Spacing scale */
@@ -87,7 +87,7 @@
 		--border-input-hover: #6b6b6b;
 		--text: #ededed;
 		--text-muted: #a1a1aa;
-		--text-subtle: #71717a;
+		--text-subtle: #8e8e97;
 		--accent: #60a5fa;
 		--accent-hover: #93c5fd;
 		--accent-subtle: #1e3a5f;
@@ -109,15 +109,15 @@
 	--border-input: #d1d5db;
 	--border-input-hover: #868b94;
 	--text: #111827;
-	--text-muted: #6b7280;
-	--text-subtle: #9ca3af;
+	--text-muted: #5f6673;
+	--text-subtle: #676e7b;
 	--accent: #2563eb;
 	--accent-hover: #1d4ed8;
 	--accent-subtle: #eff6ff;
 	--accent-fg: #ffffff;
-	--status-ok: #16a34a;
-	--status-due: #d97706;
-	--status-overdue: #dc2626;
+	--status-ok: #15803d;
+	--status-due: #b45309;
+	--status-overdue: #c81e1e;
 	--status-overdue-fg: #ffffff;
 }
 
@@ -132,7 +132,7 @@
 	--border-input-hover: #6b6b6b;
 	--text: #ededed;
 	--text-muted: #a1a1aa;
-	--text-subtle: #71717a;
+	--text-subtle: #8e8e97;
 	--accent: #60a5fa;
 	--accent-hover: #93c5fd;
 	--accent-subtle: #1e3a5f;
@@ -378,6 +378,12 @@ button[disabled] {
 	outline: 2px solid var(--accent);
 	outline-offset: -1px;
 }
+@media (max-width: 768px) {
+	.search-input,
+	.filter-select {
+		font-size: max(1rem, 16px);
+	}
+}
 
 @media (max-width: 640px) {
 	.filters {
@@ -395,4 +401,63 @@ button[disabled] {
 		min-width: 0;
 		min-height: 44px;
 	}
+}
+
+/* Toggle switch */
+.toggle-btn {
+	width: 2.25rem;
+	height: 1.25rem;
+	border-radius: 999px;
+	border: none;
+	cursor: pointer;
+	background: var(--border-strong);
+	position: relative;
+	flex-shrink: 0;
+	margin-top: 0.125rem;
+	transition: background 0.15s;
+}
+.toggle-btn::after {
+	content: '';
+	position: absolute;
+	inset: -0.75rem -0.25rem;
+}
+.toggle-btn:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+.toggle-btn--on {
+	background: var(--accent);
+}
+.toggle-thumb {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: calc(1.25rem - 4px);
+	height: calc(1.25rem - 4px);
+	border-radius: 50%;
+	background: #fff;
+	transition: transform 0.15s;
+}
+.toggle-btn--on .toggle-thumb {
+	transform: translateX(1rem);
+}
+
+/* Small text links get a taller tap area on touch screens */
+@media (pointer: coarse) {
+	.back-link,
+	.section-link {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		margin-block: -10px;
+	}
+}
+
+/* Page section heading */
+.section-title {
+	font-size: var(--text-xl);
+	font-weight: 600;
+	color: var(--text);
+	margin: 0 0 var(--space-2);
+	letter-spacing: -0.02em;
 }

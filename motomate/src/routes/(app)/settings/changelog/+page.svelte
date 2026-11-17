@@ -80,6 +80,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{$_('settings.changelog.title')} · {$_('layout.nav.settings')}</title>
+</svelte:head>
+
 <div class="intro">
 	<div class="intro-text">
 		<h2 class="section-title">{$_('settings.changelog.title')}</h2>
@@ -202,7 +206,7 @@
 
 	.badge--latest {
 		background: color-mix(in srgb, var(--accent) 10%, var(--bg));
-		color: var(--accent);
+		color: var(--accent-hover);
 		border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
 	}
 
@@ -265,11 +269,8 @@
 
 	.inline-link {
 		color: var(--accent);
-		text-decoration: none;
-	}
-
-	.inline-link:hover {
 		text-decoration: underline;
+		text-underline-offset: 0.15em;
 	}
 
 	.changelog-footer {
@@ -306,14 +307,6 @@
 
 	.intro-text {
 		min-width: 0;
-	}
-
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
 	}
 
 	.section-desc {

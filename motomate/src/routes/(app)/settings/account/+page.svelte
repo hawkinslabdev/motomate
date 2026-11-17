@@ -402,13 +402,6 @@
 />
 
 <style>
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.intro {
 		margin-bottom: var(--space-5);
 	}
@@ -485,11 +478,9 @@
 		background: var(--bg-muted);
 	}
 	.section-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		margin: 0 0 var(--space-4);
 	}
 	.section-label--danger {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AuthShell from '#lib/components/auth/AuthShell.svelte';
+	import { _ } from '#lib/i18n/index.js';
 
 	let { children, data } = $props<{
 		children: any;
@@ -33,7 +34,7 @@
 <div class="auth-frame">
 	<div class="demo-banner" class:active={data.demoMode}>
 		{#if data.demoMode}
-			<span class="demo-label">Demo instance</span>
+			<span class="demo-label">{$_('common.demoInstance')}</span>
 			<div class="demo-creds">
 				<button class="demo-cred" onclick={() => copyToClipboard('demo@motomate.local', 'email')}>
 					demo@motomate.local

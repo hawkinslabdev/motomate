@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instancia de demostración",
+		"demoNotSaved": "Modo demo: las entradas no se guardan.",
+		"demoDisabled": "Desactivado en modo demo",
+		"demoBanner": "Modo demo: los cambios están desactivados y solo sirven de demostración.",
+		"download": "Descargar",
+		"downloadNamed": "Descargar {name}",
+		"removeNamed": "Quitar {name}",
+		"sortBy": "Ordenar por",
+		"filter": "Filtrar",
+		"unsavedChanges": "Tienes cambios sin guardar. ¿Salir de esta página?",
 		"save": "Guardar",
 		"cancel": "Cancelar",
 		"delete": "Eliminar",
@@ -130,7 +140,7 @@
 			"title": "¿Qué tipo de vehículo?"
 		},
 		"details": {
-			"title": "Cuéntanos sobre tu {vehicleType}",
+			"title": "Cuéntanos sobre tu vehículo",
 			"name": "Apodo",
 			"make": "Marca",
 			"model": "Modelo",
@@ -139,8 +149,8 @@
 			"licensePlate": "Matrícula",
 			"placeholders": {
 				"name": "ej. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "ej. Honda",
+				"model": "ej. CB500F",
 				"vin": "opcional",
 				"licensePlate": "ej. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Todo lo que vale la pena guardar, sin estar ligado a un servicio o viaje.",
 			"new": "Añadir nota",
 			"edit": "Editar nota",
+			"docCount": "{count, plural, one {# documento} other {# documentos}}",
 			"untitled": "Sin título",
 			"saved": "Nota guardada",
 			"empty": {
@@ -904,6 +915,7 @@
 			"avatarRemove": "Eliminar",
 			"avatarUpdated": "Foto de perfil actualizada",
 			"avatarDicebear": "Elegir un avatar",
+			"avatarOption": "Opción de avatar {n}",
 			"avatarShuffle": "Mezclar",
 			"avatarCredits": "Créditos de avatares",
 			"subtitle": "Foto de perfil, nombre visible, idioma, moneda, unidad y tema.",

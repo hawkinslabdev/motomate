@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Demo-Instanz",
+		"demoNotSaved": "Demomodus: Einträge werden nicht gespeichert.",
+		"demoDisabled": "Im Demomodus deaktiviert",
+		"demoBanner": "Demomodus: Änderungen sind deaktiviert und nur zur Vorführung gedacht.",
+		"download": "Herunterladen",
+		"downloadNamed": "{name} herunterladen",
+		"removeNamed": "{name} entfernen",
+		"sortBy": "Sortieren nach",
+		"filter": "Filtern",
+		"unsavedChanges": "Du hast ungespeicherte Änderungen. Seite verlassen?",
 		"save": "Speichern",
 		"cancel": "Abbrechen",
 		"delete": "Löschen",
@@ -130,7 +140,7 @@
 			"title": "Welche Fahrzeugart?"
 		},
 		"details": {
-			"title": "Erzähl uns von deinem {vehicleType}",
+			"title": "Erzähl uns von deinem Fahrzeug",
 			"name": "Spitzname",
 			"make": "Marke",
 			"model": "Modell",
@@ -139,8 +149,8 @@
 			"licensePlate": "Kennzeichen",
 			"placeholders": {
 				"name": "z.B. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "z.B. Honda",
+				"model": "z.B. CB500F",
 				"vin": "optional",
 				"licensePlate": "z.B. AB-123 CD"
 			}
@@ -579,6 +589,7 @@
 			"subtitleEmpty": "Alles, was es wert ist, nicht an einen Service oder eine Fahrt gebunden zu sein.",
 			"new": "Notiz hinzufügen",
 			"edit": "Notiz bearbeiten",
+			"docCount": "{count, plural, one {# Dokument} other {# Dokumente}}",
 			"untitled": "Ohne Titel",
 			"saved": "Notiz gespeichert",
 			"empty": {
@@ -904,6 +915,7 @@
 			"avatarRemove": "Entfernen",
 			"avatarUpdated": "Profilbild aktualisiert",
 			"avatarDicebear": "Avatar wählen",
+			"avatarOption": "Avatar-Option {n}",
 			"avatarShuffle": "Neu mischen",
 			"avatarCredits": "Avatar-Quellen",
 			"subtitle": "Profilbild, Anzeigename, Sprache, Währung, Einheit und Design.",
