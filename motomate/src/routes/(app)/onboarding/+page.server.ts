@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { createVehicle, insertOdometerLog } from '#lib/db/repositories/vehicles.js';
+import { createVehicle } from '#lib/db/repositories/vehicles.js';
 import {
 	seedPresetsForVehicle,
 	updateTrackerAfterService
@@ -86,7 +86,7 @@ export const actions: Actions = {
 			userId,
 			vehicle.id,
 			categories,
-			0,
+			vehicleInput.current_odometer,
 			nameMap,
 			vehicleType,
 			odometerUnit
@@ -113,14 +113,6 @@ export const actions: Actions = {
 			for (const { tracker } of seeded) {
 				await updateTrackerAfterService(tracker.id, vehicle.id, lastServiceDate, lastServiceOdo);
 			}
-
-			// If the current odometer is ahead of the last service reading, record it as a baseline entry
-			if (vehicleInput.current_odometer > lastServiceOdo) {
-				await insertOdometerLog(vehicle.id, userId, vehicleInput.current_odometer);
-			}
-		} else if (vehicleInput.current_odometer > 0) {
-			// No service info entered; record the starting odometer as a baseline
-			await insertOdometerLog(vehicle.id, userId, vehicleInput.current_odometer);
 		}
 
 		const settingsUpdate: { display_name?: string; odometer_unit?: 'km' | 'mi' } = {};

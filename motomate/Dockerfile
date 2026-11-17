@@ -44,6 +44,7 @@ COPY --from=build /app/node_modules ./node_modules
 # Copy build artifacts from build stage
 COPY --from=build /app/build ./build
 COPY --from=build /app/server.js ./
+COPY --from=build /app/console-format.js ./
 COPY --from=build /app/migrate.js ./
 COPY --from=build /app/demo-seed.js ./
 COPY --from=build /app/drizzle ./drizzle

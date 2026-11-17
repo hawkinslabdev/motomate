@@ -13,7 +13,6 @@ import { verifyAltcha } from '#lib/auth/altcha.js';
 import { getOidcConfig } from '#lib/auth/oidc.js';
 import { LoginSchema, MagicLinkRequestSchema } from '#lib/validators/schemas.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
-import { ts } from '#lib/server/log.js';
 import type { Actions, PageServerLoad } from './$types';
 import { hash, verify } from '@node-rs/argon2';
 import { locales as localeMap } from '#lib/i18n/locales.js';
@@ -50,7 +49,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const smtpEnabled = isSmtpConfigured();
 	if (!smtpEnabled && !_smtpWarned) {
 		console.warn(
-			`${ts()} [MotoMate] SMTP_HOST is not set. Magic links are written to this log instead of being emailed.`
+			`[MotoMate] SMTP_HOST is not set. Magic links are written to this log instead of being emailed.`
 		);
 		_smtpWarned = true;
 	}
@@ -188,7 +187,7 @@ export const actions: Actions = {
 					if (smtp) await sendMagicLinkEmail(email, token);
 					else logMagicLink(email, token);
 				} catch (e) {
-					console.error(`${ts()} [MotoMate] Magic link failed:`, e);
+					console.error(`[MotoMate] Magic link failed:`, e);
 				}
 			});
 		}

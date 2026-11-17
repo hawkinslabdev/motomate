@@ -120,7 +120,10 @@ async function dispatchNotification(
 		);
 	}
 
-	await Promise.allSettled(tasks);
+	for (const result of await Promise.allSettled(tasks)) {
+		if (result.status === 'rejected')
+			console.error('[workflow] notification dispatch failed', result.reason);
+	}
 }
 
 // One entry per matching tracker or document/date condition; empty means nothing fired

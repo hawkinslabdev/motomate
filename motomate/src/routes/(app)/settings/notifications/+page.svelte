@@ -88,8 +88,10 @@ actions:
 		home_assistant: 'idle'
 	});
 	let testError = $state<Record<string, string>>({});
+	const testTimers: Record<string, ReturnType<typeof setTimeout>> = {};
 
 	async function sendTest(channel: string) {
+		clearTimeout(testTimers[channel]);
 		testStatus[channel] = 'sending';
 		testError[channel] = '';
 		try {
@@ -119,7 +121,8 @@ actions:
 			testError[channel] = msg;
 			console.error(`[notifications] ${channel} test failed:`, msg);
 		}
-		setTimeout(() => (testStatus[channel] = 'idle'), 3000);
+		if (testStatus[channel] === 'sent')
+			testTimers[channel] = setTimeout(() => (testStatus[channel] = 'idle'), 3000);
 	}
 
 	// Browser push subscription
@@ -358,7 +361,8 @@ actions:
 					</label>
 					<input
 						id="webhook-auth"
-						type="text"
+						type="password"
+						autocomplete="off"
 						class="field-input"
 						placeholder={$_('settings.notifications.channels.webhook.authPlaceholder')}
 						bind:value={webhookAuth}

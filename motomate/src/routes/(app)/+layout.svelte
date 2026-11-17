@@ -345,6 +345,8 @@
 		themeMenuOpen = !themeMenuOpen;
 	}
 
+	const onboarding = $derived(page.url.pathname.startsWith('/onboarding'));
+
 	function handleClickOutside(e: MouseEvent) {
 		const target = e.target as Element;
 		if (themeMenuOpen && !target.closest('.theme-menu-container')) themeMenuOpen = false;
@@ -406,7 +408,7 @@
 				<span>MotoMate</span>
 			</a>
 
-			<nav class="topnav-links">
+			<nav class="topnav-links" hidden={onboarding}>
 				{#each navLinks as link}
 					<a
 						href={link.href}
@@ -618,7 +620,7 @@
 		{@render children()}
 	</main>
 
-	<nav class="bottom-tabs">
+	<nav class="bottom-tabs" hidden={onboarding}>
 		<a
 			href="/dashboard"
 			class="bottom-tab"

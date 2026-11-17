@@ -11,26 +11,20 @@ export async function dispatchWebhook(
 	const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 	if (authHeader) headers['Authorization'] = authHeader;
 
-	try {
-		await assertSafeUrl(url);
-		const res = await fetch(url, {
-			method: 'POST',
-			redirect: 'manual',
-			headers,
-			body: JSON.stringify({
-				event: 'motomate_notification',
-				title,
-				body,
-				vehicle_name: vehicleName,
-				timestamp: new Date().toISOString(),
-				data: vars
-			}),
-			signal: AbortSignal.timeout(5000)
-		});
-		if (!res.ok) {
-			console.warn(`[workflow] webhook responded with ${res.status}: ${url}`);
-		}
-	} catch (e) {
-		console.error('[workflow] webhook dispatch failed', e);
-	}
+	await assertSafeUrl(url);
+	const res = await fetch(url, {
+		method: 'POST',
+		redirect: 'manual',
+		headers,
+		body: JSON.stringify({
+			event: 'motomate_notification',
+			title,
+			body,
+			vehicle_name: vehicleName,
+			timestamp: new Date().toISOString(),
+			data: vars
+		}),
+		signal: AbortSignal.timeout(5000)
+	});
+	if (!res.ok) throw new Error(`Webhook responded with HTTP ${res.status}`);
 }

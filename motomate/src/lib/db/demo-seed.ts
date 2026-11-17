@@ -101,6 +101,16 @@ async function patchDemoContent(userId: string, vehicleId: string): Promise<void
 				remark: 'Spring prep',
 				kind: 'odometer',
 				recorded_at: '2026-03-01'
+			},
+			{
+				id: generateId(),
+				vehicle_id: vehicleId,
+				user_id: userId,
+				odometer: 18400,
+				measurement: 18400,
+				measurement_unit: 'km',
+				kind: 'odometer',
+				recorded_at: '2026-05-10'
 			}
 		]);
 	}

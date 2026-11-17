@@ -21,8 +21,7 @@ import { addMonths, parseISO, formatISO } from 'date-fns';
 
 export const load: PageServerLoad = async ({ parent, locals }) => {
 	const { vehicle } = await parent();
-	const currentOdometer = await recomputeCurrentOdometer(vehicle.id, locals.user!.id);
-	const trackers = await recomputeTrackerStatuses(vehicle.id, currentOdometer);
+	const trackers = await recomputeTrackerStatuses(vehicle.id, vehicle.current_odometer);
 	const [odometerLogs, allServiceLogs, allDocs] = await Promise.all([
 		getOdometerLogs(vehicle.id, locals.user!.id),
 		getServiceLogsByVehicle(vehicle.id, locals.user!.id),

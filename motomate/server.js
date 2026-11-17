@@ -3,6 +3,9 @@ import helmet from 'helmet';
 import tls from 'node:tls';
 import { X509Certificate } from 'node:crypto';
 import { runMigrations } from './migrate.js';
+import { installConsoleFormat } from './console-format.js';
+
+installConsoleFormat();
 
 // shortcut: distrusts eMudhra emSign roots (CVE-2026-114406), we can later remove this if Node's bundled store excludes them
 tls.setDefaultCACertificates(

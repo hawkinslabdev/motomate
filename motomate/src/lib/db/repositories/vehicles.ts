@@ -90,6 +90,18 @@ export async function createVehicle(userId: string, input: unknown): Promise<Veh
 		current_measurement_unit: parsed.odometer_unit
 	};
 	await db.insert(vehicles).values(row);
+	if (parsed.current_odometer > 0) {
+		await db.insert(odometer_logs).values({
+			id: generateId(),
+			vehicle_id: id,
+			user_id: userId,
+			odometer: parsed.current_odometer,
+			measurement: parsed.current_odometer,
+			measurement_unit: parsed.odometer_unit,
+			kind: 'odometer',
+			recorded_at: new Date().toISOString().slice(0, 10)
+		});
+	}
 	return hydrateVehicle(
 		await db.query.vehicles.findFirst({ where: eq(vehicles.id, id) })
 	) as Vehicle;
