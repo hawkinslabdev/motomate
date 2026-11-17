@@ -11,10 +11,6 @@
 	];
 
 	function handleKey(e: KeyboardEvent) {
-		if (e.key === '?' && !e.ctrlKey && !e.metaKey) {
-			e.preventDefault();
-			open = true;
-		}
 		if (e.key === 'Escape' && open) {
 			open = false;
 		}

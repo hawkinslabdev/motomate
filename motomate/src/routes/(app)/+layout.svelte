@@ -360,7 +360,12 @@
 			return;
 		}
 
-		if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as Element)?.tagName)) return;
+		const target = e.target as HTMLElement | null;
+		if (
+			target?.isContentEditable ||
+			['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '')
+		)
+			return;
 		if (e.ctrlKey || e.metaKey || e.altKey) return;
 
 		const key = e.key.toLowerCase();
