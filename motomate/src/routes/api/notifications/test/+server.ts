@@ -55,7 +55,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 		return Response.json({ ok: true });
 	} catch (e) {
-		const msg = e instanceof Error ? e.message : 'Unknown error';
+		const cause = e instanceof Error ? (e.cause as { code?: string } | undefined)?.code : undefined;
+		const msg =
+			e instanceof Error ? (cause ? `${e.message} (${cause})` : e.message) : 'Unknown error';
 		return Response.json({ ok: false, error: msg });
 	}
 };

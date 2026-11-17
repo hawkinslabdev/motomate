@@ -490,14 +490,13 @@ export async function seedPresetsForVehicle(
 
 /*
  * Creates a tracker with default due values from the template.
- * * KM intervals set next_due_odometer to interval_km (measured from 0).
+ * * KM intervals set next_due_odometer to currentOdometer + interval_km.
  * * Date intervals set next_due_at to today + interval_months.
- * currentOdometer checks if the vehicle is overdue, but does not shift the initial threshold.
  **/
 export async function createTracker(
 	vehicleId: string,
 	templateId: string,
-	_currentOdometer: number = 0
+	currentOdometer: number = 0
 ): Promise<ActiveTracker> {
 	const template = await db.query.task_templates.findFirst({
 		where: eq(task_templates.id, templateId)
@@ -510,9 +509,9 @@ export async function createTracker(
 	let next_due_at: string | null = null;
 
 	if (interval?.interval_measurement != null) {
-		next_due_measurement = interval.interval_measurement;
+		next_due_measurement = currentOdometer + interval.interval_measurement;
 		if (interval.basis === 'distance') {
-			next_due_odometer = interval.interval_measurement;
+			next_due_odometer = next_due_measurement;
 		}
 	}
 	if (template?.interval_months) {
@@ -906,7 +905,12 @@ export async function resyncTrackersFromServiceLogs(
 	}
 }
 
-export async function deleteTracker(trackerId: string, vehicleId: string): Promise<void> {
+export async function deleteTracker(
+	trackerId: string,
+	vehicleId: string,
+	userId: string
+): Promise<void> {
+	if (!(await getVehicleById(vehicleId, userId))) return;
 	await db
 		.delete(active_trackers)
 		.where(and(eq(active_trackers.id, trackerId), eq(active_trackers.vehicle_id, vehicleId)));
@@ -949,7 +953,9 @@ export async function recomputeTrackerStatuses(
 		const fields: Partial<typeof active_trackers.$inferInsert> = {};
 
 		if (needsInit && nextDueMeasurement === null && interval.interval_measurement != null) {
-			nextDueMeasurement = interval.interval_measurement;
+			const baseline =
+				vehicleMeasurement?.unit === interval.interval_unit ? vehicleMeasurement.value : 0;
+			nextDueMeasurement = baseline + interval.interval_measurement;
 			fields.next_due_measurement = nextDueMeasurement;
 			if (interval.basis === 'distance') {
 				fields.next_due_odometer = nextDueMeasurement;

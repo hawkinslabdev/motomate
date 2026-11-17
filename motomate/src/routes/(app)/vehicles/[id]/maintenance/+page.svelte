@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import { enhance } from '$app/forms';
@@ -69,6 +70,7 @@
 	let historyTracker = $state<string | null>(null);
 	let viewMode = $state<'current' | 'forecast' | 'history'>('current');
 	let searchQuery = $state('');
+	let filtersOpen = $state(false);
 	let sortBy = $state<'status' | 'name' | 'last'>(
 		untrack(() => data.page_prefs?.sortBy ?? 'status')
 	);
@@ -305,28 +307,6 @@
 		<p class="section-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
-		{#if data.trackers.length > 0}
-			<div class="view-toggle">
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'current'}
-					onclick={() => (viewMode = 'current')}>{$_('maintenance.view.current')}</button
-				>
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'forecast'}
-					onclick={() => (viewMode = 'forecast')}>{$_('maintenance.view.forecast')}</button
-				>
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'history'}
-					onclick={() => (viewMode = 'history')}>{$_('maintenance.view.history')}</button
-				>
-			</div>
-		{/if}
 		{#if data.trackers.length === 0}
 			<form method="POST" action="?/applyDefaults" use:enhance>
 				<button type="submit" class="btn-ghost">
@@ -334,9 +314,20 @@
 				</button>
 			</form>
 		{/if}
+		{#if sortedTrackers.length > 0 || viewMode === 'history'}
+			<button
+				type="button"
+				class="btn-ghost filters-toggle"
+				class:filters-toggle--active={!!searchQuery}
+				onclick={() => (filtersOpen = !filtersOpen)}
+				aria-label={$_('common.filter')}
+				aria-expanded={filtersOpen}
+			>
+				<Sliders />
+			</button>
+		{/if}
 		<button
-			class="btn-ghost"
-			class:btn-ghost--disabled={viewMode === 'history'}
+			class="btn-primary"
 			disabled={viewMode === 'history'}
 			title={viewMode === 'history' ? $_('maintenance.addTask.historyDisabled') : ''}
 			onclick={() =>
@@ -345,13 +336,13 @@
 					odometerUnit: data.vehicle.odometer_unit
 				})}
 		>
-			{$_('maintenance.addTask.button')}
+			+ {$_('maintenance.addTask.button')}
 		</button>
 	</div>
 </div>
 
 {#if sortedTrackers.length > 0 || searchQuery || viewMode === 'history'}
-	<div class="filters">
+	<div class="filters" class:filters--closed={!filtersOpen && !searchQuery}>
 		<div class="search-box">
 			<input
 				type="text"
@@ -362,18 +353,31 @@
 		</div>
 		<div class="filter-controls">
 			{#if viewMode === 'history'}
-				<select bind:value={historySortBy} class="filter-select">
+				<select bind:value={historySortBy} class="filter-select" aria-label={$_('common.sortBy')}>
 					<option value="date">{$_('maintenance.filter.sortDate')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
 				</select>
 			{:else if viewMode === 'current'}
-				<select bind:value={sortBy} class="filter-select">
+				<select bind:value={sortBy} class="filter-select" aria-label={$_('common.sortBy')}>
 					<option value="status">{$_('maintenance.filter.sortStatus')}</option>
 					<option value="name">{$_('maintenance.filter.sortName')}</option>
 					<option value="last">{$_('maintenance.filter.sortLast')}</option>
 				</select>
 			{/if}
 		</div>
+		{#if data.trackers.length > 0}
+			<div class="view-controls">
+				<ViewToggle
+					options={[
+						{ value: 'current', label: $_('maintenance.view.current') },
+						{ value: 'forecast', label: $_('maintenance.view.forecast') },
+						{ value: 'history', label: $_('maintenance.view.history') }
+					]}
+					value={viewMode}
+					onchange={(v) => (viewMode = v as typeof viewMode)}
+				/>
+			</div>
+		{/if}
 	</div>
 {/if}
 
@@ -727,7 +731,11 @@
 				</div>
 
 				<!-- Log service entry form -->
-				<div class="expand-wrap" class:open={loggingTracker === t.id}>
+				<div
+					class="expand-wrap"
+					class:open={loggingTracker === t.id}
+					inert={loggingTracker !== t.id}
+				>
 					<div class="expand-inner">
 						<form
 							method="POST"
@@ -829,7 +837,7 @@
 							</label>
 							<div class="log-actions">
 								{#if (data as any).demoMode}
-									<p class="demo-form-note">Demo mode: entries are not saved.</p>
+									<p class="demo-form-note">{$_('common.demoNotSaved')}</p>
 								{/if}
 								<button type="submit" class="btn-primary"
 									>{$_('vehicle.forms.submit.service')}</button
@@ -906,66 +914,7 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.page-actions {
-		display: flex;
-		gap: var(--space-2);
-		align-items: center;
-		flex-shrink: 0;
-	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
 	/* View toggle */
-	.view-toggle {
-		display: flex;
-		background: var(--bg-muted);
-		border-radius: 8px;
-		padding: 2px;
-		gap: 2px;
-	}
-	.view-toggle-btn {
-		padding: 0.375rem 0.75rem;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		background: transparent;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		color: var(--text-muted);
-		transition:
-			background 0.15s,
-			color 0.15s;
-	}
-	.view-toggle-btn:hover {
-		color: var(--text);
-	}
-	.view-toggle-btn--active {
-		background: var(--bg);
-		color: var(--text);
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-	}
 
 	.tracker-list {
 		display: flex;
@@ -1118,47 +1067,8 @@
 		resize: vertical;
 	}
 
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
-	}
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-	.btn-ghost {
-		padding: 0.5rem 0.75rem;
-		min-height: 44px;
-		background: transparent;
-		border: 1px solid var(--border);
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-		color: var(--text-muted);
-	}
-	.btn-ghost:hover {
-		background: var(--bg-subtle);
-		color: var(--text);
-	}
-	.btn-ghost--disabled,
-	.btn-ghost:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-	.btn-ghost--disabled:hover {
-		background: transparent;
-		color: var(--text-muted);
 	}
 
 	/* Tracker checkboxes */
@@ -1320,8 +1230,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		flex-shrink: 0;
 	}
 	.timeline-month-line {
@@ -1391,16 +1299,10 @@
 		font-size: 1rem;
 		line-height: 1;
 		cursor: pointer;
-		opacity: 0;
 		transition:
 			opacity 0.15s,
 			background 0.15s,
 			border-color 0.15s;
-	}
-	.timeline-entry:hover .entry-menu-btn,
-	.entry-menu-btn:focus,
-	.entry-menu-btn.active {
-		opacity: 1;
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
@@ -1458,19 +1360,8 @@
 			width: 44px;
 			height: 44px;
 		}
-		.page-actions {
-			flex-wrap: wrap;
-			width: 100%;
-		}
-		.view-toggle {
-			width: 100%;
-		}
-		.view-toggle-btn {
-			flex: 1;
-			min-width: 0;
-			text-align: center;
-			padding: 0.375rem 0.5rem;
-			font-size: var(--text-xs);
-		}
+	}
+	.timeline-month-name::first-letter {
+		text-transform: uppercase;
 	}
 </style>

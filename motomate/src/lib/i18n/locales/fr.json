@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instance de démo",
+		"demoNotSaved": "Mode démo : les entrées ne sont pas enregistrées.",
+		"demoDisabled": "Désactivé en mode démo",
+		"demoBanner": "Mode démo : les modifications sont désactivées et servent uniquement à la démonstration.",
+		"download": "Télécharger",
+		"downloadNamed": "Télécharger {name}",
+		"removeNamed": "Retirer {name}",
+		"sortBy": "Trier par",
+		"filter": "Filtrer",
+		"unsavedChanges": "Vous avez des modifications non enregistrées. Quitter cette page ?",
 		"save": "Enregistrer",
 		"cancel": "Annuler",
 		"delete": "Supprimer",
@@ -130,7 +140,7 @@
 			"title": "Quel type de véhicule ?"
 		},
 		"details": {
-			"title": "Parlez-nous de votre {vehicleType}",
+			"title": "Parlez-nous de votre véhicule",
 			"name": "Surnom",
 			"make": "Marque",
 			"model": "Modèle",
@@ -139,8 +149,8 @@
 			"licensePlate": "Plaque d'immatriculation",
 			"placeholders": {
 				"name": "ex. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "ex. Honda",
+				"model": "ex. CB500F",
 				"vin": "optionnel",
 				"licensePlate": "ex. AB-123 CD"
 			}
@@ -309,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Chronologie",
-				"subtitle": "Tous vos enregistrements pour {name} en un seul endroit.",
+				"subtitle": "Liste tous les enregistrements de {name}, du plus récent au plus ancien",
 				"empty": {
 					"title": "Pas encore d'historique",
 					"description": "Les entretiens, relevés kilométriques et notes apparaissent ici.",
@@ -326,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Rappel réinitialisé"
-				}
+				},
+				"add": "Ajouter une entrée"
 			},
 			"upcoming": "À venir",
 			"nextDue": "Prochain: {date}",
@@ -443,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Paramètres",
-			"subtitle": "Gérez votre {name}",
+			"subtitle": "Modifie les données de {name}",
 			"odometer": {
 				"title": "Mettre à jour le kilométrage",
 				"currentReading": "Lecture actuelle ({unit})",
@@ -468,7 +479,7 @@
 			"odometerUpdated": "Kilométrage mis à jour",
 			"vehicleRestored": "Véhicule restauré",
 			"settings": {
-				"title": "Paramètres",
+				"title": "Rapport et unités",
 				"archive": {
 					"title": "Archiver le véhicule",
 					"titleRestore": "Restaurer le véhicule",
@@ -575,10 +586,11 @@
 		"notes": {
 			"pageTitle": "Notes · {name}",
 			"title": "Notes",
-			"subtitle": "Tout ce qui vaut la peine d'être conservé, sans lien avec un service ou un trajet.",
+			"subtitle": "Conserve des notes sur {name}",
 			"subtitleEmpty": "Tout ce qui vaut la peine d'être conservé, sans lien avec un service ou un trajet.",
 			"new": "Ajouter une note",
 			"edit": "Modifier la note",
+			"docCount": "{count, plural, one {# document} other {# documents}}",
 			"untitled": "Sans titre",
 			"saved": "Note enregistrée",
 			"empty": {
@@ -603,12 +615,13 @@
 			"col": {
 				"excerpt": "Extrait"
 			},
-			"searchPlaceholder": "Rechercher des notes..."
+			"searchPlaceholder": "Rechercher des notes...",
+			"add": "Ajouter une note"
 		}
 	},
 	"maintenance": {
 		"title": "Entretien",
-		"subtitle": "Suivez votre calendrier d'entretien",
+		"subtitle": "Affiche chaque tâche d’entretien et son échéance",
 		"view": {
 			"current": "Actuel",
 			"forecast": "Prévision",
@@ -649,7 +662,7 @@
 			"save": "Enregistrer"
 		},
 		"addTask": {
-			"button": "+ Ajouter une tâche",
+			"button": "Ajouter une tâche",
 			"cancel": "Annuler",
 			"title": "Ajouter une tâche",
 			"historyDisabled": "Ajouter dans Vue Actuel ou Prévision",
@@ -737,10 +750,10 @@
 	"finance": {
 		"title": "Dépenses",
 		"subtitle": "Suivez les dépenses",
-		"totalSpent": "Total dépensé pour votre {name}",
-		"addExpense": "Ajouter",
+		"totalSpent": "Affiche ce que {name} a coûté",
+		"addExpense": "Ajouter une dépense",
 		"noCosts": "Pas encore de coûts suivis",
-		"groupBy": "Grouper par :",
+		"groupBy": "Grouper par",
 		"groupCategory": "Catégorie",
 		"groupYear": "Année",
 		"groupDescription": "Description",
@@ -774,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# devise} other {# devises}}"
 		},
 		"form": {
-			"addTitle": "Ajouter",
+			"addTitle": "Ajouter une dépense",
 			"editTitle": "Modifier",
 			"switchType": "Enregistrer autre chose à la place",
 			"category": "Catégorie",
@@ -815,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documents",
-		"subtitle": "Stockez les dossiers de service, photos et papeles",
-		"upload": "+ Téléverser",
+		"subtitle": "Conserve factures d’entretien, photos et papiers",
+		"upload": "Ajouter un document",
 		"dropHintDesktop": "Déposez un fichier ici",
 		"dropHintMobile": "Appuyez pour téléverser",
 		"uploadHint": "Images, PDF, Word, Excel - max 10 Mo",
@@ -904,6 +917,7 @@
 			"avatarRemove": "Supprimer",
 			"avatarUpdated": "Photo de profil mise à jour",
 			"avatarDicebear": "Choisir un avatar",
+			"avatarOption": "Option d’avatar {n}",
 			"avatarShuffle": "Mélanger",
 			"avatarCredits": "Crédits des avatars",
 			"subtitle": "Photo de profil, nom affiché, langue, devise, unité et thème.",
@@ -1154,7 +1168,7 @@
 				"expiryNone": "Sans expiration",
 				"prefix": "Clé",
 				"expires": "Expire",
-				"neverExpires": "Jamais",
+				"neverExpires": "N’expire jamais",
 				"lastUsed": "Dernière utilisation",
 				"neverUsed": "jamais",
 				"revoke": "Révoquer",
@@ -1178,7 +1192,10 @@
 				"deleteKey": "Supprimer",
 				"deleteKeyConfirm": "Confirmer la suppression",
 				"restoreKey": "Restaurer",
-				"errorNameTaken": "Ce nom est déjà utilisé."
+				"errorNameTaken": "Ce nom est déjà utilisé.",
+				"expiresOn": "Expire le {date}",
+				"expiredOn": "Expirée le {date}",
+				"newKey": "Nouvelle clé"
 			},
 			"docs": {
 				"title": "Documentation API",
@@ -1326,8 +1343,8 @@
 	},
 	"travels": {
 		"title": "Voyages",
-		"subtitle": "Vos trajets et itinéraires",
-		"add": "Ajouter un voyage",
+		"subtitle": "Liste vos trajets et itinéraires",
+		"add": "Ajouter un trajet",
 		"empty": {
 			"title": "Aucun voyage",
 			"description": "Les trajets de ce véhicule apparaissent ici."

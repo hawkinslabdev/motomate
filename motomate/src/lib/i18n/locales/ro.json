@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instanță demo",
+		"demoNotSaved": "Mod demo: intrările nu sunt salvate.",
+		"demoDisabled": "Dezactivat în modul demo",
+		"demoBanner": "Mod demo: modificările sunt dezactivate și servesc doar ca demonstrație.",
+		"download": "Descarcă",
+		"downloadNamed": "Descarcă {name}",
+		"removeNamed": "Elimină {name}",
+		"sortBy": "Sortează după",
+		"filter": "Filtrează",
+		"unsavedChanges": "Ai modificări nesalvate. Părăsești această pagină?",
 		"save": "Salvează",
 		"cancel": "Anulează",
 		"delete": "Șterge",
@@ -130,7 +140,7 @@
 			"title": "Ce fel de vehicul este?"
 		},
 		"details": {
-			"title": "Spune-ne mai multe despre acest {vehicleType}",
+			"title": "Spune-ne despre vehiculul tău",
 			"name": "Pseudonim / Nume",
 			"make": "Marcă",
 			"model": "Model",
@@ -139,8 +149,8 @@
 			"licensePlate": "Număr înmatriculare",
 			"placeholders": {
 				"name": "de ex. Honda mea",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "de ex. Honda",
+				"model": "de ex. CB500F",
 				"vin": "opțional",
 				"licensePlate": "de ex. B-123-AAA"
 			}
@@ -317,7 +327,7 @@
 			},
 			"timeline": {
 				"title": "Cronologie",
-				"subtitle": "Toate înregistrările pentru {name} într-un singur loc.",
+				"subtitle": "Listează toate înregistrările pentru {name}, cele mai noi primele",
 				"empty": {
 					"title": "Niciun istoric încă",
 					"description": "Aici apar reviziile, citirile kilometrajului și notițele.",
@@ -334,7 +344,8 @@
 				},
 				"reminder": {
 					"label": "Doar memento"
-				}
+				},
+				"add": "Adaugă înregistrare"
 			},
 			"upcoming": "Următoarele",
 			"nextDue": "Următorul: {date}",
@@ -410,7 +421,7 @@
 		},
 		"edit": {
 			"title": "Setări",
-			"subtitle": "Gestionează vehiculul {name}",
+			"subtitle": "Editează datele pentru {name}",
 			"odometer": {
 				"title": "Actualizează odometrul",
 				"usageTitle": "Actualizează utilizarea",
@@ -447,7 +458,7 @@
 			"usageUpdated": "Utilizare actualizată",
 			"vehicleRestored": "Vehicul restaurat",
 			"settings": {
-				"title": "Setări",
+				"title": "Raport și unități",
 				"archive": {
 					"title": "Arhivează vehiculul",
 					"titleRestore": "Restaurează vehiculul",
@@ -575,10 +586,11 @@
 		"notes": {
 			"pageTitle": "Note · {name}",
 			"title": "Note",
-			"subtitle": "Tot ce merită păstrat, fără a fi legat de un service sau o cursă.",
+			"subtitle": "Păstrează notițe despre {name}",
 			"subtitleEmpty": "Tot ce merită păstrat, fără a fi legat de un service sau o cursă.",
-			"new": "Adaugă notă",
+			"new": "Adaugă notiță",
 			"edit": "Editează nota",
+			"docCount": "{count, plural, one {# document} few {# documente} other {# de documente}}",
 			"untitled": "Fără titlu",
 			"saved": "Notă salvată",
 			"empty": {
@@ -603,12 +615,13 @@
 			"col": {
 				"excerpt": "Extras"
 			},
-			"searchPlaceholder": "Caută notițe..."
+			"searchPlaceholder": "Caută notițe...",
+			"add": "Adaugă notiță"
 		}
 	},
 	"maintenance": {
 		"title": "Întreținere",
-		"subtitle": "Urmărește programul de service",
+		"subtitle": "Arată fiecare sarcină de întreținere și când este scadentă",
 		"view": {
 			"current": "Curente",
 			"forecast": "Previziuni",
@@ -649,7 +662,7 @@
 			"save": "Salvează modificările"
 		},
 		"addTask": {
-			"button": "+ Adaugă sarcină",
+			"button": "Adaugă sarcină",
 			"cancel": "Anulează",
 			"title": "Adaugă sarcină",
 			"historyDisabled": "Adaugă sarcina în vizualizarea Curente sau Previziuni",
@@ -681,7 +694,7 @@
 				"due": "scadent",
 				"overdue": "depășit"
 			},
-			"logNow": "Înregistrează acum -",
+			"logNow": "Înregistrează acum →",
 			"edit": "Editează",
 			"delete": "Șterge",
 			"notScheduled": "Neprogramat",
@@ -737,10 +750,10 @@
 	"finance": {
 		"title": "Cheltuieli",
 		"subtitle": "Urmărește cheltuielile",
-		"totalSpent": "Total cheltuit pentru {name}",
-		"addExpense": "Adaugă",
+		"totalSpent": "Arată cât a costat {name}",
+		"addExpense": "Adaugă cheltuială",
 		"noCosts": "Nicio cheltuială înregistrată încă",
-		"groupBy": "Grupează după:",
+		"groupBy": "Grupează după",
 		"groupCategory": "Categorie",
 		"groupYear": "An",
 		"groupDescription": "Descriere",
@@ -774,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# valută} other {# valute}}"
 		},
 		"form": {
-			"addTitle": "Adaugă",
+			"addTitle": "Adaugă cheltuială",
 			"editTitle": "Editează",
 			"switchType": "Înregistrează altceva în schimb",
 			"category": "Categorie",
@@ -815,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documente",
-		"subtitle": "Stochează fișe de service, fotografii și acte",
-		"upload": "+ Încarcă",
+		"subtitle": "Păstrează facturi de service, fotografii și acte",
+		"upload": "Adaugă document",
 		"dropHintDesktop": "Trage un fișier aici",
 		"dropHintMobile": "Apasă pentru a încărca un fișier",
 		"uploadHint": "Imagini, PDF, Word, Excel - max. 10 MB",
@@ -917,6 +930,7 @@
 			"avatarRemove": "Elimină",
 			"avatarUpdated": "Fotografia de profil a fost actualizată",
 			"avatarDicebear": "Alege un avatar",
+			"avatarOption": "Opțiunea de avatar {n}",
 			"avatarShuffle": "Amestecă",
 			"avatarCredits": "Credite avatare",
 			"subtitle": "Fotografie de profil, nume afișat, limbă, monedă, unitate și temă.",
@@ -1154,7 +1168,7 @@
 				"expiryNone": "Fără expirare",
 				"prefix": "Cheie",
 				"expires": "Expiră",
-				"neverExpires": "Niciodată",
+				"neverExpires": "Nu expiră",
 				"lastUsed": "Ultima utilizare",
 				"neverUsed": "niciodată",
 				"revoke": "Revocă",
@@ -1178,7 +1192,10 @@
 				"deleteKey": "Șterge",
 				"deleteKeyConfirm": "Confirmă ștergerea",
 				"restoreKey": "Restaurează",
-				"errorNameTaken": "Acest nume este deja utilizat."
+				"errorNameTaken": "Acest nume este deja utilizat.",
+				"expiresOn": "Expiră la {date}",
+				"expiredOn": "A expirat la {date}",
+				"newKey": "Cheie nouă"
 			},
 			"docs": {
 				"title": "Documentație API",
@@ -1294,7 +1311,7 @@
 	},
 	"travels": {
 		"title": "Călătorii",
-		"subtitle": "Plimbările și traseele tale",
+		"subtitle": "Listează călătoriile și traseele tale",
 		"add": "Adaugă călătorie",
 		"empty": {
 			"title": "Nicio călătorie încă",

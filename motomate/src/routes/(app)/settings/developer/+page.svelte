@@ -5,6 +5,8 @@
 	import { formatDateShort } from '#lib/utils/format.js';
 	import type { ApiKey } from '#lib/db/schema.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import { untrack } from 'svelte';
+	import RowMenu from '#lib/components/ui/RowMenu.svelte';
 
 	let { data, form } = $props<{
 		data: { keys: Omit<ApiKey, 'key_hash'>[]; locale: string };
@@ -71,9 +73,10 @@
 		const status = keyStatus(key);
 		if (status === 'revoked') return $_('settings.developer.apiKeys.revoked');
 		if (!key.expires_at) return $_('settings.developer.apiKeys.neverExpires');
-		if (status === 'expired') return $_('settings.developer.apiKeys.expired');
-		if (status === 'due') return $_('settings.developer.apiKeys.expiringSoon');
-		return formatDateShort(key.expires_at, data.locale);
+		const date = formatDateShort(key.expires_at, data.locale);
+		return status === 'expired'
+			? $_('settings.developer.apiKeys.expiredOn', { values: { date } })
+			: $_('settings.developer.apiKeys.expiresOn', { values: { date } });
 	}
 
 	function lastUsedLabel(key: Omit<ApiKey, 'key_hash'>): string {
@@ -81,9 +84,42 @@
 		return formatDateShort(key.last_used_at.slice(0, 10), data.locale);
 	}
 
-	function keyMetaLine(key: Omit<ApiKey, 'key_hash'>): string {
-		return `${expiryLabel(key)} · ${$_('settings.developer.apiKeys.lastUsed')} ${lastUsedLabel(key)}`;
+	function keyMenu(key: Omit<ApiKey, 'key_hash'>) {
+		if (key.revoked_at)
+			return [
+				{
+					label: $_('settings.developer.apiKeys.restoreKey'),
+					onclick: () =>
+						(
+							document.getElementById(`restore-${key.id}`) as HTMLFormElement | null
+						)?.requestSubmit()
+				},
+				{
+					label: $_('settings.developer.apiKeys.deleteKey'),
+					danger: true,
+					onclick: () => (confirmingDelete = key.id)
+				}
+			];
+		return [
+			{
+				label: $_('settings.developer.apiKeys.rotate'),
+				onclick: () => {
+					confirmingRotate = key.id;
+					confirmingRevoke = null;
+				}
+			},
+			{
+				label: $_('settings.developer.apiKeys.revoke'),
+				danger: true,
+				onclick: () => {
+					confirmingRevoke = key.id;
+					confirmingRotate = null;
+				}
+			}
+		];
 	}
+
+	let formOpen = $state(untrack(() => data.keys.length === 0));
 
 	const activeKeys = $derived(data.keys.filter((k: Omit<ApiKey, 'key_hash'>) => !k.revoked_at));
 </script>
@@ -95,145 +131,18 @@
 	<p class="section-desc">{$_('settings.developer.subtitle')}</p>
 </div>
 
-<section class="setting-section">
-	<h3 class="sub-title">{$_('settings.developer.apiKeys.title')}</h3>
-	<p class="desc">{$_('settings.developer.apiKeys.description')}</p>
-
-	{#if data.keys.length > 0}
-		<div class="key-list">
-			{#each data.keys as key (key.id)}
-				{@const status = keyStatus(key)}
-				<div
-					class="key-entry"
-					class:key-entry--due={status === 'due'}
-					class:key-entry--overdue={status === 'expired' || status === 'revoked'}
-				>
-					<div class="key-row">
-						<span class="key-name">{key.name}</span>
-						<span class="key-prefix mono">{key.key_prefix}…</span>
-						<span class="key-scope"
-							>{key.scope === 'read'
-								? $_('settings.developer.apiKeys.scopeBadgeRead')
-								: $_('settings.developer.apiKeys.scopeBadgeReadWrite')}</span
-						>
-					</div>
-					<p class="key-meta-line">{keyMetaLine(key)}</p>
-
-					{#if status !== 'revoked'}
-						<div class="key-actions">
-							{#if confirmingRevoke === key.id}
-								<p class="confirm-warning">{$_('settings.developer.apiKeys.revokeConfirm')}</p>
-								<div class="confirm-row">
-									<form
-										method="POST"
-										action="?/revokeApiKey"
-										use:enhance={() =>
-											async ({ update }) => {
-												await update();
-												await refreshAll();
-											}}
-									>
-										<input type="hidden" name="key_id" value={key.id} />
-										<button type="submit" class="btn-danger"
-											>{$_('settings.developer.apiKeys.revokeConfirmBtn')}</button
-										>
-									</form>
-									<button type="button" class="btn-ghost" onclick={() => (confirmingRevoke = null)}
-										>{$_('settings.developer.apiKeys.cancel')}</button
-									>
-								</div>
-							{:else if confirmingRotate === key.id}
-								<p class="confirm-warning">{$_('settings.developer.apiKeys.rotateConfirm')}</p>
-								<div class="confirm-row">
-									<form
-										method="POST"
-										action="?/rotateApiKey"
-										use:enhance={() =>
-											async ({ update }) => {
-												await update();
-												await refreshAll();
-											}}
-									>
-										<input type="hidden" name="key_id" value={key.id} />
-										<button type="submit" class="btn-secondary"
-											>{$_('settings.developer.apiKeys.rotateConfirmBtn')}</button
-										>
-									</form>
-									<button type="button" class="btn-ghost" onclick={() => (confirmingRotate = null)}
-										>{$_('settings.developer.apiKeys.cancel')}</button
-									>
-								</div>
-							{:else}
-								<button
-									type="button"
-									class="btn-ghost"
-									onclick={() => {
-										confirmingRotate = key.id;
-										confirmingRevoke = null;
-									}}>{$_('settings.developer.apiKeys.rotate')}</button
-								>
-								<button
-									type="button"
-									class="btn-ghost btn-ghost--danger"
-									onclick={() => {
-										confirmingRevoke = key.id;
-										confirmingRotate = null;
-									}}>{$_('settings.developer.apiKeys.revoke')}</button
-								>
-							{/if}
-						</div>
-					{:else}
-						<div class="key-actions">
-							<form
-								method="POST"
-								action="?/restoreApiKey"
-								use:enhance={() =>
-									async ({ update }) => {
-										await update();
-										await refreshAll();
-									}}
-							>
-								<input type="hidden" name="key_id" value={key.id} />
-								<button type="submit" class="btn-ghost"
-									>{$_('settings.developer.apiKeys.restoreKey')}</button
-								>
-							</form>
-							{#if confirmingDelete === key.id}
-								<div class="confirm-row">
-									<form
-										method="POST"
-										action="?/deleteApiKey"
-										use:enhance={() =>
-											async ({ update }) => {
-												await update();
-												await refreshAll();
-											}}
-									>
-										<input type="hidden" name="key_id" value={key.id} />
-										<button type="submit" class="btn-danger"
-											>{$_('settings.developer.apiKeys.deleteKeyConfirm')}</button
-										>
-									</form>
-									<button type="button" class="btn-ghost" onclick={() => (confirmingDelete = null)}
-										>{$_('settings.developer.apiKeys.cancel')}</button
-									>
-								</div>
-							{:else}
-								<button
-									type="button"
-									class="btn-ghost btn-ghost--danger"
-									onclick={() => (confirmingDelete = key.id)}
-									>{$_('settings.developer.apiKeys.deleteKey')}</button
-								>
-							{/if}
-						</div>
-					{/if}
-				</div>
-			{/each}
+<section class="dev-card" aria-labelledby="api-keys-title">
+	<header class="dev-card-head">
+		<div class="dev-card-text">
+			<h3 id="api-keys-title" class="dev-card-title">{$_('settings.developer.apiKeys.title')}</h3>
+			<p class="dev-card-desc">{$_('settings.developer.apiKeys.description')}</p>
 		</div>
-	{:else if !newToken}
-		<p class="empty-state">{$_('settings.developer.apiKeys.empty')}</p>
-	{/if}
+		{#if !newToken && !formOpen && activeKeys.length < 20}
+			<button type="button" class="btn-primary" onclick={() => (formOpen = true)}>
+				+ {$_('settings.developer.apiKeys.newKey')}
+			</button>
+		{/if}
+	</header>
 
 	{#if newToken}
 		<div class="token-reveal">
@@ -244,7 +153,8 @@
 				type="text"
 				readonly
 				value={newToken}
-				class="token-input"
+				class="token-input mono"
+				aria-label={$_('settings.developer.apiKeys.tokenRevealTitle')}
 				onclick={(e) => (e.target as HTMLInputElement).select()}
 			/>
 			<div class="token-actions">
@@ -258,16 +168,17 @@
 				</button>
 			</div>
 		</div>
-	{:else if activeKeys.length < 20}
+	{:else if formOpen && activeKeys.length < 20}
 		<form
 			method="POST"
 			action="?/createApiKey"
-			class="pref-form"
+			class="create-form"
 			use:enhance={() => {
 				creating = true;
-				return async ({ update }) => {
+				return async ({ result, update }) => {
 					await update();
 					creating = false;
+					if (result.type === 'success') formOpen = false;
 					await refreshAll();
 				};
 			}}
@@ -283,17 +194,15 @@
 					maxlength="80"
 				/>
 			</label>
-
 			<div class="field-row">
-				<label class="field field--half">
+				<label class="field">
 					<span class="field-label">{$_('settings.developer.apiKeys.scopeLabel')}</span>
 					<select name="scope" class="input">
 						<option value="read_write">{$_('settings.developer.apiKeys.scopeReadWrite')}</option>
 						<option value="read">{$_('settings.developer.apiKeys.scopeRead')}</option>
 					</select>
 				</label>
-
-				<label class="field field--half">
+				<label class="field">
 					<span class="field-label">{$_('settings.developer.apiKeys.expiryLabel')}</span>
 					<select name="expires_duration_days" class="input">
 						<option value="30">{$_('settings.developer.apiKeys.expiry30')}</option>
@@ -303,22 +212,126 @@
 					</select>
 				</label>
 			</div>
-
-			<button type="submit" class="btn-primary" disabled={creating}>
-				{creating
-					? $_('settings.developer.apiKeys.creating')
-					: $_('settings.developer.apiKeys.create')}
-			</button>
+			<div class="form-actions">
+				<button type="submit" class="btn-primary" disabled={creating}>
+					{creating
+						? $_('settings.developer.apiKeys.creating')
+						: $_('settings.developer.apiKeys.create')}
+				</button>
+				{#if data.keys.length > 0}
+					<button type="button" class="btn-ghost" onclick={() => (formOpen = false)}>
+						{$_('settings.developer.apiKeys.cancel')}
+					</button>
+				{/if}
+			</div>
 		</form>
-	{:else}
+	{:else if activeKeys.length >= 20}
 		<p class="banner banner--warn">{$_('settings.developer.apiKeys.maxKeysError')}</p>
+	{/if}
+
+	{#if data.keys.length > 0}
+		<ul class="key-list">
+			{#each data.keys as key (key.id)}
+				{@const status = keyStatus(key)}
+				<li
+					class="key-entry"
+					class:key-entry--due={status === 'due'}
+					class:key-entry--overdue={status === 'expired' || status === 'revoked'}
+				>
+					<div class="key-main">
+						<div class="key-row">
+							<span class="key-name">{key.name}</span>
+							<span class="key-scope"
+								>{key.scope === 'read'
+									? $_('settings.developer.apiKeys.scopeBadgeRead')
+									: $_('settings.developer.apiKeys.scopeBadgeReadWrite')}</span
+							>
+						</div>
+						<p class="key-meta-line">
+							<span class="mono">{key.key_prefix}…</span>&nbsp;·
+							<span class:key-meta--warn={status !== 'ok'}>{expiryLabel(key)}</span>&nbsp;·
+							<span>{$_('settings.developer.apiKeys.lastUsed')} {lastUsedLabel(key)}</span>
+						</p>
+						{#if confirmingRevoke === key.id || confirmingRotate === key.id || confirmingDelete === key.id}
+							<div class="confirm">
+								{#if confirmingDelete !== key.id}
+									<p class="confirm-warning">
+										{confirmingRevoke === key.id
+											? $_('settings.developer.apiKeys.revokeConfirm')
+											: $_('settings.developer.apiKeys.rotateConfirm')}
+									</p>
+								{/if}
+								<div class="confirm-row">
+									<form
+										method="POST"
+										action={confirmingRevoke === key.id
+											? '?/revokeApiKey'
+											: confirmingRotate === key.id
+												? '?/rotateApiKey'
+												: '?/deleteApiKey'}
+										use:enhance={() =>
+											async ({ update }) => {
+												await update();
+												await refreshAll();
+											}}
+									>
+										<input type="hidden" name="key_id" value={key.id} />
+										<button
+											type="submit"
+											class={confirmingRotate === key.id ? 'btn-secondary' : 'btn-danger'}
+										>
+											{confirmingRevoke === key.id
+												? $_('settings.developer.apiKeys.revokeConfirmBtn')
+												: confirmingRotate === key.id
+													? $_('settings.developer.apiKeys.rotateConfirmBtn')
+													: $_('settings.developer.apiKeys.deleteKeyConfirm')}
+										</button>
+									</form>
+									<button
+										type="button"
+										class="btn-ghost"
+										onclick={() => {
+											confirmingRevoke = null;
+											confirmingRotate = null;
+											confirmingDelete = null;
+										}}>{$_('settings.developer.apiKeys.cancel')}</button
+									>
+								</div>
+							</div>
+						{/if}
+					</div>
+					{#if key.revoked_at}
+						<form
+							id="restore-{key.id}"
+							method="POST"
+							action="?/restoreApiKey"
+							hidden
+							use:enhance={() =>
+								async ({ update }) => {
+									await update();
+									await refreshAll();
+								}}
+						>
+							<input type="hidden" name="key_id" value={key.id} />
+						</form>
+					{/if}
+					<RowMenu items={keyMenu(key)} />
+				</li>
+			{/each}
+		</ul>
+	{:else if !newToken && !formOpen}
+		<p class="empty-state">{$_('settings.developer.apiKeys.empty')}</p>
 	{/if}
 </section>
 
-<div class="action-card">
-	<span class="action-title">{$_('settings.developer.docs.title')}</span>
-	<span class="action-desc">{$_('settings.developer.docs.description')}</span>
-	<div class="action-row">
+<section class="dev-card" aria-labelledby="api-docs-title">
+	<header class="dev-card-head">
+		<div class="dev-card-text">
+			<h3 id="api-docs-title" class="dev-card-title">{$_('settings.developer.docs.title')}</h3>
+			<p class="dev-card-desc">{$_('settings.developer.docs.description')}</p>
+		</div>
+	</header>
+	<div class="docs-links">
 		<a href="/api/docs" target="_blank" rel="noopener" class="btn-secondary">
 			{$_('settings.developer.docs.link')}
 		</a>
@@ -326,16 +339,9 @@
 			{$_('settings.developer.docs.specLink')}
 		</a>
 	</div>
-</div>
+</section>
 
 <style>
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.intro {
 		margin-bottom: var(--space-5);
 	}
@@ -345,106 +351,149 @@
 		line-height: var(--leading-base);
 		margin: 0;
 	}
-	.sub-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 0.375rem;
-	}
-	.desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0 0 var(--space-4);
-		line-height: var(--leading-base);
-	}
-	.setting-section {
-		margin-bottom: var(--space-6);
-	}
-	.empty-state {
-		font-size: var(--text-sm);
-		color: var(--text-subtle);
-		margin: 0 0 var(--space-4);
-	}
-	.key-list {
-		margin-bottom: var(--space-4);
-	}
-	.key-entry {
-		border-top: 1px solid var(--border);
-		border-left: 3px solid transparent;
-		padding: 0.875rem 0 0.875rem 0.875rem;
+
+	.dev-card {
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		background: var(--bg);
+		padding: 1.25rem 1.5rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
+		gap: var(--space-4);
 	}
-	.key-entry:last-child {
-		border-bottom: 1px solid var(--border);
+	.dev-card + .dev-card {
+		margin-top: var(--space-4);
+	}
+	.dev-card-head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-4);
+	}
+	.dev-card-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		min-width: 0;
+	}
+	.dev-card-title {
+		font-size: var(--text-base);
+		font-weight: 500;
+		color: var(--text);
+		margin: 0;
+	}
+	.dev-card-desc {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		line-height: var(--leading-snug);
+		margin: 0;
+	}
+
+	.empty-state {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		margin: 0;
+	}
+
+	.key-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.key-entry {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--space-3);
+		padding: 0.875rem 0 0.875rem 0.875rem;
+		margin-left: calc(-0.875rem - 3px);
+		border-left: 3px solid transparent;
+		position: relative;
+	}
+	.key-entry::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0.875rem;
+		right: 0;
+		border-top: 1px solid var(--border);
 	}
 	.key-entry--due {
 		border-left-color: var(--status-due);
 	}
 	.key-entry--overdue {
 		border-left-color: var(--status-overdue);
-		opacity: 0.5;
-		transition: opacity 0.15s;
 	}
-	.key-entry--overdue:hover {
-		opacity: 0.85;
+	.key-main {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
 	}
 	.key-row {
 		display: flex;
 		align-items: baseline;
-		gap: 0.5rem;
+		gap: var(--space-2);
 		flex-wrap: wrap;
 	}
 	.key-name {
 		font-size: var(--text-base);
 		font-weight: 500;
 		color: var(--text);
-	}
-	.key-prefix {
-		font-size: var(--text-xs);
-		color: var(--text-subtle);
-		font-family: 'JetBrains Mono', monospace;
-		font-variant-numeric: tabular-nums;
+		overflow-wrap: anywhere;
 	}
 	.key-scope {
 		font-size: var(--text-xs);
-		font-weight: 500;
-		color: var(--accent);
-		margin-left: auto;
+		color: var(--text-muted);
+		padding: 0.0625rem 0.4375rem;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		white-space: nowrap;
+	}
+	.key-scope::first-letter {
+		text-transform: uppercase;
 	}
 	.key-meta-line {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin: 0;
 	}
-	.key-actions {
+	.key-meta-line > span {
+		white-space: nowrap;
+	}
+	.key-meta--warn {
+		color: var(--status-due);
+	}
+	.key-entry--overdue .key-meta--warn {
+		color: var(--status-overdue);
+	}
+
+	.confirm {
 		display: flex;
-		gap: 0.125rem;
-		align-items: center;
-		flex-wrap: wrap;
-		margin-top: 0.25rem;
+		flex-direction: column;
+		gap: var(--space-2);
+		margin-top: var(--space-2);
 	}
 	.confirm-warning {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
-		margin: 0.25rem 0 0.5rem;
-		width: 100%;
+		margin: 0;
 	}
 	.confirm-row {
 		display: flex;
-		gap: 0.5rem;
 		align-items: center;
+		gap: var(--space-2);
+		flex-wrap: wrap;
 	}
+
 	.token-reveal {
-		border: 1px solid var(--border);
-		border-radius: 10px;
-		padding: 1rem 1.25rem;
-		background: var(--bg-subtle);
-		margin-bottom: var(--space-4);
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: var(--space-2);
+		padding: 1rem 1.25rem;
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		background: var(--bg-subtle);
 	}
 	.token-reveal-title {
 		font-size: var(--text-base);
@@ -458,38 +507,42 @@
 		margin: 0;
 	}
 	.token-input {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: var(--text-sm);
+		width: 100%;
+		box-sizing: border-box;
 		padding: 0.5rem 0.75rem;
 		border: 1px solid var(--border-input);
 		border-radius: 8px;
 		background: var(--bg);
 		color: var(--text);
-		width: 100%;
-		font-variant-numeric: tabular-nums;
+		font-size: max(1rem, 16px);
 	}
-	.token-actions {
+	.token-actions,
+	.form-actions,
+	.docs-links {
 		display: flex;
-		gap: 0.5rem;
 		align-items: center;
+		gap: var(--space-2);
+		flex-wrap: wrap;
 	}
-	.pref-form {
+
+	.create-form {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
-		margin-top: var(--space-3);
+		gap: var(--space-4);
+		padding: var(--space-4);
+		border-radius: 10px;
+		background: var(--bg-subtle);
 	}
 	.field {
 		display: flex;
 		flex-direction: column;
 		gap: 0.375rem;
+		flex: 1;
+		min-width: 0;
 	}
 	.field-row {
 		display: flex;
-		gap: 0.75rem;
-	}
-	.field--half {
-		flex: 1;
+		gap: var(--space-3);
 	}
 	.field-label {
 		font-size: var(--text-sm);
@@ -497,149 +550,101 @@
 		color: var(--text-muted);
 	}
 	.input {
+		width: 100%;
+		box-sizing: border-box;
 		padding: 0.5rem 0.75rem;
 		border: 1px solid var(--border-input);
 		border-radius: 8px;
-		background: var(--bg-subtle);
+		background: var(--bg);
 		color: var(--text);
 		font-size: max(1rem, 16px);
-		width: 100%;
 		transition: border-color 0.15s;
-		box-sizing: border-box;
 	}
 	.input:focus {
 		outline: 2px solid var(--accent);
 		outline-offset: 1px;
 		border-color: transparent;
 	}
-	.action-card {
-		border-radius: 10px;
-		padding: 1.25rem 1.5rem;
-		border: 1px solid var(--border);
-		background: var(--bg);
-		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
-		transition: border-color 0.15s;
-	}
-	.action-card:hover {
-		border-color: var(--border-strong);
-	}
-	.action-title {
-		font-size: var(--text-base);
-		font-weight: 500;
-		color: var(--text);
-	}
-	.action-desc {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		line-height: var(--leading-snug);
-	}
-	.action-row {
-		display: flex;
-		align-items: center;
-		gap: var(--space-3);
-		margin-top: var(--space-4);
-		padding-top: var(--space-4);
-		border-top: 1px solid var(--border);
-		flex-wrap: wrap;
-	}
 
-	/* Buttons */
-	.btn-secondary {
-		align-self: flex-start;
-		padding: 0.5rem 1rem;
-		background: none;
-		color: var(--text);
-		border: 1px solid var(--border-strong);
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-		text-decoration: none;
+	.btn-primary,
+	.btn-secondary,
+	.btn-ghost,
+	.btn-danger {
 		display: inline-flex;
 		align-items: center;
-	}
-	.btn-secondary:hover:not(:disabled) {
-		background: var(--bg-muted);
-	}
-	.btn-secondary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
+		justify-content: center;
+		min-height: 44px;
+		padding: 0.5rem 1rem;
+		border-radius: 10px;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		text-decoration: none;
+		white-space: nowrap;
+		cursor: pointer;
 	}
 	.btn-primary {
-		align-self: flex-start;
-		padding: 0.5rem 1rem;
 		background: var(--accent);
 		color: var(--accent-fg);
 		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
 	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
 	}
-	.btn-primary:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
+	.btn-secondary {
+		background: var(--bg);
+		color: var(--text);
+		border: 1px solid var(--border-strong);
+	}
+	.btn-secondary:hover {
+		background: var(--bg-muted);
 	}
 	.btn-ghost {
-		padding: 0.375rem 0.625rem;
 		background: none;
 		color: var(--text-muted);
-		border: none;
-		border-radius: 8px;
-		font-size: var(--text-sm);
-		cursor: pointer;
-		text-decoration: none;
-		display: inline-flex;
-		align-items: center;
+		border: 1px solid transparent;
 	}
 	.btn-ghost:hover {
 		color: var(--text);
 		background: var(--bg-muted);
 	}
-	.btn-ghost--danger {
-		color: var(--status-overdue);
-		opacity: 0.7;
-	}
-	.btn-ghost--danger:hover {
-		opacity: 1;
-		background: color-mix(in srgb, var(--status-overdue) 6%, var(--bg));
-	}
 	.btn-danger {
-		padding: 0.5rem 1rem;
 		background: color-mix(in srgb, var(--status-overdue) 10%, var(--bg));
 		color: var(--status-overdue);
 		border: 1px solid color-mix(in srgb, var(--status-overdue) 30%, var(--border));
-		border-radius: 8px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
 	}
 	.btn-danger:hover {
 		background: color-mix(in srgb, var(--status-overdue) 15%, var(--bg));
 	}
-	.banner {
-		padding: 0.625rem 0.875rem;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		border: 1px solid;
-		margin-bottom: var(--space-4);
+	:is(.btn-primary, .btn-secondary, .btn-ghost, .btn-danger):disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
-	.banner--warn {
+	:is(.btn-primary, .btn-secondary, .btn-ghost, .btn-danger):focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	.banner {
+		margin: 0;
+		padding: 0.625rem 0.875rem;
+		border: 1px solid color-mix(in srgb, var(--status-due) 25%, transparent);
+		border-radius: 10px;
 		background: color-mix(in srgb, var(--status-due) 8%, transparent);
-		border-color: color-mix(in srgb, var(--status-due) 25%, transparent);
 		color: var(--status-due);
+		font-size: var(--text-sm);
 	}
 	.mono {
-		font-family: 'JetBrains Mono', monospace;
+		font-family: var(--font-mono);
 		font-variant-numeric: tabular-nums;
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 640px) {
+		.dev-card {
+			padding: 1rem;
+		}
+		.dev-card-head {
+			flex-direction: column;
+		}
 		.field-row {
 			flex-direction: column;
 		}

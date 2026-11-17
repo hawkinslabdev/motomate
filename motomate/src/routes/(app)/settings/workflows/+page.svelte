@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Toggle from '#lib/components/ui/Toggle.svelte';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import type { RuleTrigger } from '#lib/db/schema.js';
@@ -199,14 +200,7 @@
 					>
 						<input type="hidden" name="id" value={rule.id} />
 						<input type="hidden" name="enabled" value={String(!isEnabled(rule))} />
-						<button
-							type="submit"
-							class="toggle-btn"
-							class:toggle-btn--on={isEnabled(rule)}
-							aria-label="{isEnabled(rule) ? 'Disable' : 'Enable'} rule"
-						>
-							<span class="toggle-thumb"></span>
-						</button>
+						<Toggle type="submit" checked={isEnabled(rule)} label={$_(rule.name)} />
 					</form>
 
 					<div class="rule-info">
@@ -637,13 +631,6 @@
 	.intro {
 		margin-bottom: var(--space-5);
 	}
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.section-desc {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -746,36 +733,6 @@
 		width: 100%;
 	}
 
-	/* Toggle pill */
-	.toggle-btn {
-		width: 2.25rem;
-		height: 1.25rem;
-		border-radius: 999px;
-		border: none;
-		cursor: pointer;
-		background: var(--border-strong);
-		position: relative;
-		flex-shrink: 0;
-		margin-top: 0.125rem;
-		transition: background 0.15s;
-	}
-	.toggle-btn--on {
-		background: var(--accent);
-	}
-	.toggle-thumb {
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		width: calc(1.25rem - 4px);
-		height: calc(1.25rem - 4px);
-		border-radius: 50%;
-		background: #fff;
-		transition: transform 0.15s;
-	}
-	.toggle-btn--on .toggle-thumb {
-		transform: translateX(1rem);
-	}
-
 	.rule-info {
 		flex: 1;
 		min-width: 0;
@@ -876,12 +833,10 @@
 	}
 	.edit-label {
 		display: block;
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--text-muted);
 		margin-bottom: 0.25rem;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 	}
 	.edit-input {
 		font-size: var(--text-base);

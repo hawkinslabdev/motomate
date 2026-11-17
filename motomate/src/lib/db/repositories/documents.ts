@@ -111,6 +111,14 @@ export async function getDocumentsByIds(ids: string[], userId: string): Promise<
 	}) as Promise<Document[]>;
 }
 
+export async function ownedDocumentIds(
+	ids: (string | null)[],
+	userId: string
+): Promise<Set<string>> {
+	const wanted = ids.filter((id): id is string => Boolean(id));
+	return new Set((await getDocumentsByIds(wanted, userId)).map((d) => d.id));
+}
+
 export async function getRouteDocumentsByVehicle(
 	vehicleId: string,
 	userId: string

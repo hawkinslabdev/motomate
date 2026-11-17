@@ -1,8 +1,10 @@
 <script lang="ts">
+	import RowMenu from '#lib/components/ui/RowMenu.svelte';
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import { untrack } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { _, waitLocale } from '#lib/i18n/index.js';
-	import { formatYearMonth } from '#lib/utils/format.js';
+	import { formatDateShort, formatYearMonth } from '#lib/utils/format.js';
 	import { sheet } from '#lib/stores/sheet.svelte.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
@@ -32,6 +34,7 @@
 
 	let deletingId = $state<string | null>(null);
 	let searchQuery = $state('');
+	let filtersOpen = $state(false);
 	let sortBy = $state<'newest' | 'oldest' | 'name'>(
 		untrack(() => data.page_prefs?.sortBy ?? 'newest')
 	);
@@ -93,6 +96,13 @@
 		);
 	}
 
+	function noteMenu(note: Parameters<typeof openEditNote>[0]) {
+		return [
+			{ label: $_('common.edit'), onclick: () => openEditNote(note) },
+			{ label: $_('common.delete'), danger: true, onclick: () => (deletingId = note.id) }
+		];
+	}
+
 	function openEditNote(note: (typeof data.notes)[number]) {
 		sheet.openSheet(
 			VehicleNoteForm,
@@ -141,11 +151,7 @@
 	}
 
 	function formatDate(iso: string): string {
-		return new Date(iso).toLocaleDateString(data.user?.settings?.locale ?? 'en', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
+		return formatDateShort(iso.slice(0, 10), data.user?.settings?.locale ?? 'en');
 	}
 
 	function resolvedDocRefs(note: (typeof data.notes)[number]) {
@@ -195,11 +201,23 @@
 <div class="page-header">
 	<div class="page-header-text">
 		<h2 class="section-title">{$_('vehicle.notes.title')}</h2>
-		<p class="section-sub">{$_('vehicle.notes.subtitle')}</p>
+		<p class="section-sub">
+			{$_('vehicle.notes.subtitle', { values: { name: data.vehicle.name } })}
+		</p>
 	</div>
 	<div class="page-actions">
+		<button
+			type="button"
+			class="btn-ghost filters-toggle"
+			class:filters-toggle--active={!!searchQuery}
+			onclick={() => (filtersOpen = !filtersOpen)}
+			aria-label={$_('common.filter')}
+			aria-expanded={filtersOpen}
+		>
+			<Sliders />
+		</button>
 		<button class="btn-primary" onclick={openNewNote}>
-			+ {$_('common.add')}
+			+ {$_('vehicle.notes.add')}
 		</button>
 	</div>
 </div>
@@ -210,7 +228,7 @@
 		description={$_('vehicle.notes.empty.desc')}
 	/>
 {:else}
-	<div class="filters">
+	<div class="filters" class:filters--closed={!filtersOpen && !searchQuery}>
 		<div class="search-box">
 			<input
 				type="text"
@@ -220,32 +238,32 @@
 			/>
 		</div>
 		<div class="filter-controls">
-			<select class="filter-select" bind:value={sortBy}>
+			<select class="filter-select" bind:value={sortBy} aria-label={$_('common.sortBy')}>
 				<option value="newest">{$_('documents.sort.newest')}</option>
 				<option value="oldest">{$_('documents.sort.oldest')}</option>
 				<option value="name">{$_('documents.sort.name')}</option>
 			</select>
-			<div class="view-controls">
-				<ViewToggle
-					options={[
-						{ value: 'timeline', label: $_('common.timeline') },
-						{ value: 'table', label: $_('common.table') }
+		</div>
+		<div class="view-controls">
+			<ViewToggle
+				options={[
+					{ value: 'timeline', label: $_('common.timeline') },
+					{ value: 'table', label: $_('common.table') }
+				]}
+				value={notesViewMode}
+				onchange={(v) => (notesViewMode = v as 'timeline' | 'table')}
+			/>
+			{#if notesViewMode === 'table'}
+				<ColumnPicker
+					columns={[
+						{ key: 'excerpt', label: $_('vehicle.notes.col.excerpt'), hideable: true },
+						{ key: 'date', label: $_('finance.col.date'), hideable: true },
+						{ key: 'documents', label: $_('documents.title'), hideable: true }
 					]}
-					value={notesViewMode}
-					onchange={(v) => (notesViewMode = v as 'timeline' | 'table')}
+					visible={notesColumnVisible}
+					onchange={(v) => (notesColumnVisible = v)}
 				/>
-				{#if notesViewMode === 'table'}
-					<ColumnPicker
-						columns={[
-							{ key: 'excerpt', label: $_('vehicle.notes.col.excerpt'), hideable: true },
-							{ key: 'date', label: $_('finance.col.date'), hideable: true },
-							{ key: 'documents', label: $_('documents.title'), hideable: true }
-						]}
-						visible={notesColumnVisible}
-						onchange={(v) => (notesColumnVisible = v)}
-					/>
-				{/if}
-			</div>
+			{/if}
 		</div>
 	</div>
 
@@ -273,43 +291,25 @@
 								{#if noteExcerpt(note.content)}
 									<div class="note-excerpt">{noteExcerpt(note.content)}</div>
 								{/if}
-								{#if docs.length > 0}
-									<div class="note-doc-refs">
-										{#each docs as doc}
-											<a
-												href="/api/files?key={doc.storage_key}"
-												target="_blank"
-												rel="noopener noreferrer"
-												class="doc-chip"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
-												<span class="doc-chip-name">{doc.title || doc.name}</span>
-											</a>
-										{/each}
-									</div>
-								{/if}
 							</div>
+							{#if docs.length > 0}
+								<div class="note-doc-refs">
+									{#each docs as doc}
+										<a
+											href="/api/files?key={doc.storage_key}"
+											target="_blank"
+											rel="noopener noreferrer"
+											class="doc-chip"
+										>
+											<span class="doc-chip-type">{$_('documents.types.' + doc.doc_type)}</span>
+											<span class="doc-chip-name">{doc.title || doc.name}</span>
+										</a>
+									{/each}
+								</div>
+							{/if}
 							<div class="note-meta">
 								<span class="note-date">{formatDate(note.updated_at)}</span>
-								<div class="note-actions">
-									<button
-										type="button"
-										class="note-action-btn"
-										onclick={() => openEditNote(note)}
-										aria-label={$_('common.edit')}
-									>
-										{$_('common.edit')}
-									</button>
-									<button
-										type="button"
-										class="note-action-btn note-action-btn--danger"
-										onclick={() => (deletingId = note.id)}
-										aria-label={$_('common.delete')}
-									>
-										{$_('common.delete')}
-									</button>
-								</div>
+								<RowMenu items={noteMenu(note)} />
 							</div>
 						</div>
 					{/each}
@@ -324,19 +324,13 @@
 				{@const hasExcerpt = !!rowExcerpt}
 				{@const hasDate = !!notesColumnVisible.date}
 				{@const hasDocs = !!(notesColumnVisible.documents && docs.length > 0)}
-				<div
-					class="note-row"
-					role="button"
-					tabindex="0"
-					onclick={() => openViewNote(note)}
-					onkeydown={(e) => e.key === 'Enter' && openViewNote(note)}
-				>
-					<div class="note-row-info">
-						<div class="note-row-name">
+				<div class="note-row">
+					<button type="button" class="note-row-info" onclick={() => openViewNote(note)}>
+						<span class="note-row-name">
 							{note.title || $_('vehicle.notes.untitled')}
-						</div>
+						</span>
 						{#if hasExcerpt || hasDate || hasDocs}
-							<div class="note-row-meta">
+							<span class="note-row-meta">
 								{#if hasExcerpt}
 									<span class="note-row-excerpt">{rowExcerpt}</span>
 								{/if}
@@ -347,39 +341,13 @@
 								{#if hasDocs && hasDate}<span class="sep">·</span>{/if}
 								{#if hasDocs}
 									<span class="note-row-docs"
-										>{docs.length}
-										{docs.length === 1
-											? $_('documents.title').toLowerCase().replace(/s$/, '')
-											: $_('documents.title').toLowerCase()}</span
+										>{$_('vehicle.notes.docCount', { values: { count: docs.length } })}</span
 									>
 								{/if}
-							</div>
+							</span>
 						{/if}
-					</div>
-					<div class="note-row-actions">
-						<button
-							type="button"
-							class="note-action-btn"
-							onclick={(e) => {
-								e.stopPropagation();
-								openEditNote(note);
-							}}
-							aria-label={$_('common.edit')}
-						>
-							{$_('common.edit')}
-						</button>
-						<button
-							type="button"
-							class="note-action-btn note-action-btn--danger"
-							onclick={(e) => {
-								e.stopPropagation();
-								deletingId = note.id;
-							}}
-							aria-label={$_('common.delete')}
-						>
-							{$_('common.delete')}
-						</button>
-					</div>
+					</button>
+					<RowMenu items={noteMenu(note)} />
 				</div>
 			{/each}
 		</div>
@@ -414,54 +382,6 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
-
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
-	.page-actions {
-		flex-shrink: 0;
-	}
-
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-
-	.btn-primary:hover {
-		background: var(--accent-hover);
-	}
-
 	.view-controls {
 		display: flex;
 		gap: var(--space-2);
@@ -488,8 +408,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		flex-shrink: 0;
 	}
 
@@ -525,6 +443,17 @@
 	.note-row-info {
 		flex: 1;
 		min-width: 0;
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+	.note-row-name,
+	.note-row-meta {
+		display: block;
 	}
 
 	.note-row-name {
@@ -571,12 +500,6 @@
 		flex-shrink: 0;
 		white-space: nowrap;
 		font-size: var(--text-xs);
-	}
-
-	.note-row-actions {
-		display: flex;
-		gap: var(--space-2);
-		flex-shrink: 0;
 	}
 
 	.note-card {
@@ -647,8 +570,6 @@
 		font-size: 10px;
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
 	}
 
 	.doc-chip:hover .doc-chip-type {
@@ -683,38 +604,6 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	.note-actions {
-		display: flex;
-		gap: var(--space-2);
-	}
-
-	.note-action-btn {
-		font-size: var(--text-xs);
-		font-weight: 500;
-		color: var(--text-subtle);
-		background: none;
-		border: 1px solid var(--border);
-		border-radius: 5px;
-		padding: 0.25rem 0.5rem;
-		cursor: pointer;
-		transition:
-			color 0.1s,
-			border-color 0.1s,
-			background 0.1s;
-	}
-
-	.note-action-btn:hover {
-		color: var(--text);
-		border-color: var(--border-strong);
-		background: var(--bg-muted);
-	}
-
-	.note-action-btn--danger:hover {
-		color: var(--status-overdue);
-		border-color: color-mix(in srgb, var(--status-overdue) 40%, transparent);
-		background: color-mix(in srgb, var(--status-overdue) 6%, transparent);
-	}
-
 	@media (max-width: 480px) {
 		.note-card {
 			flex-direction: column;
@@ -727,5 +616,8 @@
 			justify-content: space-between;
 			width: 100%;
 		}
+	}
+	.timeline-month-name::first-letter {
+		text-transform: uppercase;
 	}
 </style>

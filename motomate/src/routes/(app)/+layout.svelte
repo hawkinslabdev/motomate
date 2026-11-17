@@ -5,6 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { fade, fly } from 'svelte/transition';
 	import { _, setUserLocale } from '#lib/i18n/index.js';
+	import { formatDateShort } from '#lib/utils/format.js';
 	import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '#lib/utils/measurement.js';
 	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
 	import NotificationBell from '#lib/components/ui/NotificationBell.svelte';
@@ -97,16 +98,17 @@
 	function timeAgo(dateStr: string): string {
 		const diff = Date.now() - new Date(dateStr).getTime();
 		const mins = Math.floor(diff / 60000);
-		if (mins < 2) return 'now';
-		if (mins < 60) return `${mins}m`;
-		const hrs = Math.floor(mins / 60);
-		if (hrs < 24) return `${hrs}h`;
-		const days = Math.floor(hrs / 24);
-		if (days < 7) return `${days}d`;
-		return new Date(dateStr).toLocaleDateString(data.user.settings.locale ?? 'en', {
-			month: 'short',
-			day: 'numeric'
+		const rtf = new Intl.RelativeTimeFormat(data.user.settings.locale ?? 'en', {
+			style: 'narrow',
+			numeric: 'auto'
 		});
+		if (mins < 2) return rtf.format(0, 'second');
+		if (mins < 60) return rtf.format(-mins, 'minute');
+		const hrs = Math.floor(mins / 60);
+		if (hrs < 24) return rtf.format(-hrs, 'hour');
+		const days = Math.floor(hrs / 24);
+		if (days < 7) return rtf.format(-days, 'day');
+		return formatDateShort(dateStr.slice(0, 10), data.user.settings.locale ?? 'en');
 	}
 
 	async function fetchNotifications() {
@@ -345,11 +347,15 @@
 		themeMenuOpen = !themeMenuOpen;
 	}
 
+	const onboarding = $derived(page.url.pathname.startsWith('/onboarding'));
+
 	function handleClickOutside(e: MouseEvent) {
-		const target = e.target as Element;
-		if (themeMenuOpen && !target.closest('.theme-menu-container')) themeMenuOpen = false;
-		if (avatarMenuOpen && !target.closest('.avatar-menu-container')) avatarMenuOpen = false;
-		if (notifMenuOpen && !target.closest('.notif-menu-container')) notifMenuOpen = false;
+		const path = e.composedPath();
+		const inside = (cls: string) =>
+			path.some((el) => el instanceof Element && el.classList.contains(cls));
+		if (themeMenuOpen && !inside('theme-menu-container')) themeMenuOpen = false;
+		if (avatarMenuOpen && !inside('avatar-menu-container')) avatarMenuOpen = false;
+		if (notifMenuOpen && !inside('notif-menu-container')) notifMenuOpen = false;
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -360,7 +366,12 @@
 			return;
 		}
 
-		if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as Element)?.tagName)) return;
+		const target = e.target as HTMLElement | null;
+		if (
+			target?.isContentEditable ||
+			['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '')
+		)
+			return;
 		if (e.ctrlKey || e.metaKey || e.altKey) return;
 
 		const key = e.key.toLowerCase();
@@ -391,7 +402,7 @@
 <div class="app-shell">
 	<div class="demo-banner" class:active={data.demoMode}>
 		{#if data.demoMode}
-			Demo mode: changes are disabled · intended for demonstration purposes only.
+			{$_('common.demoBanner')}
 		{/if}
 	</div>
 	<header class="topnav">
@@ -401,7 +412,7 @@
 				<span>MotoMate</span>
 			</a>
 
-			<nav class="topnav-links">
+			<nav class="topnav-links" hidden={onboarding}>
 				{#each navLinks as link}
 					<a
 						href={link.href}
@@ -421,6 +432,8 @@
 						class="theme-trigger"
 						class:open={themeMenuOpen}
 						onclick={toggleThemeMenu}
+						aria-label={$_('layout.theme.title')}
+						aria-expanded={themeMenuOpen}
 					>
 						{#if CurrentThemeIcon}
 							<CurrentThemeIcon />
@@ -613,7 +626,7 @@
 		{@render children()}
 	</main>
 
-	<nav class="bottom-tabs">
+	<nav class="bottom-tabs" hidden={onboarding}>
 		<a
 			href="/dashboard"
 			class="bottom-tab"

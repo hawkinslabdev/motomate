@@ -90,8 +90,10 @@
 		if (intervalValue) parts.push(formatMeasurement(intervalValue, intervalUnit, locale));
 		if (t.interval_months) parts.push(`${t.interval_months} ${$_('common.months')}`);
 		const sep = ` ${$_('common.or')} `;
-		return parts.join(sep) || '—';
+		return parts.join(sep);
 	}
+
+	const interval = $derived(formatInterval());
 
 	function nextInfo() {
 		const parts: string[] = [];
@@ -137,9 +139,11 @@
 				{/if}
 			</div>
 			<div class="tracker-meta">
-				<span>{$_('maintenance.tracker.every', { values: { interval: formatInterval() } })}</span>
+				{#if interval}
+					<span>{$_('maintenance.tracker.every', { values: { interval } })}</span>
+				{/if}
 				{#if !forecastMode && (tracker.next_due_measurement || tracker.next_due_odometer || tracker.next_due_at)}
-					<span class="meta-sep">·</span>
+					{#if interval}<span class="meta-sep">·</span>{/if}
 					<span>{$_('maintenance.tracker.next', { values: { info: nextInfo() } })}</span>
 				{/if}
 				{#if forecastMode}
@@ -545,8 +549,6 @@
 		font-size: var(--text-xs);
 		font-weight: 600;
 		color: var(--text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		flex-shrink: 0;
 	}
 	.history-month-line {
@@ -610,5 +612,8 @@
 
 	.history-cost {
 		color: var(--text-subtle);
+	}
+	.history-month-name::first-letter {
+		text-transform: uppercase;
 	}
 </style>

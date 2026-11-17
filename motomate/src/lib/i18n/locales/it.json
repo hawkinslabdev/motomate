@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Istanza demo",
+		"demoNotSaved": "Modalità demo: le voci non vengono salvate.",
+		"demoDisabled": "Disattivato in modalità demo",
+		"demoBanner": "Modalità demo: le modifiche sono disattivate e servono solo come dimostrazione.",
+		"download": "Scarica",
+		"downloadNamed": "Scarica {name}",
+		"removeNamed": "Rimuovi {name}",
+		"sortBy": "Ordina per",
+		"filter": "Filtra",
+		"unsavedChanges": "Hai modifiche non salvate. Lasciare questa pagina?",
 		"save": "Salva",
 		"cancel": "Annulla",
 		"delete": "Elimina",
@@ -130,7 +140,7 @@
 			"title": "Che tipo di veicolo?"
 		},
 		"details": {
-			"title": "Raccontaci del tuo {vehicleType}",
+			"title": "Raccontaci del tuo veicolo",
 			"name": "Nome",
 			"make": "Marca",
 			"model": "Modello",
@@ -139,8 +149,8 @@
 			"licensePlate": "Targa",
 			"placeholders": {
 				"name": "es. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "es. Honda",
+				"model": "es. CB500F",
 				"vin": "opzionale",
 				"licensePlate": "es. AB-123 CD"
 			}
@@ -309,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Cronologia",
-				"subtitle": "Tutti i tuoi dati per {name} in un unico posto.",
+				"subtitle": "Elenca tutte le registrazioni di {name}, dalla più recente",
 				"empty": {
 					"title": "Nessuna cronologia ancora",
 					"description": "Qui compaiono manutenzioni, letture del contachilometri e note.",
@@ -326,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Promemoria reimpostato"
-				}
+				},
+				"add": "Aggiungi voce"
 			},
 			"upcoming": "Prossimo",
 			"nextDue": "Prossimo: {date}",
@@ -443,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Impostazioni",
-			"subtitle": "Gestisci il tuo {name}",
+			"subtitle": "Modifica i dati di {name}",
 			"odometer": {
 				"title": "Aggiorna chilometraggio",
 				"currentReading": "Lettura attuale ({unit})",
@@ -468,7 +479,7 @@
 			"odometerUpdated": "Chilometraggio aggiornato",
 			"vehicleRestored": "Veicolo ripristinato",
 			"settings": {
-				"title": "Impostazioni",
+				"title": "Report e unità",
 				"archive": {
 					"title": "Archivia veicolo",
 					"titleRestore": "Ripristina veicolo",
@@ -575,10 +586,11 @@
 		"notes": {
 			"pageTitle": "Note · {name}",
 			"title": "Note",
-			"subtitle": "Tutto ciò che vale la pena conservare, non legato a un servizio o a un viaggio.",
+			"subtitle": "Conserva note su {name}",
 			"subtitleEmpty": "Tutto ciò che vale la pena conservare, non legato a un servizio o a un viaggio.",
 			"new": "Aggiungi nota",
 			"edit": "Modifica nota",
+			"docCount": "{count, plural, one {# documento} other {# documenti}}",
 			"untitled": "Senza titolo",
 			"saved": "Nota salvata",
 			"empty": {
@@ -603,12 +615,13 @@
 			"col": {
 				"excerpt": "Estratto"
 			},
-			"searchPlaceholder": "Cerca note..."
+			"searchPlaceholder": "Cerca note...",
+			"add": "Aggiungi nota"
 		}
 	},
 	"maintenance": {
 		"title": "Manutenzione",
-		"subtitle": "Traccia il tuo programma di servizio",
+		"subtitle": "Mostra ogni intervento di manutenzione e quando scade",
 		"view": {
 			"current": "Attuale",
 			"forecast": "Previsione",
@@ -649,7 +662,7 @@
 			"save": "Salva modifiche"
 		},
 		"addTask": {
-			"button": "+ Aggiungi attività",
+			"button": "Aggiungi attività",
 			"cancel": "Annulla",
 			"title": "Aggiungi attività",
 			"historyDisabled": "Aggiungi in Vista Attuale o Previsione",
@@ -737,10 +750,10 @@
 	"finance": {
 		"title": "Spese",
 		"subtitle": "Traccia le spese",
-		"totalSpent": "Totale speso per la tua {name}",
-		"addExpense": "Aggiungi",
+		"totalSpent": "Mostra quanto è costata {name}",
+		"addExpense": "Aggiungi spesa",
 		"noCosts": "Ancora nessun costo tracciato",
-		"groupBy": "Raggruppa per:",
+		"groupBy": "Raggruppa per",
 		"groupCategory": "Categoria",
 		"groupYear": "Anno",
 		"groupDescription": "Descrizione",
@@ -774,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# valuta} other {# valute}}"
 		},
 		"form": {
-			"addTitle": "Aggiungi",
+			"addTitle": "Aggiungi spesa",
 			"editTitle": "Modifica",
 			"switchType": "Registra qualcosa di diverso",
 			"category": "Categoria",
@@ -815,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documenti",
-		"subtitle": "Archivia documenti di servizio, foto e carta",
-		"upload": "+ Carica",
+		"subtitle": "Conserva ricevute di manutenzione, foto e documenti",
+		"upload": "Aggiungi documento",
 		"dropHintDesktop": "Trascina un file qui",
 		"dropHintMobile": "Tocca per caricare",
 		"uploadHint": "Immagini, PDF, Word, Excel - max 10 MB",
@@ -904,6 +917,7 @@
 			"avatarRemove": "Rimuovi",
 			"avatarUpdated": "Foto del profilo aggiornata",
 			"avatarDicebear": "Scegli un avatar",
+			"avatarOption": "Opzione avatar {n}",
 			"avatarShuffle": "Mescola",
 			"avatarCredits": "Crediti avatar",
 			"subtitle": "Foto profilo, nome visualizzato, lingua, valuta, unità e tema.",
@@ -1154,7 +1168,7 @@
 				"expiryNone": "Nessuna scadenza",
 				"prefix": "Chiave",
 				"expires": "Scade",
-				"neverExpires": "Mai",
+				"neverExpires": "Non scade",
 				"lastUsed": "Ultimo utilizzo",
 				"neverUsed": "mai",
 				"revoke": "Revocare",
@@ -1178,7 +1192,10 @@
 				"deleteKey": "Elimina",
 				"deleteKeyConfirm": "Conferma eliminazione",
 				"restoreKey": "Ripristina",
-				"errorNameTaken": "Questo nome è già in uso."
+				"errorNameTaken": "Questo nome è già in uso.",
+				"expiresOn": "Scade il {date}",
+				"expiredOn": "Scaduta il {date}",
+				"newKey": "Nuova chiave"
 			},
 			"docs": {
 				"title": "Documentazione API",
@@ -1326,7 +1343,7 @@
 	},
 	"travels": {
 		"title": "Viaggi",
-		"subtitle": "I tuoi tragitti e percorsi",
+		"subtitle": "Elenca i tuoi viaggi e percorsi",
 		"add": "Aggiungi viaggio",
 		"empty": {
 			"title": "Nessun viaggio",

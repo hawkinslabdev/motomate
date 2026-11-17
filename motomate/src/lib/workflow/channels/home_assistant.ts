@@ -7,24 +7,18 @@ export async function dispatchHomeAssistant(
 	vehicleName: string,
 	vars: Record<string, string | number>
 ): Promise<void> {
-	try {
-		await assertSafeUrl(webhookUrl);
-		const res = await fetch(webhookUrl, {
-			method: 'POST',
-			redirect: 'manual',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				title,
-				message: body,
-				vehicle_name: vehicleName,
-				data: vars
-			}),
-			signal: AbortSignal.timeout(5000)
-		});
-		if (!res.ok) {
-			console.warn(`[workflow] home assistant webhook responded with ${res.status}`);
-		}
-	} catch (e) {
-		console.error('[workflow] home assistant dispatch failed', e);
-	}
+	await assertSafeUrl(webhookUrl);
+	const res = await fetch(webhookUrl, {
+		method: 'POST',
+		redirect: 'manual',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			title,
+			message: body,
+			vehicle_name: vehicleName,
+			data: vars
+		}),
+		signal: AbortSignal.timeout(5000)
+	});
+	if (!res.ok) throw new Error(`Home Assistant responded with HTTP ${res.status}`);
 }

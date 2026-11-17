@@ -10,7 +10,6 @@ import {
 } from '#lib/auth/oidc.js';
 import { isSecureCookie } from '#lib/auth/index.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
-import { ts } from '#lib/server/log.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, url, locals, getClientAddress }) => {
@@ -29,7 +28,7 @@ export const GET: RequestHandler = async ({ cookies, url, locals, getClientAddre
 	try {
 		discovery = await discoverOidc(config.issuer);
 	} catch (e) {
-		console.error(`${ts()} [MotoMate] OIDC discovery failed`, e);
+		console.error(`[MotoMate] OIDC discovery failed`, e);
 		redirect(302, '/login?error=oidc');
 	}
 

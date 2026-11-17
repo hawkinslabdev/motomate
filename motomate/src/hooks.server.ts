@@ -1,4 +1,7 @@
 import { error } from '@sveltejs/kit';
+import { stringify } from 'devalue';
+import { locales } from '#lib/i18n/locales.js';
+import { installConsoleFormat } from '../console-format.js';
 import type { Handle } from '@sveltejs/kit/hooks';
 import { lucia } from '#lib/auth/index.js';
 import { AUTH_SECRET } from '$app/env/private';
@@ -8,6 +11,8 @@ import { findUserByApiKey, updateKeyLastUsed } from '#lib/db/repositories/api-ke
 import { redactCredentials } from '#lib/server/secrets.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
 import { getVehicleById } from '#lib/db/repositories/vehicles.js';
+
+installConsoleFormat();
 
 if (!AUTH_SECRET) {
 	throw new Error(
@@ -45,7 +50,7 @@ const WEAK_SECRET_MESSAGE =
 	'AUTH_SECRET uses an insecure default or is under 32 characters, risking forged downloads and token exports. Update it via `openssl rand -hex 32` (note: this clears stored S3 and paperless credentials; re-add them in Settings).';
 
 if (SECRET_IS_PLACEHOLDER) {
-	console.error(`${new Date().toLocaleString('sv')} [MotoMate] ${WEAK_SECRET_MESSAGE}`);
+	console.error(`[MotoMate] ${WEAK_SECRET_MESSAGE}`);
 	process.exit(1);
 }
 
@@ -59,10 +64,10 @@ async function checkSecret(): Promise<void> {
 	if (!SECRET_IS_SHORT) return;
 	const { hasAnyUser } = await import('#lib/db/repositories/users.js');
 	if (await hasAnyUser()) {
-		console.warn(`${new Date().toLocaleString('sv')} [MotoMate] WARNING: ${WEAK_SECRET_MESSAGE}`);
+		console.warn(`[MotoMate] WARNING: ${WEAK_SECRET_MESSAGE}`);
 		return;
 	}
-	console.error(`${new Date().toLocaleString('sv')} [MotoMate] ${WEAK_SECRET_MESSAGE}`);
+	console.error(`[MotoMate] ${WEAK_SECRET_MESSAGE}`);
 	process.exit(1);
 }
 
@@ -250,11 +255,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 		!event.url.pathname.startsWith('/api/v1/') &&
 		event.url.pathname !== '/auth/logout'
 	) {
+		const locale = (event.locals.user?.settings?.locale ?? 'en') as keyof typeof locales;
+		const error = (locales[locale] ?? locales.en).common.demoDisabled;
 		if (event.request.headers.get('x-sveltekit-action') === 'true') {
-			return new Response(JSON.stringify({ type: 'success', status: 200 }), {
-				status: 200,
-				headers: { 'content-type': 'application/json' }
-			});
+			return Response.json({ type: 'failure', status: 403, data: stringify({ error }) });
+		}
+		if (!event.request.headers.get('accept')?.includes('text/html')) {
+			return Response.json({ ok: false, error }, { status: 403 });
 		}
 		return new Response(null, { status: 303, headers: { Location: event.url.pathname } });
 	}

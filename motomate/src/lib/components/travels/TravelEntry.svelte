@@ -221,14 +221,10 @@
 		border-radius: 6px;
 		color: var(--text-subtle);
 		cursor: pointer;
-		opacity: 0;
 		transition:
 			opacity 0.15s,
 			background 0.15s,
 			border-color 0.15s;
-	}
-	.travel-entry:hover .menu-btn {
-		opacity: 1;
 	}
 	.menu-btn:hover {
 		color: var(--text);

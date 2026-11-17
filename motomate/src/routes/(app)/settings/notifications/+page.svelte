@@ -3,10 +3,14 @@
 	import type { PageData } from './$types';
 	import { untrack } from 'svelte';
 	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { guardUnsaved } from '#lib/utils/unsaved.js';
 	import { formatDateTime } from '#lib/utils/format.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
+	import Toggle from '#lib/components/ui/Toggle.svelte';
 
 	let { data } = $props<{ data: PageData }>();
+
+	const unsaved = guardUnsaved(() => $_('common.unsavedChanges'));
 
 	$effect(() => {
 		waitLocale();
@@ -88,8 +92,10 @@ actions:
 		home_assistant: 'idle'
 	});
 	let testError = $state<Record<string, string>>({});
+	const testTimers: Record<string, ReturnType<typeof setTimeout>> = {};
 
 	async function sendTest(channel: string) {
+		clearTimeout(testTimers[channel]);
 		testStatus[channel] = 'sending';
 		testError[channel] = '';
 		try {
@@ -119,7 +125,8 @@ actions:
 			testError[channel] = msg;
 			console.error(`[notifications] ${channel} test failed:`, msg);
 		}
-		setTimeout(() => (testStatus[channel] = 'idle'), 3000);
+		if (testStatus[channel] === 'sent')
+			testTimers[channel] = setTimeout(() => (testStatus[channel] = 'idle'), 3000);
 	}
 
 	// Browser push subscription
@@ -180,6 +187,7 @@ actions:
 <form
 	method="POST"
 	action="?/saveChannels"
+	use:unsaved
 	use:enhance={() => {
 		saving = true;
 		return async ({ result, update }) => {
@@ -209,15 +217,10 @@ actions:
 					<span class="channel-name">{$_('settings.notifications.channels.push.label')}</span>
 					<span class="channel-desc">{$_('settings.notifications.channels.push.description')}</span>
 				</div>
-				<button
-					type="button"
-					class="toggle-btn"
-					class:toggle-btn--on={pushEnabled}
-					onclick={() => (pushEnabled = !pushEnabled)}
-					aria-label={pushEnabled ? 'Disable push' : 'Enable push'}
-				>
-					<span class="toggle-thumb"></span>
-				</button>
+				<Toggle
+					bind:checked={pushEnabled}
+					label={$_('settings.notifications.channels.push.label')}
+				/>
 			</div>
 			{#if pushEnabled}
 				<div class="channel-fields">
@@ -272,15 +275,10 @@ actions:
 					<span class="channel-desc">{$_('settings.notifications.channels.email.description')}</span
 					>
 				</div>
-				<button
-					type="button"
-					class="toggle-btn"
-					class:toggle-btn--on={emailEnabled}
-					onclick={() => (emailEnabled = !emailEnabled)}
-					aria-label={emailEnabled ? 'Disable email' : 'Enable email'}
-				>
-					<span class="toggle-thumb"></span>
-				</button>
+				<Toggle
+					bind:checked={emailEnabled}
+					label={$_('settings.notifications.channels.email.label')}
+				/>
 			</div>
 			{#if emailEnabled}
 				<div class="channel-fields">
@@ -330,15 +328,10 @@ actions:
 						>{$_('settings.notifications.channels.webhook.description')}</span
 					>
 				</div>
-				<button
-					type="button"
-					class="toggle-btn"
-					class:toggle-btn--on={webhookEnabled}
-					onclick={() => (webhookEnabled = !webhookEnabled)}
-					aria-label={webhookEnabled ? 'Disable webhook' : 'Enable webhook'}
-				>
-					<span class="toggle-thumb"></span>
-				</button>
+				<Toggle
+					bind:checked={webhookEnabled}
+					label={$_('settings.notifications.channels.webhook.label')}
+				/>
 			</div>
 			{#if webhookEnabled}
 				<div class="channel-fields">
@@ -358,7 +351,8 @@ actions:
 					</label>
 					<input
 						id="webhook-auth"
-						type="text"
+						type="password"
+						autocomplete="off"
 						class="field-input"
 						placeholder={$_('settings.notifications.channels.webhook.authPlaceholder')}
 						bind:value={webhookAuth}
@@ -392,15 +386,7 @@ actions:
 					<span class="channel-name">{$_('settings.notifications.channels.ha.label')}</span>
 					<span class="channel-desc">{$_('settings.notifications.channels.ha.description')}</span>
 				</div>
-				<button
-					type="button"
-					class="toggle-btn"
-					class:toggle-btn--on={haEnabled}
-					onclick={() => (haEnabled = !haEnabled)}
-					aria-label={haEnabled ? 'Disable Home Assistant' : 'Enable Home Assistant'}
-				>
-					<span class="toggle-thumb"></span>
-				</button>
+				<Toggle bind:checked={haEnabled} label={$_('settings.notifications.channels.ha.label')} />
 			</div>
 			{#if haEnabled}
 				<div class="channel-fields">
@@ -534,13 +520,6 @@ actions:
 	.intro {
 		margin-bottom: var(--space-5);
 	}
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.section-desc {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -659,11 +638,9 @@ actions:
 		border-bottom: 1px solid var(--border);
 	}
 	.ha-config-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 	.collapse-btn {
 		display: flex;
@@ -771,36 +748,6 @@ actions:
 		cursor: default;
 	}
 
-	/* Toggle pill (reused from workflows page) */
-	.toggle-btn {
-		width: 2.25rem;
-		height: 1.25rem;
-		border-radius: 999px;
-		border: none;
-		cursor: pointer;
-		background: var(--border-strong);
-		position: relative;
-		flex-shrink: 0;
-		margin-top: 0.125rem;
-		transition: background 0.15s;
-	}
-	.toggle-btn--on {
-		background: var(--accent);
-	}
-	.toggle-thumb {
-		position: absolute;
-		top: 2px;
-		left: 2px;
-		width: calc(1.25rem - 4px);
-		height: calc(1.25rem - 4px);
-		border-radius: 50%;
-		background: #fff;
-		transition: transform 0.15s;
-	}
-	.toggle-btn--on .toggle-thumb {
-		transform: translateX(1rem);
-	}
-
 	/* Inbox section */
 	.inbox-divider {
 		border: none;
@@ -849,14 +796,9 @@ actions:
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
 		align-items: flex-start;
-		opacity: 0.6;
-		transition: opacity 0.1s;
 	}
 	.notif-row:first-child {
 		border-top: 1px solid var(--border);
-	}
-	.notif-row--unread {
-		opacity: 1;
 	}
 
 	.notif-dot {

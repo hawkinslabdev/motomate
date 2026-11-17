@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Toggle from '#lib/components/ui/Toggle.svelte';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 	import { sheet } from '#lib/stores/sheet.svelte.js';
@@ -155,15 +156,10 @@
 		<div class="field-toggle">
 			<span class="field-label">{$_('maintenance.editTracker.fields.reminderOnly')}</span>
 			<input type="hidden" name="reminder_only" value={reminderOnly ? 'true' : 'false'} />
-			<button
-				type="button"
-				class="toggle-btn"
-				class:toggle-btn--on={reminderOnly}
-				onclick={() => (reminderOnly = !reminderOnly)}
-				aria-label={reminderOnly ? 'Disable reminder mode' : 'Enable reminder mode'}
-			>
-				<span class="toggle-thumb"></span>
-			</button>
+			<Toggle
+				bind:checked={reminderOnly}
+				label={$_('maintenance.editTracker.fields.reminderOnly')}
+			/>
 		</div>
 		<p class="toggle-hint">{$_('maintenance.editTracker.fields.reminderOnlyHint')}</p>
 	</div>
@@ -195,8 +191,6 @@
 		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
@@ -266,37 +260,6 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: var(--space-3);
-	}
-
-	.toggle-btn {
-		position: relative;
-		width: 40px;
-		height: 22px;
-		border-radius: 11px;
-		background: var(--border-strong);
-		border: none;
-		cursor: pointer;
-		transition: background 0.2s;
-		flex-shrink: 0;
-	}
-
-	.toggle-btn--on {
-		background: var(--accent);
-	}
-
-	.toggle-thumb {
-		position: absolute;
-		top: 3px;
-		left: 3px;
-		width: 16px;
-		height: 16px;
-		border-radius: 50%;
-		background: #fff;
-		transition: transform 0.2s;
-	}
-
-	.toggle-btn--on .toggle-thumb {
-		transform: translateX(18px);
 	}
 
 	.toggle-hint {

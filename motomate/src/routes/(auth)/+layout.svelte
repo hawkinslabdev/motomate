@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AuthShell from '#lib/components/auth/AuthShell.svelte';
+	import { _ } from '#lib/i18n/index.js';
 
 	let { children, data } = $props<{
 		children: any;
@@ -30,27 +31,40 @@
 	}
 </script>
 
-<div class="demo-banner" class:active={data.demoMode}>
-	{#if data.demoMode}
-		<span class="demo-label">Demo instance</span>
-		<div class="demo-creds">
-			<button class="demo-cred" onclick={() => copyToClipboard('demo@motomate.local', 'email')}>
-				demo@motomate.local
-				<span class="demo-copy-hint">{copied === 'email' ? 'copied' : 'copy'}</span>
-			</button>
-			<span class="demo-sep">/</span>
-			<button class="demo-cred" onclick={() => copyToClipboard('password123', 'password')}>
-				password123
-				<span class="demo-copy-hint">{copied === 'password' ? 'copied' : 'copy'}</span>
-			</button>
-		</div>
-	{/if}
+<div class="auth-frame">
+	<div class="demo-banner" class:active={data.demoMode}>
+		{#if data.demoMode}
+			<span class="demo-label">{$_('common.demoInstance')}</span>
+			<div class="demo-creds">
+				<button class="demo-cred" onclick={() => copyToClipboard('demo@motomate.local', 'email')}>
+					demo@motomate.local
+					<span class="demo-copy-hint">{copied === 'email' ? 'copied' : 'copy'}</span>
+				</button>
+				<span class="demo-sep">/</span>
+				<button class="demo-cred" onclick={() => copyToClipboard('password123', 'password')}>
+					password123
+					<span class="demo-copy-hint">{copied === 'password' ? 'copied' : 'copy'}</span>
+				</button>
+			</div>
+		{/if}
+	</div>
+	<AuthShell demoMode={data.demoMode}>
+		{@render children()}
+	</AuthShell>
 </div>
-<AuthShell demoMode={data.demoMode}>
-	{@render children()}
-</AuthShell>
 
 <style>
+	.auth-frame {
+		display: flex;
+		flex-direction: column;
+		min-height: 100dvh;
+	}
+
+	.auth-frame > :global(.auth-shell) {
+		flex: 1 0 auto;
+		min-height: 0;
+	}
+
 	.demo-banner:not(.active) {
 		display: none;
 	}

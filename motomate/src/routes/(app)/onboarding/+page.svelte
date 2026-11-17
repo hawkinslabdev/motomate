@@ -168,7 +168,7 @@
 
 			<!-- Step 2: Vehicle type -->
 		{:else if step === 2}
-			<h2 class="step-title">{$_('onboarding.type.title')}</h2>
+			<h1 class="step-title">{$_('onboarding.type.title')}</h1>
 			<div class="type-grid">
 				{#each [['motorcycle', '🏍', $_('vehicle.add.types.motorcycle')], ['scooter', '🛵', $_('vehicle.add.types.scooter')], ['bike', '🚲', $_('vehicle.add.types.bike')], ['other', '🚗', $_('vehicle.add.types.other')]] as [val, icon, label]}
 					<button
@@ -185,7 +185,7 @@
 				{/each}
 			</div>
 		{:else if step === 3}
-			<h2 class="step-title">{$_('onboarding.details.title', { values: { vehicleType } })}</h2>
+			<h1 class="step-title">{$_('onboarding.details.title')}</h1>
 			<div class="form-fields">
 				<label class="field">
 					<span class="field-label"
@@ -234,6 +234,7 @@
 					<input
 						bind:value={year}
 						type="number"
+						required
 						min="1900"
 						max={new Date().getFullYear() + 1}
 						class="input mono"
@@ -265,7 +266,7 @@
 
 			<!-- Step 4: Odometer -->
 		{:else if step === 4}
-			<h2 class="step-title">{currentReadingTitle}</h2>
+			<h1 class="step-title">{currentReadingTitle}</h1>
 			<p class="step-desc">{currentReadingDescription}</p>
 			<div class="odo-input-row">
 				<input
@@ -275,7 +276,11 @@
 					class="input input--large mono"
 					placeholder={$_('onboarding.odometer.placeholder')}
 				/>
-				<select bind:value={odometerUnit} class="input unit-select">
+				<select
+					bind:value={odometerUnit}
+					class="input unit-select"
+					aria-label={$_('vehicle.edit.measurementUnit.title')}
+				>
 					{#each MEASUREMENT_UNITS as unit}
 						<option value={unit}>{$_(getMeasurementUnitTranslationKey(unit))}</option>
 					{/each}
@@ -284,7 +289,7 @@
 
 			<!-- Step 5: Maintenance presets -->
 		{:else if step === 5}
-			<h2 class="step-title">{$_('onboarding.presets.title')}</h2>
+			<h1 class="step-title">{$_('onboarding.presets.title')}</h1>
 			<p class="step-desc">{$_('onboarding.presets.description')}</p>
 			{#if presets.length === 0}
 				<div class="empty-presets">
@@ -323,7 +328,7 @@
 
 			<!-- Step 6: Last oil change (optional) -->
 		{:else if step === 6}
-			<h2 class="step-title">{$_('onboarding.lastService.title')}</h2>
+			<h1 class="step-title">{$_('onboarding.lastService.title')}</h1>
 			<p class="step-desc">{$_('onboarding.lastService.description')}</p>
 			<div class="form-fields">
 				<label class="field">
@@ -416,8 +421,13 @@
 				>
 				<button
 					class="btn-primary"
-					disabled={!canAdvance()}
-					onclick={() => (step = (step + 1) as Step)}
+					onclick={(e) => {
+						const invalid = [
+							...(e.currentTarget.closest('.onboarding')?.querySelectorAll('input, select') ?? [])
+						].find((field) => !(field as HTMLInputElement).checkValidity());
+						if (invalid) (invalid as HTMLInputElement).reportValidity();
+						else if (canAdvance()) step = (step + 1) as Step;
+					}}
 				>
 					{$_('onboarding.nav.continueBtn')}
 				</button>
@@ -714,6 +724,9 @@
 	.preset-interval {
 		font-size: 0.75rem;
 		color: var(--text-subtle);
+	}
+	.preset-item--checked .preset-interval {
+		color: color-mix(in srgb, var(--text) 75%, var(--accent-subtle));
 	}
 	.sr-only {
 		position: absolute;

@@ -5,7 +5,6 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { generateId } from '../utils/id.js';
 import { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM } from '$app/env/private';
 import { PUBLIC_APP_URL } from '$app/env/public';
-import { ts } from '../server/log.js';
 
 export function isSmtpConfigured(): boolean {
 	return !!SMTP_HOST;
@@ -59,7 +58,7 @@ export function magicLinkUrl(token: string): string {
 // Only reachable when SMTP is unset: the operator reads the link off the console.
 export function logMagicLink(email: string, token: string): void {
 	console.warn(
-		`${ts()} [MotoMate] SMTP is not configured. Login link for ${email}, valid 15 minutes: ${magicLinkUrl(token)}`
+		`[MotoMate] SMTP is not configured. Login link for ${email}, valid 15 minutes: ${magicLinkUrl(token)}`
 	);
 }
 

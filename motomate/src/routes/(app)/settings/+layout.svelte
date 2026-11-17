@@ -198,9 +198,6 @@
 	.settings-nav-link--active:hover {
 		background: color-mix(in srgb, var(--accent) 8%, var(--bg));
 	}
-	.external-link {
-		opacity: 0.8;
-	}
 	.external-icon {
 		width: 14px;
 		height: 14px;
@@ -221,7 +218,6 @@
 		font-size: var(--text-xs);
 		color: var(--text-subtle);
 		padding: 0.5rem 1rem;
-		opacity: 0.7;
 		text-decoration: none;
 		display: block;
 		transition:
@@ -282,8 +278,18 @@
 		.settings-shell {
 			padding: var(--space-4);
 		}
+		.settings-content :global(.intro .section-title:not(.section-title--keep)) {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+		}
 		.settings-body {
 			grid-template-columns: 1fr;
+			row-gap: 0;
 		}
 		.settings-nav {
 			display: none;

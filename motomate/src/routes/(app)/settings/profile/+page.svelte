@@ -3,6 +3,7 @@
 	import { refreshAll } from '$app/navigation';
 	import type { User } from '#lib/db/schema.js';
 	import { _ } from '#lib/i18n/index.js';
+	import { guardUnsaved } from '#lib/utils/unsaved.js';
 	import { SUPPORTED_LANGUAGES } from '#lib/i18n/locales.js';
 	import { NUMBER_FORMATS, formatLocale, formatNumber } from '#lib/utils/format.js';
 	import {
@@ -27,6 +28,8 @@
 			error?: string;
 		} | null;
 	}>();
+
+	const unsaved = guardUnsaved(() => $_('common.unsavedChanges'));
 
 	let saving = $state(false);
 	let avatarUploading = $state(false);
@@ -195,6 +198,7 @@
 	<form
 		method="POST"
 		action="?/savePrefs"
+		use:unsaved
 		class="pref-form"
 		use:enhance={() => {
 			saving = true;
@@ -374,7 +378,7 @@
 							type="submit"
 							class="dice-btn"
 							class:dice-btn--selected={seed === selectedSeed && !hasAvatarImage}
-							aria-label="Avatar option {i + 1}"
+							aria-label={$_('settings.profile.avatarOption', { values: { n: i + 1 } })}
 						>
 							{#if gridUris[i]}<img src={gridUris[i]} alt="" />{/if}
 						</button>
@@ -447,13 +451,6 @@
 {/if}
 
 <style>
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.section-desc {
 		font-size: var(--text-sm);
 		color: var(--text-muted);
@@ -726,8 +723,6 @@
 		font-size: var(--text-xs);
 		font-weight: 500;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.06em;
 	}
 	.dice-info {
 		display: inline-flex;

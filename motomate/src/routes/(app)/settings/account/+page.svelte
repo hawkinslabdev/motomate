@@ -352,7 +352,12 @@
 			<div class="danger-desc">{$_('settings.account.delete.desc')}</div>
 			{@render proofField('delete', 'danger-field')}
 			<div class="field danger-field">
-				<label class="field-label" for="delete-confirm">
+				<label
+					class="field-label no-copy"
+					for="delete-confirm"
+					oncopy={(e) => e.preventDefault()}
+					oncut={(e) => e.preventDefault()}
+				>
 					{$_('settings.account.delete.confirm', { values: { email: data.user.email } })}
 				</label>
 				<input
@@ -365,6 +370,8 @@
 					spellcheck="false"
 					class="input"
 					bind:value={confirmEmail}
+					onpaste={(e) => e.preventDefault()}
+					ondrop={(e) => e.preventDefault()}
 					required
 				/>
 			</div>
@@ -402,13 +409,6 @@
 />
 
 <style>
-	.section-title {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0 0 var(--space-2);
-		letter-spacing: -0.02em;
-	}
 	.intro {
 		margin-bottom: var(--space-5);
 	}
@@ -485,11 +485,9 @@
 		background: var(--bg-muted);
 	}
 	.section-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		margin: 0 0 var(--space-4);
 	}
 	.section-label--danger {
@@ -690,5 +688,9 @@
 		.danger-box {
 			width: 100%;
 		}
+	}
+	.no-copy {
+		user-select: none;
+		-webkit-user-select: none;
 	}
 </style>

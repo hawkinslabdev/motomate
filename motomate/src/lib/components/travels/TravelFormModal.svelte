@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { _ } from '#lib/i18n/index.js';
+	import { formatDateShort } from '#lib/utils/format.js';
+	import { formatISO } from 'date-fns';
 	import type { Travel } from '#lib/db/schema.js';
 
 	interface GpxDoc {
@@ -77,7 +79,7 @@
 		try {
 			const d = new Date(startDate + 'T00:00:00');
 			d.setDate(d.getDate() + i);
-			return d.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+			return formatDateShort(formatISO(d, { representation: 'date' }), locale);
 		} catch {
 			return '';
 		}
@@ -295,8 +297,10 @@
 													href={existingDoc.url}
 													download
 													class="file-chip-action"
-													aria-label="Download {existingDoc.name}"
-													title="Download"
+													aria-label={$_('common.downloadNamed', {
+														values: { name: existingDoc.name }
+													})}
+													title={$_('common.download')}
 												>
 													<svg
 														width="14"
@@ -314,7 +318,9 @@
 												type="button"
 												class="file-chip-remove"
 												onclick={() => removeExistingGpx(i, existingDoc.id)}
-												aria-label="Remove {existingDoc.name}"
+												aria-label={$_('common.removeNamed', {
+													values: { name: existingDoc.name }
+												})}
 											>
 												<svg
 													width="14"

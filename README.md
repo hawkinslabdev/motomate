@@ -16,9 +16,9 @@ Take control of your **vehicle maintenance** with MotoMate, a self-hosted (maint
 We want to make it incredibly simple for riders and vehicle enthusiasts to host their own maintenance journals. Unlike more complex systems such as [LubeLogger](https://lubelogger.com/?ref=github.com/hawkinslabdev/motomate), MotoMate is designed to strip your tracking down to the absolute essentials. 
 
 > [!WARNING]
-> **We need your help!** MotoMate is still under _active_ development and you may encounter bugs. Please help improve the project by reporting issues, suggesting missing features, or, preferably, submitting a pull request.
+> **We need your help!** MotoMate is still _under development_ and you may encounter bugs. Please help improve the project by reporting issues, suggesting missing features, or, preferably, submitting a pull request.
 
-View our [**demo-instance here**](https://motomate.mijnmotorparkeren.nl) (hosted by MijnMotorParkeren.nl). Want to try it yourself? Then set-up your own instance using the instructions below.
+View our [**demo-instance here**](https://motomate.mijnmotorparkeren.nl). Want to try it yourself? Then set-up your own instance using the instructions below.
 
 <img width="100%" alt="MotoMate screenshot" src=".github/images/example.webp" />
 
@@ -59,7 +59,7 @@ Looking for a complete list of environment variables? See the [docker-compose.ym
 
 ## Integrations
 
-MotoMate exposes a complete OpenAPI interface for custom API integrations. It supports configurable notification handlers for alerts, OIDC authentication, and it connects directly with S3-compatible object storage and [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) for automated document backups.
+MotoMate exposes a complete OpenAPI interface for custom API integrations. It supports configurable notification handlers for alerts, OIDC authentication, and it connects directly with [S3-compatible](https://github.com/topics/s3) object storage and [Paperless-ngx](https://github.com/paperless-ngx/paperless-ngx) for automated document backups.
 
 ## Donate
 

@@ -1,12 +1,16 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { getVehiclesByUser } from '#lib/db/repositories/vehicles.js';
+import { favoriteFirst } from '#lib/utils/favorite.js';
 import { updateUserSettings, getUserById } from '#lib/db/repositories/users.js';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) throw redirect(302, '/login');
 	const includeArchived = url.searchParams.get('archived') === '1';
-	const vehicles = await getVehiclesByUser(locals.user.id, includeArchived);
+	const vehicles = favoriteFirst(
+		await getVehiclesByUser(locals.user.id, includeArchived),
+		locals.user.settings?.favorite_vehicle
+	);
 	return { user: locals.user, vehicles, includeArchived };
 };
 

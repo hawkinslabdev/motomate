@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Instância de demonstração",
+		"demoNotSaved": "Modo de demonstração: as entradas não são guardadas.",
+		"demoDisabled": "Desativado no modo de demonstração",
+		"demoBanner": "Modo de demonstração: as alterações estão desativadas e servem apenas para demonstração.",
+		"download": "Transferir",
+		"downloadNamed": "Transferir {name}",
+		"removeNamed": "Remover {name}",
+		"sortBy": "Ordenar por",
+		"filter": "Filtrar",
+		"unsavedChanges": "Tem alterações não guardadas. Sair desta página?",
 		"save": "Guardar",
 		"cancel": "Cancelar",
 		"delete": "Eliminar",
@@ -130,7 +140,7 @@
 			"title": "Que tipo de veículo?"
 		},
 		"details": {
-			"title": "Conta-nos sobre o teu {vehicleType}",
+			"title": "Fale-nos do seu veículo",
 			"name": "Alcunha",
 			"make": "Marca",
 			"model": "Modelo",
@@ -139,8 +149,8 @@
 			"licensePlate": "Matrícula",
 			"placeholders": {
 				"name": "ex. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "ex. Honda",
+				"model": "ex. CB500F",
 				"vin": "opcional",
 				"licensePlate": "ex. AB-123 CD"
 			}
@@ -309,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Cronologia",
-				"subtitle": "Todos os teus registos para {name} num único lugar.",
+				"subtitle": "Lista todos os registos de {name}, do mais recente para o mais antigo",
 				"empty": {
 					"title": "Ainda sem histórico",
 					"description": "Aqui aparecem manutenções, leituras do conta-quilómetros e notas.",
@@ -326,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Lembrete reiniciado"
-				}
+				},
+				"add": "Adicionar registo"
 			},
 			"upcoming": "Próximo",
 			"nextDue": "Próximo: {date}",
@@ -443,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Definições",
-			"subtitle": "Gerir o teu {name}",
+			"subtitle": "Edita os dados de {name}",
 			"odometer": {
 				"title": "Atualizar quilometragem",
 				"currentReading": "Leitura atual ({unit})",
@@ -468,7 +479,7 @@
 			"odometerUpdated": "Quilometragem atualizada",
 			"vehicleRestored": "Veículo restaurado",
 			"settings": {
-				"title": "Definições",
+				"title": "Relatório e unidades",
 				"archive": {
 					"title": "Arquivar veículo",
 					"titleRestore": "Restaurar veículo",
@@ -575,10 +586,11 @@
 		"notes": {
 			"pageTitle": "Notas · {name}",
 			"title": "Notas",
-			"subtitle": "Tudo o que vale a pena guardar, sem estar ligado a um serviço ou viagem.",
+			"subtitle": "Guarda notas sobre {name}",
 			"subtitleEmpty": "Tudo o que vale a pena guardar, sem estar ligado a um serviço ou viagem.",
 			"new": "Adicionar nota",
 			"edit": "Editar nota",
+			"docCount": "{count, plural, one {# documento} other {# documentos}}",
 			"untitled": "Sem título",
 			"saved": "Nota guardada",
 			"empty": {
@@ -603,12 +615,13 @@
 			"col": {
 				"excerpt": "Trecho"
 			},
-			"searchPlaceholder": "Pesquisar notas..."
+			"searchPlaceholder": "Pesquisar notas...",
+			"add": "Adicionar nota"
 		}
 	},
 	"maintenance": {
 		"title": "Manutenção",
-		"subtitle": "Acompanha o teu plano de serviço",
+		"subtitle": "Mostra cada tarefa de manutenção e quando é devida",
 		"view": {
 			"current": "Atual",
 			"forecast": "Previsão",
@@ -649,7 +662,7 @@
 			"save": "Guardar alterações"
 		},
 		"addTask": {
-			"button": "+ Adicionar tarefa",
+			"button": "Adicionar tarefa",
 			"cancel": "Cancelar",
 			"title": "Adicionar tarefa",
 			"historyDisabled": "Adicionar na Vista Atual ou Previsão",
@@ -737,10 +750,10 @@
 	"finance": {
 		"title": "Despesas",
 		"subtitle": "Acompanha despesas",
-		"totalSpent": "Total gasto no teu {name}",
-		"addExpense": "Adicionar",
+		"totalSpent": "Mostra quanto custou {name}",
+		"addExpense": "Adicionar despesa",
 		"noCosts": "Sem custos registados",
-		"groupBy": "Agrupar por:",
+		"groupBy": "Agrupar por",
 		"groupCategory": "Categoria",
 		"groupYear": "Ano",
 		"groupDescription": "Descrição",
@@ -774,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# moeda} other {# moedas}}"
 		},
 		"form": {
-			"addTitle": "Adicionar",
+			"addTitle": "Adicionar despesa",
 			"editTitle": "Editar",
 			"switchType": "Registar outra coisa em vez disso",
 			"category": "Categoria",
@@ -815,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documentos",
-		"subtitle": "Guarda registos de serviço, fotos e papéis",
-		"upload": "+ Carregar",
+		"subtitle": "Guarda faturas de manutenção, fotos e papéis",
+		"upload": "Adicionar documento",
 		"dropHintDesktop": "Arraste um ficheiro para aqui",
 		"dropHintMobile": "Toque para carregar",
 		"uploadHint": "Imagens, PDF, Word, Excel - max 10 MB",
@@ -904,6 +917,7 @@
 			"avatarRemove": "Remover",
 			"avatarUpdated": "Foto de perfil atualizada",
 			"avatarDicebear": "Escolher um avatar",
+			"avatarOption": "Opção de avatar {n}",
 			"avatarShuffle": "Misturar",
 			"avatarCredits": "Créditos dos avatares",
 			"subtitle": "Foto de perfil, nome de exibição, idioma, moeda, unidade e tema.",
@@ -1154,7 +1168,7 @@
 				"expiryNone": "Sem expiração",
 				"prefix": "Chave",
 				"expires": "Expira",
-				"neverExpires": "Nunca",
+				"neverExpires": "Não expira",
 				"lastUsed": "Último uso",
 				"neverUsed": "nunca",
 				"revoke": "Revogar",
@@ -1178,7 +1192,10 @@
 				"deleteKey": "Eliminar",
 				"deleteKeyConfirm": "Confirmar eliminação",
 				"restoreKey": "Restaurar",
-				"errorNameTaken": "Esse nome já está em uso."
+				"errorNameTaken": "Esse nome já está em uso.",
+				"expiresOn": "Expira a {date}",
+				"expiredOn": "Expirou a {date}",
+				"newKey": "Nova chave"
 			},
 			"docs": {
 				"title": "Documentação API",
@@ -1326,7 +1343,7 @@
 	},
 	"travels": {
 		"title": "Viagens",
-		"subtitle": "As tuas rotas e percursos",
+		"subtitle": "Lista as tuas viagens e rotas",
 		"add": "Adicionar viagem",
 		"empty": {
 			"title": "Sem viagens",

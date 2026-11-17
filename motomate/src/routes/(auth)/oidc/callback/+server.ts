@@ -19,7 +19,6 @@ import {
 import { isOidcSignupOpen } from '#lib/auth/registration.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
 import { reauthExpiry } from '#lib/auth/reauth.js';
-import { ts } from '#lib/server/log.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddress }) => {
@@ -49,13 +48,13 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 
 	if (!code || !state || !verifier || state !== storedState) {
 		console.error(
-			`${ts()} [MotoMate] OIDC callback rejected: code=${!!code} state=${!!state} verifier=${!!verifier} stateMatch=${state === storedState}`
+			`[MotoMate] OIDC callback rejected: code=${!!code} state=${!!state} verifier=${!!verifier} stateMatch=${state === storedState}`
 		);
 		redirect(302, onFailure);
 	}
 
 	if (stepUp && !locals.user?.settings?.oidc_sub) {
-		console.error(`${ts()} [MotoMate] OIDC step-up rejected: no linked session`);
+		console.error(`[MotoMate] OIDC step-up rejected: no linked session`);
 		redirect(302, '/login?error=oidc');
 	}
 
@@ -67,12 +66,12 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 		idToken = tokens.id_token;
 		userinfo = await fetchUserinfo(discovery, tokens.access_token);
 	} catch (e) {
-		console.error(`${ts()} [MotoMate] OIDC token exchange failed`, e);
+		console.error(`[MotoMate] OIDC token exchange failed`, e);
 	}
 
 	if (stepUp) {
 		if (!userinfo?.sub || userinfo.sub !== locals.user!.settings!.oidc_sub) {
-			console.error(`${ts()} [MotoMate] OIDC step-up rejected: subject mismatch`);
+			console.error(`[MotoMate] OIDC step-up rejected: subject mismatch`);
 			redirect(302, `${back}?error=reauth`);
 		}
 		await updateUserSettings(locals.user!.id, { reauth_until: reauthExpiry() });
@@ -83,11 +82,11 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 
 	if (!userinfo?.sub || !userinfo.email || !emailTrusted) {
 		console.error(
-			`${ts()} [MotoMate] OIDC userinfo unusable: sub=${!!userinfo?.sub} email=${!!userinfo?.email} emailVerified=${isEmailVerified(userinfo?.email_verified)}`
+			`[MotoMate] OIDC userinfo unusable: sub=${!!userinfo?.sub} email=${!!userinfo?.email} emailVerified=${isEmailVerified(userinfo?.email_verified)}`
 		);
 		if (userinfo?.sub && userinfo.email) {
 			console.error(
-				`${ts()} [MotoMate] The IdP did not report this email as verified. If it never runs an email verification flow and its addresses are administrator-assigned, set OIDC_TRUST_UNVERIFIED_EMAIL=true.`
+				`[MotoMate] The IdP did not report this email as verified. If it never runs an email verification flow and its addresses are administrator-assigned, set OIDC_TRUST_UNVERIFIED_EMAIL=true.`
 			);
 		}
 		redirect(302, '/login?error=oidc');
@@ -100,7 +99,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 		if (byEmail) {
 			if (byEmail.settings?.oidc_sub) {
 				console.error(
-					`${ts()} [MotoMate] OIDC account conflict: local account already linked to a different subject`
+					`[MotoMate] OIDC account conflict: local account already linked to a different subject`
 				);
 				redirect(302, '/login?error=oidc');
 			}
@@ -108,7 +107,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 			user = byEmail;
 		} else {
 			if (!(await isOidcSignupOpen())) {
-				console.error(`${ts()} [MotoMate] OIDC signup rejected: registration is closed`);
+				console.error(`[MotoMate] OIDC signup rejected: registration is closed`);
 				redirect(302, '/login?error=oidc_closed');
 			}
 			user = await createUser({

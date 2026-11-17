@@ -1,5 +1,15 @@
 {
 	"common": {
+		"demoInstance": "Demo instance",
+		"demoNotSaved": "Demo mode: entries are not saved.",
+		"demoDisabled": "Disabled in demo mode",
+		"demoBanner": "Demo mode: changes are disabled and only meant for demonstration.",
+		"download": "Download",
+		"downloadNamed": "Download {name}",
+		"removeNamed": "Remove {name}",
+		"sortBy": "Sort by",
+		"filter": "Filter",
+		"unsavedChanges": "You have unsaved changes. Leave this page?",
 		"save": "Save",
 		"cancel": "Cancel",
 		"delete": "Delete",
@@ -130,7 +140,7 @@
 			"title": "What kind of vehicle?"
 		},
 		"details": {
-			"title": "Tell us about your {vehicleType}",
+			"title": "Tell us about your vehicle",
 			"name": "Nickname",
 			"make": "Make",
 			"model": "Model",
@@ -139,8 +149,8 @@
 			"licensePlate": "License plate",
 			"placeholders": {
 				"name": "e.g. Honda Grom",
-				"make": "Honda",
-				"model": "CB500F",
+				"make": "e.g. Honda",
+				"model": "e.g. CB500F",
 				"vin": "optional",
 				"licensePlate": "e.g. AB-123 CD"
 			}
@@ -317,7 +327,7 @@
 			},
 			"timeline": {
 				"title": "Timeline",
-				"subtitle": "All your records for {name} in one place.",
+				"subtitle": "Lists every record for {name}, newest first",
 				"empty": {
 					"title": "No history yet",
 					"description": "Services, odometer readings and notes appear here.",
@@ -334,7 +344,8 @@
 				},
 				"reminder": {
 					"label": "Reminder only"
-				}
+				},
+				"add": "Add entry"
 			},
 			"upcoming": "Upcoming",
 			"nextDue": "Next: {date}",
@@ -410,7 +421,7 @@
 		},
 		"edit": {
 			"title": "Settings",
-			"subtitle": "Manage your {name}",
+			"subtitle": "Edits details and data for {name}",
 			"odometer": {
 				"title": "Update odometer",
 				"usageTitle": "Update usage",
@@ -447,7 +458,7 @@
 			"usageUpdated": "Usage updated",
 			"vehicleRestored": "Vehicle restored",
 			"settings": {
-				"title": "Settings",
+				"title": "Report and units",
 				"archive": {
 					"title": "Archive vehicle",
 					"titleRestore": "Restore vehicle",
@@ -575,10 +586,11 @@
 		"notes": {
 			"pageTitle": "Notes · {name}",
 			"title": "Notes",
-			"subtitle": "Anything worth keeping, not tied to a service or ride",
+			"subtitle": "Keeps notes about {name}",
 			"subtitleEmpty": "Anything worth keeping, not tied to a service or ride",
 			"new": "Add note",
 			"edit": "Edit note",
+			"docCount": "{count, plural, one {# document} other {# documents}}",
 			"untitled": "Untitled note",
 			"saved": "Note saved",
 			"empty": {
@@ -603,12 +615,13 @@
 			"col": {
 				"excerpt": "Excerpt"
 			},
-			"searchPlaceholder": "Search notes..."
+			"searchPlaceholder": "Search notes...",
+			"add": "Add note"
 		}
 	},
 	"maintenance": {
 		"title": "Maintenance",
-		"subtitle": "Track your service schedule",
+		"subtitle": "Shows each service task and when it is due",
 		"view": {
 			"current": "Current",
 			"forecast": "Forecast",
@@ -649,7 +662,7 @@
 			"save": "Save changes"
 		},
 		"addTask": {
-			"button": "+ Add task",
+			"button": "Add task",
 			"cancel": "Cancel",
 			"title": "Add task",
 			"historyDisabled": "Add task in Current or Forecast view",
@@ -681,7 +694,7 @@
 				"due": "due",
 				"overdue": "overdue"
 			},
-			"logNow": "Log now -",
+			"logNow": "Log now →",
 			"edit": "Edit",
 			"delete": "Delete",
 			"notScheduled": "Not scheduled",
@@ -737,10 +750,10 @@
 	"finance": {
 		"title": "Spending",
 		"subtitle": "Track expenses",
-		"totalSpent": "Total spent on your {name}",
-		"addExpense": "Add",
+		"totalSpent": "Shows what {name} has cost",
+		"addExpense": "Add expense",
 		"noCosts": "No costs tracked yet",
-		"groupBy": "Group by:",
+		"groupBy": "Group by",
 		"groupCategory": "Category",
 		"groupYear": "Year",
 		"groupDescription": "Description",
@@ -774,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# currency} other {# currencies}}"
 		},
 		"form": {
-			"addTitle": "Add",
+			"addTitle": "Add expense",
 			"editTitle": "Edit",
 			"switchType": "Log something else instead",
 			"category": "Category",
@@ -815,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documents",
-		"subtitle": "Store service records, photos, and papers",
-		"upload": "+ Upload",
+		"subtitle": "Stores service records, photos and papers",
+		"upload": "Add document",
 		"dropHintDesktop": "Drop a file here",
 		"dropHintMobile": "Tap to upload a file",
 		"uploadHint": "Images, PDF, Word, Excel - max 10 MB",
@@ -917,6 +930,7 @@
 			"avatarRemove": "Remove",
 			"avatarUpdated": "Profile picture updated",
 			"avatarDicebear": "Choose an avatar",
+			"avatarOption": "Avatar option {n}",
 			"avatarShuffle": "Shuffle",
 			"avatarCredits": "Avatar credits",
 			"subtitle": "Profile photo, display name, language, currency, unit and theme.",
@@ -1137,7 +1151,7 @@
 			"title": "Developer",
 			"subtitle": "Create API keys and browse the documentation.",
 			"apiKeys": {
-				"title": "API Keys",
+				"title": "API keys",
 				"description": "Create and manage keys to use the MotoMate API.",
 				"empty": "No API keys yet.",
 				"create": "Create key",
@@ -1146,7 +1160,7 @@
 				"namePlaceholder": "e.g. Home Assistant",
 				"scopeLabel": "Access",
 				"scopeRead": "Read only",
-				"scopeReadWrite": "Read + Write",
+				"scopeReadWrite": "Read and write",
 				"expiryLabel": "Expires",
 				"expiry30": "30 days",
 				"expiry90": "90 days (recommended)",
@@ -1154,7 +1168,7 @@
 				"expiryNone": "No expiry",
 				"prefix": "Key",
 				"expires": "Expires",
-				"neverExpires": "Never",
+				"neverExpires": "Never expires",
 				"lastUsed": "Last used",
 				"neverUsed": "never",
 				"revoke": "Revoke",
@@ -1170,18 +1184,21 @@
 				"tokenCopyBtn": "Copy",
 				"tokenDoneBtn": "I copied it",
 				"maxKeysError": "Maximum of 20 API keys reached. Revoke one before creating a new key.",
-				"scopeBadgeRead": "read",
-				"scopeBadgeReadWrite": "read + write",
+				"scopeBadgeRead": "Read",
+				"scopeBadgeReadWrite": "Read and write",
 				"expiringSoon": "Expiring soon",
 				"expired": "Expired",
 				"revoked": "Revoked",
 				"deleteKey": "Delete",
 				"deleteKeyConfirm": "Confirm delete",
 				"restoreKey": "Restore",
-				"errorNameTaken": "That name is already in use."
+				"errorNameTaken": "That name is already in use.",
+				"expiresOn": "Expires {date}",
+				"expiredOn": "Expired {date}",
+				"newKey": "New key"
 			},
 			"docs": {
-				"title": "API Documentation",
+				"title": "API documentation",
 				"description": "Explore and test all available endpoints.",
 				"link": "View documentation",
 				"specLink": "View JSON"
@@ -1294,7 +1311,7 @@
 	},
 	"travels": {
 		"title": "Travels",
-		"subtitle": "Your rides and routes",
+		"subtitle": "Lists your rides and routes",
 		"add": "Add travel",
 		"empty": {
 			"title": "No travels yet",

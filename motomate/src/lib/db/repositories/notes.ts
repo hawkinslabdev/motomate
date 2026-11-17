@@ -2,6 +2,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { db } from '../index.js';
 import { vehicle_notes } from '../schema.js';
 import { getVehicleById } from './vehicles.js';
+import { ownedDocumentIds } from './documents.js';
 import { generateId } from '../../utils/id.js';
 import type { VehicleNote } from '../schema.js';
 
@@ -42,6 +43,8 @@ export async function getNoteById(
 export async function createNote(userId: string, input: CreateNoteInput): Promise<VehicleNote> {
 	const vehicle = await getVehicleById(input.vehicle_id, userId);
 	if (!vehicle) throw new Error('Vehicle not found');
+	const docRefs = input.doc_refs ?? [];
+	const owned = await ownedDocumentIds(docRefs, userId);
 	const id = generateId();
 	const now = new Date().toISOString();
 	await db.insert(vehicle_notes).values({
@@ -50,7 +53,7 @@ export async function createNote(userId: string, input: CreateNoteInput): Promis
 		user_id: userId,
 		title: input.title ?? null,
 		content: input.content,
-		doc_refs: input.doc_refs ?? [],
+		doc_refs: docRefs.filter((d) => owned.has(d)),
 		created_at: now,
 		updated_at: now
 	});
@@ -71,7 +74,10 @@ export async function updateNote(
 	const patch: Record<string, unknown> = { updated_at: now };
 	if ('title' in input) patch.title = input.title ?? null;
 	if ('content' in input) patch.content = input.content;
-	if ('doc_refs' in input) patch.doc_refs = input.doc_refs;
+	if (input.doc_refs) {
+		const owned = await ownedDocumentIds(input.doc_refs, userId);
+		patch.doc_refs = input.doc_refs.filter((d) => owned.has(d));
+	}
 	await db
 		.update(vehicle_notes)
 		.set(patch)

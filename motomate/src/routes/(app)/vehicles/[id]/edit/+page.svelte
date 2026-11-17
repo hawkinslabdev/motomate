@@ -6,6 +6,7 @@
 	import Modal from '#lib/components/ui/Modal.svelte';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import { _, waitLocale } from '#lib/i18n/index.js';
+	import { guardUnsaved } from '#lib/utils/unsaved.js';
 	import { formatNumber } from '#lib/utils/format.js';
 	import {
 		convertDistanceValue,
@@ -22,6 +23,8 @@
 		data: PageData;
 		form: { success?: boolean; error?: string; errors?: Record<string, string[]> } | null;
 	} = $props();
+
+	const unsaved = guardUnsaved(() => $_('common.unsavedChanges'));
 
 	$effect(() => {
 		waitLocale();
@@ -218,6 +221,7 @@
 		<form
 			method="POST"
 			action="?/update"
+			use:unsaved
 			use:enhance={({ formData }) => {
 				formData.delete('purchase_price');
 				formData.delete('sold_price');
@@ -357,77 +361,6 @@
 
 	<div class="divider"></div>
 
-	{#if canConvertDistanceUnit}
-		<details class="edit-section unit-section">
-			<summary class="section-label unit-section__summary"
-				>{$_('vehicle.edit.measurementUnit.title')}</summary
-			>
-			<form
-				method="POST"
-				action="?/convertUnit"
-				bind:this={unitConversionForm}
-				use:enhance={() => {
-					unitConverting = true;
-					return async ({ result, update }) => {
-						await update({ reset: false });
-						unitConverting = false;
-						showUnitConversionDialog = false;
-						if (result.type === 'success') {
-							odometerInput = data.vehicle.current_odometer;
-							selectedDistanceUnit = data.vehicle.odometer_unit as DistanceUnit;
-							toasts.success($_('vehicle.edit.measurementUnit.converted'));
-						} else if (result.type === 'failure' && (result.data as any)?.error) {
-							toasts.error((result.data as any).error);
-						}
-					};
-				}}
-			>
-				<div class="unit-converter">
-					<div class="unit-converter__context">
-						<div class="unit-converter__eyebrow">{$_('vehicle.edit.measurementUnit.eyebrow')}</div>
-						<div class="unit-converter__reading">
-							{formatNumber(data.vehicle.current_odometer, locale)}
-							{data.vehicle.odometer_unit}
-							<span aria-hidden="true">→</span>
-							<strong>{formatNumber(convertedCurrentReading, locale)} {selectedDistanceUnit}</strong
-							>
-						</div>
-						<p>{$_('vehicle.edit.measurementUnit.summary')}</p>
-					</div>
-					<div class="unit-converter__controls">
-						<div class="unit-toggle" aria-label={$_('vehicle.edit.measurementUnit.title')}>
-							{#each DISTANCE_UNITS as unit}
-								<label
-									class:unit-toggle__option--active={selectedDistanceUnit === unit}
-									class="unit-toggle__option"
-								>
-									<input
-										type="radio"
-										name="odometer_unit"
-										value={unit}
-										bind:group={selectedDistanceUnit}
-										class="sr-only"
-									/>
-									{$_(getDistanceUnitTranslationKey(unit))}
-								</label>
-							{/each}
-						</div>
-						<button
-							type="button"
-							class="btn-primary"
-							disabled={!distanceUnitChanged || unitConverting}
-							onclick={() => (showUnitConversionDialog = true)}
-						>
-							{$_('vehicle.edit.measurementUnit.review')}
-						</button>
-					</div>
-				</div>
-			</form>
-		</details>
-	{/if}
-
-	<div class="divider"></div>
-
 	<!-- Settings -->
 	<section class="edit-section">
 		<h2 class="section-label">{$_('vehicle.edit.settings.title')}</h2>
@@ -443,17 +376,93 @@
 			</button>
 		</div>
 
-		<div class="settings-divider"></div>
+		{#if canConvertDistanceUnit}
+			<div class="settings-divider"></div>
+			<details class="unit-section unit-box">
+				<summary class="settings-title unit-section__summary"
+					>{$_('vehicle.edit.measurementUnit.title')}</summary
+				>
+				<form
+					method="POST"
+					action="?/convertUnit"
+					bind:this={unitConversionForm}
+					use:enhance={() => {
+						unitConverting = true;
+						return async ({ result, update }) => {
+							await update({ reset: false });
+							unitConverting = false;
+							showUnitConversionDialog = false;
+							if (result.type === 'success') {
+								odometerInput = data.vehicle.current_odometer;
+								selectedDistanceUnit = data.vehicle.odometer_unit as DistanceUnit;
+								toasts.success($_('vehicle.edit.measurementUnit.converted'));
+							} else if (result.type === 'failure' && (result.data as any)?.error) {
+								toasts.error((result.data as any).error);
+							}
+						};
+					}}
+				>
+					<div class="unit-converter">
+						<div class="unit-converter__context">
+							<div class="unit-converter__eyebrow">
+								{$_('vehicle.edit.measurementUnit.eyebrow')}
+							</div>
+							<div class="unit-converter__reading">
+								{formatNumber(data.vehicle.current_odometer, locale)}
+								{data.vehicle.odometer_unit}
+								<span aria-hidden="true">→</span>
+								<strong
+									>{formatNumber(convertedCurrentReading, locale)} {selectedDistanceUnit}</strong
+								>
+							</div>
+							<p>{$_('vehicle.edit.measurementUnit.summary')}</p>
+						</div>
+						<div class="unit-converter__controls">
+							<div class="unit-toggle" aria-label={$_('vehicle.edit.measurementUnit.title')}>
+								{#each DISTANCE_UNITS as unit}
+									<label
+										class:unit-toggle__option--active={selectedDistanceUnit === unit}
+										class="unit-toggle__option"
+									>
+										<input
+											type="radio"
+											name="odometer_unit"
+											value={unit}
+											bind:group={selectedDistanceUnit}
+											class="sr-only"
+										/>
+										{$_(getDistanceUnitTranslationKey(unit))}
+									</label>
+								{/each}
+							</div>
+							<button
+								type="button"
+								class="btn-primary"
+								disabled={!distanceUnitChanged || unitConverting}
+								onclick={() => (showUnitConversionDialog = true)}
+							>
+								{$_('vehicle.edit.measurementUnit.review')}
+							</button>
+						</div>
+					</div>
+				</form>
+			</details>
+		{/if}
+	</section>
 
-		<!-- Archive / restore -->
-		<div class="settings-box">
+	<div class="divider"></div>
+
+	<!-- Danger zone -->
+	<section class="edit-section">
+		<h2 class="section-label section-label--danger">{$_('vehicle.edit.settings.dangerZone')}</h2>
+		<div class="danger-box">
 			<div>
-				<div class="settings-title">
+				<div class="danger-title">
 					{data.vehicle.archived_at
 						? $_('vehicle.edit.settings.archive.titleRestore')
 						: $_('vehicle.edit.settings.archive.title')}
 				</div>
-				<div class="settings-desc">
+				<div class="danger-desc">
 					{data.vehicle.archived_at
 						? $_('vehicle.edit.settings.archive.descRestore')
 						: $_('vehicle.edit.settings.archive.descArchive')}
@@ -469,13 +478,7 @@
 				</button>
 			{/if}
 		</div>
-	</section>
-
-	<div class="divider"></div>
-
-	<!-- Danger zone -->
-	<section class="edit-section">
-		<h2 class="section-label section-label--danger">{$_('vehicle.edit.settings.dangerZone')}</h2>
+		<div class="settings-divider"></div>
 		<div class="danger-box">
 			<div>
 				<div class="danger-title">{$_('vehicle.edit.settings.delete.title')}</div>
@@ -624,31 +627,6 @@
 </Modal>
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.section-title {
-		font-size: var(--text-lg);
-		font-weight: 600;
-		color: var(--text);
-		margin: 0;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
 	.edit-page {
 		max-width: 860px;
 		display: flex;
@@ -668,11 +646,9 @@
 	}
 
 	.section-label {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.07em;
 		margin: 0 0 var(--space-4);
 	}
 	.section-label--danger {
@@ -726,6 +702,11 @@
 		color: var(--text-muted);
 		margin-top: var(--space-1);
 	}
+	.unit-box {
+		border: 1px solid var(--border);
+		border-radius: 10px;
+		padding: var(--space-4);
+	}
 	.settings-divider {
 		height: 1px;
 		margin: var(--space-2) 0;
@@ -741,10 +722,8 @@
 		min-width: 0;
 	}
 	.unit-converter__eyebrow {
-		font-size: var(--text-xs);
+		font-size: var(--text-sm);
 		font-weight: 600;
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
 		color: var(--text-muted);
 	}
 	.unit-converter__reading {
@@ -820,8 +799,6 @@
 		font-size: var(--text-sm);
 		font-weight: 600;
 		color: var(--text-muted);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		margin: 0 0 var(--space-3);
 	}
 	.form-grid {
