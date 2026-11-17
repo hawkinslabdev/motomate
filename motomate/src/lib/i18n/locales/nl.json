@@ -319,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Tijdlijn",
-				"subtitle": "Al je gegevens voor {name} op een plek.",
+				"subtitle": "Toont alle gegevens van {name}, nieuwste eerst",
 				"empty": {
 					"title": "Nog geen gegevens",
 					"description": "Onderhoud, kilometerstanden en notities verschijnen hier.",
@@ -336,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Herinnering"
-				}
+				},
+				"add": "Invoer toevoegen"
 			},
 			"upcoming": "Aankomende",
 			"nextDue": "Volgende: {date}",
@@ -453,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Instellingen",
-			"subtitle": "Beheer je {name}",
+			"subtitle": "Wijzigt gegevens van {name}",
 			"odometer": {
 				"title": "Kilometerstand bijwerken",
 				"currentReading": "Huidige stand ({unit})",
@@ -478,7 +479,7 @@
 			"odometerUpdated": "Kilometerstand bijgewerkt",
 			"vehicleRestored": "Voertuig hersteld",
 			"settings": {
-				"title": "Instellingen",
+				"title": "Rapport en eenheden",
 				"archive": {
 					"title": "Voertuig archiveren",
 					"titleRestore": "Voertuig herstellen",
@@ -585,7 +586,7 @@
 		"notes": {
 			"pageTitle": "Notities · {name}",
 			"title": "Notities",
-			"subtitle": "Alles wat het waard is om te bewaren, los van de tijdlijn",
+			"subtitle": "Bewaart notities over {name}",
 			"subtitleEmpty": "Alles wat het waard is om te bewaren, los van de tijdlijn",
 			"new": "Notitie toevoegen",
 			"edit": "Notitie bewerken",
@@ -614,12 +615,13 @@
 			"col": {
 				"excerpt": "Fragment"
 			},
-			"searchPlaceholder": "Notities zoeken..."
+			"searchPlaceholder": "Notities zoeken...",
+			"add": "Notitie toevoegen"
 		}
 	},
 	"maintenance": {
 		"title": "Onderhoud",
-		"subtitle": "Houd je service-schema bij",
+		"subtitle": "Toont elke onderhoudstaak en wanneer die nodig is",
 		"view": {
 			"current": "Actueel",
 			"forecast": "Verwacht",
@@ -660,7 +662,7 @@
 			"save": "Wijzigingen opslaan"
 		},
 		"addTask": {
-			"button": "+ Taak toevoegen",
+			"button": "Taak toevoegen",
 			"cancel": "Annuleren",
 			"title": "Taak toevoegen",
 			"historyDisabled": "Toevoegen in Actueel of Verwacht weergave",
@@ -748,10 +750,10 @@
 	"finance": {
 		"title": "Uitgaven",
 		"subtitle": "Houd uitgaven bij",
-		"totalSpent": "Totaal besteed aan je {name}",
-		"addExpense": "Toevoegen",
+		"totalSpent": "Toont wat {name} heeft gekost",
+		"addExpense": "Uitgave toevoegen",
 		"noCosts": "Nog geen kosten bijgehouden",
-		"groupBy": "Groeperen op:",
+		"groupBy": "Groeperen op",
 		"groupCategory": "Categorie",
 		"groupYear": "Jaar",
 		"groupDescription": "Beschrijving",
@@ -785,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# valuta} other {# valuta's}}"
 		},
 		"form": {
-			"addTitle": "Toevoegen",
+			"addTitle": "Uitgave toevoegen",
 			"editTitle": "Bewerken",
 			"switchType": "Toch iets anders registreren",
 			"category": "Categorie",
@@ -826,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documenten",
-		"subtitle": "Bewaar facturen, handleidingen, foto's en andere documenten",
-		"upload": "+ Uploaden",
+		"subtitle": "Bewaart onderhoudsbonnen, foto's en papieren",
+		"upload": "Document toevoegen",
 		"dropHintDesktop": "Sleep een bestand hierheen",
 		"dropHintMobile": "Tik om te uploaden",
 		"uploadHint": "Afbeeldingen, PDF, Word, Excel - max 10 MB",
@@ -1338,8 +1340,8 @@
 	},
 	"travels": {
 		"title": "Ritten",
-		"subtitle": "Jouw tochten en routes",
-		"add": "Toevoegen",
+		"subtitle": "Toont je ritten en routes",
+		"add": "Rit toevoegen",
 		"empty": {
 			"title": "Nog geen ritten",
 			"description": "Ritten met dit voertuig verschijnen hier."

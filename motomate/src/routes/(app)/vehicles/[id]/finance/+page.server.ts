@@ -62,14 +62,6 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 	const byCategory = new Map<string, CurrencyAmount[]>();
 	const byDescription = new Map<string, CurrencyAmount[]>();
 
-	const categoryLabels: Record<string, string> = {
-		maintenance: 'Maintenance',
-		parts: 'Parts',
-		accessories: 'Accessories',
-		administrative: 'Administrative',
-		other: 'Other expenses'
-	};
-
 	const pushAmount = <K>(map: Map<K, CurrencyAmount[]>, key: K, item: CurrencyAmount) => {
 		const bucket = map.get(key);
 		if (bucket) bucket.push(item);
@@ -82,14 +74,12 @@ export const load: PageServerLoad = async ({ parent, params, locals }) => {
 		const year = new Date(tx.date).getFullYear();
 		pushAmount(byYear, year, item);
 
-		// Note finance transactions use their category field; service logs (category: null) are grouped under 'service'
-		const catKey = tx.category ?? (tx.type === 'service' ? 'service' : 'other');
+		const catKey = tx.category ?? (tx.type === 'service' ? 'maintenance' : 'other');
 		pushAmount(byCategory, catKey, item);
 
-		// Description breakdown; first line of notes, fallback to category label or type
 		const descKey =
 			tx.notes?.split('\n')[0]?.trim() ||
-			(tx.category ? (categoryLabels[tx.category] ?? tx.category) : 'Service entry');
+			(tx.category ? `\u0001category:${tx.category}` : '\u0001service');
 		pushAmount(byDescription, descKey, item);
 	}
 

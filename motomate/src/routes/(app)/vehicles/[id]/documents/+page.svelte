@@ -1,4 +1,6 @@
 <script lang="ts">
+	import RowMenu from '#lib/components/ui/RowMenu.svelte';
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import { dragFlag, isFileDrag } from '#lib/utils/drag.js';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack } from 'svelte';
@@ -38,6 +40,7 @@
 	let deletingDoc = $state<{ id: string; name: string; storage_key: string } | null>(null);
 
 	let searchQuery = $state(page.url.searchParams.get('search') ?? '');
+	let filtersOpen = $state(false);
 	let categoryFilter = $state<string>(page.url.searchParams.get('type') ?? 'all');
 	let sortBy = $state<'newest' | 'oldest' | 'name'>(
 		untrack(
@@ -206,6 +209,25 @@
 		if (file && !sheet.open) openUploadSheet(file);
 	}
 
+	function docMenu(doc: PageData['docs'][number], canRename: boolean) {
+		return [
+			{ label: $_('documents.actions.view'), href: `/api/files?key=${doc.storage_key}` },
+			...(canRename
+				? [
+						{
+							label: $_('documents.actions.rename'),
+							onclick: () => startEditName(doc.id, displayName(doc))
+						}
+					]
+				: []),
+			{
+				label: $_('documents.actions.delete'),
+				danger: true,
+				onclick: () => (deletingDoc = { id: doc.id, name: doc.name, storage_key: doc.storage_key })
+			}
+		];
+	}
+
 	function startEditName(docId: string, currentName: string) {
 		editingDocId = docId;
 		editingName = currentName;
@@ -284,8 +306,18 @@
 		<p class="section-sub">{$_('documents.subtitle')}</p>
 	</div>
 	<div class="page-actions">
+		<button
+			type="button"
+			class="btn-ghost filters-toggle"
+			class:filters-toggle--active={!!searchQuery || categoryFilter !== 'all'}
+			onclick={() => (filtersOpen = !filtersOpen)}
+			aria-label={$_('common.filter')}
+			aria-expanded={filtersOpen}
+		>
+			<Sliders />
+		</button>
 		<button type="button" class="btn-primary" onclick={() => openUploadSheet()}>
-			{$_('documents.upload')}
+			+ {$_('documents.upload')}
 		</button>
 	</div>
 </div>
@@ -295,7 +327,10 @@
 {/if}
 
 <!-- Filters -->
-<div class="filters">
+<div
+	class="filters"
+	class:filters--closed={!filtersOpen && !(!!searchQuery || categoryFilter !== 'all')}
+>
 	<div class="search-box">
 		<input
 			type="text"
@@ -335,19 +370,19 @@
 			<option value="oldest">{$_('documents.sort.oldest')}</option>
 			<option value="name">{$_('documents.sort.name')}</option>
 		</select>
-		<div class="view-controls">
-			<ViewToggle
-				options={[
-					{ value: 'timeline', label: $_('common.timeline') },
-					{ value: 'table', label: $_('common.table') }
-				]}
-				value={viewMode}
-				onchange={(v) => (viewMode = v as 'table' | 'timeline')}
-			/>
-			{#if viewMode === 'table'}
-				<ColumnPicker columns={docColumns} visible={docColVis} onchange={(v) => (docColVis = v)} />
-			{/if}
-		</div>
+	</div>
+	<div class="view-controls">
+		<ViewToggle
+			options={[
+				{ value: 'timeline', label: $_('common.timeline') },
+				{ value: 'table', label: $_('common.table') }
+			]}
+			value={viewMode}
+			onchange={(v) => (viewMode = v as 'table' | 'timeline')}
+		/>
+		{#if viewMode === 'table'}
+			<ColumnPicker columns={docColumns} visible={docColVis} onchange={(v) => (docColVis = v)} />
+		{/if}
 	</div>
 </div>
 
@@ -436,27 +471,7 @@
 						</div>
 					{/if}
 				</div>
-				<div class="doc-actions">
-					<a
-						href="/api/files?key={doc.storage_key}"
-						target="_blank"
-						rel="noopener"
-						class="action-btn">{$_('documents.actions.view')}</a
-					>
-					<button
-						type="button"
-						class="action-btn"
-						onclick={() => startEditName(doc.id, displayName(doc))}
-						>{$_('documents.actions.rename')}</button
-					>
-					<button
-						type="button"
-						class="action-btn action-btn--danger"
-						onclick={() => {
-							deletingDoc = { id: doc.id, name: doc.name, storage_key: doc.storage_key };
-						}}>{$_('documents.actions.delete')}</button
-					>
-				</div>
+				<RowMenu items={docMenu(doc, true)} />
 			</div>
 		{/each}
 	</div>
@@ -483,21 +498,7 @@
 								)}
 							</div>
 						</div>
-						<div class="entry-actions">
-							<a
-								href="/api/files?key={doc.storage_key}"
-								target="_blank"
-								rel="noopener"
-								class="action-btn">{$_('documents.actions.view')}</a
-							>
-							<button
-								type="button"
-								class="action-btn action-btn--danger"
-								onclick={() => {
-									deletingDoc = { id: doc.id, name: doc.name, storage_key: doc.storage_key };
-								}}>{$_('documents.actions.delete')}</button
-							>
-						</div>
+						<RowMenu items={docMenu(doc, false)} />
 					</div>
 				{/each}
 			</div>
@@ -562,25 +563,6 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
 	.drop-hint {
 		display: flex;
 		align-items: center;
@@ -596,24 +578,6 @@
 		pointer-events: none;
 	}
 
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-	.btn-primary:hover {
-		background: var(--accent-hover);
-	}
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
 	optgroup {
 		font-size: 10px;
 		color: var(--text-muted);
@@ -741,33 +705,6 @@
 		color: var(--status-overdue);
 	}
 
-	.doc-actions {
-		display: flex;
-		gap: 0.375rem;
-		flex-shrink: 0;
-	}
-	.action-btn {
-		font-size: var(--text-xs);
-		padding: 0.375rem 0.625rem;
-		border-radius: 6px;
-		background: none;
-		border: 1px solid var(--border);
-		cursor: pointer;
-		color: var(--text-muted);
-		text-decoration: none;
-		white-space: nowrap;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.action-btn:hover {
-		background: var(--bg-muted);
-	}
-	.action-btn--danger:hover {
-		color: var(--status-overdue);
-		border-color: var(--status-overdue);
-	}
-
 	/* Timeline view */
 	.timeline {
 		display: flex;
@@ -843,11 +780,6 @@
 		font-size: var(--text-sm);
 		color: var(--text-muted);
 		margin-top: 0.125rem;
-	}
-	.entry-actions {
-		display: flex;
-		gap: 0.25rem;
-		flex-shrink: 0;
 	}
 
 	/* Empty state */
@@ -976,14 +908,6 @@
 		}
 		.doc-info {
 			flex-basis: calc(100% - 3rem);
-		}
-		.doc-actions {
-			flex-basis: 100%;
-			margin-top: 0.5rem;
-		}
-		.action-btn {
-			padding: 0.5rem 0.75rem;
-			min-height: 40px;
 		}
 	}
 	.month-label::first-letter {

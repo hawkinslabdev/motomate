@@ -327,7 +327,7 @@
 			},
 			"timeline": {
 				"title": "Timeline",
-				"subtitle": "All your records for {name} in one place.",
+				"subtitle": "Lists every record for {name}, newest first",
 				"empty": {
 					"title": "No history yet",
 					"description": "Services, odometer readings and notes appear here.",
@@ -344,7 +344,8 @@
 				},
 				"reminder": {
 					"label": "Reminder only"
-				}
+				},
+				"add": "Add entry"
 			},
 			"upcoming": "Upcoming",
 			"nextDue": "Next: {date}",
@@ -420,7 +421,7 @@
 		},
 		"edit": {
 			"title": "Settings",
-			"subtitle": "Manage your {name}",
+			"subtitle": "Edits details and data for {name}",
 			"odometer": {
 				"title": "Update odometer",
 				"usageTitle": "Update usage",
@@ -457,7 +458,7 @@
 			"usageUpdated": "Usage updated",
 			"vehicleRestored": "Vehicle restored",
 			"settings": {
-				"title": "Settings",
+				"title": "Report and units",
 				"archive": {
 					"title": "Archive vehicle",
 					"titleRestore": "Restore vehicle",
@@ -585,7 +586,7 @@
 		"notes": {
 			"pageTitle": "Notes · {name}",
 			"title": "Notes",
-			"subtitle": "Anything worth keeping, not tied to a service or ride",
+			"subtitle": "Keeps notes about {name}",
 			"subtitleEmpty": "Anything worth keeping, not tied to a service or ride",
 			"new": "Add note",
 			"edit": "Edit note",
@@ -614,12 +615,13 @@
 			"col": {
 				"excerpt": "Excerpt"
 			},
-			"searchPlaceholder": "Search notes..."
+			"searchPlaceholder": "Search notes...",
+			"add": "Add note"
 		}
 	},
 	"maintenance": {
 		"title": "Maintenance",
-		"subtitle": "Track your service schedule",
+		"subtitle": "Shows each service task and when it is due",
 		"view": {
 			"current": "Current",
 			"forecast": "Forecast",
@@ -660,7 +662,7 @@
 			"save": "Save changes"
 		},
 		"addTask": {
-			"button": "+ Add task",
+			"button": "Add task",
 			"cancel": "Cancel",
 			"title": "Add task",
 			"historyDisabled": "Add task in Current or Forecast view",
@@ -748,10 +750,10 @@
 	"finance": {
 		"title": "Spending",
 		"subtitle": "Track expenses",
-		"totalSpent": "Total spent on your {name}",
-		"addExpense": "Add",
+		"totalSpent": "Shows what {name} has cost",
+		"addExpense": "Add expense",
 		"noCosts": "No costs tracked yet",
-		"groupBy": "Group by:",
+		"groupBy": "Group by",
 		"groupCategory": "Category",
 		"groupYear": "Year",
 		"groupDescription": "Description",
@@ -785,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# currency} other {# currencies}}"
 		},
 		"form": {
-			"addTitle": "Add",
+			"addTitle": "Add expense",
 			"editTitle": "Edit",
 			"switchType": "Log something else instead",
 			"category": "Category",
@@ -826,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documents",
-		"subtitle": "Store service records, photos, and papers",
-		"upload": "+ Upload",
+		"subtitle": "Stores service records, photos and papers",
+		"upload": "Add document",
 		"dropHintDesktop": "Drop a file here",
 		"dropHintMobile": "Tap to upload a file",
 		"uploadHint": "Images, PDF, Word, Excel - max 10 MB",
@@ -1306,7 +1308,7 @@
 	},
 	"travels": {
 		"title": "Travels",
-		"subtitle": "Your rides and routes",
+		"subtitle": "Lists your rides and routes",
 		"add": "Add travel",
 		"empty": {
 			"title": "No travels yet",

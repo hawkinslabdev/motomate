@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import { enhance } from '$app/forms';
@@ -306,28 +307,6 @@
 		<p class="section-sub">{$_('maintenance.subtitle')}</p>
 	</div>
 	<div class="page-actions">
-		{#if data.trackers.length > 0}
-			<div class="view-toggle">
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'current'}
-					onclick={() => (viewMode = 'current')}>{$_('maintenance.view.current')}</button
-				>
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'forecast'}
-					onclick={() => (viewMode = 'forecast')}>{$_('maintenance.view.forecast')}</button
-				>
-				<button
-					type="button"
-					class="view-toggle-btn"
-					class:view-toggle-btn--active={viewMode === 'history'}
-					onclick={() => (viewMode = 'history')}>{$_('maintenance.view.history')}</button
-				>
-			</div>
-		{/if}
 		{#if data.trackers.length === 0}
 			<form method="POST" action="?/applyDefaults" use:enhance>
 				<button type="submit" class="btn-ghost">
@@ -335,19 +314,6 @@
 				</button>
 			</form>
 		{/if}
-		<button
-			class="btn-ghost"
-			class:btn-ghost--disabled={viewMode === 'history'}
-			disabled={viewMode === 'history'}
-			title={viewMode === 'history' ? $_('maintenance.addTask.historyDisabled') : ''}
-			onclick={() =>
-				sheet.openSheet(AddTrackerForm, $_('maintenance.addTask.button'), {
-					vehicleId: data.vehicle.id,
-					odometerUnit: data.vehicle.odometer_unit
-				})}
-		>
-			{$_('maintenance.addTask.button')}
-		</button>
 		{#if sortedTrackers.length > 0 || viewMode === 'history'}
 			<button
 				type="button"
@@ -357,29 +323,21 @@
 				aria-label={$_('common.filter')}
 				aria-expanded={filtersOpen}
 			>
-				<svg
-					width="15"
-					height="15"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<line x1="4" y1="21" x2="4" y2="14"></line>
-					<line x1="4" y1="10" x2="4" y2="3"></line>
-					<line x1="12" y1="21" x2="12" y2="12"></line>
-					<line x1="12" y1="8" x2="12" y2="3"></line>
-					<line x1="20" y1="21" x2="20" y2="16"></line>
-					<line x1="20" y1="12" x2="20" y2="3"></line>
-					<line x1="1" y1="14" x2="7" y2="14"></line>
-					<line x1="9" y1="8" x2="15" y2="8"></line>
-					<line x1="17" y1="16" x2="23" y2="16"></line>
-				</svg>
+				<Sliders />
 			</button>
 		{/if}
+		<button
+			class="btn-primary"
+			disabled={viewMode === 'history'}
+			title={viewMode === 'history' ? $_('maintenance.addTask.historyDisabled') : ''}
+			onclick={() =>
+				sheet.openSheet(AddTrackerForm, $_('maintenance.addTask.button'), {
+					vehicleId: data.vehicle.id,
+					odometerUnit: data.vehicle.odometer_unit
+				})}
+		>
+			+ {$_('maintenance.addTask.button')}
+		</button>
 	</div>
 </div>
 
@@ -407,6 +365,19 @@
 				</select>
 			{/if}
 		</div>
+		{#if data.trackers.length > 0}
+			<div class="view-controls">
+				<ViewToggle
+					options={[
+						{ value: 'current', label: $_('maintenance.view.current') },
+						{ value: 'forecast', label: $_('maintenance.view.forecast') },
+						{ value: 'history', label: $_('maintenance.view.history') }
+					]}
+					value={viewMode}
+					onchange={(v) => (viewMode = v as typeof viewMode)}
+				/>
+			</div>
+		{/if}
 	</div>
 {/if}
 
@@ -943,60 +914,7 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.page-actions {
-		display: flex;
-		gap: var(--space-2);
-		align-items: center;
-		flex-shrink: 0;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
 	/* View toggle */
-	.view-toggle {
-		display: flex;
-		background: var(--bg-muted);
-		border-radius: 8px;
-		padding: 2px;
-		gap: 2px;
-	}
-	.view-toggle-btn {
-		padding: 0.375rem 0.75rem;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		background: transparent;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		color: var(--text-muted);
-		transition:
-			background 0.15s,
-			color 0.15s;
-	}
-	.view-toggle-btn:hover {
-		color: var(--text);
-	}
-	.view-toggle-btn--active {
-		background: var(--bg);
-		color: var(--text);
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-	}
 
 	.tracker-list {
 		display: flex;
@@ -1149,47 +1067,8 @@
 		resize: vertical;
 	}
 
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
-	}
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-	.btn-ghost {
-		padding: 0.5rem 0.75rem;
-		min-height: 44px;
-		background: transparent;
-		border: 1px solid var(--border);
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-		color: var(--text-muted);
-	}
-	.btn-ghost:hover {
-		background: var(--bg-subtle);
-		color: var(--text);
-	}
-	.btn-ghost--disabled,
-	.btn-ghost:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
-	}
-	.btn-ghost--disabled:hover {
-		background: transparent;
-		color: var(--text-muted);
 	}
 
 	/* Tracker checkboxes */
@@ -1420,16 +1299,10 @@
 		font-size: 1rem;
 		line-height: 1;
 		cursor: pointer;
-		opacity: 0;
 		transition:
 			opacity 0.15s,
 			background 0.15s,
 			border-color 0.15s;
-	}
-	.timeline-entry:hover .entry-menu-btn,
-	.entry-menu-btn:focus,
-	.entry-menu-btn.active {
-		opacity: 1;
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
@@ -1486,40 +1359,6 @@
 			opacity: 1;
 			width: 44px;
 			height: 44px;
-		}
-		.page-actions {
-			flex-wrap: wrap;
-			width: 100%;
-		}
-		.view-toggle {
-			width: 100%;
-		}
-		.view-toggle-btn {
-			flex: 1;
-			min-width: 0;
-			text-align: center;
-			padding: 0.375rem 0.5rem;
-			font-size: var(--text-xs);
-		}
-	}
-	.filters-toggle {
-		display: none;
-		min-width: 44px;
-		min-height: 44px;
-		align-items: center;
-		justify-content: center;
-		padding: 0.5rem;
-	}
-	.filters-toggle--active {
-		border-color: var(--accent);
-		color: var(--accent);
-	}
-	@media (max-width: 640px) {
-		.filters-toggle {
-			display: flex;
-		}
-		.filters--closed {
-			display: none;
 		}
 	}
 	.timeline-month-name::first-letter {

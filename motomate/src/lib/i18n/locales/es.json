@@ -319,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Línea de tiempo",
-				"subtitle": "Todos tus registros para {name} en un solo lugar.",
+				"subtitle": "Muestra todos los registros de {name}, del más reciente al más antiguo",
 				"empty": {
 					"title": "Sin historial todavía",
 					"description": "Aquí aparecen los mantenimientos, las lecturas del cuentakilómetros y las notas.",
@@ -336,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Recordatorio reiniciado"
-				}
+				},
+				"add": "Añadir entrada"
 			},
 			"upcoming": "Próximo",
 			"nextDue": "Próximo: {date}",
@@ -453,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Configuración",
-			"subtitle": "Administra tu {name}",
+			"subtitle": "Edita los datos de {name}",
 			"odometer": {
 				"title": "Actualizar kilometraje",
 				"currentReading": "Lectura actual ({unit})",
@@ -478,7 +479,7 @@
 			"odometerUpdated": "Kilometraje actualizado",
 			"vehicleRestored": "Vehículo restaurado",
 			"settings": {
-				"title": "Configuración",
+				"title": "Informe y unidades",
 				"archive": {
 					"title": "Archivar vehículo",
 					"titleRestore": "Restaurar vehículo",
@@ -585,7 +586,7 @@
 		"notes": {
 			"pageTitle": "Notas · {name}",
 			"title": "Notas",
-			"subtitle": "Todo lo que vale la pena guardar, sin estar ligado a un servicio o viaje.",
+			"subtitle": "Guarda notas sobre {name}",
 			"subtitleEmpty": "Todo lo que vale la pena guardar, sin estar ligado a un servicio o viaje.",
 			"new": "Añadir nota",
 			"edit": "Editar nota",
@@ -614,12 +615,13 @@
 			"col": {
 				"excerpt": "Extracto"
 			},
-			"searchPlaceholder": "Buscar notas..."
+			"searchPlaceholder": "Buscar notas...",
+			"add": "Añadir nota"
 		}
 	},
 	"maintenance": {
 		"title": "Mantenimiento",
-		"subtitle": "Rastrea tu programa de servicio",
+		"subtitle": "Muestra cada tarea de mantenimiento y cuándo toca",
 		"view": {
 			"current": "Actual",
 			"forecast": "Pronóstico",
@@ -660,7 +662,7 @@
 			"save": "Guardar cambios"
 		},
 		"addTask": {
-			"button": "+ Añadir tarea",
+			"button": "Añadir tarea",
 			"cancel": "Cancelar",
 			"title": "Añadir tarea",
 			"historyDisabled": "Añadir en Vista Actual o Pronóstico",
@@ -748,10 +750,10 @@
 	"finance": {
 		"title": "Gastos",
 		"subtitle": "Rastrea gastos",
-		"totalSpent": "Total gastado en tu {name}",
-		"addExpense": "Añadir",
+		"totalSpent": "Muestra lo que ha costado {name}",
+		"addExpense": "Añadir gasto",
 		"noCosts": "Sin costos registrados",
-		"groupBy": "Agrupar por:",
+		"groupBy": "Agrupar por",
 		"groupCategory": "Categoría",
 		"groupYear": "Año",
 		"groupDescription": "Descripción",
@@ -785,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# moneda} other {# monedas}}"
 		},
 		"form": {
-			"addTitle": "Añadir",
+			"addTitle": "Añadir gasto",
 			"editTitle": "Editar",
 			"switchType": "Registrar otra cosa en su lugar",
 			"category": "Categoría",
@@ -826,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documentos",
-		"subtitle": "Almacena registros de servicio, fotos y papeles",
-		"upload": "+ Subir",
+		"subtitle": "Guarda facturas de mantenimiento, fotos y papeles",
+		"upload": "Añadir documento",
 		"dropHintDesktop": "Suelta un archivo aquí",
 		"dropHintMobile": "Toca para subir",
 		"uploadHint": "Imágenes, PDF, Word, Excel - max 10 MB",
@@ -1338,8 +1340,8 @@
 	},
 	"travels": {
 		"title": "Viajes",
-		"subtitle": "Tus rutas y recorridos",
-		"add": "+ Añadir viaje",
+		"subtitle": "Muestra tus viajes y rutas",
+		"add": "Añadir viaje",
 		"empty": {
 			"title": "Sin viajes",
 			"description": "Aquí aparecen los viajes de este vehículo."

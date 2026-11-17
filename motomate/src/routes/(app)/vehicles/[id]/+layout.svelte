@@ -1621,4 +1621,121 @@
 		margin: 0;
 		letter-spacing: normal;
 	}
+	:global(:where(.vehicle-content) .page-header) {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var(--space-4);
+		margin-bottom: var(--space-6);
+	}
+	:global(:where(.vehicle-content) .page-header-text) {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		flex: 1;
+		min-width: 0;
+	}
+	:global(:where(.vehicle-content) .section-sub) {
+		font-size: var(--text-sm);
+		color: var(--text-muted);
+		margin: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	:global(:where(.vehicle-content) .page-actions) {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-2);
+		flex-shrink: 0;
+		position: relative;
+	}
+	:global(:where(.vehicle-content) :is(.btn-primary, .btn-ghost)) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		min-height: 44px;
+		border-radius: 10px;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	:global(:where(.vehicle-content) .btn-primary) {
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: var(--accent-fg);
+		border: none;
+	}
+	:global(:where(.vehicle-content) .btn-primary:hover) {
+		background: var(--accent-hover);
+	}
+	:global(:where(.vehicle-content) .btn-ghost) {
+		padding: 0.5rem 0.75rem;
+		background: transparent;
+		color: var(--text-muted);
+		border: 1px solid var(--border);
+	}
+	:global(:where(.vehicle-content) .btn-ghost:hover) {
+		background: var(--bg-subtle);
+		color: var(--text);
+	}
+	:global(:where(.vehicle-content) :is(.btn-primary, .btn-ghost):disabled) {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	:global(:where(.vehicle-content) .filters-toggle) {
+		display: none;
+		min-width: 44px;
+		padding: 0.5rem;
+	}
+	:global(:where(.vehicle-content) .filters-toggle--active) {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	:global(:where(.vehicle-content) .view-controls) {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin-left: auto;
+	}
+	@media (max-width: 640px) {
+		:global(:where(.vehicle-content) .filters-toggle) {
+			display: inline-flex;
+		}
+		:global(:where(.vehicle-content) .filters--closed > :not(.view-controls)) {
+			display: none !important;
+		}
+		:global(:where(.vehicle-content) .page-header) {
+			flex-direction: column;
+			align-items: stretch;
+		}
+		:global(:where(.vehicle-content) .page-actions) {
+			flex-direction: row-reverse;
+			justify-content: flex-end;
+		}
+	}
+	:global(:where(.vehicle-content) .month-divider) {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		padding: var(--space-4) 0 var(--space-2);
+	}
+	:global(:where(.vehicle-content) .month-label) {
+		font-size: var(--text-xs);
+		font-weight: 600;
+		color: var(--text-subtle);
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+	:global(:where(.vehicle-content) .month-label::first-letter) {
+		text-transform: uppercase;
+	}
+	:global(:where(.vehicle-content) .month-rule) {
+		flex: 1;
+		height: 1px;
+		background: var(--border);
+	}
 </style>

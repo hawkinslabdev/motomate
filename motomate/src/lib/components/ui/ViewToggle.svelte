@@ -21,6 +21,7 @@
 			type="button"
 			class="view-btn"
 			class:view-btn--active={value === opt.value}
+			aria-pressed={value === opt.value}
 			onclick={() => onchange(opt.value)}
 		>
 			{opt.label}

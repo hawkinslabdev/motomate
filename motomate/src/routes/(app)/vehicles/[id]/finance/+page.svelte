@@ -5,7 +5,12 @@
 	import { untrack, tick } from 'svelte';
 	import { page } from '$app/state';
 	import { goto, beforeNavigate } from '$app/navigation';
-	import { formatCurrency, formatDateShort, formatMeasurement } from '#lib/utils/format.js';
+	import {
+		formatCurrency,
+		formatDateShort,
+		formatMeasurement,
+		formatYearMonth
+	} from '#lib/utils/format.js';
 	import { getMeasurementUnitTranslationKey } from '#lib/utils/measurement.js';
 	import { createPrefsSync } from '#lib/utils/prefs-sync.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
@@ -331,7 +336,11 @@
 		}
 		if (groupBy === 'description') {
 			const items = (data.byDescription || []).map(([desc, total]) => ({
-				label: desc,
+				label: !desc.startsWith('\u0001')
+					? desc
+					: desc === '\u0001service'
+						? $_('finance.serviceEntry')
+						: getCategoryLabel(desc.slice('\u0001category:'.length)),
 				total,
 				key: desc
 			}));
@@ -463,40 +472,17 @@
 			{/if}
 		</div>
 
-		<!-- Grouping selector -->
 		{#if (data.byYear && data.byYear.length > 0) || (data.byCategory && data.byCategory.length > 0)}
-			<div class="content-controls">
-				<div class="grouping-controls">
-					<span class="grouping-label">{$_('finance.groupBy')}</span>
-					<div class="grouping-options">
-						<button
-							type="button"
-							class="grouping-btn"
-							class:grouping-btn--active={groupBy === 'category'}
-							onclick={() => (groupBy = 'category')}>{$_('finance.groupCategory')}</button
+			<div class="filters">
+				<div class="filter-controls">
+					<select bind:value={groupBy} class="filter-select" aria-label={$_('finance.groupBy')}>
+						<option value="category">{$_('finance.groupBy')}: {$_('finance.groupCategory')}</option>
+						<option value="year">{$_('finance.groupBy')}: {$_('finance.groupYear')}</option>
+						<option value="description"
+							>{$_('finance.groupBy')}: {$_('finance.groupDescription')}</option
 						>
-
-						<button
-							type="button"
-							class="grouping-btn"
-							class:grouping-btn--active={groupBy === 'year'}
-							onclick={() => (groupBy = 'year')}>{$_('finance.groupYear')}</button
-						>
-
-						<button
-							type="button"
-							class="grouping-btn"
-							class:grouping-btn--active={groupBy === 'description'}
-							onclick={() => (groupBy = 'description')}>{$_('finance.groupDescription')}</button
-						>
-
-						<button
-							type="button"
-							class="grouping-btn"
-							class:grouping-btn--active={groupBy === 'none'}
-							onclick={() => (groupBy = 'none')}>{$_('finance.groupNone')}</button
-						>
-					</div>
+						<option value="none">{$_('finance.groupBy')}: {$_('finance.groupNone')}</option>
+					</select>
 				</div>
 				<div class="view-controls">
 					<ViewToggle
@@ -710,7 +696,13 @@
 				{/if}
 			{:else}
 				<div class="transaction-list">
-					{#each pagedTransactions as tx}
+					{#each pagedTransactions as tx, i}
+						{#if financeSortBy === 'date' && (i === 0 || pagedTransactions[i - 1].date.slice(0, 7) !== tx.date.slice(0, 7))}
+							<div class="month-divider">
+								<span class="month-label">{formatYearMonth(tx.date.slice(0, 7), locale)}</span>
+								<span class="month-rule" aria-hidden="true"></span>
+							</div>
+						{/if}
 						<div
 							id="tx-{tx.id}"
 							class="transaction-row"
@@ -986,42 +978,6 @@
 		color: var(--text-muted);
 	}
 
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-	.page-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		align-items: center;
-		flex-shrink: 0;
-	}
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
 	}
@@ -1115,19 +1071,7 @@
 	}
 
 	/* Inline edit form */
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
 	/* Content controls row */
-	.content-controls {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-3);
-		flex-wrap: wrap;
-		margin: var(--space-6) 0 0.5rem;
-	}
 	.view-controls {
 		display: flex;
 		align-items: center;
@@ -1136,46 +1080,6 @@
 	}
 
 	/* Grouping controls */
-	.grouping-controls {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-	}
-	.grouping-label {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		font-weight: 500;
-	}
-	.grouping-options {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.375rem;
-	}
-	.grouping-btn {
-		padding: 0.375rem 0.75rem;
-		background: var(--bg-subtle);
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		color: var(--text-muted);
-		cursor: pointer;
-		transition:
-			background 0.1s,
-			border-color 0.1s,
-			color 0.1s;
-	}
-	.grouping-btn:hover {
-		background: var(--bg-muted);
-		border-color: var(--border-strong);
-		color: var(--text);
-	}
-	.grouping-btn--active {
-		background: var(--accent);
-		border-color: var(--accent);
-		color: var(--accent-fg);
-	}
 
 	.tx-th--dragging {
 		opacity: 0.4;
@@ -1388,16 +1292,10 @@
 		font-size: 1rem;
 		line-height: 1;
 		cursor: pointer;
-		opacity: 0;
 		transition:
 			opacity 0.15s,
 			background 0.15s,
 			border-color 0.15s;
-	}
-	.transaction-row:hover .entry-menu-btn,
-	.entry-menu-btn:focus,
-	.entry-menu-btn.active {
-		opacity: 1;
 	}
 	.entry-menu-btn--stub:hover {
 		opacity: 0 !important;
@@ -1505,25 +1403,5 @@
 		.grouped-amount {
 			padding-right: 56px;
 		}
-		.page-actions {
-			flex-direction: row-reverse;
-		}
-	}
-	.btn-ghost {
-		background: transparent;
-		color: var(--text-muted);
-		padding: 0.625rem 1rem;
-		border: 1px solid var(--border);
-		border-radius: 0.375rem;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-		transition:
-			background 0.1s,
-			color 0.1s;
-	}
-	.btn-ghost:hover {
-		background: var(--bg-subtle);
-		color: var(--text);
 	}
 </style>

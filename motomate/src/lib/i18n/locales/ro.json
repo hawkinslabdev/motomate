@@ -327,7 +327,7 @@
 			},
 			"timeline": {
 				"title": "Cronologie",
-				"subtitle": "Toate înregistrările pentru {name} într-un singur loc.",
+				"subtitle": "Listează toate înregistrările pentru {name}, cele mai noi primele",
 				"empty": {
 					"title": "Niciun istoric încă",
 					"description": "Aici apar reviziile, citirile kilometrajului și notițele.",
@@ -344,7 +344,8 @@
 				},
 				"reminder": {
 					"label": "Doar memento"
-				}
+				},
+				"add": "Adaugă înregistrare"
 			},
 			"upcoming": "Următoarele",
 			"nextDue": "Următorul: {date}",
@@ -420,7 +421,7 @@
 		},
 		"edit": {
 			"title": "Setări",
-			"subtitle": "Gestionează vehiculul {name}",
+			"subtitle": "Editează datele pentru {name}",
 			"odometer": {
 				"title": "Actualizează odometrul",
 				"usageTitle": "Actualizează utilizarea",
@@ -457,7 +458,7 @@
 			"usageUpdated": "Utilizare actualizată",
 			"vehicleRestored": "Vehicul restaurat",
 			"settings": {
-				"title": "Setări",
+				"title": "Raport și unități",
 				"archive": {
 					"title": "Arhivează vehiculul",
 					"titleRestore": "Restaurează vehiculul",
@@ -585,9 +586,9 @@
 		"notes": {
 			"pageTitle": "Note · {name}",
 			"title": "Note",
-			"subtitle": "Tot ce merită păstrat, fără a fi legat de un service sau o cursă.",
+			"subtitle": "Păstrează notițe despre {name}",
 			"subtitleEmpty": "Tot ce merită păstrat, fără a fi legat de un service sau o cursă.",
-			"new": "Adaugă notă",
+			"new": "Adaugă notiță",
 			"edit": "Editează nota",
 			"docCount": "{count, plural, one {# document} few {# documente} other {# de documente}}",
 			"untitled": "Fără titlu",
@@ -614,12 +615,13 @@
 			"col": {
 				"excerpt": "Extras"
 			},
-			"searchPlaceholder": "Caută notițe..."
+			"searchPlaceholder": "Caută notițe...",
+			"add": "Adaugă notiță"
 		}
 	},
 	"maintenance": {
 		"title": "Întreținere",
-		"subtitle": "Urmărește programul de service",
+		"subtitle": "Arată fiecare sarcină de întreținere și când este scadentă",
 		"view": {
 			"current": "Curente",
 			"forecast": "Previziuni",
@@ -660,7 +662,7 @@
 			"save": "Salvează modificările"
 		},
 		"addTask": {
-			"button": "+ Adaugă sarcină",
+			"button": "Adaugă sarcină",
 			"cancel": "Anulează",
 			"title": "Adaugă sarcină",
 			"historyDisabled": "Adaugă sarcina în vizualizarea Curente sau Previziuni",
@@ -748,10 +750,10 @@
 	"finance": {
 		"title": "Cheltuieli",
 		"subtitle": "Urmărește cheltuielile",
-		"totalSpent": "Total cheltuit pentru {name}",
-		"addExpense": "Adaugă",
+		"totalSpent": "Arată cât a costat {name}",
+		"addExpense": "Adaugă cheltuială",
 		"noCosts": "Nicio cheltuială înregistrată încă",
-		"groupBy": "Grupează după:",
+		"groupBy": "Grupează după",
 		"groupCategory": "Categorie",
 		"groupYear": "An",
 		"groupDescription": "Descriere",
@@ -785,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# valută} other {# valute}}"
 		},
 		"form": {
-			"addTitle": "Adaugă",
+			"addTitle": "Adaugă cheltuială",
 			"editTitle": "Editează",
 			"switchType": "Înregistrează altceva în schimb",
 			"category": "Categorie",
@@ -826,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Documente",
-		"subtitle": "Stochează fișe de service, fotografii și acte",
-		"upload": "+ Încarcă",
+		"subtitle": "Păstrează facturi de service, fotografii și acte",
+		"upload": "Adaugă document",
 		"dropHintDesktop": "Trage un fișier aici",
 		"dropHintMobile": "Apasă pentru a încărca un fișier",
 		"uploadHint": "Imagini, PDF, Word, Excel - max. 10 MB",
@@ -1306,7 +1308,7 @@
 	},
 	"travels": {
 		"title": "Călătorii",
-		"subtitle": "Plimbările și traseele tale",
+		"subtitle": "Listează călătoriile și traseele tale",
 		"add": "Adaugă călătorie",
 		"empty": {
 			"title": "Nicio călătorie încă",

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import { page } from '$app/state';
 	import { goto, beforeNavigate } from '$app/navigation';
 	import { untrack, tick } from 'svelte';
@@ -492,27 +493,7 @@
 				aria-label={$_('vehicle.filterEntries')}
 				aria-expanded={filterOpen}
 			>
-				<svg
-					width="15"
-					height="15"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<line x1="4" y1="21" x2="4" y2="14"></line>
-					<line x1="4" y1="10" x2="4" y2="3"></line>
-					<line x1="12" y1="21" x2="12" y2="12"></line>
-					<line x1="12" y1="8" x2="12" y2="3"></line>
-					<line x1="20" y1="21" x2="20" y2="16"></line>
-					<line x1="20" y1="12" x2="20" y2="3"></line>
-					<line x1="1" y1="14" x2="7" y2="14"></line>
-					<line x1="9" y1="8" x2="15" y2="8"></line>
-					<line x1="17" y1="16" x2="23" y2="16"></line>
-				</svg>
+				<Sliders />
 				{#if filtersNonDefault}
 					<span class="filter-active-dot" aria-hidden="true"></span>
 				{/if}
@@ -664,7 +645,7 @@
 		<button
 			class="btn-primary"
 			onclick={() => (isMobile ? quickAdd.open(data.vehicle.id) : (menuOpen = !menuOpen))}
-			>+ {$_('common.add')}</button
+			>+ {$_('vehicle.detail.timeline.add')}</button
 		>
 
 		{#if !isMobile && menuOpen}
@@ -1233,81 +1214,15 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	@media (min-width: 768px) {
-		.page-header {
-			max-width: 860px;
-			margin-left: auto;
-			margin-right: auto;
-		}
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-	.page-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		flex-shrink: 0;
-		position: relative;
-	}
-
 	.mono {
 		font-family: var(--font-mono);
 		font-variant-numeric: tabular-nums;
 	}
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
 	}
-	.btn-primary:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-	.btn-ghost {
-		padding: 0.5rem 0.75rem;
-		background: transparent;
-		color: var(--text-muted);
-		border: 1px solid var(--border);
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-	.btn-ghost:hover {
-		background: var(--bg-muted);
-		color: var(--text);
-	}
 
 	/* Add menu + filter dropdown */
-	.page-actions {
-		position: relative;
-		display: flex;
-		gap: 0.5rem;
-	}
 	/* Icon-only btn-ghost variant */
 	.btn-icon {
 		padding: 0.5rem;
@@ -1658,6 +1573,7 @@
 		color: var(--text-subtle);
 		white-space: nowrap;
 		flex-shrink: 0;
+		align-self: center;
 	}
 	.entry-meta {
 		display: flex;
@@ -1712,16 +1628,10 @@
 		font-size: 1rem;
 		cursor: pointer;
 		line-height: 1;
-		opacity: 0;
 		transition:
 			opacity 0.15s ease-out-quart,
 			background 0.15s ease-out-quart,
 			border-color 0.15s ease-out-quart;
-	}
-	.timeline-entry:hover .entry-menu-btn,
-	.entry-menu-btn:focus,
-	.entry-menu-btn.active {
-		opacity: 1;
 	}
 	.entry-menu-btn:hover,
 	.entry-menu-btn.active {
@@ -1807,16 +1717,6 @@
 			opacity: 1;
 			width: 44px;
 			height: 44px;
-		}
-	}
-	@media (max-width: 768px) {
-		.page-actions {
-			flex-direction: row-reverse;
-		}
-	}
-	@media (pointer: coarse) {
-		.entry-menu-btn {
-			opacity: 1;
 		}
 	}
 

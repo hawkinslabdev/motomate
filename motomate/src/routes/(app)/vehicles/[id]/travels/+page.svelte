@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import { untrack, tick } from 'svelte';
 	import type { PageData } from './$types';
@@ -101,6 +102,7 @@
 
 	// Search + sort + filter state
 	let searchQuery = $state('');
+	let filtersOpen = $state(false);
 	let sortBy = $state<'newest' | 'oldest' | 'name'>(
 		untrack(() => data.page_prefs?.sortBy ?? 'newest')
 	);
@@ -301,22 +303,27 @@
 		<p class="section-sub">{$_('travels.subtitle')}</p>
 	</div>
 	<div class="page-actions">
+		<button
+			type="button"
+			class="btn-ghost filters-toggle"
+			class:filters-toggle--active={!!searchQuery || filterBy !== 'all'}
+			onclick={() => (filtersOpen = !filtersOpen)}
+			aria-label={$_('common.filter')}
+			aria-expanded={filtersOpen}
+		>
+			<Sliders />
+		</button>
 		<button type="button" class="btn-primary" onclick={openCreate}>
 			+ {$_('travels.add')}
 		</button>
 	</div>
 </div>
 
-<!-- Map (only when GPX routes exist) -->
-{#if hasGpx}
-	<div class="map-section">
-		<TravelMap {gpxFiles} {selectedTravelIds} onrouteclick={handleRouteClick} />
-	</div>
-{/if}
-
-<!-- Filters (only when there are travels) -->
 {#if hasHistory}
-	<div class="filters">
+	<div
+		class="filters"
+		class:filters--closed={!filtersOpen && !(!!searchQuery || filterBy !== 'all')}
+	>
 		<div class="search-box">
 			<input
 				type="text"
@@ -342,6 +349,13 @@
 				</button>
 			{/if}
 		</div>
+	</div>
+{/if}
+
+<!-- Filters (only when there are travels) -->
+{#if hasGpx}
+	<div class="map-section">
+		<TravelMap {gpxFiles} {selectedTravelIds} onrouteclick={handleRouteClick} />
 	</div>
 {/if}
 
@@ -428,51 +442,6 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-	.page-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		align-items: center;
-		flex-shrink: 0;
-	}
-	@media (max-width: 640px) {
-		.page-header {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-		.page-actions {
-			width: 100%;
-		}
-	}
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
 	.btn-primary:hover:not(:disabled) {
 		background: var(--accent-hover);
 	}

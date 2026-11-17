@@ -1,4 +1,6 @@
 <script lang="ts">
+	import RowMenu from '#lib/components/ui/RowMenu.svelte';
+	import Sliders from '#lib/components/icons/Sliders.svelte';
 	import { untrack } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { _, waitLocale } from '#lib/i18n/index.js';
@@ -32,6 +34,7 @@
 
 	let deletingId = $state<string | null>(null);
 	let searchQuery = $state('');
+	let filtersOpen = $state(false);
 	let sortBy = $state<'newest' | 'oldest' | 'name'>(
 		untrack(() => data.page_prefs?.sortBy ?? 'newest')
 	);
@@ -91,6 +94,13 @@
 			},
 			true
 		);
+	}
+
+	function noteMenu(note: Parameters<typeof openEditNote>[0]) {
+		return [
+			{ label: $_('common.edit'), onclick: () => openEditNote(note) },
+			{ label: $_('common.delete'), danger: true, onclick: () => (deletingId = note.id) }
+		];
 	}
 
 	function openEditNote(note: (typeof data.notes)[number]) {
@@ -191,11 +201,23 @@
 <div class="page-header">
 	<div class="page-header-text">
 		<h2 class="section-title">{$_('vehicle.notes.title')}</h2>
-		<p class="section-sub">{$_('vehicle.notes.subtitle')}</p>
+		<p class="section-sub">
+			{$_('vehicle.notes.subtitle', { values: { name: data.vehicle.name } })}
+		</p>
 	</div>
 	<div class="page-actions">
+		<button
+			type="button"
+			class="btn-ghost filters-toggle"
+			class:filters-toggle--active={!!searchQuery}
+			onclick={() => (filtersOpen = !filtersOpen)}
+			aria-label={$_('common.filter')}
+			aria-expanded={filtersOpen}
+		>
+			<Sliders />
+		</button>
 		<button class="btn-primary" onclick={openNewNote}>
-			+ {$_('common.add')}
+			+ {$_('vehicle.notes.add')}
 		</button>
 	</div>
 </div>
@@ -206,7 +228,7 @@
 		description={$_('vehicle.notes.empty.desc')}
 	/>
 {:else}
-	<div class="filters">
+	<div class="filters" class:filters--closed={!filtersOpen && !searchQuery}>
 		<div class="search-box">
 			<input
 				type="text"
@@ -221,27 +243,27 @@
 				<option value="oldest">{$_('documents.sort.oldest')}</option>
 				<option value="name">{$_('documents.sort.name')}</option>
 			</select>
-			<div class="view-controls">
-				<ViewToggle
-					options={[
-						{ value: 'timeline', label: $_('common.timeline') },
-						{ value: 'table', label: $_('common.table') }
+		</div>
+		<div class="view-controls">
+			<ViewToggle
+				options={[
+					{ value: 'timeline', label: $_('common.timeline') },
+					{ value: 'table', label: $_('common.table') }
+				]}
+				value={notesViewMode}
+				onchange={(v) => (notesViewMode = v as 'timeline' | 'table')}
+			/>
+			{#if notesViewMode === 'table'}
+				<ColumnPicker
+					columns={[
+						{ key: 'excerpt', label: $_('vehicle.notes.col.excerpt'), hideable: true },
+						{ key: 'date', label: $_('finance.col.date'), hideable: true },
+						{ key: 'documents', label: $_('documents.title'), hideable: true }
 					]}
-					value={notesViewMode}
-					onchange={(v) => (notesViewMode = v as 'timeline' | 'table')}
+					visible={notesColumnVisible}
+					onchange={(v) => (notesColumnVisible = v)}
 				/>
-				{#if notesViewMode === 'table'}
-					<ColumnPicker
-						columns={[
-							{ key: 'excerpt', label: $_('vehicle.notes.col.excerpt'), hideable: true },
-							{ key: 'date', label: $_('finance.col.date'), hideable: true },
-							{ key: 'documents', label: $_('documents.title'), hideable: true }
-						]}
-						visible={notesColumnVisible}
-						onchange={(v) => (notesColumnVisible = v)}
-					/>
-				{/if}
-			</div>
+			{/if}
 		</div>
 	</div>
 
@@ -287,24 +309,7 @@
 							{/if}
 							<div class="note-meta">
 								<span class="note-date">{formatDate(note.updated_at)}</span>
-								<div class="note-actions">
-									<button
-										type="button"
-										class="note-action-btn"
-										onclick={() => openEditNote(note)}
-										aria-label={$_('common.edit')}
-									>
-										{$_('common.edit')}
-									</button>
-									<button
-										type="button"
-										class="note-action-btn note-action-btn--danger"
-										onclick={() => (deletingId = note.id)}
-										aria-label={$_('common.delete')}
-									>
-										{$_('common.delete')}
-									</button>
-								</div>
+								<RowMenu items={noteMenu(note)} />
 							</div>
 						</div>
 					{/each}
@@ -342,24 +347,7 @@
 							</span>
 						{/if}
 					</button>
-					<div class="note-row-actions">
-						<button
-							type="button"
-							class="note-action-btn"
-							onclick={() => openEditNote(note)}
-							aria-label={$_('common.edit')}
-						>
-							{$_('common.edit')}
-						</button>
-						<button
-							type="button"
-							class="note-action-btn note-action-btn--danger"
-							onclick={() => (deletingId = note.id)}
-							aria-label={$_('common.delete')}
-						>
-							{$_('common.delete')}
-						</button>
-					</div>
+					<RowMenu items={noteMenu(note)} />
 				</div>
 			{/each}
 		</div>
@@ -394,47 +382,6 @@
 {/if}
 
 <style>
-	.page-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		margin-bottom: var(--space-6);
-	}
-
-	.page-header-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.section-sub {
-		font-size: var(--text-sm);
-		color: var(--text-muted);
-		margin: 0;
-	}
-
-	.page-actions {
-		flex-shrink: 0;
-	}
-
-	.btn-primary {
-		padding: 0.5rem 1rem;
-		min-height: 44px;
-		background: var(--accent);
-		color: var(--accent-fg);
-		border: none;
-		border-radius: 10px;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		cursor: pointer;
-	}
-
-	.btn-primary:hover {
-		background: var(--accent-hover);
-	}
-
 	.view-controls {
 		display: flex;
 		gap: var(--space-2);
@@ -555,12 +502,6 @@
 		font-size: var(--text-xs);
 	}
 
-	.note-row-actions {
-		display: flex;
-		gap: var(--space-2);
-		flex-shrink: 0;
-	}
-
 	.note-card {
 		padding: 0.875rem 0;
 		border-bottom: 1px solid var(--border);
@@ -661,38 +602,6 @@
 		white-space: nowrap;
 		font-family: var(--font-mono);
 		font-variant-numeric: tabular-nums;
-	}
-
-	.note-actions {
-		display: flex;
-		gap: var(--space-2);
-	}
-
-	.note-action-btn {
-		font-size: var(--text-xs);
-		font-weight: 500;
-		color: var(--text-subtle);
-		background: none;
-		border: 1px solid var(--border);
-		border-radius: 5px;
-		padding: 0.25rem 0.5rem;
-		cursor: pointer;
-		transition:
-			color 0.1s,
-			border-color 0.1s,
-			background 0.1s;
-	}
-
-	.note-action-btn:hover {
-		color: var(--text);
-		border-color: var(--border-strong);
-		background: var(--bg-muted);
-	}
-
-	.note-action-btn--danger:hover {
-		color: var(--status-overdue);
-		border-color: color-mix(in srgb, var(--status-overdue) 40%, transparent);
-		background: color-mix(in srgb, var(--status-overdue) 6%, transparent);
 	}
 
 	@media (max-width: 480px) {

@@ -319,7 +319,7 @@
 			},
 			"timeline": {
 				"title": "Zeitleiste",
-				"subtitle": "Alle deine Daten für {name} an einem Ort.",
+				"subtitle": "Zeigt alle Einträge zu {name}, neueste zuerst",
 				"empty": {
 					"title": "Noch kein Verlauf",
 					"description": "Wartungen, Kilometerstände und Notizen erscheinen hier.",
@@ -336,7 +336,8 @@
 				},
 				"reminder": {
 					"label": "Erinnerung zurückgesetzt"
-				}
+				},
+				"add": "Eintrag hinzufügen"
 			},
 			"upcoming": "Bevorstehend",
 			"nextDue": "Nächster: {date}",
@@ -453,7 +454,7 @@
 		},
 		"edit": {
 			"title": "Einstellungen",
-			"subtitle": "Verwalte dein {name}",
+			"subtitle": "Bearbeitet Daten von {name}",
 			"odometer": {
 				"title": "Kilometerstand aktualisieren",
 				"currentReading": "Aktueller Stand ({unit})",
@@ -478,7 +479,7 @@
 			"odometerUpdated": "Kilometerstand aktualisiert",
 			"vehicleRestored": "Fahrzeug wiederhergestellt",
 			"settings": {
-				"title": "Einstellungen",
+				"title": "Bericht und Einheiten",
 				"archive": {
 					"title": "Fahrzeug archivieren",
 					"titleRestore": "Fahrzeug wiederherstellen",
@@ -585,7 +586,7 @@
 		"notes": {
 			"pageTitle": "Notizen · {name}",
 			"title": "Notizen",
-			"subtitle": "Alles, was es wert ist, nicht an einen Service oder eine Fahrt gebunden zu sein.",
+			"subtitle": "Speichert Notizen zu {name}",
 			"subtitleEmpty": "Alles, was es wert ist, nicht an einen Service oder eine Fahrt gebunden zu sein.",
 			"new": "Notiz hinzufügen",
 			"edit": "Notiz bearbeiten",
@@ -614,12 +615,13 @@
 			"col": {
 				"excerpt": "Auszug"
 			},
-			"searchPlaceholder": "Notizen suchen..."
+			"searchPlaceholder": "Notizen suchen...",
+			"add": "Notiz hinzufügen"
 		}
 	},
 	"maintenance": {
 		"title": "Wartung",
-		"subtitle": "Verfolge deinen Serviceplan",
+		"subtitle": "Zeigt jede Wartungsaufgabe und ihre Fälligkeit",
 		"view": {
 			"current": "Aktuell",
 			"forecast": "Prognose",
@@ -660,7 +662,7 @@
 			"save": "Änderungen speichern"
 		},
 		"addTask": {
-			"button": "+ Aufgabe hinzufügen",
+			"button": "Aufgabe hinzufügen",
 			"cancel": "Abbrechen",
 			"title": "Aufgabe hinzufügen",
 			"historyDisabled": "Hinzufügen in Aktuell oder Prognose Ansicht",
@@ -748,10 +750,10 @@
 	"finance": {
 		"title": "Ausgaben",
 		"subtitle": "Ausgaben verfolgen",
-		"totalSpent": "Gesamtausgaben für dein {name}",
-		"addExpense": "Hinzufügen",
+		"totalSpent": "Zeigt, was {name} gekostet hat",
+		"addExpense": "Ausgabe hinzufügen",
 		"noCosts": "Noch keine Kosten erfasst",
-		"groupBy": "Gruppieren nach:",
+		"groupBy": "Gruppieren nach",
 		"groupCategory": "Kategorie",
 		"groupYear": "Jahr",
 		"groupDescription": "Beschreibung",
@@ -785,7 +787,7 @@
 			"currencyCount": "{count, plural, one {# Währung} other {# Währungen}}"
 		},
 		"form": {
-			"addTitle": "Hinzufügen",
+			"addTitle": "Ausgabe hinzufügen",
 			"editTitle": "Bearbeiten",
 			"switchType": "Stattdessen etwas anderes erfassen",
 			"category": "Kategorie",
@@ -826,8 +828,8 @@
 	},
 	"documents": {
 		"title": "Dokumente",
-		"subtitle": "Serviceunterlagen, Fotos und Papiere speichern",
-		"upload": "+ Hochladen",
+		"subtitle": "Speichert Wartungsbelege, Fotos und Papiere",
+		"upload": "Dokument hinzufügen",
 		"dropHintDesktop": "Datei hier ablegen",
 		"dropHintMobile": "Tippen zum Hochladen",
 		"uploadHint": "Bilder, PDF, Word, Excel - max 10 MB",
@@ -1338,7 +1340,7 @@
 	},
 	"travels": {
 		"title": "Fahrten",
-		"subtitle": "Deine Touren und Routen",
+		"subtitle": "Zeigt deine Fahrten und Routen",
 		"add": "Fahrt hinzufügen",
 		"empty": {
 			"title": "Noch keine Fahrten",
