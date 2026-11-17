@@ -33,7 +33,9 @@
 		"removeSelection": "Auswahl entfernen",
 		"entryOptions": "Eintragsoptionen",
 		"actions": "Aktionen",
-		"open": "Öffnen"
+		"open": "Öffnen",
+		"pushInstallFirst": "Füge MotoMate auf iPhone oder iPad zuerst zum Home-Bildschirm hinzu: Tippe auf Teilen und dann auf Zum Home-Bildschirm. Öffne es von dort, um Benachrichtigungen einzuschalten.",
+		"installIos": "Auf iPhone oder iPad: Tippe auf Teilen und dann auf Zum Home-Bildschirm."
 	},
 	"errorPage": {
 		"notFoundTitle": "Seite nicht gefunden",
@@ -1307,7 +1309,8 @@
 			"error": "Benachrichtigungen konnten nicht geladen werden",
 			"clearAll": "Alle löschen",
 			"dismiss": "Verwerfen"
-		}
+		},
+		"installApp": "App installieren"
 	},
 	"notifications": {
 		"maintenanceDueSoonKm": {

@@ -6,6 +6,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import { _, setUserLocale } from '#lib/i18n/index.js';
 	import { formatDateShort } from '#lib/utils/format.js';
+	import { isInstalled, isIos } from '#lib/utils/pwa.js';
+	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import { DEFAULT_ODOMETER_UNIT, isDistanceUnit } from '#lib/utils/measurement.js';
 	import { defaultVehicleEmoji } from '#lib/utils/vehicle-avatar.js';
 	import NotificationBell from '#lib/components/ui/NotificationBell.svelte';
@@ -349,6 +351,41 @@
 
 	const onboarding = $derived(page.url.pathname.startsWith('/onboarding'));
 
+	type InstallPromptEvent = Event & { prompt: () => Promise<void> };
+	let installPrompt = $state<InstallPromptEvent | null>(null);
+	let installMode = $state<'prompt' | 'ios' | null>(null);
+
+	$effect(() => {
+		if (isInstalled()) return;
+		if (isIos()) installMode = 'ios';
+		const onPrompt = (e: Event) => {
+			e.preventDefault();
+			installPrompt = e as InstallPromptEvent;
+			installMode = 'prompt';
+		};
+		const onInstalled = () => {
+			installPrompt = null;
+			installMode = null;
+		};
+		window.addEventListener('beforeinstallprompt', onPrompt);
+		window.addEventListener('appinstalled', onInstalled);
+		return () => {
+			window.removeEventListener('beforeinstallprompt', onPrompt);
+			window.removeEventListener('appinstalled', onInstalled);
+		};
+	});
+
+	async function installApp() {
+		avatarMenuOpen = false;
+		if (installMode === 'ios') {
+			toasts.info($_('common.installIos'), 0);
+			return;
+		}
+		await installPrompt?.prompt();
+		installPrompt = null;
+		installMode = null;
+	}
+
 	function handleClickOutside(e: MouseEvent) {
 		const path = e.composedPath();
 		const inside = (cls: string) =>
@@ -606,6 +643,12 @@
 							<a href="/settings" class="avatar-menu-item" onclick={() => (avatarMenuOpen = false)}
 								>{$_('layout.nav.settings')}</a
 							>
+
+							{#if installMode}
+								<button type="button" class="avatar-menu-item" onclick={installApp}
+									>{$_('layout.installApp')}</button
+								>
+							{/if}
 
 							<button
 								type="button"

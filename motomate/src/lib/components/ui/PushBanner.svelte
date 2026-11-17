@@ -2,7 +2,11 @@
 	import { _ } from '#lib/i18n/index.js';
 	import Banner from './Banner.svelte';
 
-	let { vapidPublicKey, onDone }: { vapidPublicKey: string; onDone: () => void } = $props();
+	let {
+		vapidPublicKey,
+		onDone,
+		installFirst = false
+	}: { vapidPublicKey: string; onDone: () => void; installFirst?: boolean } = $props();
 
 	let status = $state<'idle' | 'enabling' | 'error'>('idle');
 
@@ -42,7 +46,9 @@
 
 <Banner variant="info">
 	<span class="banner-title">{$_('dashboard.pushBanner.title')}</span>
-	<span class="banner-desc">{$_('dashboard.pushBanner.description')}</span>
+	<span class="banner-desc"
+		>{installFirst ? $_('common.pushInstallFirst') : $_('dashboard.pushBanner.description')}</span
+	>
 	{#if status === 'error'}
 		<span class="banner-hint--warn">{$_('dashboard.pushBanner.error')}</span>
 	{/if}
@@ -50,13 +56,15 @@
 		<button type="button" class="banner-btn banner-btn--secondary" onclick={dismiss}>
 			{$_('dashboard.pushBanner.dismiss')}
 		</button>
-		<button
-			type="button"
-			class="banner-btn banner-btn--primary"
-			onclick={enable}
-			disabled={status === 'enabling'}
-		>
-			{$_('dashboard.pushBanner.enable')}
-		</button>
+		{#if !installFirst}
+			<button
+				type="button"
+				class="banner-btn banner-btn--primary"
+				onclick={enable}
+				disabled={status === 'enabling'}
+			>
+				{$_('dashboard.pushBanner.enable')}
+			</button>
+		{/if}
 	{/snippet}
 </Banner>

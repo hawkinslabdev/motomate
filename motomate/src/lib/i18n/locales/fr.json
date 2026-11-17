@@ -33,7 +33,9 @@
 		"removeSelection": "Supprimer la sélection",
 		"entryOptions": "Options de l'entrée",
 		"actions": "Actions",
-		"open": "Ouvrir"
+		"open": "Ouvrir",
+		"pushInstallFirst": "Sur iPhone ou iPad, ajoutez d’abord MotoMate à l’écran d’accueil : touchez Partager, puis Sur l’écran d’accueil. Ouvrez-le ensuite depuis l’écran d’accueil pour activer les notifications.",
+		"installIos": "Sur iPhone ou iPad : touchez Partager, puis Sur l’écran d’accueil."
 	},
 	"errorPage": {
 		"notFoundTitle": "Page introuvable",
@@ -1307,7 +1309,8 @@
 			"error": "Impossible de charger les notifications",
 			"clearAll": "Tout effacer",
 			"dismiss": "Ignorer"
-		}
+		},
+		"installApp": "Installer l’app"
 	},
 	"notifications": {
 		"maintenanceDueSoonKm": {

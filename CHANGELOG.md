@@ -1,5 +1,12 @@
 # Changelog
 
+## Unknown
+
+- Minor: install MotoMate as an app on Android and iPhone from the account menu, with a proper home screen icon
+- Minor: on iPhone and iPad, notifications explain that MotoMate has to be added to the Home Screen first
+- Minor: tapping a notification opens the MotoMate window that is already open
+- Fix: the app no longer shows stale pages from an old cache; it always loads fresh from the server
+
 ## 0.6.4
 
 - Minor: choose a number format under Settings, Preferences, or keep Automatic to follow the browser region

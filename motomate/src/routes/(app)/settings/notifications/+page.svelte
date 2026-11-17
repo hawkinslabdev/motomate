@@ -7,6 +7,7 @@
 	import { formatDateTime } from '#lib/utils/format.js';
 	import { toasts } from '#lib/stores/toasts.svelte.js';
 	import Toggle from '#lib/components/ui/Toggle.svelte';
+	import { pushSupport, type PushSupport } from '#lib/utils/pwa.js';
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -131,8 +132,10 @@ actions:
 
 	// Browser push subscription
 	let pushSubStatus = $state<'idle' | 'subscribing' | 'subscribed' | 'error'>('idle');
+	let push = $state<PushSupport>('unsupported');
 
 	$effect(() => {
+		push = pushSupport();
 		if (!('serviceWorker' in navigator)) return;
 		navigator.serviceWorker.ready
 			.then((reg) => reg.pushManager.getSubscription())
@@ -228,6 +231,8 @@ actions:
 						<p class="channel-hint channel-hint--warn">
 							{$_('settings.notifications.channels.push.noVapid')}
 						</p>
+					{:else if push === 'install-first'}
+						<p class="channel-hint channel-hint--warn">{$_('common.pushInstallFirst')}</p>
 					{:else}
 						<button
 							type="button"

@@ -14,7 +14,14 @@ export async function dispatchPush(userId: string, title: string, body: string):
 
 	const payload = JSON.stringify({ title, body });
 
-	await Promise.allSettled(
-		subs.map((sub) => webpush.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload))
+	await Promise.all(
+		subs.map((sub) =>
+			webpush
+				.sendNotification({ endpoint: sub.endpoint, keys: sub.keys }, payload)
+				.catch(async (err: { statusCode?: number }) => {
+					if (err.statusCode !== 404 && err.statusCode !== 410) throw err;
+					await db.delete(push_subscriptions).where(eq(push_subscriptions.id, sub.id));
+				})
+		)
 	);
 }

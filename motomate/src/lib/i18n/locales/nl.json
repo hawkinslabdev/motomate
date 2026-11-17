@@ -33,7 +33,9 @@
 		"removeSelection": "Selectie verwijderen",
 		"entryOptions": "Opties voor item",
 		"actions": "Acties",
-		"open": "Openen"
+		"open": "Openen",
+		"pushInstallFirst": "Voeg MotoMate op iPhone of iPad eerst toe aan je beginscherm: tik op Deel en dan op Zet op beginscherm. Open het daarna vanaf je beginscherm om meldingen aan te zetten.",
+		"installIos": "Op iPhone of iPad: tik op Deel en dan op Zet op beginscherm."
 	},
 	"errorPage": {
 		"notFoundTitle": "Pagina niet gevonden",
@@ -1307,7 +1309,8 @@
 			"error": "Meldingen konden niet worden geladen",
 			"clearAll": "Alles wissen",
 			"dismiss": "Sluiten"
-		}
+		},
+		"installApp": "App installeren"
 	},
 	"notifications": {
 		"maintenanceDueSoonKm": {
