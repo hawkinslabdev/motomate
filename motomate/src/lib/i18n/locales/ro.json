@@ -33,7 +33,9 @@
 		"entryOptions": "Opțiuni intrare",
 		"actions": "Acțiuni",
 		"timeline": "Cronologie",
-		"open": "Deschide"
+		"open": "Deschide",
+		"pushInstallFirst": "Pe iPhone sau iPad, adaugă mai întâi MotoMate pe ecranul principal: atinge Partajează, apoi Adaugă pe ecranul principal. Deschide-l de acolo pentru a activa notificările.",
+		"installIos": "Pe iPhone sau iPad: atinge Partajează, apoi Adaugă pe ecranul principal."
 	},
 	"errorPage": {
 		"notFoundTitle": "Pagina nu a fost găsită",
@@ -1296,7 +1298,8 @@
 			"error": "Notificările nu au putut fi încărcate",
 			"clearAll": "Sterge tot",
 			"dismiss": "Ignoră"
-		}
+		},
+		"installApp": "Instalează aplicația"
 	},
 	"units": {
 		"km": "km",

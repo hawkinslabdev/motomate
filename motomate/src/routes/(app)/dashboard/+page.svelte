@@ -3,6 +3,7 @@
 	import type { PageData } from './$types';
 	import AttentionCard from '#lib/components/ui/AttentionCard.svelte';
 	import PushBanner from '#lib/components/ui/PushBanner.svelte';
+	import { pushSupport, type PushSupport } from '#lib/utils/pwa.js';
 	import {
 		formatCurrency,
 		formatDateShort,
@@ -17,8 +18,10 @@
 
 	let locallyDismissed = $state(false);
 	let permissionDenied = $state(false);
+	let push = $state<PushSupport>('unsupported');
 	$effect(() => {
 		permissionDenied = typeof Notification !== 'undefined' && Notification.permission === 'denied';
+		push = pushSupport();
 	});
 
 	const showPushBanner = $derived(
@@ -26,7 +29,8 @@
 			!data.pushChannelEnabled &&
 			!data.pushBannerDismissed &&
 			!permissionDenied &&
-			!locallyDismissed
+			!locallyDismissed &&
+			push !== 'unsupported'
 	);
 
 	const currentLocale = $derived(data.formatLocale);
@@ -95,7 +99,11 @@
 <div class="dashboard">
 	{#if showPushBanner}
 		<div class="push-banner-slot">
-			<PushBanner vapidPublicKey={data.vapidPublicKey} onDone={() => (locallyDismissed = true)} />
+			<PushBanner
+				vapidPublicKey={data.vapidPublicKey}
+				onDone={() => (locallyDismissed = true)}
+				installFirst={push === 'install-first'}
+			/>
 		</div>
 	{/if}
 

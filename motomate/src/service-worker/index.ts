@@ -18,10 +18,17 @@ sw.addEventListener('activate', (event) => {
 sw.addEventListener('push', (event) => {
 	if (!event.data) return;
 	const { title, body } = event.data.json() as { title: string; body: string };
-	event.waitUntil(sw.registration.showNotification(title, { body, icon: '/icon.png' }));
+	event.waitUntil(sw.registration.showNotification(title, { body, icon: '/icon-192.png' }));
 });
 
 sw.addEventListener('notificationclick', (event) => {
 	event.notification.close();
-	event.waitUntil(sw.clients.openWindow('/'));
+	async function focusOrOpen() {
+		const windows = await sw.clients.matchAll({ type: 'window', includeUncontrolled: true });
+		const open = windows.find((client) => new URL(client.url).origin === sw.location.origin);
+		if (open) return open.focus();
+		return sw.clients.openWindow('/');
+	}
+
+	event.waitUntil(focusOrOpen());
 });

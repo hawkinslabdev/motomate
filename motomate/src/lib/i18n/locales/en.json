@@ -33,7 +33,9 @@
 		"removeSelection": "Remove selection",
 		"entryOptions": "Entry options",
 		"actions": "Actions",
-		"open": "Open"
+		"open": "Open",
+		"pushInstallFirst": "On iPhone or iPad, add MotoMate to your Home Screen first: tap Share, then Add to Home Screen. Open it from there to turn on notifications.",
+		"installIos": "On iPhone or iPad: tap Share, then Add to Home Screen."
 	},
 	"errorPage": {
 		"notFoundTitle": "Page not found",
@@ -1296,7 +1298,8 @@
 			"error": "Could not load notifications",
 			"clearAll": "Clear all",
 			"dismiss": "Dismiss"
-		}
+		},
+		"installApp": "Install app"
 	},
 	"units": {
 		"km": "km",

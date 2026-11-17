@@ -33,7 +33,9 @@
 		"removeSelection": "Rimuovi selezione",
 		"entryOptions": "Opzioni voce",
 		"actions": "Azioni",
-		"open": "Apri"
+		"open": "Apri",
+		"pushInstallFirst": "Su iPhone o iPad, aggiungi prima MotoMate alla schermata Home: tocca Condividi, poi Aggiungi alla schermata Home. Aprilo da lì per attivare le notifiche.",
+		"installIos": "Su iPhone o iPad: tocca Condividi, poi Aggiungi alla schermata Home."
 	},
 	"errorPage": {
 		"notFoundTitle": "Pagina non trovata",
@@ -1307,7 +1309,8 @@
 			"error": "Impossibile caricare le notifiche",
 			"clearAll": "Cancella tutto",
 			"dismiss": "Ignora"
-		}
+		},
+		"installApp": "Installa app"
 	},
 	"notifications": {
 		"maintenanceDueSoonKm": {
