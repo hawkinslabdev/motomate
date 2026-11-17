@@ -461,3 +461,7 @@ button[disabled] {
 	margin: 0 0 var(--space-2);
 	letter-spacing: -0.02em;
 }
+
+.link-picker {
+	scroll-margin-block: var(--space-4);
+}

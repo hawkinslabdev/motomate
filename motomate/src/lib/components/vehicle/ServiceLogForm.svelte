@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { reveal } from '#lib/utils/reveal.js';
 	import { untrack } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { SvelteSet } from 'svelte/reactivity';
@@ -307,7 +308,7 @@
 			</button>
 		</div>
 		{#if showLinkNew}
-			<div class="link-picker">
+			<div class="link-picker" {@attach reveal}>
 				<div class="link-picker-header">
 					<span class="link-picker-title">{$_('vehicle.forms.attachments.pickerTitle')}</span>
 					<button type="button" class="link-picker-close" onclick={() => (showLinkNew = false)}
