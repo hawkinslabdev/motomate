@@ -4,8 +4,39 @@
 
 - Minor: choose a number format under Settings, Preferences, or keep Automatic to follow the browser region
 - Minor: migrate to SvelteKit 3
+- Minor: all vehicle tabs share one layout: header, add button, search and filter bar, view switch and row menu
+- Minor: the Developer settings page shows when each API key expires, with key actions in a menu
+- Minor: the favourite vehicle is listed first on the dashboard
+- Minor: archiving a vehicle moved to the danger zone, and the unit of measurement to settings
+- Minor: the travel map follows dark mode
+- Minor: labels use normal capitalisation instead of all caps
+- Minor: on phones, Maintenance search and sort sit behind a filter button
+- Minor: leaving settings or the vehicle edit page with unsaved changes asks for confirmation
+- Minor: every server log line starts with the date, time and source
+- Fix: some keystrokes were blocked upon creating a new note
 - Fix: numbers in the PDF report and notifications use the selected number format
 - Fix: the app and `npm run db:migrate` create the database folder when it is missing
+- Fix: remove extra scroll area in demo mode
+- Fix: demo mode says a change is disabled instead of pretending it was saved
+- Fix: more labels, tooltips and notification times are translated
+- Fix: service costs and maintenance expenses show as one category in Spending
+- Fix: dates from other years show the full year
+- Fix: setup shows which required field is missing
+- Fix: sort and filter dropdowns, the theme button and charts work better with screen readers and the keyboard
+- Fix: grey and status text has enough contrast to read in both themes
+- Fix: switches, back links and small toggles are easier to tap, and switches work with screen readers
+- Fix: tapping a search or filter field no longer zooms in on iPhone
+- Fix: new maintenance tasks no longer start out overdue
+- Fix: opening Maintenance no longer lowers a vehicle's mileage
+- Fix: deleting your account requires typing your email address, copy and paste are blocked
+- Fix: dismissing an alert keeps the notification menu open
+- Fix: failed webhook and Home Assistant tests show an error
+- Fix: the webhook authorization header is masked
+- Fix: the setup Continue button is no longer hidden on phones
+- Fix: restoring an archived vehicle clears its sale price
+- Security: update dependencies
+- Security: changing or deleting a maintenance task checks that the vehicle is yours
+- Security: documents, tasks and pinned documents only link to items in your own account
 
 ## 0.6.3
 
