@@ -18,6 +18,7 @@
 	// Wizard step (1 = Welcome, 2 = Type, 3 = Details, 4 = Odometer, 5 = Presets, 6 = Last service, 7 = Summary)
 	type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 	let step = $state<Step>(1);
+	let submitting = $state(false);
 
 	// User identity
 	let displayName = $state('');
@@ -387,7 +388,18 @@
 					</div>
 				</div>
 
-				<form method="POST" action="?/complete" use:enhance style="display:contents">
+				<form
+					method="POST"
+					action="?/complete"
+					use:enhance={() => {
+						submitting = true;
+						return async ({ update }) => {
+							await update();
+							submitting = false;
+						};
+					}}
+					style="display:contents"
+				>
 					<input type="hidden" name="display_name" value={displayName} />
 					<input type="hidden" name="vehicle_type" value={vehicleType} />
 					<input type="hidden" name="name" value={name} />
@@ -403,7 +415,7 @@
 						<input type="hidden" name="last_service_date" value={lastServiceDate} />
 						<input type="hidden" name="last_service_odometer" value={lastServiceOdo || odometer} />
 					{/if}
-					<button type="submit" class="btn-primary btn-primary--large"
+					<button type="submit" class="btn-primary btn-primary--large" disabled={submitting}
 						>{$_('onboarding.summary.submit')}</button
 					>
 				</form>

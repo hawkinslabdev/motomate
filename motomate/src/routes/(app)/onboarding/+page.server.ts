@@ -38,6 +38,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	complete: async ({ request, locals }) => {
+		if (locals.user?.onboarding_done) redirect(302, '/dashboard');
 		const data = Object.fromEntries(await request.formData());
 		const userId = locals.user!.id;
 		const userLocale = (locals.user as any)?.settings?.locale ?? 'en';
