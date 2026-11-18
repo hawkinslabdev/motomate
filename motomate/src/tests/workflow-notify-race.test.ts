@@ -99,7 +99,7 @@ describe('workflow notifications', () => {
 		expect(await notifiedBy()).toEqual({ r1: 'overdue' });
 	});
 
-	it('keeps the reset when a service is logged during dispatch', async () => {
+	it('skips the notified flag write after a service log during dispatch', async () => {
 		dispatch.during = async () => {
 			await db
 				.update(active_trackers)

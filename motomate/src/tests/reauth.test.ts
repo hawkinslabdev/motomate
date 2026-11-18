@@ -89,7 +89,7 @@ describe('verifyReauth', () => {
 });
 
 describe('settings persistence', () => {
-	it('keeps the reauth window through the settings schema', () => {
+	it('settings schema accepts the reauth window fields', () => {
 		const window = reauthWindow(S);
 		expect(UserSettingsSchema.parse(window)).toMatchObject(window);
 		expect(UserSettingsSchema.parse({ reauth_until: null }).reauth_until).toBeNull();

@@ -241,7 +241,7 @@ async function evalTrigger(
 }
 
 // Main evaluator
-// ponytail: in-process queue, needs a DB lock if the app ever runs as several processes
+// ponytail: in-process queue. Multi-process deployments require a DB lock.
 let queue: Promise<unknown> = Promise.resolve();
 
 export function runWorkflowChecks(userId?: string): Promise<{ evaluated: number; fired: number }> {
