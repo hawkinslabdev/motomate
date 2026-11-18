@@ -154,11 +154,12 @@ actions:
 				endpoint: string;
 				keys: { p256dh: string; auth: string };
 			};
-			await fetch('/api/push/subscribe', {
+			const res = await fetch('/api/push/subscribe', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ endpoint, keys })
 			});
+			if (!res.ok) throw new Error(`subscribe failed: ${res.status}`);
 			pushSubStatus = 'subscribed';
 		} catch {
 			pushSubStatus = 'error';
