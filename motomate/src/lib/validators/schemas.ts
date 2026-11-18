@@ -181,6 +181,7 @@ export const UserSettingsSchema = z.object({
 	avatar_seed: z.string().max(64).nullable().optional(),
 	oidc_sub: z.string().max(255).nullable().optional(),
 	reauth_until: z.string().max(40).nullable().optional(),
+	reauth_session: z.string().max(255).nullable().optional(),
 	page_prefs: PagePrefsSchema.optional(),
 	integrations: IntegrationsSchema
 });

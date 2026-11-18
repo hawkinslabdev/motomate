@@ -10,28 +10,47 @@ export const ARGON2_OPTS = {
 
 export const REAUTH_WINDOW_MS = 2 * 60_000;
 
+export type ReauthSettings = {
+	reauth_until?: string | null;
+	reauth_session?: string | null;
+} | null;
+
 export type ReauthRecord = {
 	id?: string;
 	password_hash?: string | null;
-	settings?: { reauth_until?: string | null } | null;
+	settings?: ReauthSettings;
 };
 
-// proof lasts this long
-export function reauthExpiry(now = Date.now()): string {
-	return new Date(now + REAUTH_WINDOW_MS).toISOString();
+export const REAUTH_CLEARED = { reauth_until: null, reauth_session: null };
+
+export function reauthWindow(sessionId: string, now = Date.now()) {
+	return {
+		reauth_until: new Date(now + REAUTH_WINDOW_MS).toISOString(),
+		reauth_session: sessionId
+	};
 }
 
-export function isReauthActive(until?: string | null): boolean {
-	return !!until && until > new Date().toISOString();
+export function isReauthActive(
+	settings: ReauthSettings | undefined,
+	sessionId?: string | null
+): boolean {
+	const until = settings?.reauth_until;
+	return (
+		!!sessionId &&
+		settings?.reauth_session === sessionId &&
+		!!until &&
+		until > new Date().toISOString()
+	);
 }
 
 // stepup means provider re-login
 export async function verifyReauth(
 	record: ReauthRecord | undefined,
-	currentPassword: string
+	currentPassword: string,
+	sessionId?: string | null
 ): Promise<'ok' | 'password' | 'stepup' | 'limited'> {
 	if (!record) return 'stepup';
-	if (isReauthActive(record.settings?.reauth_until)) return 'ok';
+	if (isReauthActive(record.settings, sessionId)) return 'ok';
 	if (!record.password_hash) return 'stepup';
 	if (!currentPassword) return 'password';
 	if (record.id && !rateLimit(`reauth:${record.id}`, 10, 15 * 60_000)) return 'limited';

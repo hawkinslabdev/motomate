@@ -1,6 +1,6 @@
 import { lucia, isSecureCookie } from '#lib/auth/index.js';
 import { endSessionUrl, oidcCookie } from '#lib/auth/oidc.js';
-import { isReauthActive } from '#lib/auth/reauth.js';
+import { REAUTH_CLEARED, isReauthActive } from '#lib/auth/reauth.js';
 import { updateUserSettings } from '#lib/db/repositories/users.js';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -11,8 +11,8 @@ export const POST: RequestHandler = async ({ locals, cookies, url }) => {
 	cookies.delete(idTokenCookie, { path: '/' });
 
 	// spend window on logout
-	if (locals.user && isReauthActive(locals.user.settings?.reauth_until)) {
-		await updateUserSettings(locals.user.id, { reauth_until: null });
+	if (locals.user && isReauthActive(locals.user.settings, locals.session?.id)) {
+		await updateUserSettings(locals.user.id, REAUTH_CLEARED);
 	}
 
 	if (locals.session) {

@@ -3,7 +3,7 @@ import { lucia } from '#lib/auth/index.js';
 import { verifyMagicLinkToken } from '#lib/auth/magic-link.js';
 import { getUserById, updateUserSettings } from '#lib/db/repositories/users.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
-import { reauthExpiry } from '#lib/auth/reauth.js';
+import { reauthWindow } from '#lib/auth/reauth.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) => {
@@ -19,9 +19,8 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 		return { verified: false, errorKey: 'auth.magicLink.invalid' };
 	}
 
-	await updateUserSettings(userId, { reauth_until: reauthExpiry() });
-
 	const session = await lucia.createSession(userId, {});
+	await updateUserSettings(userId, reauthWindow(session.id));
 	const cookie = lucia.createSessionCookie(session.id);
 	cookies.set(cookie.name, cookie.value, { path: '/', ...cookie.attributes });
 

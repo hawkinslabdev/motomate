@@ -10,7 +10,7 @@ import {
 	deleteUser
 } from '#lib/db/repositories/users.js';
 import { lucia } from '#lib/auth/index.js';
-import { ARGON2_OPTS, isReauthActive, verifyReauth } from '#lib/auth/reauth.js';
+import { ARGON2_OPTS, REAUTH_CLEARED, isReauthActive, verifyReauth } from '#lib/auth/reauth.js';
 import { getOidcConfig } from '#lib/auth/oidc.js';
 import { locales as localeMap } from '#lib/i18n/locales.js';
 
@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	return {
 		user: locals.user!,
 		hasPassword: !!record?.password_hash,
-		reauthActive: isReauthActive(record?.settings?.reauth_until),
+		reauthActive: isReauthActive(record?.settings, locals.session?.id),
 		stepUpProvider: record?.settings?.oidc_sub ? (getOidcConfig()?.name ?? null) : null,
 		reauthFailed: url.searchParams.get('error') === 'reauth'
 	};
@@ -62,7 +62,11 @@ export const actions: Actions = {
 			.toLowerCase();
 
 		const record = await getUserById(user.id);
-		const proof = await verifyReauth(record, String(data.current_password ?? ''));
+		const proof = await verifyReauth(
+			record,
+			String(data.current_password ?? ''),
+			locals.session?.id
+		);
 		if (proof !== 'ok') {
 			return fail(proof === 'limited' ? 429 : 400, {
 				emailError:
@@ -101,7 +105,7 @@ export const actions: Actions = {
 		const confirmPassword = String(data.confirm_password ?? '');
 
 		const fullUser = await getUserById(userId);
-		const reauthActive = isReauthActive(fullUser?.settings?.reauth_until);
+		const reauthActive = isReauthActive(fullUser?.settings, locals.session?.id);
 
 		if (!newPassword || (!reauthActive && !currentPassword)) {
 			return fail(400, { passwordError: errors.allRequired });
@@ -113,7 +117,7 @@ export const actions: Actions = {
 			return fail(400, { passwordError: errors.noMatch });
 		}
 
-		const proof = await verifyReauth(fullUser, currentPassword);
+		const proof = await verifyReauth(fullUser, currentPassword, locals.session?.id);
 		if (proof !== 'ok') {
 			return fail(proof === 'limited' ? 429 : 400, {
 				passwordError:
@@ -135,7 +139,7 @@ export const actions: Actions = {
 		const passwordHash = await hash(newPassword, ARGON2_OPTS);
 		await updateUserPassword(userId, passwordHash);
 
-		if (reauthActive) await updateUserSettings(userId, { reauth_until: null });
+		if (reauthActive) await updateUserSettings(userId, REAUTH_CLEARED);
 
 		await lucia.invalidateUserSessions(userId);
 		const session = await lucia.createSession(userId, {});
@@ -154,7 +158,7 @@ export const actions: Actions = {
 		const data = Object.fromEntries(await request.formData());
 		const record = await getUserById(userId);
 		const errors = messages.settings.account.password.errors;
-		const proof = await verifyReauth(record, String(data.current_password ?? ''));
+		const proof = await verifyReauth(record, String(data.current_password ?? ''), sessionId);
 		if (proof !== 'ok') {
 			return fail(proof === 'limited' ? 429 : 400, {
 				deleteError:
