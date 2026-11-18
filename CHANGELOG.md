@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.5
+
+- Fix: maintenance notifications are sent once per due or overdue crossing
+- Fix: a service log during notification dispatch resets the next reminder
+- Fix: setup creates one vehicle per account on repeat submits
+- Fix: notification settings display an error if browser push registration fails
+- Fix: restoring an API key enforces the key limit
+- Fix: rotating an API key replaces it in one transaction
+- Fix: identity confirmation applies to the confirming session
+- Fix: sign-in links are single use
+
 ## 0.6.4
 
 - Minor: choose a number format under Settings, Preferences, or keep Automatic to follow the browser region
