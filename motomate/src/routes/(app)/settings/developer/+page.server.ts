@@ -76,8 +76,15 @@ export const actions: Actions = {
 		const keyId = String(formData.get('key_id') ?? '');
 		if (!keyId) return fail(400, { error: 'Missing key ID' });
 
-		const ok = await restoreApiKey(locals.user!.id, keyId);
-		if (!ok) return fail(404, { error: 'Key not found' });
+		try {
+			const ok = await restoreApiKey(locals.user!.id, keyId);
+			if (!ok) return fail(404, { error: 'Key not found' });
+		} catch (err: unknown) {
+			if ((err as { code?: string })?.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+				return fail(400, { errorKey: 'settings.developer.apiKeys.errorNameTaken' });
+			}
+			return fail(400, { error: err instanceof Error ? err.message : 'Failed to restore key' });
+		}
 		return { restored: true };
 	},
 
