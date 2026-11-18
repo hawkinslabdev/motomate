@@ -25,6 +25,7 @@ import { hash } from '@node-rs/argon2';
 const ARGON2_OPTS = { memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1 };
 const openWindow = () => new Date(Date.now() + 60_000).toISOString();
 const closedWindow = () => new Date(Date.now() - 60_000).toISOString();
+const S = 's_1';
 
 function event(fields: Record<string, string>) {
 	const body = new URLSearchParams(fields);
@@ -48,21 +49,24 @@ describe('changePassword for an account with no stored hash', () => {
 		vi.mocked(getUserById).mockResolvedValue({
 			id: 'u_1',
 			password_hash: null,
-			settings: { oidc_sub: 'idp-subject-1', reauth_until: openWindow() }
+			settings: { oidc_sub: 'idp-subject-1', reauth_until: openWindow(), reauth_session: S }
 		} as never);
 
 		const result = await actions.changePassword(event(NEW));
 
 		expect(result).toEqual({ savedPassword: true });
 		expect(updateUserPassword).toHaveBeenCalledWith('u_1', expect.any(String));
-		expect(updateUserSettings).toHaveBeenCalledWith('u_1', { reauth_until: null });
+		expect(updateUserSettings).toHaveBeenCalledWith('u_1', {
+			reauth_until: null,
+			reauth_session: null
+		});
 	});
 
 	it('refuses without a window, so a session alone cannot mint a local password', async () => {
 		vi.mocked(getUserById).mockResolvedValue({
 			id: 'u_1',
 			password_hash: null,
-			settings: { oidc_sub: 'idp-subject-1', reauth_until: closedWindow() }
+			settings: { oidc_sub: 'idp-subject-1', reauth_until: closedWindow(), reauth_session: S }
 		} as never);
 
 		const result = (await actions.changePassword(event(NEW))) as { status: number; data: unknown };
@@ -75,7 +79,7 @@ describe('changePassword for an account with no stored hash', () => {
 		vi.mocked(getUserById).mockResolvedValue({
 			id: 'u_1',
 			password_hash: null,
-			settings: { reauth_until: openWindow() }
+			settings: { reauth_until: openWindow(), reauth_session: S }
 		} as never);
 
 		await expect(actions.changePassword(event(NEW))).resolves.toEqual({ savedPassword: true });
@@ -85,7 +89,7 @@ describe('changePassword for an account with no stored hash', () => {
 		vi.mocked(getUserById).mockResolvedValue({
 			id: 'u_1',
 			password_hash: await hash('a-brand-new-secret', ARGON2_OPTS),
-			settings: { reauth_until: openWindow() }
+			settings: { reauth_until: openWindow(), reauth_session: S }
 		} as never);
 
 		const result = (await actions.changePassword(event(NEW))) as { status: number };

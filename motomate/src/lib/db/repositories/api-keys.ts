@@ -22,39 +22,41 @@ function expiresAtFromDays(days: number): string {
 	return d.toISOString().slice(0, 10);
 }
 
+async function assertBelowKeyLimit(userId: string): Promise<void> {
+	const active = await db
+		.select({ id: api_keys.id })
+		.from(api_keys)
+		.where(and(eq(api_keys.user_id, userId), isNull(api_keys.revoked_at)));
+	if (active.length >= MAX_KEYS_PER_USER) {
+		throw new Error(`Maximum of ${MAX_KEYS_PER_USER} API keys allowed`);
+	}
+}
+
+function newKeyRow(userId: string, name: string, scope: ApiKeyScope, expiresDays?: number) {
+	const plaintext = generateToken();
+	const row = {
+		id: generateId(),
+		user_id: userId,
+		name,
+		key_hash: hashToken(plaintext),
+		key_prefix: plaintext.slice(0, PREFIX_LENGTH),
+		scope,
+		expires_at: expiresDays ? expiresAtFromDays(expiresDays) : undefined,
+		expires_duration_days: expiresDays ?? undefined
+	};
+	return { plaintext, row };
+}
+
 export async function createApiKey(
 	userId: string,
 	name: string,
 	scope: ApiKeyScope,
 	expiresDays?: number
 ): Promise<{ plaintext: string; record: ApiKey }> {
-	const existing = await db
-		.select({ id: api_keys.id })
-		.from(api_keys)
-		.where(and(eq(api_keys.user_id, userId), isNull(api_keys.revoked_at)));
-
-	if (existing.length >= MAX_KEYS_PER_USER) {
-		throw new Error(`Maximum of ${MAX_KEYS_PER_USER} API keys allowed`);
-	}
-
-	const plaintext = generateToken();
-	const key_hash = hashToken(plaintext);
-	const key_prefix = plaintext.slice(0, PREFIX_LENGTH);
-	const expires_at = expiresDays ? expiresAtFromDays(expiresDays) : null;
-
-	const id = generateId();
-	await db.insert(api_keys).values({
-		id,
-		user_id: userId,
-		name,
-		key_hash,
-		key_prefix,
-		scope,
-		expires_at: expires_at ?? undefined,
-		expires_duration_days: expiresDays ?? undefined
-	});
-
-	const record = await db.query.api_keys.findFirst({ where: eq(api_keys.id, id) });
+	await assertBelowKeyLimit(userId);
+	const { plaintext, row } = newKeyRow(userId, name, scope, expiresDays);
+	await db.insert(api_keys).values(row);
+	const record = await db.query.api_keys.findFirst({ where: eq(api_keys.id, row.id) });
 	return { plaintext, record: record! };
 }
 
@@ -85,14 +87,18 @@ export async function rotateApiKey(
 	});
 	if (!existing) return null;
 
-	await db.delete(api_keys).where(eq(api_keys.id, keyId));
-
-	return createApiKey(
+	const { plaintext, row } = newKeyRow(
 		userId,
 		existing.name,
 		existing.scope,
 		existing.expires_duration_days ?? undefined
 	);
+	db.transaction((tx) => {
+		tx.delete(api_keys).where(eq(api_keys.id, keyId)).run();
+		tx.insert(api_keys).values(row).run();
+	});
+	const record = await db.query.api_keys.findFirst({ where: eq(api_keys.id, row.id) });
+	return { plaintext, record: record! };
 }
 
 export async function findUserByApiKey(
@@ -125,6 +131,7 @@ export async function findUserByApiKey(
 }
 
 export async function restoreApiKey(userId: string, keyId: string): Promise<boolean> {
+	await assertBelowKeyLimit(userId);
 	const result = await db
 		.update(api_keys)
 		.set({ revoked_at: null })

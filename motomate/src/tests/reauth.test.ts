@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { hash } from '@node-rs/argon2';
-import { ARGON2_OPTS, isReauthActive, reauthExpiry, verifyReauth } from '#lib/auth/reauth.js';
+import { ARGON2_OPTS, isReauthActive, reauthWindow, verifyReauth } from '#lib/auth/reauth.js';
 import { UserSettingsSchema } from '#lib/validators/schemas.js';
 
 const PASSWORD = 'the-real-password';
-const open = () => new Date(Date.now() + 60_000).toISOString();
-const expired = () => new Date(Date.now() - 60_000).toISOString();
+const S = 's_1';
+const open = () => ({
+	reauth_until: new Date(Date.now() + 60_000).toISOString(),
+	reauth_session: S
+});
+const expired = () => ({
+	reauth_until: new Date(Date.now() - 60_000).toISOString(),
+	reauth_session: S
+});
 
 describe('isReauthActive', () => {
 	it('is closed when nothing proved identity', () => {
@@ -14,12 +21,17 @@ describe('isReauthActive', () => {
 	});
 
 	it('is open inside the window and closed after it', () => {
-		expect(isReauthActive(open())).toBe(true);
-		expect(isReauthActive(expired())).toBe(false);
+		expect(isReauthActive(open(), S)).toBe(true);
+		expect(isReauthActive(expired(), S)).toBe(false);
 	});
 
 	it('opens a window that its own check accepts', () => {
-		expect(isReauthActive(reauthExpiry())).toBe(true);
+		expect(isReauthActive(reauthWindow(S), S)).toBe(true);
+	});
+
+	it('is closed for any other session of the same user', () => {
+		expect(isReauthActive(open(), 's_other')).toBe(false);
+		expect(isReauthActive(open(), undefined)).toBe(false);
 	});
 });
 
@@ -38,17 +50,18 @@ describe('verifyReauth', () => {
 	it('takes an open window instead of the password', async () => {
 		const record = {
 			password_hash: await hash(PASSWORD, ARGON2_OPTS),
-			settings: { reauth_until: open() }
+			settings: open()
 		};
-		expect(await verifyReauth(record, '')).toBe('ok');
+		expect(await verifyReauth(record, '', S)).toBe('ok');
+		expect(await verifyReauth(record, '', 's_other')).toBe('password');
 	});
 
 	it('ignores an expired window', async () => {
 		const record = {
 			password_hash: await hash(PASSWORD, ARGON2_OPTS),
-			settings: { reauth_until: expired() }
+			settings: expired()
 		};
-		expect(await verifyReauth(record, '')).toBe('password');
+		expect(await verifyReauth(record, '', S)).toBe('password');
 	});
 
 	it('sends a passwordless account to the provider', async () => {
@@ -57,9 +70,7 @@ describe('verifyReauth', () => {
 	});
 
 	it('accepts a passwordless account inside its window', async () => {
-		expect(
-			await verifyReauth({ password_hash: null, settings: { reauth_until: open() } }, '')
-		).toBe('ok');
+		expect(await verifyReauth({ password_hash: null, settings: open() }, '', S)).toBe('ok');
 	});
 
 	it('refuses a missing record rather than reading it as passwordless', async () => {
@@ -78,9 +89,9 @@ describe('verifyReauth', () => {
 });
 
 describe('settings persistence', () => {
-	it('keeps reauth_until through the settings schema', () => {
-		const until = reauthExpiry();
-		expect(UserSettingsSchema.parse({ reauth_until: until }).reauth_until).toBe(until);
+	it('settings schema accepts the reauth window fields', () => {
+		const window = reauthWindow(S);
+		expect(UserSettingsSchema.parse(window)).toMatchObject(window);
 		expect(UserSettingsSchema.parse({ reauth_until: null }).reauth_until).toBeNull();
 	});
 });

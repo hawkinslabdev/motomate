@@ -25,6 +25,7 @@ type TriggerResult = {
 	trackerId?: string;
 	trackerState?: Record<string, unknown>;
 	trackerStatus?: string;
+	trackerUpdatedAt?: string;
 	documentId?: string;
 };
 
@@ -195,7 +196,8 @@ async function evalTrigger(
 				const base = {
 					trackerId: tracker.id,
 					trackerState: tracker.state as Record<string, unknown>,
-					trackerStatus: tracker.status
+					trackerStatus: tracker.status,
+					trackerUpdatedAt: tracker.updated_at
 				};
 
 				if (normalizedTrigger.kind === 'maintenance') {
@@ -239,9 +241,16 @@ async function evalTrigger(
 }
 
 // Main evaluator
-export async function runWorkflowChecks(
-	userId?: string
-): Promise<{ evaluated: number; fired: number }> {
+// ponytail: in-process queue. Multi-process deployments require a DB lock.
+let queue: Promise<unknown> = Promise.resolve();
+
+export function runWorkflowChecks(userId?: string): Promise<{ evaluated: number; fired: number }> {
+	const run = queue.then(() => runChecks(userId));
+	queue = run.catch(() => {});
+	return run;
+}
+
+async function runChecks(userId?: string): Promise<{ evaluated: number; fired: number }> {
 	const rules = await db.query.workflow_rules.findMany({
 		where: userId
 			? and(eq(workflow_rules.user_id, userId), eq(workflow_rules.enabled, true))
@@ -316,7 +325,12 @@ export async function runWorkflowChecks(
 							},
 							updated_at: new Date().toISOString()
 						})
-						.where(eq(active_trackers.id, result.trackerId));
+						.where(
+							and(
+								eq(active_trackers.id, result.trackerId),
+								eq(active_trackers.updated_at, result.trackerUpdatedAt!)
+							)
+						);
 				} else {
 					const now = new Date().toISOString();
 					const currentMap = parseFiredAtMap(rule.last_triggered_at);

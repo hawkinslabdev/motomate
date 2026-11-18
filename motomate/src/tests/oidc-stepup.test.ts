@@ -177,7 +177,7 @@ describe('oidc step-up callback', () => {
 			callbackGet({
 				url: new URL('http://localhost/oidc/callback?code=c&state=st'),
 				cookies: cookieJar(pending()),
-				locals: { user: linkedUser() },
+				locals: { user: linkedUser(), session: { id: 's_1' } },
 				getClientAddress: () => '1.2.3.4'
 			} as never)
 		);
@@ -185,10 +185,11 @@ describe('oidc step-up callback', () => {
 		expect(location).toBe('/settings/account');
 		const [userId, patch] = vi.mocked(updateUserSettings).mock.calls[0] as [
 			string,
-			{ reauth_until: string }
+			{ reauth_until: string; reauth_session: string }
 		];
 		expect(userId).toBe('u_1');
-		expect(isReauthActive(patch.reauth_until)).toBe(true);
+		expect(isReauthActive(patch, 's_1')).toBe(true);
+		expect(isReauthActive(patch, 's_other')).toBe(false);
 	});
 
 	it('refuses when the provider returns a different subject', async () => {
@@ -197,7 +198,7 @@ describe('oidc step-up callback', () => {
 			callbackGet({
 				url: new URL('http://localhost/oidc/callback?code=c&state=st'),
 				cookies: cookieJar(pending()),
-				locals: { user: linkedUser() },
+				locals: { user: linkedUser(), session: { id: 's_1' } },
 				getClientAddress: () => '1.2.3.4'
 			} as never)
 		);
@@ -212,7 +213,7 @@ describe('oidc step-up callback', () => {
 			callbackGet({
 				url: new URL('http://localhost/oidc/callback?code=c&state=st'),
 				cookies: cookieJar(pending()),
-				locals: { user: linkedUser() },
+				locals: { user: linkedUser(), session: { id: 's_1' } },
 				getClientAddress: () => '1.2.3.4'
 			} as never)
 		);

@@ -196,6 +196,13 @@ describe('restoreApiKey()', () => {
 			.get(record.id) as any;
 		expect(row.revoked_at).toBeNull();
 	});
+
+	it('refuses to restore past the active key limit', async () => {
+		const { record } = await createApiKey(UID, 'old', 'read_write');
+		await revokeApiKey(UID, record.id);
+		for (let i = 0; i < 20; i++) await createApiKey(UID, `k${i}`, 'read_write');
+		await expect(restoreApiKey(UID, record.id)).rejects.toThrow('Maximum');
+	});
 });
 
 describe('rotateApiKey()', () => {

@@ -135,7 +135,8 @@ describe('re-authentication on account changes', () => {
 			password_hash: null,
 			settings: {
 				oidc_sub: 'idp-subject-1',
-				reauth_until: new Date(Date.now() + 60_000).toISOString()
+				reauth_until: new Date(Date.now() + 60_000).toISOString(),
+				reauth_session: 's_1'
 			}
 		} as never);
 
@@ -147,7 +148,10 @@ describe('re-authentication on account changes', () => {
 	it('accepts an open window in place of the password on a local account', async () => {
 		vi.mocked(getUserById).mockResolvedValue({
 			...(await localAccount()),
-			settings: { reauth_until: new Date(Date.now() + 60_000).toISOString() }
+			settings: {
+				reauth_until: new Date(Date.now() + 60_000).toISOString(),
+				reauth_session: 's_1'
+			}
 		} as never);
 
 		const result = await actions.changeEmail(event({ email: 'new@test.com' }));

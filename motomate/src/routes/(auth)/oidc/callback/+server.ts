@@ -18,7 +18,7 @@ import {
 } from '#lib/db/repositories/users.js';
 import { isOidcSignupOpen } from '#lib/auth/registration.js';
 import { rateLimit } from '#lib/auth/rate-limit.js';
-import { reauthExpiry } from '#lib/auth/reauth.js';
+import { reauthWindow } from '#lib/auth/reauth.js';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddress }) => {
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 		redirect(302, onFailure);
 	}
 
-	if (stepUp && !locals.user?.settings?.oidc_sub) {
+	if (stepUp && (!locals.user?.settings?.oidc_sub || !locals.session)) {
 		console.error(`[MotoMate] OIDC step-up rejected: no linked session`);
 		redirect(302, '/login?error=oidc');
 	}
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals, getClientAddre
 			console.error(`[MotoMate] OIDC step-up rejected: subject mismatch`);
 			redirect(302, `${back}?error=reauth`);
 		}
-		await updateUserSettings(locals.user!.id, { reauth_until: reauthExpiry() });
+		await updateUserSettings(locals.user!.id, reauthWindow(locals.session!.id));
 		redirect(302, back);
 	}
 

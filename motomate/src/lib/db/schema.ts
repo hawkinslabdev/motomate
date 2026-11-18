@@ -119,6 +119,7 @@ export type UserSettings = {
 	avatar_seed?: string | null;
 	oidc_sub?: string | null;
 	reauth_until?: string | null;
+	reauth_session?: string | null;
 	page_prefs?: PagePrefs;
 	integrations?: Integrations;
 };

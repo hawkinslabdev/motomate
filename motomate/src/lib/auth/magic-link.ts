@@ -41,11 +41,11 @@ export async function verifyMagicLinkToken(token: string): Promise<string | null
 	if (!record) return null;
 	if (record.expires_at < now) return null;
 
-	// Mark as used
-	await db
+	const claimed = await db
 		.update(magic_link_tokens)
 		.set({ used_at: now })
-		.where(eq(magic_link_tokens.id, record.id));
+		.where(and(eq(magic_link_tokens.id, record.id), isNull(magic_link_tokens.used_at)));
+	if (claimed.changes !== 1) return null;
 
 	return record.user_id;
 }
